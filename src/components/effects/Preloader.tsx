@@ -60,7 +60,7 @@ export function Preloader() {
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
-            src="/assets/intro.mp4"
+            src="/assets/test-0.mp4"
             muted
             playsInline
             autoPlay
