@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/effects/ThemeProvider";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
+import { PreloaderWrapper } from "@/components/effects/PreloaderWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +23,11 @@ export const metadata: Metadata = {
 /**
  * Root Layout
  * 
+ * ARCHITECTURE:
+ * - PreloaderWrapper: Cinematic intro animation (hand breaking glass)
+ * - ThemeProvider: Dark/Light mode switching
+ * - SmoothScroll: Lenis-powered smooth scrolling
+ * 
  * RESPONSIVE DESIGN RULES:
  * 1. Always write CSS Mobile-First (e.g., `w-full md:w-1/2`)
  * 2. Use dynamic viewport units (`dvh`, `svh`) for full-screen sections
@@ -38,9 +44,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeProvider>
-          <SmoothScroll>
-            {children}
-          </SmoothScroll>
+          <PreloaderWrapper>
+            <SmoothScroll>
+              {children}
+            </SmoothScroll>
+          </PreloaderWrapper>
         </ThemeProvider>
       </body>
     </html>
