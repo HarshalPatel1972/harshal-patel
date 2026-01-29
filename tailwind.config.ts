@@ -8,15 +8,43 @@ const config: Config = {
   ],
   darkMode: "class",
   theme: {
+    screens: {
+      xs: "475px",    // Small phones
+      sm: "640px",    // Large phones
+      md: "768px",    // Tablets
+      lg: "1024px",   // Laptops
+      xl: "1280px",   // Desktops
+      "2xl": "1400px", // Large laptops
+      "3xl": "1600px", // Ultra-wide monitors
+    },
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: "1rem",
+        xs: "1.25rem",
+        sm: "1.5rem",
+        md: "2rem",
+        lg: "2.5rem",
+        xl: "3rem",
+        "2xl": "4rem",
+        "3xl": "6rem",
+      },
+      screens: {
+        xs: "475px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1400px",
+        "3xl": "1600px",
+      },
+    },
     extend: {
       colors: {
-        // Primary palette - Elegant neutrals
         background: "var(--background)",
         foreground: "var(--foreground)",
-        
-        // Accent colors - High contrast accents
         accent: {
-          DEFAULT: "#6366f1", // Indigo
+          DEFAULT: "#6366f1",
           foreground: "#ffffff",
         },
         muted: {
