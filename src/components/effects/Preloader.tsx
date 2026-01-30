@@ -2,7 +2,7 @@
 
 import React, { useRef, useMemo, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Text, Float } from "@react-three/drei";
+import { Text, Float, Html } from "@react-three/drei";
 import { EffectComposer, Bloom, ChromaticAberration, Noise } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
@@ -199,22 +199,23 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
     const tl = gsap.timeline({ paused: true });
     setTimelineRef(tl);
 
-     // Phase 1: Accumulation (0-1.5s)
-    tl.to(orbGroup.current!.scale, { x: 0.1, y: 0.1, z: 0.1, duration: 1.5, ease: "power2.in" }, 0);
+     // Phase 1: Accumulation (0-3.0s) - MUCH SLOWER
+    tl.to(orbGroup.current!.scale, { x: 0.1, y: 0.1, z: 0.1, duration: 3.0, ease: "power2.in" }, 0);
     
-    // Phase 2: Contraction (1.5s-2.0s)
-    tl.to(orbGroup.current!.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.5, ease: "expo.in" }, 1.5);
+    // Phase 2: Contraction (3.0s-3.5s)
+    tl.to(orbGroup.current!.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.5, ease: "expo.in" }, 3.0);
     
-    // Phase 3: The Drop (2.5s)
+    // Phase 3: The Drop (4.0s)
     tl.to(camera.position, { 
       z: 8, 
       duration: 0.1, 
       ease: "rough({ template: none.out, strength: 1, points: 20, taper: 'none', randomize: true, clamp: false})" 
-    }, 2.4);
+    }, 3.9);
 
-    // Text Reveal (2.5s)
-    tl.set(textGroup.current, { visible: true }, 2.5);
-    tl.from(textGroup.current!.scale, { x: 3, y: 3, z: 3, duration: 0.4, ease: "elastic.out(1, 0.3)" }, 2.5);
+    // Text Reveal (4.0s)
+    // We want the text to "thud" in and then STAY there as the HTML fades in
+    tl.set(textGroup.current, { visible: true }, 4.0);
+    tl.from(textGroup.current!.scale, { x: 5, y: 5, z: 5, duration: 0.4, ease: "elastic.out(1, 0.3)" }, 4.0); // Big thud
     
     tl.play();
     return () => { tl.kill(); };
@@ -222,15 +223,16 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    if (time < 1.5) {
-        setChromaOffset(new THREE.Vector2(time * 0.002, time * 0.002));
-    } else if (time >= 1.5 && time < 2.5) {
+    // Adjusted timing window for shader effects
+    if (time < 3.0) {
+        setChromaOffset(new THREE.Vector2(time * 0.001, time * 0.001)); // Slower ramp
+    } else if (time >= 3.0 && time < 4.0) {
         setChromaOffset(new THREE.Vector2(0.005 + Math.sin(time * 50)*0.002, 0.005));
     } else {
         setChromaOffset(new THREE.Vector2(0.001, 0.001));
     }
     
-    if (time > 2.0 && time < 2.5) {
+    if (time > 3.5 && time < 4.5) {
         setBloomIntensity(5.0); 
     } else {
         setBloomIntensity(1.5);
@@ -241,7 +243,7 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
     <>
       <color attach="background" args={["#000000"]} />
       
-      {/* 💡 LIGHTING (Crucial for visibility) */}
+      {/* 💡 LIGHTING */}
       <ambientLight intensity={2} />
       <pointLight position={[10, 10, 10]} intensity={5} color="#00f0ff" />
       <pointLight position={[-10, -10, -10]} intensity={5} color="#7000ff" />
@@ -251,20 +253,17 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
         <SingularityOrb timeline={null} />
       </group>
 
-      {/* ✨ PARTICLES */}
+      {/* ✨ PARTICLES - Pass timeline implicitly via props if needed, but here we adjust internal timing */}
       <ParticleImplosion timeline={null} />
       
-      {/* 📝 TEXT REVEAL */}
+      {/* 📝 TEXT REVEAL - MATCHING HERO.TSX */}
       <group ref={textGroup} visible={false}>
-        <Text
-          position={[0, 0, 0]}
-          fontSize={1.5}
-          anchorX="center"
-          anchorY="middle"
-        >
-          HARSHAL PATEL
-          <meshStandardMaterial color="white" emissive="white" emissiveIntensity={2} />
-        </Text>
+        {/* We use Html to match DOM exactly */}
+        <Html center position={[0, 0, 0]}>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white whitespace-nowrap">
+                Harshal Patel
+            </h1>
+        </Html>
       </group>
 
       {/* 🎥 POST PROCESSING */}
@@ -286,10 +285,11 @@ export function Preloader() {
   const [complete, setInternalComplete] = useState(false);
   
   useEffect(() => {
+    // Total duration extended
     const t = setTimeout(() => {
       setInternalComplete(true);
       setComplete();
-    }, 4500);
+    }, 6000); // 6 seconds total
 
     const flashTimer = setTimeout(() => {
         const flashEl = document.getElementById("flash-overlay");
@@ -297,7 +297,7 @@ export function Preloader() {
             flashEl.style.opacity = "1";
             setTimeout(() => { flashEl.style.opacity = "0"; }, 200);
         }
-    }, 2500);
+    }, 4000); // Flash at 4.0s
 
     return () => { clearTimeout(t); clearTimeout(flashTimer); };
   }, [setComplete]);
