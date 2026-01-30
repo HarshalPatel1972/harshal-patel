@@ -10,274 +10,174 @@ import gsap from "gsap";
 import { usePreloader } from "@/lib/preloader-context";
 
 // ==========================================
-// 🎨 SHADERS & UTILS
-// ==========================================
-
-const vertexShader = `
-uniform float uTime;
-uniform float uNoiseFreq;
-uniform float uNoiseAmp;
-varying vec2 vUv;
-varying float vDisplacement;
-
-// Classic Perlin Noise 3D
-// (Simplified for performance, usually imported or pasted fully)
-vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-float snoise(vec3 v) { 
-  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
-  vec3 i  = floor(v + dot(v, C.yyy) );
-  vec3 x0 = v - i + dot(i, C.xxx) ;
-  vec3 g = step(x0.yzx, x0.xyz);
-  vec3 l = 1.0 - g;
-  vec3 i1 = min( g.xyz, l.zxy );
-  vec3 i2 = max( g.xyz, l.zxy );
-  vec3 x1 = x0 - i1 + C.xxx;
-  vec3 x2 = x0 - i2 + C.yyy;
-  vec3 x3 = x0 - D.yyy;
-  i = mod289(i); 
-  vec4 p = permute( permute( permute( 
-             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
-           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
-           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
-  float n_ = 0.142857142857; // 1.0/7.0
-  vec3  ns = n_ * D.wyz - D.xzx;
-  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)
-  vec4 x_ = floor(j * ns.z);
-  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
-  vec4 x = x_ *ns.x + ns.yyyy;
-  vec4 y = y_ *ns.x + ns.yyyy;
-  vec4 h = 1.0 - abs(x) - abs(y);
-  vec4 b0 = vec4( x.xy, y.xy );
-  vec4 b1 = vec4( x.zw, y.zw );
-  vec4 s0 = floor(b0)*2.0 + 1.0;
-  vec4 s1 = floor(b1)*2.0 + 1.0;
-  vec4 sh = -step(h, vec4(0.0));
-  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
-  vec3 p0 = vec3(a0.xy,h.x);
-  vec3 p1 = vec3(a0.zw,h.y);
-  vec3 p2 = vec3(a1.xy,h.z);
-  vec3 p3 = vec3(a1.zw,h.w);
-  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-  p0 *= norm.x;
-  p1 *= norm.y;
-  p2 *= norm.z;
-  p3 *= norm.w;
-  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-  m = m * m;
-  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
-                                dot(p2,x2), dot(p3,x3) ) );
-}
-
-void main() {
-  vUv = uv;
-  
-  // Dynamic displacement
-  float noise = snoise(position * uNoiseFreq + uTime * 0.5);
-  vDisplacement = noise;
-  
-  vec3 newPos = position + normal * noise * uNoiseAmp;
-  
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
-}
-`;
-
-const fragmentShader = `
-uniform float uTime;
-uniform vec3 uColorA;
-uniform vec3 uColorB;
-varying float vDisplacement;
-
-void main() {
-  // Mix colors based on displacement
-  float mixStrength = smoothstep(-1.0, 1.0, vDisplacement);
-  vec3 color = mix(uColorA, uColorB, mixStrength);
-  
-  // Add core glow (fresnel-ish)
-  float intensity = 1.5;
-  color *= intensity;
-  
-  gl_FragColor = vec4(color, 1.0);
-}
-`;
-
-// ==========================================
-// 🌀 SINGULARITY ORB
+// 🌀 SINGULARITY ORB (ROBUST VERSION)
 // ==========================================
 
 function SingularityOrb({ timeline }: { timeline: gsap.core.Timeline | null }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
-
-  // Initial State: Unstable energy
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uNoiseFreq: { value: 1.5 },
-    uNoiseAmp: { value: 0.2 },
-    uColorA: { value: new THREE.Color("#00f0ff") }, // Electric Blue
-    uColorB: { value: new THREE.Color("#7000ff") }, // Violet
-  }), []);
-
+  
+  // Animate: Pulse and rotate
   useFrame((state) => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
-    }
-    // Idle pulsating rotation
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.005;
-      meshRef.current.rotation.z += 0.002;
-    }
+    if (!meshRef.current) return;
+    const t = state.clock.elapsedTime;
+    
+    // Rotation
+    meshRef.current.rotation.y = t * 0.5;
+    meshRef.current.rotation.z = t * 0.2;
+    
+    // Scale pulse (if not controlled by timeline yet)
+    // We let timeline control scale, but we can add noise to position for "instability"
+    const noise = Math.sin(t * 10) * 0.02;
+    meshRef.current.position.x = noise;
+    meshRef.current.position.y = Math.cos(t * 12) * 0.02;
   });
 
   return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[1, 64, 64]} />
-      <shaderMaterial
-        ref={materialRef}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
-        uniforms={uniforms}
-        transparent
-      />
-    </mesh>
+    <group>
+      {/* Core Glowing Sphere */}
+      <mesh ref={meshRef}>
+        <icosahedronGeometry args={[1, 1]} /> {/* Low poly tech look */}
+        <meshStandardMaterial 
+          color="#000000" 
+          emissive="#00f0ff"
+          emissiveIntensity={2}
+          roughness={0.1}
+          metalness={0.8}
+          wireframe
+        />
+      </mesh>
+      
+      {/* Inner Solid Core */}
+      <mesh scale={[0.8, 0.8, 0.8]}>
+        <sphereGeometry args={[0.8, 32, 32]} />
+        <meshBasicMaterial color="#000000" />
+      </mesh>
+      
+      {/* Outer Halo (Fake Glow) */}
+      <mesh scale={[1.2, 1.2, 1.2]}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial 
+            color="#7000ff" 
+            transparent 
+            opacity={0.1} 
+            blending={THREE.AdditiveBlending} 
+            side={THREE.BackSide} // Inverted shell
+        />
+      </mesh>
+    </group>
   );
 }
 
 // ==========================================
-// ✨ PARTICLE SYSTEM (SPIRAL -> EXPLODE)
+// ✨ PARTICLE SYSTEM (ROBUST)
 // ==========================================
 
 function ParticleImplosion({ timeline }: { timeline: gsap.core.Timeline | null }) {
   const pointsRef = useRef<THREE.Points>(null);
-  const count = 3000;
+  const count = 2000;
   
-  // Generate initial spiral positions
+  // Initial random positions largely spread out
   const [positions, initialPositions] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const init = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-        // Spiral Distribution
-        const radius = 5 + Math.random() * 10;
+        // Sphere distribution radius 5 to 15
+        const r = 5 + Math.random() * 10;
         const theta = Math.random() * Math.PI * 2;
-        const phi = Math.random() * Math.PI; // Spherical distribution
+        const phi = Math.acos(2 * Math.random() - 1);
         
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi);
+        const x = r * Math.sin(phi) * Math.cos(theta);
+        const y = r * Math.sin(phi) * Math.sin(theta);
+        const z = r * Math.cos(phi);
         
-        pos[i * 3] = x;
-        pos[i * 3 + 1] = y;
-        pos[i * 3 + 2] = z;
-
-        init[i * 3] = x;
-        init[i * 3 + 1] = y;
-        init[i * 3 + 2] = z;
+        pos[i*3] = x; pos[i*3+1] = y; pos[i*3+2] = z;
+        init[i*3] = x; init[i*3+1] = y; init[i*3+2] = z;
     }
     return [pos, init];
   }, []);
 
-  // Use refs for animation state to avoid re-renders
-  const progressRef = useRef(0); // 0 = Spiral, 1 = Contracted
-  const explodeRef = useRef(0);  // 0 = Normal, 1 = EXPLODED
+  const progressRef = useRef(0);
+  const explodeRef = useRef(0);
 
   useEffect(() => {
     if (!timeline) return;
+    const proxy = { p: 0, e: 0 };
     
-    // GSAP controls these refs via proxy objects
-    const proxy = { progress: 0, explode: 0 };
+    // Spiral in
+    timeline.to(proxy, {
+      p: 1, duration: 2.0, ease: "power3.in",
+      onUpdate: () => { progressRef.current = proxy.p; }
+    }, 0);
     
-    // Phase 1: Spiral In (0s - 1.5s)
+    // Explode
     timeline.to(proxy, {
-      progress: 1,
-      duration: 1.5,
-      ease: "power2.inOut",
-      onUpdate: () => { progressRef.current = proxy.progress; }
-    }, 0);
-
-    // Phase 3: Explode (2.5s) - FAST
-    timeline.to(proxy, {
-      explode: 1,
-      duration: 0.8,
-      ease: "expo.out",
-      delay: 2.5,
-      onUpdate: () => { explodeRef.current = proxy.explode; }
-    }, 0);
-
+      e: 1, duration: 1.0, ease: "expo.out",
+      onUpdate: () => { explodeRef.current = proxy.e; }
+    }, 2.5);
   }, [timeline]);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
-    
     const positions = pointsRef.current.geometry.attributes.position.array as Float32Array;
-    const time = state.clock.elapsedTime;
+    const t = state.clock.elapsedTime;
     
-    for (let i = 0; i < count; i++) {
-        const ix = i * 3;
-        const iy = i * 3 + 1;
-        const iz = i * 3 + 2;
-
-        const x0 = initialPositions[ix];
-        const y0 = initialPositions[iy];
-        const z0 = initialPositions[iz];
-
-        // 1. SPIRAL MOTION
-        // As progress goes 0->1, radius shrinks
-        // Also add swirl rotation
-        const suction = 1.0 - progressRef.current * 0.95; // Stays at 5% radius at peak
-        const swirlSpeed = 2.0 * progressRef.current;
-        const angle = time * swirlSpeed + (i * 0.01);
+    for(let i=0; i<count; i++) {
+        const i3 = i*3;
+        const ix = initialPositions[i3];
+        const iy = initialPositions[i3+1];
+        const iz = initialPositions[i3+2];
         
-        // Apply rotation around Y axis
+        // Suction Logic
+        // Progress 0 -> 1 : Radius 100% -> 5%
+        const suction = 1.0 - (progressRef.current * 0.95); 
+        
+        // Swirl
+        const angle = (t * 2.0) + (i * 0.01);
         const cos = Math.cos(angle);
         const sin = Math.sin(angle);
         
-        let tx = (x0 * cos - z0 * sin) * suction;
-        let tz = (x0 * sin + z0 * cos) * suction;
-        let ty = y0 * suction;
-
-        // 2. EXPLOSION
-        // If exploded, blast outward
+        // Rotate initial pos then scale
+        // Simple Y-axis rotation
+        let rx = (ix * cos - iz * sin);
+        let rz = (ix * sin + iz * cos);
+        let ry = iy;
+        
+        let tx = rx * suction;
+        let ty = ry * suction;
+        let tz = rz * suction;
+        
+        // Explosion
         if (explodeRef.current > 0) {
-            const blastRadius = 15.0 * explodeRef.current;
-            const dirX = tx === 0 ? Math.random()-0.5 : tx;
-            const dirY = ty === 0 ? Math.random()-0.5 : ty;
-            const dirZ = tz === 0 ? Math.random()-0.5 : tz;
-            
-            // Normalize direction approximation
-            const len = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ);
-            
-            tx += (dirX/len) * blastRadius;
-            ty += (dirY/len) * blastRadius;
-            tz += (dirZ/len) * blastRadius;
+            const blast = 20.0 * explodeRef.current;
+            // Direction from center
+            const dist = Math.sqrt(tx*tx + ty*ty + tz*tz) + 0.001;
+            tx += (tx/dist) * blast;
+            ty += (ty/dist) * blast;
+            tz += (tz/dist) * blast;
         }
-
-        positions[ix] = tx;
-        positions[iy] = ty;
-        positions[iz] = tz;
+        
+        positions[i3] = tx;
+        positions[i3+1] = ty;
+        positions[i3+2] = tz;
     }
-    
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
   });
 
   return (
     <points ref={pointsRef}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]} 
-        />
+         <bufferAttribute 
+            attach="attributes-position" 
+            args={[positions, 3]} 
+         />
       </bufferGeometry>
-      <pointsMaterial
-        size={0.03}
-        color="#ffffff"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
+      <pointsMaterial 
+        size={0.05} 
+        color="#00f0ff" 
+        transparent 
+        opacity={0.8} 
         blending={THREE.AdditiveBlending}
+        depthWrite={false}
       />
     </points>
   );
