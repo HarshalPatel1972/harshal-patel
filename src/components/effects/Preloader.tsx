@@ -21,7 +21,7 @@ export function Preloader() {
         setStage("check");
     }, 500);
 
-    // Phase 3: Launch (1.5s) -> Triggers Unmount & Fly to Navbar
+    // Phase 3: Launch (4.5s) -> Triggers Unmount & Fly to Navbar
     const launchTimer = setTimeout(() => {
         setStage("launch");
         // We allow a small buffer for the "break" animation before unmounting?
@@ -29,7 +29,7 @@ export function Preloader() {
         // and mount the Navbar ones simultaneously.
         // setComplete(true) triggers Navbar mount.
         setComplete(); 
-    }, 2000); // 2.0s mark
+    }, 4500); // Extended to 4.5s for readability
 
     return () => { clearTimeout(checkTimer); clearTimeout(launchTimer); };
   }, [setComplete]);
