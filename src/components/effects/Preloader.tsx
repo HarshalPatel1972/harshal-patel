@@ -12,8 +12,8 @@ interface LetterData {
 }
 
 /**
- * 3D Falling Letters Preloader
- * True 3D extruded letters that drop in alphabetical order
+ * 3D Block Letters Preloader
+ * Each letter is a true 3D object with visible front, top, and side faces
  */
 export function Preloader() {
   const { setComplete } = usePreloader();
@@ -36,9 +36,9 @@ export function Preloader() {
   }, []);
 
   const totalGroups = [...new Set(letters.filter(l => !l.isSpace).map(l => l.dropOrder))].length;
-  const dropDuration = 0.7;
-  const groupDelay = 0.25;
-  const totalAnimTime = (totalGroups * groupDelay) + dropDuration + 1.8;
+  const dropDuration = 0.8;
+  const groupDelay = 0.2;
+  const totalAnimTime = (totalGroups * groupDelay) + dropDuration + 2;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,45 +55,40 @@ export function Preloader() {
     <AnimatePresence>
       {!shouldExit && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #0f0f1a 100%)",
+          }}
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          exit={{ opacity: 0, scale: 1.1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Gradient background */}
-          <div 
-            className="absolute inset-0"
-            style={{
-              background: "radial-gradient(ellipse at 50% 30%, #1a1a2e 0%, #0a0a0a 50%, #000000 100%)",
-            }}
-          />
-
-          {/* Spotlight effect */}
+          {/* Ambient light from above */}
           <div 
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 80% 50% at 50% 60%, rgba(255,255,255,0.03) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse 100% 60% at 50% 0%, rgba(100,120,255,0.08) 0%, transparent 60%)",
             }}
           />
 
-          {/* 3D Perspective Container */}
+          {/* 3D Scene Container */}
           <div 
             className="relative"
             style={{ 
-              perspective: "800px",
-              perspectiveOrigin: "50% 50%",
+              perspective: "1200px",
+              perspectiveOrigin: "50% 40%",
             }}
           >
-            {/* Letters */}
             <div 
-              className="flex items-center justify-center"
+              className="flex items-end justify-center"
               style={{ 
-                gap: "clamp(0.1rem, 1vw, 0.5rem)",
+                gap: "clamp(0.2rem, 1.5vw, 0.8rem)",
                 transformStyle: "preserve-3d",
+                transform: "rotateX(10deg)",
               }}
             >
               {letters.map((letter, i) => (
-                <Letter3D
+                <BlockLetter3D
                   key={i}
                   letter={letter}
                   dropDuration={dropDuration}
@@ -104,15 +99,12 @@ export function Preloader() {
             </div>
           </div>
 
-          {/* Floor gradient */}
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
+          {/* Ground plane reflection */}
+          <div 
+            className="absolute bottom-0 left-0 right-0 h-1/2 pointer-events-none"
             style={{
-              background: "linear-gradient(to top, rgba(20,20,40,0.3) 0%, transparent 100%)",
+              background: "linear-gradient(to top, rgba(30,30,50,0.4) 0%, transparent 50%)",
             }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
           />
         </motion.div>
       )}
@@ -120,156 +112,155 @@ export function Preloader() {
   );
 }
 
-interface Letter3DProps {
+interface BlockLetter3DProps {
   letter: LetterData;
   dropDuration: number;
   groupDelay: number;
   isComplete: boolean;
 }
 
-function Letter3D({ letter, dropDuration, groupDelay, isComplete }: Letter3DProps) {
+function BlockLetter3D({ letter, dropDuration, groupDelay, isComplete }: BlockLetter3DProps) {
   if (letter.isSpace) {
-    return <div style={{ width: "clamp(0.5rem, 3vw, 2rem)" }} />;
+    return <div style={{ width: "clamp(1rem, 4vw, 3rem)" }} />;
   }
 
   const delay = letter.dropOrder * groupDelay;
-  
-  // Generate extrusion layers for 3D effect
-  const extrusionDepth = 12;
-  const layers = Array.from({ length: extrusionDepth }, (_, i) => i);
+  const depth = 20; // Depth of the 3D block in pixels
+  const fontSize = "clamp(3rem, 12vw, 8rem)";
 
   return (
     <motion.div
-      className="relative inline-block"
+      className="relative"
       style={{
-        fontSize: "clamp(2.5rem, 10vw, 7rem)",
+        fontSize,
         fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
         fontWeight: 900,
         transformStyle: "preserve-3d",
+        lineHeight: 1,
       }}
       initial={{
-        y: "-120vh",
-        rotateX: -45,
-        rotateY: Math.random() * 60 - 30,
-        rotateZ: Math.random() * 40 - 20,
-        scale: 0.6,
+        y: "-150vh",
+        rotateX: -180,
+        rotateY: Math.random() * 90 - 45,
+        rotateZ: Math.random() * 60 - 30,
       }}
       animate={{
         y: 0,
-        rotateX: isComplete ? 5 : 0,
-        rotateY: 0,
+        rotateX: 0,
+        rotateY: isComplete ? [0, -5, 0] : 0,
         rotateZ: 0,
-        scale: 1,
       }}
       transition={{
         y: {
           delay,
           duration: dropDuration,
-          ease: [0.34, 1.56, 0.64, 1], // Bouncy
+          ease: [0.22, 1.4, 0.36, 1], // Heavy bounce
         },
         rotateX: {
           delay,
-          duration: dropDuration * 1.3,
+          duration: dropDuration * 1.2,
           ease: [0.22, 1, 0.36, 1],
         },
         rotateY: {
-          delay,
-          duration: dropDuration * 1.3,
+          delay: isComplete ? delay + dropDuration + 0.5 : delay,
+          duration: isComplete ? 0.6 : dropDuration * 1.2,
           ease: [0.22, 1, 0.36, 1],
         },
         rotateZ: {
           delay,
-          duration: dropDuration * 1.3,
-          ease: [0.22, 1, 0.36, 1],
-        },
-        scale: {
-          delay,
-          duration: dropDuration,
+          duration: dropDuration * 1.2,
           ease: [0.22, 1, 0.36, 1],
         },
       }}
     >
-      {/* 3D Extrusion layers (back to front) */}
-      {layers.map((layerIndex) => (
-        <span
-          key={layerIndex}
-          className="absolute inset-0 select-none"
-          style={{
-            color: `hsl(240, 10%, ${Math.max(5, 15 - layerIndex)}%)`,
-            transform: `translateZ(${-layerIndex * 2}px)`,
-            textShadow: "none",
-          }}
-          aria-hidden="true"
-        >
-          {letter.char}
-        </span>
-      ))}
-      
-      {/* Front face - main visible letter */}
-      <motion.span
-        className="relative select-none"
+      {/* FRONT FACE - Main visible face */}
+      <span
+        className="relative block select-none"
         style={{
           color: "#ffffff",
-          transform: "translateZ(0px)",
-          textShadow: `
-            0 1px 0 #cccccc,
-            0 2px 0 #bbbbbb,
-            0 3px 0 #aaaaaa,
-            0 4px 0 #999999,
-            0 5px 0 #888888,
-            0 6px 1px rgba(0,0,0,.1),
-            0 0 5px rgba(0,0,0,.1),
-            0 1px 3px rgba(0,0,0,.3),
-            0 3px 5px rgba(0,0,0,.2),
-            0 5px 10px rgba(0,0,0,.25),
-            0 10px 10px rgba(0,0,0,.2),
-            0 20px 20px rgba(0,0,0,.15)
-          `,
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ 
-          opacity: 1,
-          textShadow: isComplete ? `
-            0 1px 0 #cccccc,
-            0 2px 0 #bbbbbb,
-            0 3px 0 #aaaaaa,
-            0 4px 0 #999999,
-            0 5px 0 #888888,
-            0 6px 1px rgba(0,0,0,.1),
-            0 0 20px rgba(100,150,255,.3),
-            0 1px 3px rgba(0,0,0,.3),
-            0 3px 5px rgba(0,0,0,.2),
-            0 5px 10px rgba(0,0,0,.25),
-            0 10px 10px rgba(0,0,0,.2),
-            0 20px 20px rgba(0,0,0,.15)
-          ` : undefined,
-        }}
-        transition={{ 
-          delay: delay + 0.1, 
-          duration: 0.3,
-          textShadow: { delay: delay + dropDuration + 0.5, duration: 0.5 }
+          transform: `translateZ(${depth / 2}px)`,
+          textShadow: "0 2px 10px rgba(0,0,0,0.3)",
         }}
       >
         {letter.char}
-      </motion.span>
+      </span>
 
-      {/* Bottom shadow on floor */}
-      <motion.span
-        className="absolute select-none pointer-events-none"
+      {/* TOP FACE - Visible when looking down */}
+      <span
+        className="absolute top-0 left-0 block select-none origin-bottom"
         style={{
-          color: "transparent",
-          transform: "translateZ(-30px) rotateX(90deg) translateY(30px) scale(1, 0.3)",
-          textShadow: "0 0 30px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.4)",
-          filter: "blur(8px)",
-          opacity: 0.6,
+          color: "#e0e0e0",
+          transform: `rotateX(-90deg) translateZ(${depth / 2}px)`,
+          background: "linear-gradient(to bottom, #d0d0d0, #a0a0a0)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
         }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ delay: delay + dropDuration * 0.8 }}
         aria-hidden="true"
       >
         {letter.char}
-      </motion.span>
+      </span>
+
+      {/* RIGHT FACE - Side depth */}
+      <span
+        className="absolute top-0 left-0 block select-none origin-left"
+        style={{
+          color: "#888888",
+          transform: `rotateY(90deg) translateZ(0px) translateX(${depth / 2}px)`,
+          width: `${depth}px`,
+          overflow: "hidden",
+          background: "linear-gradient(to right, #707070, #505050)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+        aria-hidden="true"
+      >
+        {letter.char}
+      </span>
+
+      {/* BOTTOM FACE - Creates depth illusion */}
+      <span
+        className="absolute top-0 left-0 block select-none origin-top"
+        style={{
+          color: "#404040",
+          transform: `rotateX(90deg) translateZ(-${depth / 2}px) translateY(-${depth}px)`,
+          background: "linear-gradient(to top, #303030, #202020)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+        aria-hidden="true"
+      >
+        {letter.char}
+      </span>
+
+      {/* BACK FACE - For complete 3D box */}
+      <span
+        className="absolute top-0 left-0 block select-none"
+        style={{
+          color: "#1a1a1a",
+          transform: `translateZ(-${depth / 2}px) rotateY(180deg)`,
+        }}
+        aria-hidden="true"
+      >
+        {letter.char}
+      </span>
+
+      {/* Drop shadow on ground */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 rounded-full pointer-events-none"
+        style={{
+          bottom: `-${depth * 2}px`,
+          width: "80%",
+          height: "10px",
+          background: "radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 70%)",
+          filter: "blur(8px)",
+        }}
+        initial={{ opacity: 0, scaleX: 0.5 }}
+        animate={{ opacity: 0.7, scaleX: 1 }}
+        transition={{ delay: delay + dropDuration * 0.7, duration: 0.3 }}
+      />
     </motion.div>
   );
 }
