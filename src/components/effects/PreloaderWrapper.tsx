@@ -10,52 +10,36 @@ interface PreloaderWrapperProps {
 }
 
 /**
- * Client-side wrapper that manages preloader state and entrance animations.
- * Children animate with a "falling through" effect when preloader completes.
+ * Client-side wrapper that shows the real website BEHIND the preloader.
+ * When glass breaks, the website is revealed through the cracks.
  */
 function PreloaderContent({ children }: PreloaderWrapperProps) {
   const { isComplete } = usePreloader();
 
-  // Lock scrolling during preloader using CSS class
+  // Lock scrolling during preloader
   useEffect(() => {
     if (!isComplete) {
       document.body.classList.add("preloader-active");
       document.documentElement.classList.add("preloader-active");
-      document.documentElement.style.overflow = "hidden";
     } else {
       document.body.classList.remove("preloader-active");
       document.documentElement.classList.remove("preloader-active");
-      document.documentElement.style.overflow = "";
     }
     return () => {
       document.body.classList.remove("preloader-active");
       document.documentElement.classList.remove("preloader-active");
-      document.documentElement.style.overflow = "";
     };
   }, [isComplete]);
 
   return (
     <>
-      <Preloader />
-      
-      {/* Main content with "fall-through" entrance animation */}
-      <motion.div
-        initial={{ opacity: 0, scale: 1.1 }}
-        animate={{
-          opacity: isComplete ? 1 : 0,
-          scale: isComplete ? 1 : 1.1,
-        }}
-        transition={{
-          duration: 0.6,
-          ease: [0.22, 1, 0.36, 1], // easeOutQuint
-          delay: isComplete ? 0 : 0,
-        }}
-        style={{
-          pointerEvents: isComplete ? "auto" : "none",
-        }}
-      >
+      {/* REAL WEBSITE - Always rendered, behind preloader */}
+      <div className="relative">
         {children}
-      </motion.div>
+      </div>
+
+      {/* PRELOADER - On top, glass breaks to reveal website behind */}
+      <Preloader />
     </>
   );
 }
