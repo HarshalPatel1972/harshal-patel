@@ -1,128 +1,201 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { usePreloader } from "@/lib/preloader-context";
 
+// Letter data with position and alphabetical order
+interface LetterData {
+  char: string;
+  index: number; // position in final name
+  dropOrder: number; // when to drop (based on alphabetical order)
+  isSpace?: boolean;
+}
+
 /**
- * Cinematic video preloader with "falling through the screen" effect.
- * 
- * ASSET REQUIREMENT:
- * Place your video at: /public/assets/test-0.mp4
+ * 3D Falling Letters Preloader
+ * Letters drop in alphabetical order, then settle to spell "HARSHAL PATEL"
  */
 export function Preloader() {
   const { setComplete } = usePreloader();
-  const [isShattered, setIsShattered] = useState(false);
-  const [shouldUnmount, setShouldUnmount] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldExit, setShouldExit] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
 
-  // Detect when the shatter moment occurs (~3.8s)
-  const handleTimeUpdate = () => {
-    const video = videoRef.current;
-    if (video && video.currentTime > 3.8 && !isShattered) {
-      setIsShattered(true);
-    }
-  };
+  const name = "HARSHAL PATEL";
 
-  // Handle video end as fallback
-  const handleVideoEnd = () => {
-    if (!isShattered) {
-      setIsShattered(true);
-    }
-  };
+  // Calculate letter data with drop order
+  const letters = useMemo(() => {
+    const chars = name.split("");
+    
+    // Get unique sorted letters (excluding space)
+    const uniqueSorted = [...new Set(chars.filter(c => c !== " "))].sort();
+    
+    // Create letter data with drop order
+    return chars.map((char, index): LetterData => {
+      if (char === " ") {
+        return { char, index, dropOrder: -1, isSpace: true };
+      }
+      const dropOrder = uniqueSorted.indexOf(char);
+      return { char, index, dropOrder };
+    });
+  }, []);
 
-  // Unmount after exit animation completes
+  // Total animation time
+  const totalGroups = [...new Set(letters.filter(l => !l.isSpace).map(l => l.dropOrder))].length;
+  const dropDuration = 0.6;
+  const groupDelay = 0.3;
+  const totalAnimTime = (totalGroups * groupDelay) + dropDuration + 1.5; // +1.5s wait after settle
+
+  // Trigger exit after animation completes
   useEffect(() => {
-    if (isShattered) {
-      const timer = setTimeout(() => {
-        setShouldUnmount(true);
+    const timer = setTimeout(() => {
+      setAnimationComplete(true);
+      setTimeout(() => {
+        setShouldExit(true);
         setComplete();
       }, 800);
-      return () => clearTimeout(timer);
-    }
-  }, [isShattered, setComplete]);
+    }, totalAnimTime * 1000);
+    return () => clearTimeout(timer);
+  }, [totalAnimTime, setComplete]);
 
   return (
     <AnimatePresence>
-      {!shouldUnmount && (
+      {!shouldExit && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black"
           initial={{ opacity: 1 }}
-          animate={{ opacity: isShattered ? 0 : 1 }}
-          transition={{
-            duration: 0.8,
-            ease: [0.87, 0, 0.13, 1],
-          }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Video Layer - heavily darkened for cinematic effect */}
-          <video
-            ref={videoRef}
-            className="absolute inset-0 h-full w-full object-cover"
+          {/* Subtle gradient background */}
+          <div 
+            className="absolute inset-0"
             style={{
-              filter: "brightness(0.35) contrast(1.3) saturate(0.8)",
-            }}
-            src="/assets/test-0.mp4"
-            muted
-            playsInline
-            autoPlay
-            onTimeUpdate={handleTimeUpdate}
-            onEnded={handleVideoEnd}
-          />
-
-          {/* Heavy dark vignette overlay - hand emerges from pure darkness */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background: `
-                radial-gradient(ellipse 60% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.95) 100%),
-                linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.8) 100%)
-              `,
+              background: "radial-gradient(ellipse at 50% 50%, #0a0a0a 0%, #000000 100%)",
             }}
           />
 
-          {/* Thick fog layers */}
+          {/* 3D Perspective Container */}
+          <div 
+            className="relative flex items-center justify-center"
+            style={{ perspective: "1000px" }}
+          >
+            {/* Letters */}
+            <div className="flex items-center justify-center gap-1 xs:gap-2 sm:gap-3">
+              {letters.map((letter, i) => (
+                <FallingLetter
+                  key={i}
+                  letter={letter}
+                  dropDuration={dropDuration}
+                  groupDelay={groupDelay}
+                  isComplete={animationComplete}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Subtle floor reflection */}
           <motion.div
-            className="pointer-events-none absolute inset-x-0 top-0 h-48"
+            className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
             style={{
-              background: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.8) 50%, transparent 100%)",
+              background: "linear-gradient(to top, rgba(255,255,255,0.02) 0%, transparent 100%)",
             }}
-            initial={{ opacity: 0.9 }}
-            animate={{ opacity: [0.9, 1, 0.9] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
-          <motion.div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-48"
-            style={{
-              background: "linear-gradient(to top, black 0%, rgba(0,0,0,0.8) 50%, transparent 100%)",
-            }}
-            initial={{ opacity: 0.9 }}
-            animate={{ opacity: [0.9, 1, 0.9] }}
-            transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
-          />
-
-          {/* Side fog for extra depth */}
-          <div
-            className="pointer-events-none absolute inset-y-0 left-0 w-32"
-            style={{
-              background: "linear-gradient(to right, rgba(0,0,0,0.9) 0%, transparent 100%)",
-            }}
-          />
-          <div
-            className="pointer-events-none absolute inset-y-0 right-0 w-32"
-            style={{
-              background: "linear-gradient(to left, rgba(0,0,0,0.9) 0%, transparent 100%)",
-            }}
-          />
-
-          {/* Dense noise grain overlay */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.12]"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: totalAnimTime - 1.5, duration: 0.5 }}
           />
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+interface FallingLetterProps {
+  letter: LetterData;
+  dropDuration: number;
+  groupDelay: number;
+  isComplete: boolean;
+}
+
+function FallingLetter({ letter, dropDuration, groupDelay, isComplete }: FallingLetterProps) {
+  if (letter.isSpace) {
+    return <div className="w-3 xs:w-4 sm:w-6" />;
+  }
+
+  const delay = letter.dropOrder * groupDelay;
+
+  return (
+    <motion.span
+      className="relative inline-block font-bold text-white select-none"
+      style={{
+        fontSize: "clamp(2rem, 8vw, 6rem)",
+        fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+        textShadow: "0 0 40px rgba(255,255,255,0.1)",
+        transformStyle: "preserve-3d",
+      }}
+      initial={{
+        y: "-100vh",
+        rotateX: -90,
+        rotateY: Math.random() * 40 - 20,
+        rotateZ: Math.random() * 30 - 15,
+        opacity: 0,
+        scale: 0.5,
+      }}
+      animate={{
+        y: 0,
+        rotateX: 0,
+        rotateY: 0,
+        rotateZ: 0,
+        opacity: 1,
+        scale: isComplete ? [1, 1.1, 1] : 1,
+      }}
+      transition={{
+        y: {
+          delay,
+          duration: dropDuration,
+          ease: [0.34, 1.56, 0.64, 1], // Bouncy ease
+        },
+        rotateX: {
+          delay,
+          duration: dropDuration * 1.2,
+          ease: [0.22, 1, 0.36, 1],
+        },
+        rotateY: {
+          delay,
+          duration: dropDuration * 1.2,
+          ease: [0.22, 1, 0.36, 1],
+        },
+        rotateZ: {
+          delay,
+          duration: dropDuration * 1.2,
+          ease: [0.22, 1, 0.36, 1],
+        },
+        opacity: {
+          delay,
+          duration: dropDuration * 0.3,
+        },
+        scale: {
+          delay: delay + dropDuration,
+          duration: 0.3,
+        },
+      }}
+    >
+      {/* Main letter */}
+      <span className="relative z-10">{letter.char}</span>
+      
+      {/* 3D depth shadow */}
+      <motion.span
+        className="absolute inset-0 text-black/20 -z-10"
+        style={{
+          transform: "translateZ(-20px) translateY(4px)",
+          filter: "blur(2px)",
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.3 }}
+        transition={{ delay: delay + dropDuration * 0.5 }}
+      >
+        {letter.char}
+      </motion.span>
+    </motion.span>
   );
 }
