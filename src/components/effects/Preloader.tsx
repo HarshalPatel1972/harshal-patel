@@ -192,66 +192,46 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
   const orbGroup = useRef<THREE.Group>(null);
   const textGroup = useRef<THREE.Group>(null);
   
-  // Post-Processing Refs (We can't animate props directly easily, need a ref or controlled inputs)
-  // R3F-Postprocessing effects are tricky to animate imperatively. 
-  // We'll use React state for the easy ones or Refs if exposed.
-  // For Sakuga, let's use global uTime or frame loop adjustments?
-  // Actually, we can use <EffectComposer> children and props.
-
   const [chromaOffset, setChromaOffset] = useState(new THREE.Vector2(0, 0));
   const [bloomIntensity, setBloomIntensity] = useState(1.5);
   
-  // Initialize Master Timeline
   useEffect(() => {
     const tl = gsap.timeline({ paused: true });
     setTimelineRef(tl);
 
      // Phase 1: Accumulation (0-1.5s)
     tl.to(orbGroup.current!.scale, { x: 0.1, y: 0.1, z: 0.1, duration: 1.5, ease: "power2.in" }, 0);
-    // Chromatic Aberration increase visually manually via onUpdate or state
-    // We'll simulate via state updates in a separate effect or useFrame.
     
-    // Phase 2: Contraction (The Silence) (1.5s-2.0s)
+    // Phase 2: Contraction (1.5s-2.0s)
     tl.to(orbGroup.current!.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.5, ease: "expo.in" }, 1.5);
     
     // Phase 3: The Drop (2.5s)
-    // Camera Shake
     tl.to(camera.position, { 
-      z: 8, // slight zoom out or shake
+      z: 8, 
       duration: 0.1, 
       ease: "rough({ template: none.out, strength: 1, points: 20, taper: 'none', randomize: true, clamp: false})" 
     }, 2.4);
 
-    // Text Reveal (2.5s) // The Bang
+    // Text Reveal (2.5s)
     tl.set(textGroup.current, { visible: true }, 2.5);
     tl.from(textGroup.current!.scale, { x: 3, y: 3, z: 3, duration: 0.4, ease: "elastic.out(1, 0.3)" }, 2.5);
     
-    // Start playback
     tl.play();
-
     return () => { tl.kill(); };
   }, [camera, setTimelineRef]);
 
-  // Animation Loop for Post-Processing & Camera Shake logic
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    
-    // Manual Choma Logic based on timeline time could be here, 
-    // but simpler to map roughly to phases.
     if (time < 1.5) {
-        // Build up
         setChromaOffset(new THREE.Vector2(time * 0.002, time * 0.002));
     } else if (time >= 1.5 && time < 2.5) {
-        // TENSION (High aberration)
         setChromaOffset(new THREE.Vector2(0.005 + Math.sin(time * 50)*0.002, 0.005));
     } else {
-        // Release
         setChromaOffset(new THREE.Vector2(0.001, 0.001));
     }
     
-    // Bloom
     if (time > 2.0 && time < 2.5) {
-        setBloomIntensity(5.0); // Flare up
+        setBloomIntensity(5.0); 
     } else {
         setBloomIntensity(1.5);
     }
@@ -261,21 +241,24 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
     <>
       <color attach="background" args={["#000000"]} />
       
+      {/* 💡 LIGHTING (Crucial for visibility) */}
+      <ambientLight intensity={2} />
+      <pointLight position={[10, 10, 10]} intensity={5} color="#00f0ff" />
+      <pointLight position={[-10, -10, -10]} intensity={5} color="#7000ff" />
+      
       {/* 🔴 THE SINGULARITY */}
       <group ref={orbGroup}>
         <SingularityOrb timeline={null} />
       </group>
 
       {/* ✨ PARTICLES */}
-      <ParticleImplosion timeline={null} /> {/* We passed null but we need the REAL timeline. We can context or prop drill. */}
-      {/* Actually, let's just make particles mostly autonomous or controlled by same timeline ref if lifted */}
+      <ParticleImplosion timeline={null} />
       
       {/* 📝 TEXT REVEAL */}
       <group ref={textGroup} visible={false}>
         <Text
           position={[0, 0, 0]}
           fontSize={1.5}
-          font="/fonts/Inter-Bold.woff" // Ensure font exists or use default
           anchorX="center"
           anchorY="middle"
         >
@@ -286,7 +269,7 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
 
       {/* 🎥 POST PROCESSING */}
       <EffectComposer enableNormalPass={false}>
-        <Bloom luminanceThreshold={0.2} mipmapBlur intensity={bloomIntensity} />
+        <Bloom luminanceThreshold={0.1} mipmapBlur intensity={bloomIntensity} />
         <ChromaticAberration offset={chromaOffset} radialModulation={false} modulationOffset={0} />
         <Noise opacity={0.05} />
       </EffectComposer>
@@ -301,22 +284,13 @@ function Scene({ loadingStep, setTimelineRef }: { loadingStep: number, setTimeli
 export function Preloader() {
   const { setComplete } = usePreloader();
   const [complete, setInternalComplete] = useState(false);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
-
-  // Re-inject timeline to children (hacky but functional for R3F context separation)
-  // Better approach: State management or Context. 
-  // Let's rely on the internal logic of Scene to drive everything or pass refs down.
-  // Actually, Scene creates the timeline. We can expose it via ref? 
-  // For simplicity: The main animation runs 0-4.5s.
   
   useEffect(() => {
-    // Hard transition to site at 4.5s
     const t = setTimeout(() => {
       setInternalComplete(true);
       setComplete();
     }, 4500);
 
-    // Flash at 2.5s (White Overlay DOM)
     const flashTimer = setTimeout(() => {
         const flashEl = document.getElementById("flash-overlay");
         if (flashEl) {
@@ -332,15 +306,13 @@ export function Preloader() {
 
   return (
     <div className="fixed inset-0 z-50 bg-black">
-      {/* R3F Canvas */}
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }} gl={{ antialias: false, toneMapping: THREE.ReinhardToneMapping }}>
-        {/* We need to pass timeline so particles can use it? 
-            Actually, let Scene handle timeline creation and bind it to everything.
-        */}
+      <Canvas 
+        camera={{ position: [0, 0, 6], fov: 75 }} 
+        gl={{ antialias: false, toneMapping: THREE.ReinhardToneMapping }}
+      >
         <SceneWrapper />
       </Canvas>
       
-      {/* ⚡ IMPACT FLASH OVERLAY (DOM) */}
       <div 
         id="flash-overlay"
         className="absolute inset-0 bg-white pointer-events-none opacity-0 transition-opacity duration-200 ease-out z-[60]"
@@ -351,7 +323,6 @@ export function Preloader() {
 
 function SceneWrapper() {
   const [tl, setTl] = useState<gsap.core.Timeline | null>(null);
-  
   return (
     <>
       <Scene loadingStep={0} setTimelineRef={setTl} />
