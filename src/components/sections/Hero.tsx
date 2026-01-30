@@ -35,12 +35,12 @@ export function Hero() {
 
         {/* Role */}
         <motion.p
-          className="text-lg md:text-xl text-white/60 mb-8 max-w-2xl mx-auto"
+          className="text-lg md:text-xl text-white/60 mb-8 max-w-2xl mx-auto font-mono"
           initial={{ y: 30, opacity: 0 }}
           animate={isComplete ? { y: 0, opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
         >
-          Creative Developer & Designer crafting immersive digital experiences
+          Systems Engineer | Full Stack Developer
         </motion.p>
 
         {/* CTA Buttons */}
