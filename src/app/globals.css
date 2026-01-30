@@ -12,8 +12,40 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Prevent horizontal scrollbar and layout shift */
+html {
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Hide scrollbar during preloader (JS controlled) */
+body.preloader-active {
+  overflow: hidden !important;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }

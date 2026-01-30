@@ -16,15 +16,18 @@ interface PreloaderWrapperProps {
 function PreloaderContent({ children }: PreloaderWrapperProps) {
   const { isComplete } = usePreloader();
 
-  // Hide scrollbars during preloader
+  // Lock scrolling during preloader using CSS class
   useEffect(() => {
     if (!isComplete) {
-      document.body.style.overflow = "hidden";
+      document.body.classList.add("preloader-active");
+      document.documentElement.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "";
+      document.body.classList.remove("preloader-active");
+      document.documentElement.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = "";
+      document.body.classList.remove("preloader-active");
+      document.documentElement.style.overflow = "";
     };
   }, [isComplete]);
 
