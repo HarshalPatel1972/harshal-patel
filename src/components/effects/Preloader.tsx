@@ -54,12 +54,12 @@ export function Preloader() {
             ease: [0.87, 0, 0.13, 1],
           }}
         >
-          {/* Video Layer - darkened for cinematic effect */}
+          {/* Video Layer - heavily darkened for cinematic effect */}
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
             style={{
-              filter: "brightness(0.6) contrast(1.2)",
+              filter: "brightness(0.35) contrast(1.3) saturate(0.8)",
             }}
             src="/assets/test-0.mp4"
             muted
@@ -69,40 +69,54 @@ export function Preloader() {
             onEnded={handleVideoEnd}
           />
 
-          {/* Dark vignette overlay - hand emerges from darkness */}
+          {/* Heavy dark vignette overlay - hand emerges from pure darkness */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background: `
-                radial-gradient(ellipse 80% 80% at 50% 50%, transparent 20%, rgba(0,0,0,0.7) 80%),
-                linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.6) 100%)
+                radial-gradient(ellipse 60% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.95) 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.8) 100%)
               `,
             }}
           />
 
-          {/* Top and bottom fog strips */}
+          {/* Thick fog layers */}
           <motion.div
-            className="pointer-events-none absolute inset-x-0 top-0 h-32"
+            className="pointer-events-none absolute inset-x-0 top-0 h-48"
             style={{
-              background: "linear-gradient(to bottom, black 0%, transparent 100%)",
+              background: "linear-gradient(to bottom, black 0%, rgba(0,0,0,0.8) 50%, transparent 100%)",
             }}
-            initial={{ opacity: 0.8 }}
-            animate={{ opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            initial={{ opacity: 0.9 }}
+            animate={{ opacity: [0.9, 1, 0.9] }}
+            transition={{ duration: 3, repeat: Infinity }}
           />
           <motion.div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-32"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-48"
             style={{
-              background: "linear-gradient(to top, black 0%, transparent 100%)",
+              background: "linear-gradient(to top, black 0%, rgba(0,0,0,0.8) 50%, transparent 100%)",
             }}
-            initial={{ opacity: 0.8 }}
-            animate={{ opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+            initial={{ opacity: 0.9 }}
+            animate={{ opacity: [0.9, 1, 0.9] }}
+            transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
           />
 
-          {/* Subtle noise grain overlay */}
+          {/* Side fog for extra depth */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.08]"
+            className="pointer-events-none absolute inset-y-0 left-0 w-32"
+            style={{
+              background: "linear-gradient(to right, rgba(0,0,0,0.9) 0%, transparent 100%)",
+            }}
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 w-32"
+            style={{
+              background: "linear-gradient(to left, rgba(0,0,0,0.9) 0%, transparent 100%)",
+            }}
+          />
+
+          {/* Dense noise grain overlay */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.12]"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
             }}
