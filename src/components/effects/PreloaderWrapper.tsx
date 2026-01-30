@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Preloader } from "@/components/effects/Preloader";
 import { PreloaderProvider, usePreloader } from "@/lib/preloader-context";
 
@@ -10,37 +9,41 @@ interface PreloaderWrapperProps {
 }
 
 /**
- * Client-side wrapper that shows the real website BEHIND the preloader.
- * When glass breaks, the website is revealed through the cracks.
+ * Preloader Wrapper
+ * - Places the website BEHIND the preloader
+ * - Preloader handles the glass fracture overlay
+ * - When shards fall, they become transparent, revealing the website on z-index 0
  */
 function PreloaderContent({ children }: PreloaderWrapperProps) {
   const { isComplete } = usePreloader();
 
-  // Lock scrolling during preloader
+  // Lock scroll only while preloader active
   useEffect(() => {
     if (!isComplete) {
-      document.body.classList.add("preloader-active");
-      document.documentElement.classList.add("preloader-active");
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.classList.remove("preloader-active");
-      document.documentElement.classList.remove("preloader-active");
+      document.body.style.overflow = "";
     }
-    return () => {
-      document.body.classList.remove("preloader-active");
-      document.documentElement.classList.remove("preloader-active");
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [isComplete]);
 
   return (
-    <>
-      {/* REAL WEBSITE - Always rendered, behind preloader */}
-      <div className="relative">
+    <div className="relative min-h-screen">
+      {/* 1. Real Website Layer (Z-0) */}
+      <div 
+        className="relative z-0"
+        style={{ 
+          // Optional: Slight blur initially? No, user wants REAL look immediately through cracks
+          opacity: 1 
+        }}
+      >
         {children}
       </div>
 
-      {/* PRELOADER - On top, glass breaks to reveal website behind */}
-      <Preloader />
-    </>
+      {/* 2. Preloader Layer (Z-50) */}
+      {/* Contains: Video -> Black Glass Layer -> Fracturing Shards */}
+      {!isComplete && <Preloader />}
+    </div>
   );
 }
 
