@@ -15,10 +15,10 @@ export function Preloader() {
   const [shouldUnmount, setShouldUnmount] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Detect when the shatter moment occurs (~3.8s)
+  // Detect when to transition (before glass breaks ~3.0s)
   const handleTimeUpdate = () => {
     const video = videoRef.current;
-    if (video && video.currentTime > 3.8 && !isShattered) {
+    if (video && video.currentTime > 3.0 && !isShattered) {
       setIsShattered(true);
     }
   };
@@ -53,12 +53,12 @@ export function Preloader() {
             ease: [0.87, 0, 0.13, 1],
           }}
         >
-          {/* Video Layer - heavily darkened for cinematic effect */}
+          {/* Video Layer - lighter for visibility */}
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
             style={{
-              filter: "brightness(0.35) contrast(1.3) saturate(0.8)",
+              filter: "brightness(0.7) contrast(1.1)",
             }}
             src="/assets/test-0.mp4"
             muted
