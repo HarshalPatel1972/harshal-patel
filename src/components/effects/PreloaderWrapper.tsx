@@ -20,13 +20,16 @@ function PreloaderContent({ children }: PreloaderWrapperProps) {
   useEffect(() => {
     if (!isComplete) {
       document.body.classList.add("preloader-active");
+      document.documentElement.classList.add("preloader-active");
       document.documentElement.style.overflow = "hidden";
     } else {
       document.body.classList.remove("preloader-active");
+      document.documentElement.classList.remove("preloader-active");
       document.documentElement.style.overflow = "";
     }
     return () => {
       document.body.classList.remove("preloader-active");
+      document.documentElement.classList.remove("preloader-active");
       document.documentElement.style.overflow = "";
     };
   }, [isComplete]);

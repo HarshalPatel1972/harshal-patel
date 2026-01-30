@@ -27,8 +27,18 @@ body {
 }
 
 /* Hide scrollbar during preloader (JS controlled) */
-body.preloader-active {
+body.preloader-active,
+html.preloader-active {
   overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+body.preloader-active::-webkit-scrollbar,
+html.preloader-active::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Custom scrollbar for dark theme */
