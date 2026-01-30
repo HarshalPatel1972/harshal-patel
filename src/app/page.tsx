@@ -1,8 +1,20 @@
+import { Navbar } from "@/components/layout/Navbar";
+import { Hero } from "@/components/sections/Hero";
+import { About } from "@/components/sections/About";
+import { Work } from "@/components/sections/Work";
+import { Contact, Footer } from "@/components/sections/Contact";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">Harshal Patel</h1>
-      <p className="mt-4 text-lg text-foreground/60">Portfolio coming soon...</p>
-    </main>
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <About />
+        <Work />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   );
 }
