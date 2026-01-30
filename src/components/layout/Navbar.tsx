@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
@@ -8,86 +9,72 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const { isComplete } = usePreloader();
 
-  const activeApps = APPS.filter((_, i) => i < 4); // Aero to Momentum
-  const systemApps = APPS.filter((_, i) => i >= 4); // Hum to AirShare
-
   return (
     <motion.nav
-      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 md:px-8"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      className="fixed top-0 left-0 right-0 z-40 flex items-center justify-center pointer-events-none"
+      initial={{ y: -20, opacity: 0 }}
+      animate={isComplete ? { y: 0, opacity: 1 } : {}}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* LEFT: Project Ecosystem */}
-      <div className="flex items-center gap-4 md:gap-6">
-        {/* Only show icons if boot is complete OR let layoutId handle entrance? 
-            If isComplete is false, these should probably NOT be rendered if we want them to fly in?
-            Actually, for layoutId to work, they MUST be rendered when the Grid unmounts.
-            So they should be present but layoutId will handle the position from center to here.
-        */}
-        {isComplete && (
-            <div className="flex items-center gap-4">
-                {activeApps.map((app) => (
-                <motion.div
-                    key={app.name}
-                    layoutId={app.name}
-                    className="relative group cursor-pointer"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                >
-                    <div className={cn(
-                        "p-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md", 
-                        "hover:bg-white/10 transition-colors"
-                    )}>
-                        <app.icon 
-                            size={20} 
-                            color={app.hex} 
-                            style={{ filter: `drop-shadow(0 0 8px ${app.hex}80)` }}
-                        />
-                    </div>
-                </motion.div>
-                ))}
-            </div>
-        )}
-      </div>
+      <div className="w-full max-w-7xl px-6 py-4 flex items-center justify-between pointer-events-auto">
+        
+        {/* Logo / Brand */}
+        <motion.div 
+           initial={{ opacity: 0, x: -20 }}
+           animate={isComplete ? { opacity: 1, x: 0 } : {}}
+           className="text-white font-bold tracking-tight text-lg"
+        >
+          HARSHAL<span className="text-zinc-500">.</span>OS
+        </motion.div>
 
-      {/* RIGHT: System / Socials */}
-      <div className="flex items-center gap-4 md:gap-6">
-         {isComplete && (
+        {/* 📦 THE CAPSULE (NOW THE NAVBAR PILL) */}
+        <motion.div
+           layout
+           layoutId="navbar-pill"
+           className={cn(
+             "relative flex items-center px-4 py-2 rounded-full border border-white/10 bg-zinc-900/60 backdrop-blur-md shadow-xl transition-all duration-500",
+             isComplete ? "opacity-100" : "opacity-0"
+           )}
+        >
             <div className="flex items-center gap-4">
-                {systemApps.map((app) => (
-                <motion.div
-                    key={app.name}
-                    layoutId={app.name}
-                    className="relative group cursor-pointer"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                >
-                     <div className={cn(
-                        "p-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md", 
-                        "hover:bg-white/10 transition-colors"
-                    )}>
+               {APPS.map((app) => (
+                    <motion.div
+                        key={app.name}
+                        layoutId={app.name}
+                        className="group relative cursor-pointer"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    >
                         <app.icon 
-                            size={20} 
-                            color={app.hex}
-                            style={{ filter: `drop-shadow(0 0 8px ${app.hex}80)` }} 
+                            size={18} 
+                            className="text-white hover:text-white transition-colors"
+                            style={{ 
+                                filter: `drop-shadow(0 0 8px ${app.hex}80)`,
+                                color: app.hex
+                            }}
                         />
-                    </div>
-                </motion.div>
+                        {/* Hover Tooltip (Optional) */}
+                        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-zinc-900 text-[10px] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
+                            {app.name}
+                        </div>
+                    </motion.div>
                 ))}
             </div>
-         )}
-         
-         {/* Standard Contact Button (Fades in normally) */}
-         <motion.a
-            href="#contact"
-            className="hidden md:block px-5 py-2 text-sm font-medium text-black bg-white rounded-full hover:bg-white/90 transition-colors"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={isComplete ? { opacity: 1, scale: 1 } : {}}
-            transition={{ delay: 1.0 }} // Delays until after icons land
-         >
-            Let's Talk
-         </motion.a>
+        </motion.div>
+
+        {/* Right Actions / Contact */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={isComplete ? { opacity: 1, x: 0 } : {}}
+          className="flex items-center gap-4"
+        >
+           <a 
+             href="#contact" 
+             className="px-4 py-2 text-[10px] font-mono tracking-widest uppercase border border-white/10 rounded-full hover:bg-white/5 transition-colors text-white/70 hover:text-white"
+           >
+             CONNECT_USER
+           </a>
+        </motion.div>
       </div>
     </motion.nav>
   );

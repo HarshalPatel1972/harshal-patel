@@ -1,138 +1,175 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, animate, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
 import { cn } from "@/lib/utils";
 
 export function Preloader() {
-  const { isComplete, setComplete } = usePreloader();
-  const [stage, setStage] = useState<"boot" | "check" | "launch">("boot");
-  
-  // Phase 4: Hero Reveal happens in Hero.tsx listening to isComplete
-  
+  const { setComplete, isComplete } = usePreloader();
+  const [progress, setProgress] = useState(0);
+  const [isCompiling, setIsCompiling] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [shake, setShake] = useState(0);
+
+  // Phase 2: The Injection (0.5s - 2.0s)
   useEffect(() => {
-    // Phase 1: Boot (0s - 0.5s)
-    // Handled by initial render state "boot"
-    
-    // Phase 2: System Check (0.5s - 1.5s)
-    const checkTimer = setTimeout(() => {
-        setStage("check");
-    }, 500);
+    if (isComplete) return;
 
-    // Phase 3: Launch (4.5s) -> Triggers Unmount & Fly to Navbar
-    const launchTimer = setTimeout(() => {
-        setStage("launch");
-        // We allow a small buffer for the "break" animation before unmounting?
-        // Actually, for layoutId to work effectively, we unmount this component
-        // and mount the Navbar ones simultaneously.
-        // setComplete(true) triggers Navbar mount.
-        setComplete(); 
-    }, 4500); // Extended to 4.5s for readability
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev < APPS.length) {
+          // Trigger shake/recoil
+          setShake((s) => s + 1);
+          return prev + 1;
+        }
+        clearInterval(interval);
+        return prev;
+      });
+    }, 200); // Rhythmic click-click-click
 
-    return () => { clearTimeout(checkTimer); clearTimeout(launchTimer); };
-  }, [setComplete]);
+    return () => clearInterval(interval);
+  }, [isComplete]);
 
-  // If complete, we unmount the entire loading container
-  // AnimatePresence in Page.tsx (if used) or just null return logic handles exit?
-  // Ideally, we return NULL here so the Grid unmounts.
+  // Phase 3: The Compilation (2.0s - 2.5s)
+  useEffect(() => {
+    if (progress === APPS.length) {
+      const compileTimer = setTimeout(() => {
+        setIsCompiling(true);
+        setTimeout(() => {
+          setIsReady(true);
+          // Set complete after a brief ready state
+          setTimeout(() => {
+            setComplete();
+          }, 800);
+        }, 1000);
+      }, 300);
+      return () => clearTimeout(compileTimer);
+    }
+  }, [progress, setComplete]);
+
   if (isComplete) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0f0f11] text-white overflow-hidden">
-      
-      {/* 🖥️ SYSTEM TERMINAL TEXT */}
-      <div className="absolute bottom-12 left-12 font-mono text-xs text-white/20">
-         <motion.span
-            animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 0.8, repeat: Infinity }}
-         >
-             _
-         </motion.span>
-         SYSTEM_INIT // HARSHAL_OS v2026
-      </div>
-      
-      {/* 📦 THE DOCK CONTAINER */}
-      <motion.div 
-        className="relative p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-         <div className="grid grid-cols-4 gap-6 md:gap-8">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#09090b] overflow-hidden">
+      <div className="flex flex-col items-center">
+        {/* 📦 THE CAPSULE (PILL) */}
+        <motion.div
+           layout
+           layoutId="navbar-pill"
+           animate={{
+             x: shake % 2 === 0 ? [0, -2, 2, 0] : [0, 2, -2, 0],
+             scale: shake > 0 ? [1, 1.02, 1] : 1,
+           }}
+           transition={{ duration: 0.1 }}
+           className={cn(
+             "relative flex items-center px-4 py-3 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-xl shadow-2xl transition-all duration-300",
+             isReady && "shadow-[0_0_50px_rgba(255,255,255,0.1)] border-white/20"
+           )}
+        >
+          {/* Dynamic Progress/App Icons */}
+          <div className="flex items-center gap-1.5 min-w-[32px] overflow-hidden">
             {APPS.map((app, i) => (
-                <AppIcon 
-                    key={app.name} 
-                    app={app} 
-                    index={i} 
-                    stage={stage} 
-                />
+              <AppModule 
+                key={app.name} 
+                app={app} 
+                isActive={i < progress} 
+                isCompiling={isCompiling}
+              />
             ))}
-         </div>
-      </motion.div>
+            {progress === 0 && <div className="w-8 h-8" />}
+          </div>
 
-      {/* Background Mesh Gradient (Subtle) */}
-      <div className="absolute inset-0 z-[-1] pointer-events-none">
-         <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-900/20 rounded-full blur-[100px]" />
-         <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-violet-900/20 rounded-full blur-[100px]" />
+          {/* Inner Glow Pulse on Injection */}
+          {shake > 0 && progress < APPS.length && (
+            <motion.div 
+               initial={{ opacity: 0.8, scale: 0.8 }}
+               animate={{ opacity: 0, scale: 1.5 }}
+               className="absolute inset-0 rounded-full pointer-events-none"
+               style={{ backgroundColor: APPS[progress - 1].hex + "40" }}
+            />
+          )}
+
+          {/* Ready State Gradient Wash */}
+          {isReady && (
+            <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: [0, 0.2, 0] }}
+               transition={{ duration: 2, repeat: Infinity }}
+               className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/20 via-violet-500/20 to-rose-500/20 pointer-events-none"
+            />
+          )}
+        </motion.div>
+
+        {/* 🏷️ STATUS LABEL */}
+        <div className="mt-6 font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">
+          <AnimatePresence mode="wait">
+            {!isReady ? (
+              <motion.div 
+                key="resolving"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="flex items-center gap-2"
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 animate-pulse" />
+                {progress === APPS.length ? "RESOLVED" : "RESOLVING DEPENDENCIES..."}
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="ready"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-white flex items-center gap-2"
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]" />
+                SYSTEM_READY
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Background Subtle Gradients */}
+      <div className="absolute inset-0 z-[-1] opacity-30">
+        <div className="absolute top-[20%] left-[20%] w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] bg-zinc-900/20 rounded-full blur-[100px]" />
       </div>
     </div>
   );
 }
 
-function AppIcon({ app, index, stage }: { app: any, index: number, stage: "boot" | "check" | "launch" }) {
-    // "Check" Phase: Staggered activation
-    // If stage is "boot", grayscale & low opacity
-    // If stage is "check", remove filter, pop scale
-    
-    // We use a derived boolean for "isActive" based on index delay if we wanted precise control,
-    // but Framer Motion variants are cleaner.
-    
-    const isActive = stage === "check" || stage === "launch";
-    const delay = index * 0.1; // Sequential stagger
-
-    return (
+function AppModule({ app, isActive, isCompiling }: { app: any, isActive: boolean, isCompiling: boolean }) {
+  return (
+    <AnimatePresence>
+      {isActive && (
         <motion.div
-            layoutId={app.name} // CRITICAL: This connects to Navbar
-            className="flex flex-col items-center gap-3"
-            initial={{ opacity: 0.3, filter: "grayscale(100%) scale(1)" }}
-            animate={isActive ? { 
-                opacity: 1, 
-                filter: "grayscale(0%) scale(1)",
-                transition: { delay: delay, duration: 0.3 }
-            } : {}}
-            whileHover={{ scale: 1.1 }}
+           layout
+           layoutId={app.name}
+           initial={{ x: -20, opacity: 0, scale: 0.5 }}
+           animate={{ x: 0, opacity: 1, scale: 1 }}
+           className="relative flex items-center justify-center w-8 h-8 rounded-full"
         >
-             {/* Icon Box */}
-             <motion.div 
-                className={cn(
-                    "w-16 h-16 rounded-2xl flex items-center justify-center bg-white/10 border border-white/5",
-                    "shadow-lg"
-                )}
-                animate={isActive ? {
-                    boxShadow: `0 0 15px ${app.hex}40`, // Glow
-                    borderColor: `${app.hex}40`
-                } : {}}
-                // Spring Pop effect on activation
-                variants={{
-                    active: { scale: [1, 1.1, 1] }
-                }}
-             >
-                <app.icon 
-                    size={32} 
-                    color={app.hex} 
-                    className="transition-all duration-300"
-                />
-             </motion.div>
-             
-             {/* Label */}
-             <motion.span 
-                className="text-[10px] font-medium tracking-wider uppercase text-white/50"
-                animate={isActive ? { color: "white", opacity: 1 } : {}}
-             >
-                {app.name}
-             </motion.span>
+            <app.icon 
+              size={18} 
+              className={cn(
+                "transition-colors duration-500",
+                isCompiling ? "text-white" : "text-white/40"
+              )} 
+              style={{
+                color: isCompiling ? app.hex : "white"
+              }}
+            />
+            {/* Success Flash */}
+            <motion.div 
+              initial={{ scale: 0.5, opacity: 1 }}
+              animate={{ scale: 2, opacity: 0 }}
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{ backgroundColor: app.hex + "40" }}
+            />
         </motion.div>
-    )
+      )}
+    </AnimatePresence>
+  );
 }
