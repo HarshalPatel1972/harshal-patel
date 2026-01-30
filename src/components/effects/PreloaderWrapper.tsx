@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Preloader } from "@/components/effects/Preloader";
 import { PreloaderProvider, usePreloader } from "@/lib/preloader-context";
@@ -15,6 +15,18 @@ interface PreloaderWrapperProps {
  */
 function PreloaderContent({ children }: PreloaderWrapperProps) {
   const { isComplete } = usePreloader();
+
+  // Hide scrollbars during preloader
+  useEffect(() => {
+    if (!isComplete) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isComplete]);
 
   return (
     <>
