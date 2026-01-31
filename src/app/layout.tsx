@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/effects/ThemeProvider";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
 import { PreloaderWrapper } from "@/components/effects/PreloaderWrapper";
+import { BuildTag } from "@/components/ui/BuildTag";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeProvider>
+          <BuildTag />
           <PreloaderWrapper>
             <SmoothScroll>
               {children}
