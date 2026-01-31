@@ -8,7 +8,6 @@ export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
 
-  // Synchronize avec le flash de transition du preloader
   useEffect(() => {
     if (isComplete) {
       const timer = setTimeout(() => setShowContent(true), 100);
@@ -17,70 +16,73 @@ export function Hero() {
   }, [isComplete]);
 
   return (
-    <section className="relative min-h-screen pt-12 flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center px-6 md:px-12 overflow-hidden bg-black">
       
-      {/* 💥 THE IMPACT REVEAL */}
+      {/* 🟢 STATUS INDICATOR (Bottom Left/Center) */}
+      <motion.div 
+        className="absolute bottom-12 left-6 md:left-12 flex items-center gap-3 z-20"
+        initial={{ opacity: 0, x: -20 }}
+        animate={showContent ? { opacity: 1, x: 0 } : {}}
+        transition={{ delay: 1.2, duration: 0.8 }}
+      >
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        </span>
+        <span className="text-white/60 font-sans text-sm font-medium tracking-wide">
+          Open to New Opportunities
+        </span>
+      </motion.div>
+
       <AnimatePresence>
         {isComplete && (
-          <div className="relative z-10">
-            {/* NAME: Impact Animation */}
-            <motion.h1
-              className="text-6xl md:text-9xl font-bold tracking-tighter text-white mb-4"
-              initial={{ opacity: 0, scale: 1.5, filter: "blur(20px)" }}
-              animate={showContent ? { opacity: 1, scale: 1, filter: "blur(0px)" } : {}}
-              transition={{ 
-                duration: 0.8, 
-                ease: [0.25, 1, 0.5, 1], // Heavy Impact Easing
-                delay: 0.1 
-              }}
-            >
-                HARSHAL PATEL
-            </motion.h1>
-
-            {/* ROLE: Systems Engineer */}
-            <motion.p
-              className="text-lg md:text-2xl text-white/40 font-mono tracking-widest uppercase mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              animate={showContent ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              Systems Engineer // Full-Stack Architect
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={showContent ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.8 }}
-            >
-              <a 
-                href="#work" 
-                className="px-8 py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform"
+          <div className="relative z-10 max-w-5xl w-full text-left">
+            
+            {/* 🖊️ TYPOGRAPHIC HERO STATEMENT */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-white">
+              <motion.span 
+                 className="block text-white/90 mb-2"
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={showContent ? { opacity: 1, y: 0 } : {}}
+                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                VIEW_ENTITIES
-              </a>
-              <a 
-                href="#contact" 
-                className="px-8 py-4 border border-white/10 text-white font-medium rounded-full hover:bg-white/5 transition-colors"
+                A problem-solver at heart, I am a
+              </motion.span>
+              
+              <motion.span 
+                className="block text-[#b684f2] mb-2" // Purple Highlight
+                initial={{ opacity: 0, y: 20 }}
+                animate={showContent ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.4 }}
               >
-                REQUEST_ACCESS
-              </a>
-            </motion.div>
+                Product Designer
+              </motion.span>
+              
+              <motion.span 
+                className="block text-white/90"
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={showContent ? { opacity: 1, y: 0 } : {}}
+                 transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                who turns user needs into impactful solutions
+              </motion.span>
+              
+              <motion.span 
+                className="block text-white/90 mt-2"
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={showContent ? { opacity: 1, y: 0 } : {}}
+                 transition={{ duration: 0.6, delay: 0.8 }}
+              >
+                while ensuring product teams meet their KPIs.
+              </motion.span>
+            </h1>
+
           </div>
         )}
       </AnimatePresence>
-
-      {/* Backlight / Ambient Glow Reveal */}
-      <motion.div 
-        className="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900/50 to-black pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={isComplete ? { opacity: 1 } : {}}
-        transition={{ duration: 2 }}
-      />
       
-      {/* 🎞️ SCANLINE EFFECT (Cyberpunk Vibe) */}
-      <div className="absolute inset-0 pointer-events-none z-20 opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+      {/* 🎞️ SCANLINE (Subtle Texture) */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
     </section>
   );
 }
