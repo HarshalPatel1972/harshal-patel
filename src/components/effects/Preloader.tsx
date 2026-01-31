@@ -142,7 +142,9 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
   
   const pillarWidth = Math.min(0.5, unitSize * 0.75); 
   const gap = Math.min(0.15, unitSize * 0.25);
-  const pillarHeight = isMobile ? 2.0 : 2.5;
+  // 📐 FIX: Height based on viewport to prevent cutoff on landscape mobile/short screens
+  // Cap at 2.5 (Desktop max) but scale down if viewport is short
+  const pillarHeight = Math.min(2.5, viewport.height * 0.6);
 
   // 🏃‍♂️ ANIMATION LOOP STATE
   const [activeIndex, setActiveIndex] = useState(0);
