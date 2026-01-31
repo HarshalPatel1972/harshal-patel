@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 // 🔢 MANUAL BUILD COUNTER
 // Update this number manually before every push!
-const BUILD_ID = 6;
+const BUILD_ID = 7;
 
 export function BuildTag() {
   const [mounted, setMounted] = useState(false);
@@ -16,9 +16,10 @@ export function BuildTag() {
   if (!mounted) return null;
 
   return (
-    <div className="fixed top-0 right-0 z-[9999] pointer-events-none">
-      <div className="bg-red-600 text-white font-mono text-[10px] px-3 py-1 font-bold shadow-lg">
-        VERCEL BUILD: #{BUILD_ID}
+    <div className="fixed top-2 right-2 z-[9999] pointer-events-none opacity-50 hover:opacity-100 transition-opacity">
+      <div className="bg-white/5 backdrop-blur-md border border-white/10 text-white font-mono text-[9px] px-2 py-0.5 rounded-full shadow-lg flex items-center gap-2">
+        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+        V.{BUILD_ID}
       </div>
     </div>
   );

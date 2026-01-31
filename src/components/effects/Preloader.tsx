@@ -58,7 +58,8 @@ function GlassPillar({
         }}
         zIndexRange={[100, 0]}
       >
-        <div className="flex flex-col items-center gap-4 transform scale-[0.4]">
+        {/* TASK 9: ROTATING ICONS */}
+        <div className="flex flex-col items-center gap-4 transform scale-[0.4] animate-[spin_6s_linear_infinite] [transform-style:preserve-3d]">
            {/* TASK 5: SMALLER ICON SIZE */}
            <Icon size={32} color={app.hex} strokeWidth={1} /> 
            
