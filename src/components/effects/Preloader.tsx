@@ -66,14 +66,15 @@ function GlassPillar({
          <MeshTransmissionMaterial 
             ref={materialRef}
             backside={true}
-            samples={isMobile ? 8 : 16}  // Quality Tier
-            thickness={0.5}              // Physical thickness
-            chromaticAberration={0.5}    // 🌈 RAINBOW EDGES
-            anisotropy={0.5}             // Complex reflection blur
+            samples={6}                  // ⚡ PERFORMANCE FIX: Reduced from 16 -> 6
+            resolution={512}             // ⚡ PERFORMANCE FIX: Cap resolution
+            thickness={0.2}              // Thinner glass = less refraction cost
+            chromaticAberration={0.3}    // Reduced for performance
+            anisotropy={0.1}             // ⚡ PERFORMANCE FIX: Reduced from 0.5
             distortion={0.0}             // Keep it straight
             distortionScale={0.0}
             temporalDistortion={0.0}
-            ior={1.55}                   // Heavy Glass (Flint)
+            ior={1.5}                    // Standard Glass
             color={app.hex}              // Base Color
             attenuationColor="#ffffff"   // Volumetric Tint
             attenuationDistance={0.5}
@@ -86,8 +87,7 @@ function GlassPillar({
       {/* 💠 HOLOGRAPHIC CONTENT */}
       <Html 
         transform 
-        occlude="blending"
-        position={[0, 0, 0]} 
+        position={[0, 0, width/2 + 0.01]} // 📍 FIX: Move slightly in FRONT of glass surface
         style={{
           width: '100px',
           height: '200px',
