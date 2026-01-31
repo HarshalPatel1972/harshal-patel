@@ -2,14 +2,14 @@
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { RoundedBox, Html } from "@react-three/drei";
+import { RoundedBox, Html, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
 import { isMobile } from "react-device-detect";
 
 // ==========================================
-// 🛡️ REFINED GLASS MONOLITHS (SAFE)
+// 💎 TASK 1 & 2: GLASSY METALLIC PILLARS
 // ==========================================
 
 function GlassPillar({ 
@@ -23,8 +23,6 @@ function GlassPillar({
   total: number; 
   materialRef: any 
 }) {
-  // Shorter, Taller, Slimmer as requested
-  // "make it less taller" -> Height 3.5 (was 6)
   const width = isMobile ? 0.35 : 0.5;
   const height = 3.5; 
   const depth = width;
@@ -35,16 +33,16 @@ function GlassPillar({
 
   return (
     <group position={[x, 0, 0]}>
-      {/* 🧊 THE GLASS PILLAR */}
+      {/* 🧊 PILLAR GEOMETRY */}
       <RoundedBox args={[width, height, depth]} radius={0.02} smoothness={4}>
          <primitive object={materialRef} attach="material" />
       </RoundedBox>
 
-      {/* 💠 HOLOGRAPHIC CONTENT (Inside the Glass) */}
+      {/* 💠 HOLOGRAPHIC CONTENT */}
       <Html 
         transform 
-        occlude="blending" // Occlude behind other objects
-        position={[0, 0, 0]} // Dead center
+        occlude="blending"
+        position={[0, 0, 0]} 
         style={{
           width: '100px',
           height: '200px',
@@ -54,17 +52,15 @@ function GlassPillar({
           justifyContent: 'center',
           pointerEvents: 'none',
           userSelect: 'none',
-          opacity: 0.8 // Slightly transparent internal hologram
+          opacity: 0.9
         }}
+        zIndexRange={[100, 0]}
       >
         <div className="flex flex-col items-center gap-4 transform scale-[0.4]">
-           {/* ICON */}
            <Icon size={64} color={app.hex} strokeWidth={1.5} />
-           
-           {/* NAME */}
            <span 
              className="font-space font-bold tracking-widest text-center text-white" 
-             style={{ fontSize: '10px' }} // Tiny tech text
+             style={{ fontSize: '10px', textShadow: `0 0 10px ${app.hex}` }} 
            >
              {app.name.toUpperCase()}
            </span>
@@ -77,59 +73,53 @@ function GlassPillar({
 function Scene({ onComplete }: { onComplete: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
   
-  // 🎨 COLORLESS GLASS MATERIALS
+  // 🎨 TASK 1 & 2: METALLIC GLASS PAINT
+  // Using MeshPhysicalMaterial for true glass/metal hybrid
   const materials = useMemo(() => {
-    return APPS.map(app => new THREE.MeshStandardMaterial({
-      color: "#ffffff", // Colorless base
+    return APPS.map(app => new THREE.MeshPhysicalMaterial({
+      color: app.hex,          // The "Paint" color
+      transmission: 0.6,       // Glassy transparency (Hollow look)
+      thickness: 0.5,          // Solid glass volume
+      roughness: 0.1,          // Smooth polish
+      metalness: 0.8,          // Metallic finish
+      clearcoat: 1.0,          // Shiny topcoat
+      clearcoatRoughness: 0,
+      ior: 1.5,
       transparent: true,
-      opacity: 0.15, // Very transparent (Glass look)
-      roughness: 0.05, // Smooth
-      metalness: 0.9, // Reflective/Shiny
+      opacity: 1,              // Base opacity
       emissive: app.hex,
-      emissiveIntensity: 0.0, // Start OFF
+      emissiveIntensity: 0.0,  // Controlled by animation
     }));
   }, []);
 
-  // 🔄 LOOP
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    
-    // Slower Speed as requested
     const speed = 2.5; 
     const activeIndex = Math.floor((time * speed) % APPS.length);
 
     materials.forEach((mat, i) => {
       const isTarget = i === activeIndex;
-      
-      // Target: Light up slightly with color
-      // Others: Fade to colorless glass
-      const targetEmissive = isTarget ? 1.5 : 0.0;
-      const targetOpacity = isTarget ? 0.3 : 0.15; // Pulse opacity slightly
+      // Pulse the metal sheen
+      const targetEmissive = isTarget ? 0.5 : 0.0;
+      const targetMetalness = isTarget ? 1.0 : 0.8;
       
       mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, targetEmissive, 0.1);
-      mat.opacity = THREE.MathUtils.lerp(mat.opacity, targetOpacity, 0.1);
+      mat.metalness = THREE.MathUtils.lerp(mat.metalness, targetMetalness, 0.1);
     });
-    
-    // "not move up and down" -> REMOVED POSITION Y UPDATE
   });
 
-  // 🏁 EXIT
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 4500); 
+    const timer = setTimeout(() => onComplete(), 4500); 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <group ref={groupRef}>
-      {/* 💡 LIGHTING (Crucial for glass look) */}
-      <ambientLight intensity={1} />
-      {/* Backlight to show transparency */}
-      <spotLight position={[0, 0, -5]} intensity={5} color="cyan" angle={1} /> 
-      {/* Front reflection */}
-      <spotLight position={[0, 5, 5]} intensity={3} color="white" angle={0.5} /> 
-
+      {/* 💡 LIGHTING + ENV FOR GLASS */}
+      <Environment preset="city" /> 
+      <ambientLight intensity={0.5} />
+      <spotLight position={[0, 0, 10]} intensity={2} color="white" />
+      
       {APPS.map((app, i) => (
         <GlassPillar 
           key={i} 
@@ -160,15 +150,20 @@ export function Preloader() {
 
   return (
     <div className="fixed inset-0 z-50 bg-[#030303] flex items-center justify-center">
-      
-      {/* 🔴 CLEAN - NO TEXT. JUST CANVAS */}
-      
+      {/* 🛡️ HTML FAILSAFE (Prevents black screen if Env fails) */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 opacity-0 animate-[fadeIn_0.5s_ease-in_2s_forwards]">
+          <span className="font-mono text-[9px] text-white/20 tracking-[0.3em]">LOADING_SYSTEM</span>
+      </div>
+
       {showCanvas && (
         <Canvas 
           gl={{ antialias: true, alpha: false }} 
           camera={{ position: [0, 0, 8], fov: 35 }}
         >
-          <Scene onComplete={handleComplete} />
+          {/* Suspense is needed for Environment, but we render HTML behind it */}
+          <React.Suspense fallback={null}>
+             <Scene onComplete={handleComplete} />
+          </React.Suspense>
         </Canvas>
       )}
     </div>
