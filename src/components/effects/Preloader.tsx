@@ -59,7 +59,7 @@ function GlassPillar({
           pointerEvents: 'none',
           userSelect: 'none',
           // TASK 5: 3D LOOK (Drop shadow + brightness)
-          filter: `drop-shadow(0 0 10px ${app.hex}) brightness(1.5)` 
+          filter: `drop-shadow(0 0 10px ${app.hex}) brightness(1.2)` 
         }}
         zIndexRange={[100, 0]}
         scale={scale} // Scale content with pillar size
@@ -130,7 +130,7 @@ function Scene({ onComplete }: { onComplete: () => void }) {
     materials.forEach((mat, i) => {
       const isTarget = i === activeIndex;
       // 🌟 GLOW EFFECT INCREASED
-      const targetEmissive = isTarget ? 3.0 : 0.0; // Was 0.8, now 3.0 for BLOOM
+      const targetEmissive = isTarget ? 0.8 : 0.0; // Subtle glow (Restored)
       const targetMetalness = isTarget ? 1.0 : 0.9;
       
       mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, targetEmissive, 0.1);
@@ -150,15 +150,7 @@ function Scene({ onComplete }: { onComplete: () => void }) {
       <ambientLight intensity={0.5} />
       <spotLight position={[0, 0, 10]} intensity={2} color="white" />
       
-      {/* ✨ POST PROCESSING BLOOM */}
-      <EffectComposer>
-        <Bloom 
-           luminanceThreshold={1.0} 
-           mipmapBlur 
-           intensity={1.5} 
-           radius={0.4}
-        />
-      </EffectComposer>
+      {/* ✨ POST PROCESSING BLOOM REMOVED */}
       
       {APPS.map((app, i) => (
         <GlassPillar 
