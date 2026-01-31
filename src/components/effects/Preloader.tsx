@@ -42,7 +42,7 @@ function GlassPillar({
   useFrame((state, delta) => {
     if (materialRef.current) {
       // Smoothly interp values based on 'isActive' prop
-      const targetEmissive = isActive ? 1.5 : 0.0;
+      const targetEmissive = isActive ? 3.0 : 0.0; // 🤘 FIX: Hotter Metallic Glow (Was 1.5)
       
       // Animate uniform/props if available
       // Let's do a simple direct ref update for performance (avoiding re-render)
@@ -75,10 +75,12 @@ function GlassPillar({
             attenuationColor={app.hex}   // 🌈 FIX: Match Color Core (No white sun)
             attenuationDistance={1.0}    // Smooth attenuation
             roughness={0.1}              // 🌫️ FIX: Slight diffusion to kill sharp sun glare
+            metalness={0.5}              // 🤘 FIX: Metallic Glow (Polished look)
             emissive={app.hex}
             emissiveIntensity={0.0}      // Controlled by Ref
             toneMapped={false}
          />
+
       </RoundedBox>
 
       {/* 💠 HOLOGRAPHIC CONTENT */}
