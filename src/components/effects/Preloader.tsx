@@ -61,25 +61,26 @@ function ChargingCell({
           <meshStandardMaterial 
             color={app.hex}
             transparent
-            opacity={0.25 + fillProgress * 0.25}
-            metalness={0.95}
-            roughness={0.05}
+            opacity={0.4 + fillProgress * 0.4} // Higher base opacity
+            metalness={0.9} // Slightly less metal to catch light
+            roughness={0.1}
             emissive={app.hex}
-            emissiveIntensity={fillProgress * 0.4}
+            emissiveIntensity={0.2 + fillProgress * 0.5} // Base emissive
           />
         ) : (
           <MeshTransmissionMaterial
-            backside
-            samples={8}
-            thickness={2.5}
+            backside={false} // Disable backside to save memory
+            samples={4} // Reduce samples
+            resolution={512} // Cap resolution
+            thickness={2}
             chromaticAberration={0.03}
             anisotropy={0.3}
             color="#ffffff"
-            transmission={0.98}
-            roughness={0.02}
+            transmission={0.95}
+            roughness={0.05}
             ior={1.5}
             emissive={app.hex}
-            emissiveIntensity={fillProgress * 0.6}
+            emissiveIntensity={0.2 + fillProgress * 0.6} // Base emissive
           />
         )}
       </RoundedBox>
@@ -103,7 +104,7 @@ function ChargingCell({
         color="white"
         anchorX="center"
         anchorY="top"
-        fillOpacity={0.15 + fillProgress * 0.85}
+        fillOpacity={0.4 + fillProgress * 0.6} // More visible text
         letterSpacing={0.05}
       >
         {app.name.toUpperCase()}
@@ -198,6 +199,8 @@ function CoreChargeScene({ onComplete }: { onComplete: () => void }) {
   return (
     <>
       <color attach="background" args={["#030303"]} />
+      <ambientLight intensity={0.5} /> {/* Add ambient light for visibility */}
+      <spotLight position={[0, 10, 10]} intensity={1} angle={0.5} penumbra={1} /> {/* Highlight glass edges */}
       
       {/* 🔋 THE CHARGING CORE */}
       <group ref={groupRef} scale={scale}>
