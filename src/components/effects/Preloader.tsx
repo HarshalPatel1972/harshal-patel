@@ -23,8 +23,10 @@ function GlassPillar({
   total: number; 
   materialRef: any 
 }) {
+  // TASK 6: SHORTER PILLARS (3.5 -> 2.5)
+  // "make it less taller by at least 20px" (approx 0.5 - 1.0 unit relative to previous 3.5)
+  const height = 2.5; 
   const width = isMobile ? 0.35 : 0.5;
-  const height = 3.5; 
   const depth = width;
   const gap = 0.15;
   const x = (index - (total - 1) / 2) * (width + gap);
@@ -57,13 +59,23 @@ function GlassPillar({
         zIndexRange={[100, 0]}
       >
         <div className="flex flex-col items-center gap-4 transform scale-[0.4]">
-           <Icon size={64} color={app.hex} strokeWidth={1.5} />
-           <span 
-             className="font-space font-bold tracking-widest text-center text-white" 
-             style={{ fontSize: '10px', textShadow: `0 0 10px ${app.hex}` }} 
+           {/* TASK 5: SMALLER ICON SIZE */}
+           <Icon size={32} color={app.hex} strokeWidth={1} /> 
+           
+           {/* TASK 4: VERTICAL TEXT */}
+           {/* TASK 3: STYLISH FONT (Cinematic Spacing + Weight) */}
+           <div 
+             className="font-space font-light tracking-[0.5em] text-center text-white/90" 
+             style={{ 
+               fontSize: '8px',
+               writingMode: 'vertical-rl', // Vertical writing
+               textOrientation: 'upright', // Letters upright
+               textShadow: `0 0 15px ${app.hex}`, // Stylish glow
+               height: '120px' // Space for vertical text
+             }} 
            >
              {app.name.toUpperCase()}
-           </span>
+           </div>
         </div>
       </Html>
     </group>
