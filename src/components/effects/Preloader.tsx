@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { RoundedBox, Html, Environment, MeshTransmissionMaterial } from "@react-three/drei";
+import { RoundedBox, Html, Environment, MeshTransmissionMaterial, MeshReflectorMaterial, Box } from "@react-three/drei";
 import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
@@ -43,12 +43,8 @@ function GlassPillar({
     if (materialRef.current) {
       // Smoothly interp values based on 'isActive' prop
       const targetEmissive = isActive ? 1.5 : 0.0;
-      const targetColor = isActive ? new THREE.Color("#ffffff") : new THREE.Color(app.hex); 
       
       // Animate uniform/props if available
-      // Note: MeshTransmissionMaterial is strictly declarative, but simple colors might be mutable
-      // For more complex animation, we might stick to simple prop updates via React or direct ref usage
-      
       // Let's do a simple direct ref update for performance (avoiding re-render)
       materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
         materialRef.current.emissiveIntensity, 
@@ -148,12 +144,25 @@ function Scene({ onComplete }: { onComplete: () => void }) {
   // 🏃‍♂️ ANIMATION LOOP STATE
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useFrame((state) => {
+  // 🔦 THE TORCH: Dynamic Light Follower
+  const lightRef = useRef<THREE.PointLight>(null);
+  // Calculate Target X for light
+  const targetX = (activeIndex - (APPS.length - 1) / 2) * (pillarWidth + gap);
+
+  useFrame((state, delta) => {
     const time = state.clock.elapsedTime;
     const speed = 3.0; // 🚀 SUPER FAST (Butter Oily)
     const index = Math.floor((time * speed) % APPS.length);
     if (index !== activeIndex) {
         setActiveIndex(index);
+    }
+    
+    // Animate Torch Position
+    if (lightRef.current) {
+      lightRef.current.position.x = THREE.MathUtils.lerp(lightRef.current.position.x, targetX, delta * 5);
+      // Pulse intensity based on beat
+      lightRef.current.intensity = THREE.MathUtils.lerp(lightRef.current.intensity, 10 + Math.sin(time * 10) * 5, 0.1);
+      lightRef.current.color.set(APPS[activeIndex].hex);
     }
   });
 
@@ -165,13 +174,42 @@ function Scene({ onComplete }: { onComplete: () => void }) {
 
   return (
     <group ref={groupRef}>
-      {/* 🏭 STUDIO LIGHTING - Using 'warehouse' for sharper reflections than 'city' */}
-      <Environment preset="warehouse" /> 
+      {/* 🏭 STUDIO LIGHTING - Darker Environment for Light Reveal */}
+      <Environment preset="night" /> 
+      <fog attach="fog" args={['#050505', 5, 20]} /> 
+
+      {/* 🔦 THE TORCH: Paints the room */}
+      <pointLight 
+        ref={lightRef}
+        position={[0, 2, 2]} 
+        distance={10} 
+        decay={2}
+      />
       
-      {/* 🔦 RIM LIGHTS - To catch the beveled edges */}
-      <spotLight position={[10, 10, 10]} intensity={5} color="white" angle={0.5} penumbra={1} />
-      <spotLight position={[-10, 10, -10]} intensity={5} color="#c0efff" angle={0.5} penumbra={1} />
-      <ambientLight intensity={0.2} />
+      {/* 🔮 THE VAULT: Glass Room */}
+      <group position={[0, -pillarHeight/2 - 0.05, 0]}>
+         {/* Floor */}
+         <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[50, 50]} />
+            <MeshReflectorMaterial
+              blur={[300, 100]}
+              resolution={1024}
+              mixBlur={1}
+              mixStrength={40}
+              roughness={0.5}
+              depthScale={1.2}
+              minDepthThreshold={0.4}
+              maxDepthThreshold={1.4}
+              color="#101010"
+              metalness={0.5}
+              mirror={0} // Disable pure mirror for performance, rely on mixStrength
+            />
+         </mesh>
+      </group>
+
+      {/* 🔦 RIM LIGHTS - Subtle edge catchers */}
+      <spotLight position={[10, 10, 10]} intensity={1} color="white" angle={0.5} penumbra={1} />
+      <spotLight position={[-10, 10, -10]} intensity={1} color="#c0efff" angle={0.5} penumbra={1} />
       
       {APPS.map((app, i) => (
         <GlassPillar 
