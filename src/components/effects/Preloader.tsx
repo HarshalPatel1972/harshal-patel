@@ -37,10 +37,11 @@ function ChargingCell({
   const meshRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.Mesh>(null);
   
-  // Horizontal layout - centered
-  const cellWidth = 1.2;
-  const gap = 0.15;
-  const totalWidth = (cellWidth + gap) * total - gap;
+  // Horizontal layout - centered (taller, slimmer cells)
+  const cellWidth = 0.5;
+  const cellHeight = 3.5;
+  const cellDepth = 0.35;
+  const gap = 0.08;
   const x = (index - (total - 1) / 2) * (cellWidth + gap);
 
   // Light fill position (back to front on Z-axis)
@@ -49,57 +50,61 @@ function ChargingCell({
 
   return (
     <group position={[x, 0, 0]}>
-      {/* 🔹 Glass Shell */}
+      {/* 🔹 Glass Shell (Taller, Slimmer, Premium) */}
       <RoundedBox 
         ref={meshRef} 
-        args={[cellWidth, 2, 0.8]} 
-        radius={0.05} 
-        smoothness={4}
+        args={[cellWidth, cellHeight, cellDepth]} 
+        radius={0.03} 
+        smoothness={8}
       >
         {isMobile ? (
           <meshStandardMaterial 
             color={app.hex}
             transparent
-            opacity={0.3 + fillProgress * 0.3}
-            metalness={0.9}
-            roughness={0.1}
+            opacity={0.25 + fillProgress * 0.25}
+            metalness={0.95}
+            roughness={0.05}
             emissive={app.hex}
-            emissiveIntensity={fillProgress * 0.5}
+            emissiveIntensity={fillProgress * 0.4}
           />
         ) : (
           <MeshTransmissionMaterial
-            backside={false}
-            samples={4}
-            thickness={1.5}
-            chromaticAberration={0.02}
+            backside
+            samples={8}
+            thickness={2.5}
+            chromaticAberration={0.03}
+            anisotropy={0.3}
             color="#ffffff"
-            transmission={0.9}
-            roughness={0.05}
+            transmission={0.98}
+            roughness={0.02}
+            ior={1.5}
             emissive={app.hex}
-            emissiveIntensity={fillProgress * 0.8}
+            emissiveIntensity={fillProgress * 0.6}
           />
         )}
       </RoundedBox>
 
       {/* 💡 THE FILL LIGHT (Moving Plane) */}
       <mesh ref={lightRef} position={[0, 0, lightZ]}>
-        <planeGeometry args={[cellWidth * 0.9, 1.8]} />
+        <planeGeometry args={[cellWidth * 0.85, cellHeight * 0.9]} />
         <meshBasicMaterial 
           color={app.hex} 
           transparent 
-          opacity={fillProgress * 0.8}
+          opacity={fillProgress * 0.7}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* 🏷️ APP NAME (Front Face) */}
+      {/* 🏷️ APP NAME (Bottom of Cell - Award Font) */}
       <Text
-        position={[0, -0.5, 0.45]}
-        fontSize={0.15}
+        position={[0, -cellHeight/2 - 0.25, 0]}
+        fontSize={0.12}
+        font="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2"
         color="white"
         anchorX="center"
-        anchorY="middle"
-        fillOpacity={0.2 + fillProgress * 0.8}
+        anchorY="top"
+        fillOpacity={0.15 + fillProgress * 0.85}
+        letterSpacing={0.05}
       >
         {app.name.toUpperCase()}
       </Text>
