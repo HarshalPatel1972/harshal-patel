@@ -72,8 +72,8 @@ function GlassPillar({
             temporalDistortion={0.0}
             ior={1.5}                    // Standard Glass
             color={app.hex}              // Base Color
-            attenuationColor="#ffffff"   // Volumetric Tint
-            attenuationDistance={0.5}
+            attenuationColor={app.hex}   // 🌈 FIX: Match Color Core (No white sun)
+            attenuationDistance={1.0}    // Smooth attenuation
             emissive={app.hex}
             emissiveIntensity={0.0}      // Controlled by Ref
             toneMapped={false}
@@ -208,9 +208,9 @@ export function Preloader() {
       
       {/* 🌈 AMBIENT GLOW BACKDROP (YouTube Style) */}
       <div 
-        className="absolute inset-0 transition-colors duration-500 ease-linear opacity-40 blur-3xl scale-150"
+        className="absolute inset-0 transition-colors duration-500 ease-linear opacity-20 blur-[100px] scale-[2.0]" // 🌬️ FIX: More Spread, Less Strong
         style={{
-          background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 60%)`,
+          background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 70%)`,
         }}
       />
       
