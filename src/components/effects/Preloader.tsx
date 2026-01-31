@@ -33,8 +33,9 @@ function GlassPillar({
   const x = (index - (total - 1) / 2) * (width + gap); // Auto-center based on index
 
   const Icon = app.icon;
-  // Calculate icon/text scale based on pillar width
-  const scale = width * 1.5; 
+  // Calculate icon/text scale based on pillar width AND height (to prevent overflow)
+  // 📐 BUG FIX: Constrain scale by height so text doesn't flow out on short screens
+  const scale = Math.min(width * 1.5, height * 0.45); 
   
   // 🎬 ANIMATION STATE REFS
   const materialRef = useRef<any>(null);
