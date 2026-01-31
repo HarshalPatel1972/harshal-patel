@@ -194,9 +194,7 @@ export function Preloader() {
   return (
     <div className="fixed inset-0 z-50 bg-[#030303] flex items-center justify-center">
       {/* 🛡️ FAILSAFE */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 opacity-0 animate-[fadeIn_0.5s_ease-in_2s_forwards]">
-          <span className="font-mono text-[9px] text-white/20 tracking-[0.3em]">LOADING_SYSTEM</span>
-      </div>
+      {/* 🛡️ FAILSAFE REMOVED */}
 
       {showCanvas && (
         <Canvas 
