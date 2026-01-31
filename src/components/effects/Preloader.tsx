@@ -2,18 +2,20 @@
 
 import React, { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { RoundedBox, Text } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { KernelSize } from "postprocessing";
+import { 
+  RoundedBox, 
+  Text
+} from "@react-three/drei";
+// 🛡️ SAFE MODE: Standard Materials only
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import { isMobile } from "react-device-detect";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
-import { isMobile } from "react-device-detect";
 
 // ==========================================
-// 🛡️ THE SENTINELS: VERTICAL MONOLITHS (SAFE MODE)
+// 🛡️ THE SENTINELS (SAFE MODE)
 // ==========================================
 
 function SentinelPillar({ 
@@ -29,14 +31,13 @@ function SentinelPillar({
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   
-  // Vertical Column Layout
-  // Spread across X axis, taller Y
-  const spacing = 1.5;
+  // Vertical Column - Desktop: Taller, Mobile: Dynamic
+  const spacing = isMobile ? 1.0 : 1.5;
   const x = (index - (total - 1) / 2) * spacing;
   
   return (
     <group position={[x, 0, 0]}>
-      {/* 🔹 GLASS MONOLITH (Standard Material) */}
+      {/* 🔹 MONOLITH (Standard Material w/ High Visibility) */}
       <RoundedBox 
         ref={meshRef} 
         args={[0.8, 5, 0.8]} 
@@ -48,22 +49,22 @@ function SentinelPillar({
           roughness={0.1}
           metalness={0.8}
           transparent
-          opacity={0.6} // High visibility
+          opacity={0.6} // Guaranteed visible against black
           emissive={app.hex}
-          emissiveIntensity={active ? 2 : 0.2} // Bright flash when active
+          emissiveIntensity={active ? 2.5 : 0.2} // Flash on active
         />
       </RoundedBox>
 
-      {/* 🏷️ VERTICAL BRANDING */}
+      {/* 🏷️ BRANDING (Text + Icon Placeholder) */}
       <group position={[0, -2, 0.5]}>
         <Text
-          fontSize={0.2}
+          fontSize={0.25}
           font="https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C_k3HqU.woff2"
           color="white"
           anchorX="center"
           anchorY="middle"
-          rotation={[0, 0, Math.PI / 2]} // Vertical text
-          letterSpacing={0.1}
+          rotation={[0, 0, Math.PI / 2]}
+          letterSpacing={0.15}
         >
           {app.name.toUpperCase()}
         </Text>
@@ -73,47 +74,42 @@ function SentinelPillar({
 }
 
 // ==========================================
-// 🎥 SENTINEL SCENE
+// 🎥 SCENE
 // ==========================================
 
 function SentinelsScene({ onComplete }: { onComplete: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [scale, setScale] = useState(1);
-  const [bloomIntensity, setBloomIntensity] = useState(0.5);
 
   useEffect(() => {
     const tl = gsap.timeline();
 
-    // 1. Activation Sequence (Rapid Fire)
+    // 1. Activation Ripple
     APPS.forEach((_, i) => {
-      tl.call(() => setActiveIndex(i), [], "+=0.15");
+      tl.call(() => setActiveIndex(i), [], "+=0.1");
     });
 
     // 2. All Active
-    tl.call(() => setActiveIndex(99), [], "+=0.5");
+    tl.call(() => setActiveIndex(99), [], "+=0.2");
 
-    // 3. Warp Speed Transition (Ascent)
+    // 3. Convergence (Warp)
     tl.to({}, {
       duration: 1.0,
-      onStart: () => {
-         // Custom animation via state/refs if needed
-      },
       onUpdate: function() {
-        const prog = this.progress();
-        setBloomIntensity(0.5 + prog * 5); // Ramp bloom
-        setScale(1 + prog * 10); // Warp scale
+        const p = this.progress();
+        setScale(1 + p * 15); // Scale explosion
       },
       onComplete: () => onComplete()
-    });
+    }, "+=0.5");
 
     return () => { tl.kill(); };
   }, [onComplete]);
 
   useFrame((state) => {
     if (groupRef.current) {
-        // Subtle floating
-        groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+        // Subtle levitation
+        groupRef.current.position.y = Math.sin(state.clock.elapsedTime) * 0.1;
     }
   });
 
@@ -121,12 +117,12 @@ function SentinelsScene({ onComplete }: { onComplete: () => void }) {
     <>
       <color attach="background" args={["#000000"]} />
       
-      {/* 💡 GUARANTEED VISIBILITY LIGHTS */}
-      <ambientLight intensity={2} />
-      <pointLight position={[0, 5, 5]} intensity={5} color="white" />
-      <pointLight position={[0, -5, 5]} intensity={2} color="blue" />
+      {/* 💡 LIGHTING (No Environment Map to crash) */}
+      <ambientLight intensity={3} />
+      <spotLight position={[0, 10, 10]} intensity={5} color="white" angle={0.5} />
+      <pointLight position={[-10, 0, 5]} intensity={2} color="cyan" />
+      <pointLight position={[10, 0, 5]} intensity={2} color="hotpink" />
 
-      {/* 🏛️ THE PILLARS */}
       <group ref={groupRef} scale={scale}>
         {APPS.map((app, i) => (
           <SentinelPillar 
@@ -138,16 +134,6 @@ function SentinelsScene({ onComplete }: { onComplete: () => void }) {
           />
         ))}
       </group>
-
-       {/* 🎥 POST PROCESSING (Safe Bloom) */}
-       <EffectComposer enableNormalPass={false}>
-        <Bloom 
-          luminanceThreshold={0.5} 
-          luminanceSmoothing={0.9} 
-          intensity={bloomIntensity} 
-          kernelSize={KernelSize.LARGE}
-        />
-      </EffectComposer>
     </>
   );
 }
@@ -170,10 +156,10 @@ export function Preloader() {
   return (
     <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
       
-      {/* FALLBACK TEXT */}
-      <div className="absolute top-10 left-0 right-0 text-center pointer-events-none z-0">
-         <span className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase">
-            SENTINELS_PROTOCOL // INITIALIZING
+      {/* FALLBACK HTML (Visible if Canvas fails) */}
+      <div className="absolute top-10 left-0 right-0 text-center pointer-events-none z-0 opacity-50">
+         <span className="font-mono text-[10px] text-white tracking-[0.3em] uppercase">
+            SENTINELS // SAFE_MODE
          </span>
       </div>
 
@@ -182,6 +168,7 @@ export function Preloader() {
           gl={{ antialias: true }} 
           camera={{ position: [0, 0, 10], fov: 45 }}
         >
+          {/* SAFE SUSPENSE (No networking) */}
           <Suspense fallback={null}>
             <SentinelsScene onComplete={handleComplete} />
           </Suspense>
