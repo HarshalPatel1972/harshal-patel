@@ -70,15 +70,13 @@ function Monolith({
         </RoundedBox>
       </Float>
 
-      {/* 🔹 Internal Glow (RectAreaLight) */}
-      <rectAreaLight
+      {/* 🔹 Internal Glow (PointLight is lighter than RectAreaLight) */}
+      <pointLight
         ref={lightRef}
-        intensity={intensity * 20}
-        width={0.8}
-        height={5.8}
+        intensity={intensity * 15}
+        distance={10}
         color={app.hex}
-        position={[0, 3, 0.1]}
-        rotation={[0, 0, 0]}
+        position={[0, 3, 0.5]}
       />
       
       {/* 🔹 Vertical Beam (Visual Hack using a thin glowing box) */}
@@ -120,16 +118,16 @@ function LoaderScene({ setComplete }: { setComplete: () => void }) {
       }
     });
 
-    // Phase 1: Ignition (0s - 1.5s)
+    // Phase 1: Ignition (0s - 3.0s) - Slower cascade
     APPS.forEach((_, i) => {
       tl.to({}, {
-        duration: 0.15,
+        duration: 0.3, // Slower stagger
         onStart: () => {
           // Animate the state for each monolith intensity
           const update = { val: 0 };
           gsap.to(update, {
             val: 1,
-            duration: 0.6,
+            duration: 1.5, // Much slower ignition
             ease: "power2.out",
             onUpdate: () => {
               setIntensities(prev => {
@@ -140,30 +138,30 @@ function LoaderScene({ setComplete }: { setComplete: () => void }) {
             }
           });
         }
-      }, i * 0.15);
+      }, i * 0.3);
     });
 
-    // Phase 2 & 3: Ascent & Orbital Lock (1.5s - 3.5s)
+    // Phase 2 & 3: Ascent & Orbital Lock (3.0s - 7.0s)
     tl.to(camera.position, {
       y: 12,
-      z: 0.1, // Move almost top-down
-      duration: 2,
-      ease: "power4.inOut"
-    }, 1.5);
+      z: 0.1, 
+      duration: 4, // Slower ascent
+      ease: "power3.inOut"
+    }, 3.0);
 
     tl.to(camera.rotation, {
       x: -Math.PI / 2,
-      duration: 2,
-      ease: "power4.inOut",
+      duration: 4, // Slower rotation
+      ease: "power3.inOut",
       onStart: () => setIsTopDown(true)
-    }, 1.5);
+    }, 3.0);
 
-    // Zoom out slightly at the end to fit the header
+    // Zoom and finish
     tl.to(camera, {
       zoom: 1.2,
-      duration: 1,
+      duration: 2,
       onUpdate: () => camera.updateProjectionMatrix()
-    }, 2.5);
+    }, 5.0);
 
     return () => { tl.kill(); };
   }, [camera, setComplete]);
@@ -191,8 +189,8 @@ function LoaderScene({ setComplete }: { setComplete: () => void }) {
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
           <planeGeometry args={[100, 100]} />
           <MeshReflectorMaterial
-            blur={[300, 100]}
-            resolution={512}
+            blur={[200, 50]}
+            resolution={256} // Lower resolution for performance
             mixBlur={1}
             mixStrength={20}
             roughness={1}
