@@ -2,8 +2,7 @@
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { RoundedBox, Html, Environment } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { RoundedBox, Html, Environment, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
@@ -20,7 +19,7 @@ function GlassPillar({
   width,     // Dynamic width
   height,    // Dynamic height
   gap,       // Dynamic gap
-  materialRef 
+  isActive,   // Animation State
 }: { 
   app: any; 
   index: number; 
@@ -28,20 +27,60 @@ function GlassPillar({
   width: number;
   height: number;
   gap: number;
-  materialRef: any 
+  isActive: boolean;
 }) {
   const depth = width;
-  const x = (index - (total - 1) / 2) * (width + gap);
+  const x = (index - (total - 1) / 2) * (width + gap); // Auto-center based on index
 
   const Icon = app.icon;
   // Calculate icon/text scale based on pillar width
   const scale = width * 1.5; 
+  
+  // 🎬 ANIMATION STATE REFS
+  const materialRef = useRef<any>(null);
+
+  useFrame((state, delta) => {
+    if (materialRef.current) {
+      // Smoothly interp values based on 'isActive' prop
+      const targetEmissive = isActive ? 1.5 : 0.0;
+      const targetColor = isActive ? new THREE.Color("#ffffff") : new THREE.Color(app.hex); 
+      
+      // Animate uniform/props if available
+      // Note: MeshTransmissionMaterial is strictly declarative, but simple colors might be mutable
+      // For more complex animation, we might stick to simple prop updates via React or direct ref usage
+      
+      // Let's do a simple direct ref update for performance (avoiding re-render)
+      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
+        materialRef.current.emissiveIntensity, 
+        targetEmissive, 
+        delta * 3 // Speed of glow pulse
+      );
+    }
+  });
 
   return (
     <group position={[x, 0, 0]}>
-      {/* 🧊 PILLAR GEOMETRY */}
-      <RoundedBox args={[width, height, depth]} radius={0.02} smoothness={4}>
-         <primitive object={materialRef} attach="material" />
+      {/* 🧊 PILLAR GEOMETRY - Enhanced Bevels for Light Catching */}
+      <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={8}>
+         {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
+         <MeshTransmissionMaterial 
+            ref={materialRef}
+            backside={true}
+            samples={isMobile ? 8 : 16}  // Quality Tier
+            thickness={0.5}              // Physical thickness
+            chromaticAberration={0.5}    // 🌈 RAINBOW EDGES
+            anisotropy={0.5}             // Complex reflection blur
+            distortion={0.0}             // Keep it straight
+            distortionScale={0.0}
+            temporalDistortion={0.0}
+            ior={1.55}                   // Heavy Glass (Flint)
+            color={app.hex}              // Base Color
+            attenuationColor="#ffffff"   // Volumetric Tint
+            attenuationDistance={0.5}
+            emissive={app.hex}
+            emissiveIntensity={0.0}      // Controlled by Ref
+            toneMapped={false}
+         />
       </RoundedBox>
 
       {/* 💠 HOLOGRAPHIC CONTENT */}
@@ -95,62 +134,40 @@ function Scene({ onComplete }: { onComplete: () => void }) {
 
 
   // 📏 PHASE 4: MATH-BASED RESPONSIVENESS
-  // Calculate pillar dimensions to ALWAYS fit within 90% of screen width
   const maxTotalWidth = viewport.width * 0.9;
   const unitSize = maxTotalWidth / APPS.length;
   
-  // Constrain maximums so they don't get huge on ultra-wides
   const pillarWidth = Math.min(0.5, unitSize * 0.75); 
   const gap = Math.min(0.15, unitSize * 0.25);
-
   const pillarHeight = isMobile ? 2.0 : 2.5;
 
-  const materials = useMemo(() => {
-    return APPS.map(app => new THREE.MeshPhysicalMaterial({
-      color: app.hex,
-      transmission: 0.95,      // Almost invisible glass (Task 2)
-      thickness: 0.2,          // Thinner walls
-      roughness: 0.0,          // Perfectly smooth
-      metalness: 0.9,          // High polish
-      clearcoat: 1.0,
-      ior: 1.45,
-      transparent: true,
-      opacity: 0.3,            // Lower base opacity
-      emissive: app.hex,
-      emissiveIntensity: 0.0,
-      toneMapped: false        // IMPORTANT for Bloom to work
-    }));
-  }, []);
+  // 🏃‍♂️ ANIMATION LOOP STATE
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    const speed = 0.8; // 🐢 SLOWER SPEED (Was 2.5) -> ~3x slower scan
-    const activeIndex = Math.floor((time * speed) % APPS.length);
-
-    materials.forEach((mat, i) => {
-      const isTarget = i === activeIndex;
-      // 🌟 GLOW EFFECT INCREASED
-      const targetEmissive = isTarget ? 0.8 : 0.0; // Subtle glow (Restored)
-      const targetMetalness = isTarget ? 1.0 : 0.9;
-      
-      mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, targetEmissive, 0.1);
-      mat.metalness = THREE.MathUtils.lerp(mat.metalness, targetMetalness, 0.1);
-    });
+    const speed = 0.8; // 🐢 SLOWER SPEED
+    const index = Math.floor((time * speed) % APPS.length);
+    if (index !== activeIndex) {
+        setActiveIndex(index);
+    }
   });
 
   useEffect(() => {
     // 🐢 SLOWER LOADING TIME
-    const timer = setTimeout(() => onComplete(), 7000); // Was 4500ms -> 7000ms (~1.5x slower total)
+    const timer = setTimeout(() => onComplete(), 7000); 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <group ref={groupRef}>
-      <Environment preset="city" /> 
-      <ambientLight intensity={0.5} />
-      <spotLight position={[0, 0, 10]} intensity={2} color="white" />
+      {/* 🏭 STUDIO LIGHTING - Using 'warehouse' for sharper reflections than 'city' */}
+      <Environment preset="warehouse" /> 
       
-      {/* ✨ POST PROCESSING BLOOM REMOVED */}
+      {/* 🔦 RIM LIGHTS - To catch the beveled edges */}
+      <spotLight position={[10, 10, 10]} intensity={5} color="white" angle={0.5} penumbra={1} />
+      <spotLight position={[-10, 10, -10]} intensity={5} color="#c0efff" angle={0.5} penumbra={1} />
+      <ambientLight intensity={0.2} />
       
       {APPS.map((app, i) => (
         <GlassPillar 
@@ -161,7 +178,7 @@ function Scene({ onComplete }: { onComplete: () => void }) {
           height={pillarHeight}
           gap={gap}
           app={app}
-          materialRef={materials[i]} 
+          isActive={i === activeIndex}
         />
       ))}
     </group>
@@ -185,9 +202,8 @@ export function Preloader() {
 
   return (
     <div className="fixed inset-0 z-50 bg-[#030303] flex items-center justify-center">
-      {/* 🛡️ FAILSAFE */}
       {/* 🛡️ FAILSAFE REMOVED */}
-
+      
       {showCanvas && (
         <Canvas 
           gl={{ antialias: true, alpha: false }} 
