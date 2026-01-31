@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { RoundedBox, Html, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
@@ -9,29 +9,32 @@ import { APPS } from "@/lib/apps";
 import { isMobile } from "react-device-detect";
 
 // ==========================================
-// 💎 TASK 2-5: REFINED GLASS PILLARS
+// 💎 TASK 2-5: DYNAMIC VIEWPORT SCALED PILLARS
 // ==========================================
 
 function GlassPillar({ 
   app, 
   index, 
   total, 
+  width,     // Dynamic width
+  height,    // Dynamic height
+  gap,       // Dynamic gap
   materialRef 
 }: { 
   app: any; 
   index: number; 
-  total: number; 
+  total: number;
+  width: number;
+  height: number;
+  gap: number;
   materialRef: any 
 }) {
-  // TASK 4: RESPONSIVE DIMENSIONS
-  // Mobile: Tighter packing, smaller pillars
-  const width = isMobile ? 0.28 : 0.5;
-  const height = isMobile ? 2.0 : 2.5; 
   const depth = width;
-  const gap = isMobile ? 0.1 : 0.15;
   const x = (index - (total - 1) / 2) * (width + gap);
 
   const Icon = app.icon;
+  // Calculate icon/text scale based on pillar width
+  const scale = width * 1.5; 
 
   return (
     <group position={[x, 0, 0]}>
@@ -58,21 +61,18 @@ function GlassPillar({
           filter: `drop-shadow(0 0 10px ${app.hex}) brightness(1.2)` 
         }}
         zIndexRange={[100, 0]}
+        scale={scale} // Scale content with pillar size
       >
         <div className="flex flex-col items-center gap-4 transform scale-[0.4]">
            
-           {/* TASK 3: ROTATION ISOLATED TO ICON */}
-           {/* TASK 9 Re-fix: "Earth rotate on its axis" -> Y-axis spin */}
-           {/* Using custom spinY animation defined in tailwind config */}
            <div className="animate-spinY [transform-style:preserve-3d]">
-              <Icon size={isMobile ? 24 : 32} color={app.hex} strokeWidth={1} /> 
+              <Icon size={32} color={app.hex} strokeWidth={1} /> 
            </div>
 
-           {/* TASK 4: VERTICAL TEXT (STATIC - DOES NOT ROTATE) */}
            <div 
              className="font-space font-light tracking-[0.5em] text-center text-white/90" 
              style={{ 
-               fontSize: isMobile ? '6px' : '8px',
+               fontSize: '8px',
                writingMode: 'vertical-rl', 
                textOrientation: 'upright', 
                textShadow: `0 0 15px ${app.hex}`,
@@ -90,8 +90,22 @@ function GlassPillar({
 
 function Scene({ onComplete }: { onComplete: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
+  const { viewport } = useThree();
+
+
+  // 📏 PHASE 4: MATH-BASED RESPONSIVENESS
+  // Calculate pillar dimensions to ALWAYS fit within 90% of screen width
+  const maxTotalWidth = viewport.width * 0.9;
+  const unitSize = maxTotalWidth / APPS.length;
   
-  // 🎨 TASK 2: INCREASE TRANSPARENCY
+  // Constrain maximums so they don't get huge on ultra-wides
+  const pillarWidth = Math.min(0.5, unitSize * 0.75); 
+  const gap = Math.min(0.15, unitSize * 0.25);
+  // Re-calculate total utilized width to ensure center alignment logic works
+  // Actually x position logic handles centering automatically
+
+  const pillarHeight = isMobile ? 2.0 : 2.5;
+
   const materials = useMemo(() => {
     return APPS.map(app => new THREE.MeshPhysicalMaterial({
       color: app.hex,
@@ -139,6 +153,9 @@ function Scene({ onComplete }: { onComplete: () => void }) {
           key={i} 
           index={i} 
           total={APPS.length} 
+          width={pillarWidth}
+          height={pillarHeight}
+          gap={gap}
           app={app}
           materialRef={materials[i]} 
         />

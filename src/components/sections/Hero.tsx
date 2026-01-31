@@ -16,14 +16,12 @@ export function Hero() {
   }, [isComplete]);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-20 overflow-hidden bg-[#050505]">
+    <section className="relative min-h-screen flex flex-col justify-center px-4 md:px-20 overflow-hidden bg-[#050505] pt-20 md:pt-0">
       
-      {/* 📐 TECHNICAL GRID / GUIDE LINES */}
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-10">
-        {/* Horizontal Lines */}
+      {/* 📐 TECHNICAL GRID / GUIDE LINES (Hidden on Mobile) */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-10 hidden md:block">
         <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
         <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
-        {/* Vertical Lines */}
         <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
         <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
       </div>
@@ -32,9 +30,9 @@ export function Hero() {
         {isComplete && (
           <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
-            {/* 🟢 COLUMN 1: SYSTEM META (Left) */}
+            {/* 🟢 COLUMN 1: SYSTEM META */}
             <motion.div 
-              className="md:col-span-2 flex flex-col gap-4 font-mono text-[10px] text-white/40 tracking-widest uppercase md:pt-4"
+              className="md:col-span-2 flex flex-row md:flex-col gap-4 font-mono text-[9px] md:text-[10px] text-white/40 tracking-widest uppercase md:pt-4 justify-between md:justify-start border-b md:border-b-0 border-white/10 pb-4 md:pb-0"
               initial={{ opacity: 0, x: -20 }}
               animate={showContent ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 1.0, duration: 0.8 }}
@@ -44,14 +42,13 @@ export function Hero() {
                  <span>SYS.ONLINE</span>
               </div>
               <div>LOC: BOMBAY_</div>
-              <div>ID: HARSHAL_V1.0</div>
+              <div className="hidden md:block">ID: HARSHAL_V1.0</div>
             </motion.div>
 
-            {/* 🟦 COLUMN 2: MAIN CONTENT (Center/Right) */}
+            {/* 🟦 COLUMN 2: MAIN CONTENT */}
             <div className="md:col-span-10">
               
-              {/* HEADLINE: TECHNICAL + HUMAN */}
-              <h1 className="font-space font-bold text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter text-white mb-8">
+              <h1 className="font-space font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tighter text-white mb-6 md:mb-8">
                 <motion.div 
                    initial={{ opacity: 0, y: 50 }}
                    animate={showContent ? { opacity: 1, y: 0 } : {}}
@@ -69,41 +66,38 @@ export function Hero() {
                 </motion.div>
               </h1>
 
-              {/* SUBTEXT: BLUEPRINT STYLE */}
               <motion.div 
-                className="max-w-2xl border-l-[1px] border-white/20 pl-6 space-y-4"
+                className="max-w-2xl border-l-[1px] border-white/20 pl-4 md:pl-6 space-y-4"
                 initial={{ opacity: 0 }}
                 animate={showContent ? { opacity: 1 } : {}}
                 transition={{ delay: 0.6, duration: 1 }}
               >
-                <p className="font-mono text-sm md:text-base text-white/70 leading-relaxed">
+                <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
                   <span className="text-emerald-500 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
                 </p>
-                <p className="font-mono text-sm md:text-base text-white/70 leading-relaxed">
+                <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
                   <span className="text-cyan-500 font-bold">{`>`}</span> Optimizing for scale, performance, and aesthetic precision.
                 </p>
               </motion.div>
 
-              {/* CTA BUTTONS: TERMINAL STYLE */}
               <motion.div 
-                className="flex flex-wrap gap-4 mt-12"
+                className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-12 w-full sm:w-auto"
                 initial={{ opacity: 0, y: 20 }}
                 animate={showContent ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.8 }}
               >
                  <a 
                    href="#work"
-                   className="group relative px-6 py-3 bg-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors overflow-hidden"
+                   className="group relative px-6 py-4 sm:py-3 bg-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors overflow-hidden text-center sm:text-left"
                  >
                     <div className="absolute inset-0 bg-emerald-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <span className="font-mono text-xs font-bold text-white tracking-[0.2em] group-hover:text-emerald-400 transition-colors">
                       [ ACCESS_WORK ]
                     </span>
                  </a>
-                 
                  <a 
                    href="#contact"
-                   className="px-6 py-3 border border-transparent hover:border-white/10 transition-colors"
+                   className="px-6 py-4 sm:py-3 border border-transparent hover:border-white/10 transition-colors text-center sm:text-left"
                  >
                     <span className="font-mono text-xs text-white/50 hover:text-white transition-colors tracking-[0.2em]">
                       // INITIATE_CONTACT
@@ -112,20 +106,18 @@ export function Hero() {
               </motion.div>
 
             </div>
-
           </div>
         )}
       </AnimatePresence>
       
-      {/* 🟢 STATUS INDICATOR (Absolute Context) */}
       <motion.div 
-        className="absolute bottom-12 right-6 md:right-20 text-right"
+        className="absolute bottom-6 md:bottom-12 right-6 md:right-20 text-right"
         initial={{ opacity: 0 }}
         animate={showContent ? { opacity: 1 } : {}}
         transition={{ delay: 1.5 }}
       >
-        <span className="block font-mono text-[9px] text-white/30 tracking-widest mb-1">CURRENT_STATUS</span>
-        <span className="text-emerald-400 font-mono text-xs tracking-wider">
+        <span className="block font-mono text-[8px] md:text-[9px] text-white/30 tracking-widest mb-1">CURRENT_STATUS</span>
+        <span className="text-emerald-400 font-mono text-[10px] md:text-xs tracking-wider">
           OPEN_FOR_OPPORTUNITIES
         </span>
       </motion.div>

@@ -13,7 +13,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-32 px-6 relative overflow-hidden bg-black">
+    <section id="contact" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 relative overflow-hidden bg-black">
       <div className="max-w-3xl mx-auto">
         
         {/* HEADER */}
@@ -21,7 +21,7 @@ export function Contact() {
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12 md:mb-16"
         >
           <div className="inline-block border border-white/20 px-4 py-1 mb-6 rounded-full bg-white/5 backdrop-blur-sm">
              <div className="flex items-center gap-2">
@@ -47,7 +47,7 @@ export function Contact() {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
            transition={{ delay: 0.2 }}
-           className="bg-zinc-900/40 border border-white/10 p-8 rounded-sm backdrop-blur-md relative"
+           className="bg-zinc-900/40 border border-white/10 p-6 md:p-8 rounded-sm backdrop-blur-md relative"
         >
           {/* Decorative HUD Elements */}
           <div className="absolute top-0 left-0 w-2 h-2 border-l border-t border-white/40" />
@@ -110,7 +110,7 @@ export function Contact() {
         </motion.div>
 
         {/* FOOTER METADATA */}
-        <div className="mt-24 border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-white/30 uppercase tracking-widest">
+        <div className="mt-24 border-t border-white/5 pt-8 flex flex-col md:flex-row justify-center md:justify-between items-center gap-4 text-[10px] font-mono text-white/30 uppercase tracking-widest text-center md:text-left">
            <div>© 2026 SYSTEM_ARCHITECT // HARSHAL_PATEL</div>
            <div className="flex gap-6">
              <a href="#" className="hover:text-white transition-colors">GITHUB_REF</a>
@@ -122,9 +122,4 @@ export function Contact() {
       </div>
     </section>
   );
-}
-
-// Separate Footer component (can be removed if integrated above, but kept for compatibility)
-export function Footer() {
-  return null; 
 }

@@ -5,7 +5,7 @@ import { APPS } from "@/lib/apps";
 
 export function Work() {
   return (
-    <section id="work" className="py-24 px-6 md:px-12 bg-black relative">
+    <section id="work" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 bg-black relative">
       <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}
@@ -13,19 +13,19 @@ export function Work() {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="mb-16 border-b border-white/10 pb-4 flex justify-between items-end"
+          className="mb-12 md:mb-16 border-b border-white/10 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0"
         >
           <h2 className="text-4xl md:text-6xl font-bold font-space tracking-tighter text-white">
             MODULE<br/>REGISTRY<span className="text-rose-400">.</span>
           </h2>
-          <div className="hidden md:block text-right font-mono text-xs text-white/40">
+          <div className="font-mono text-[10px] md:text-xs text-white/40 text-left md:text-right">
             TOTAL_MODULES: {APPS.length.toString().padStart(2, '0')}<br/>
             STATUS: ACTIVE
           </div>
         </motion.div>
 
         {/* MODULE GRID */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {APPS.map((app, i) => (
             <motion.div
               key={app.name}

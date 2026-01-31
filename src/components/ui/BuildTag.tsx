@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-// 🔢 MANUAL BUILD COUNTER
-// Update this number manually before every push!
-const BUILD_ID = 10;
+const BUILD_ID = 13;
 
 export function BuildTag() {
   const [mounted, setMounted] = useState(false);

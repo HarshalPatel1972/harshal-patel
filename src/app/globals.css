@@ -13,7 +13,6 @@
   --font-space: var(--font-space-grotesk);
 }
 
-/* Prevent horizontal scrollbar and layout shift */
 html {
   overflow-x: hidden;
   scrollbar-gutter: stable;
@@ -28,7 +27,6 @@ body {
   position: relative;
 }
 
-/* 🌐 GLOBAL SCANLINE BACKGROUND */
 body::before {
   content: "";
   position: fixed;
@@ -43,7 +41,6 @@ body::before {
   pointer-events: none;
 }
 
-/* 🌐 DATA GRID OVERLAY */
 body::after {
   content: "";
   position: fixed;
@@ -57,8 +54,6 @@ body::after {
   pointer-events: none;
 }
 
-
-/* Hide scrollbar during preloader (JS controlled) */
 body.preloader-active,
 html.preloader-active {
   overflow: hidden !important;
@@ -73,7 +68,6 @@ html.preloader-active::-webkit-scrollbar {
   height: 0 !important;
 }
 
-/* Custom scrollbar for dark theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -90,4 +84,13 @@ html.preloader-active::-webkit-scrollbar {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
+}
+
+/* UTILITIES */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }

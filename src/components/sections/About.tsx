@@ -20,7 +20,7 @@ export function About() {
   ];
 
   return (
-    <section id="about" className="py-32 px-6 relative overflow-hidden">
+    <section id="about" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}
@@ -28,18 +28,18 @@ export function About() {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="mb-16 border-b border-white/10 pb-4 flex justify-between items-end"
+          className="mb-12 md:mb-16 border-b border-white/10 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0"
         >
           <h2 className="text-4xl md:text-6xl font-bold font-space tracking-tighter text-white">
             SYSTEM<br/>SPECS<span className="text-cyan-400">.</span>
           </h2>
-          <div className="hidden md:block text-right font-mono text-xs text-white/40">
+          <div className="font-mono text-[10px] md:text-xs text-white/40 text-left md:text-right">
             ID: HARSHAL_PATEL<br/>
             ROLE: SYSTEMS_ENGINEER
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
+        <div className="grid lg:grid-cols-2 gap-12 md:gap-16 lg:gap-24">
           
           {/* COLUMN 1: BIO (BIOS) */}
           <motion.div
@@ -56,7 +56,7 @@ export function About() {
               My core directive is to eliminate friction between heavy-duty functionality and cinematic user experience.
             </p>
             
-            <div className="mt-12 grid grid-cols-2 gap-y-6 gap-x-12">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12">
               {specs.map((spec) => (
                 <div key={spec.label}>
                   <div className="text-[10px] font-mono text-white/30 mb-1">{spec.label}</div>
@@ -79,7 +79,7 @@ export function About() {
               // HARDWARE_MODULES
             </h3>
             
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
               {hardware.map((item, i) => (
                 <div 
                   key={item}
