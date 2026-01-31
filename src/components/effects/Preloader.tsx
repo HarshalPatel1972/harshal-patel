@@ -53,7 +53,7 @@ function GlassPillar({
       materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
         materialRef.current.emissiveIntensity, 
         targetEmissive, 
-        delta * 3 // Speed of glow pulse
+        delta * 6 // ⚡ FASTER PULSE (Was 3)
       );
     }
   });
@@ -98,7 +98,11 @@ function GlassPillar({
           pointerEvents: 'none',
           userSelect: 'none',
           // TASK 5: 3D LOOK (Drop shadow + brightness)
-          filter: `drop-shadow(0 0 10px ${app.hex}) brightness(1.2)` 
+          // 💡 DYNAMIC BRIGHTNESS: when active, boost brightness to punch through glass
+          filter: isActive 
+            ? `drop-shadow(0 0 20px ${app.hex}) brightness(1.5)` 
+            : `drop-shadow(0 0 5px ${app.hex}) brightness(0.8)`,
+          transition: 'all 0.2s ease-in-out'
         }}
         zIndexRange={[100, 0]}
         scale={scale} // Scale content with pillar size
@@ -146,7 +150,7 @@ function Scene({ onComplete }: { onComplete: () => void }) {
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    const speed = 0.8; // 🐢 SLOWER SPEED
+    const speed = 3.0; // 🚀 SUPER FAST (Butter Oily)
     const index = Math.floor((time * speed) % APPS.length);
     if (index !== activeIndex) {
         setActiveIndex(index);
@@ -154,8 +158,8 @@ function Scene({ onComplete }: { onComplete: () => void }) {
   });
 
   useEffect(() => {
-    // 🐢 SLOWER LOADING TIME
-    const timer = setTimeout(() => onComplete(), 7000); 
+    // ⚡ FASTER LOADING TIME (Since animation is fast)
+    const timer = setTimeout(() => onComplete(), 5500); 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
