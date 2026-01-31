@@ -1,25 +1,21 @@
 "use client";
 
 import React, { useRef, useState, useEffect, Suspense } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { 
   RoundedBox, 
-  MeshTransmissionMaterial, 
-  Text,
-  Float,
-  Environment
+  Text
 } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
-import { KernelSize } from "postprocessing";
+// REMOVED: Environment, MeshTransmissionMaterial (Network/GPU Risks)
+// REMOVED: EffectComposer, Bloom (Compatibility Risks)
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import gsap from "gsap";
-import { isMobile } from "react-device-detect";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
 
 // ==========================================
-// 🔋 CHARGING CELL COMPONENT
+// 🛡️ FAILSAFE CHARGING CELL
 // ==========================================
 
 function ChargingCell({ 
@@ -36,7 +32,6 @@ function ChargingCell({
   isOvercharging: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const lightRef = useRef<THREE.Mesh>(null);
   
   // Horizontal layout - centered (taller, slimmer cells)
   const cellWidth = 0.5;
@@ -47,58 +42,39 @@ function ChargingCell({
 
   // Light fill position (back to front on Z-axis)
   const lightZ = THREE.MathUtils.lerp(-0.4, 0.3, fillProgress);
-  const lightIntensity = fillProgress * (isOvercharging ? 3 : 1);
 
   return (
     <group position={[x, 0, 0]}>
-      {/* 🔹 Glass Shell (Taller, Slimmer, Premium) */}
+      {/* 🔹 GLASS SHELL (Standard Material - Guaranteed Visibility) */}
       <RoundedBox 
         ref={meshRef} 
         args={[cellWidth, cellHeight, cellDepth]} 
         radius={0.03} 
-        smoothness={4} // Reduced geometry complexity
+        smoothness={4} 
       >
-        {isMobile ? (
-          <meshStandardMaterial 
-            color={app.hex}
-            transparent
-            opacity={0.4 + fillProgress * 0.4} // Higher base opacity
-            metalness={0.9} // Slightly less metal to catch light
-            roughness={0.1}
-            emissive={app.hex}
-            emissiveIntensity={0.2 + fillProgress * 0.5} // Base emissive
-          />
-        ) : (
-          <meshPhysicalMaterial 
-            transparent
-            opacity={0.2} // Base visibility
-            color="#ffffff"
-            roughness={0}
-            metalness={0.1}
-            transmission={1} // Native transmission (cheaper)
-            thickness={2}
-            ior={1.5}
-            envMapIntensity={2} // Needs environment map
-            emissive={app.hex}
-            emissiveIntensity={fillProgress * 0.5}
-            clearcoat={1}
-            clearcoatRoughness={0}
-          />
-        )}
+        <meshStandardMaterial 
+          color={app.hex}
+          transparent
+          opacity={0.3 + fillProgress * 0.5} // Always visible (min 0.3)
+          metalness={0.6} 
+          roughness={0.2}
+          emissive={app.hex}
+          emissiveIntensity={0.1 + fillProgress * 0.5} 
+        />
       </RoundedBox>
 
       {/* 💡 THE FILL LIGHT (Moving Plane) */}
-      <mesh ref={lightRef} position={[0, 0, lightZ]}>
+      <mesh position={[0, 0, lightZ]}>
         <planeGeometry args={[cellWidth * 0.85, cellHeight * 0.9]} />
         <meshBasicMaterial 
           color={app.hex} 
           transparent 
-          opacity={fillProgress * 0.7}
+          opacity={0.8}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* 🏷️ APP NAME (Bottom of Cell - Award Font) */}
+      {/* 🏷️ APP NAME (Bottom) */}
       <Text
         position={[0, -cellHeight/2 - 0.25, 0]}
         fontSize={0.12}
@@ -106,51 +82,40 @@ function ChargingCell({
         color="white"
         anchorX="center"
         anchorY="top"
-        fillOpacity={0.4 + fillProgress * 0.6} // More visible text
+        fillOpacity={0.5 + fillProgress * 0.5}
         letterSpacing={0.05}
       >
         {app.name.toUpperCase()}
       </Text>
-
-      {/* ✨ CHARGED INDICATOR GLOW */}
-      {fillProgress > 0.9 && (
-        <pointLight
-          intensity={lightIntensity * 5}
-          distance={3}
-          color={app.hex}
-          position={[0, 0, 0.5]}
-        />
-      )}
     </group>
   );
 }
 
 // ==========================================
-// 🎥 CORE CHARGE SCENE
+// 🎥 CORE CHARGE SCENE (NO SUSPENSE RISKS)
 // ==========================================
 
 function CoreChargeScene({ onComplete }: { onComplete: () => void }) {
   const groupRef = useRef<THREE.Group>(null);
   const [fillProgress, setFillProgress] = useState<number[]>(new Array(APPS.length).fill(0));
   const [phase, setPhase] = useState<"materialize" | "charge" | "overcharge" | "project">("materialize");
-  const [bloomIntensity, setBloomIntensity] = useState(1.0);
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const tl = gsap.timeline();
 
-    // Phase 1: Materialization (0s - 0.5s)
+    // Phase 1: Materialization
     tl.to({}, { duration: 0.5, onComplete: () => setPhase("charge") });
 
-    // Phase 2: The Charge (0.5s - 2.5s)
+    // Phase 2: The Charge
     APPS.forEach((_, i) => {
       tl.to({}, {
-        duration: 0.25,
+        duration: 0.2, // Faster for debug
         onStart: () => {
           const fill = { val: 0 };
           gsap.to(fill, {
             val: 1,
-            duration: 0.5,
+            duration: 0.4,
             ease: "power2.out",
             onUpdate: () => {
               setFillProgress(prev => {
@@ -161,49 +126,41 @@ function CoreChargeScene({ onComplete }: { onComplete: () => void }) {
             }
           });
         }
-      }, 0.5 + i * 0.25);
+      }, 0.5 + i * 0.15);
     });
 
-    // Phase 3: Overcharge (2.5s - 3.5s)
-    tl.call(() => setPhase("overcharge"), [], 2.5);
-    tl.to({ b: 1.0 }, {
-      b: 3.0,
-      duration: 1.0,
-      onUpdate: function() { setBloomIntensity(this.targets()[0].b); }
-    }, 2.5);
+    // Phase 3: Overcharge
+    tl.call(() => setPhase("overcharge"), [], 2.0);
 
-    // Phase 4: Projection (3.5s - 4.0s)
-    tl.call(() => setPhase("project"), [], 3.5);
+    // Phase 4: Projection
+    tl.call(() => setPhase("project"), [], 3.0);
     tl.to({ s: 1 }, {
       s: 15,
       duration: 0.5,
       ease: "power4.in",
-      onUpdate: function() { setScale(this.targets()[0].s); }
-    }, 3.5);
-    tl.to({ b: 3.0 }, {
-      b: 20,
-      duration: 0.5,
-      onUpdate: function() { setBloomIntensity(this.targets()[0].b); },
+      onUpdate: function() { setScale(this.targets()[0].s); },
       onComplete: () => onComplete()
-    }, 3.5);
+    }, 3.0);
 
     return () => { tl.kill(); };
   }, [onComplete]);
 
-  // Camera shake during overcharge
+  // Camera shake
   useFrame((state) => {
     if (phase === "overcharge" && groupRef.current) {
-      groupRef.current.position.x = (Math.random() - 0.5) * 0.02;
-      groupRef.current.position.y = (Math.random() - 0.5) * 0.02;
+      groupRef.current.position.x = (Math.random() - 0.5) * 0.05;
+      groupRef.current.position.y = (Math.random() - 0.5) * 0.05;
     }
   });
 
   return (
     <>
-      <color attach="background" args={["#030303"]} />
-      <ambientLight intensity={2} /> {/* High ambient for visibility */}
-      <spotLight position={[0, 0, 10]} intensity={5} angle={0.5} penumbra={1} /> {/* High front light */}
-      <Environment preset="city" /> {/* Critical for glass reflections */}
+      <color attach="background" args={["#050505"]} />
+      
+      {/* 💡 SIMPLE LOCAL LIGHTING (No Environment Map) */}
+      <ambientLight intensity={1.5} />
+      <directionalLight position={[0, 0, 10]} intensity={2} color="white" />
+      <pointLight position={[0, 10, 5]} intensity={1} color="#4f46e5" />
       
       {/* 🔋 THE CHARGING CORE */}
       <group ref={groupRef} scale={scale}>
@@ -218,17 +175,6 @@ function CoreChargeScene({ onComplete }: { onComplete: () => void }) {
           />
         ))}
       </group>
-
-      {/* 🎥 POST PROCESSING */}
-      <EffectComposer enableNormalPass={false}>
-        <Bloom 
-          luminanceThreshold={0.1} 
-          luminanceSmoothing={0.9} 
-          intensity={bloomIntensity} 
-          kernelSize={isMobile ? KernelSize.SMALL : KernelSize.LARGE}
-          mipmapBlur
-        />
-      </EffectComposer>
     </>
   );
 }
@@ -249,12 +195,21 @@ export function Preloader() {
   if (isComplete) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#030303]">
+    <div className="fixed inset-0 z-50 bg-[#050505] flex items-center justify-center">
+      
+      {/* HTML FALLBACK TEXT (Visible if Canvas fails) */}
+      <div className="absolute top-10 left-0 right-0 text-center pointer-events-none z-0">
+         <span className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase">
+            SYSTEM_BOOT_SEQUENCE_V4
+         </span>
+      </div>
+
       {showCanvas && (
         <Canvas 
-          gl={{ antialias: false, stencil: false, depth: true }}
+          gl={{ antialias: true }} 
           camera={{ position: [0, 0, 8], fov: 35 }}
         >
+          {/* SUSPENSE BOUNDARY MUST BE SAFE */}
           <Suspense fallback={null}>
             <CoreChargeScene onComplete={handleComplete} />
           </Suspense>
@@ -263,13 +218,13 @@ export function Preloader() {
       
       {/* 🏷️ STATUS */}
       <motion.div 
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <div className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase text-center">
-          CHARGING CORE // {isMobile ? "PERF_MODE" : "ULTRA_MODE"}
+        <div className="font-mono text-[9px] text-white/30 tracking-[0.3em] uppercase text-center">
+          CORE_SAFE_MODE // ONLINE
         </div>
       </motion.div>
     </div>
