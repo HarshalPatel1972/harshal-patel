@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useMemo, useState, useEffect, Suspense } from "react";
+import React, { useRef, useState, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { 
   RoundedBox, 
@@ -8,84 +8,120 @@ import {
   MeshReflectorMaterial, 
   Environment, 
   Float,
+  Text,
   PerspectiveCamera,
-  OrthographicCamera
+  Billboard
 } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { KernelSize } from "postprocessing";
 import * as THREE from "three";
+import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
+import { isMobile } from "react-device-detect";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
 
 // ==========================================
-// 🏛️ MONOLITH COMPONENT
+// 🏛️ MONOLITH COMPONENT (THE SENTINEL)
 // ==========================================
 
 function Monolith({ 
   app, 
   index, 
   total, 
-  intensity 
+  intensity,
+  isWarping 
 }: { 
   app: any; 
   index: number; 
   total: number; 
   intensity: number;
+  isWarping: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const lightRef = useRef<THREE.RectAreaLight>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const lightRef = useRef<THREE.PointLight>(null);
   
-  // Calculate horizontal position in a slight arc
-  const spacing = 1.8;
+  // Calculate horizontal position
+  const spacing = 2.2;
   const x = (index - (total - 1) / 2) * spacing;
-  const z = -Math.pow(Math.abs(x), 1.5) * 0.2; // Convex arc
+  const z = -Math.pow(Math.abs(x), 1.5) * 0.3;
+
+  // Warp acceleration
+  useFrame((state, delta) => {
+    if (isWarping && groupRef.current) {
+        groupRef.current.position.z += delta * 50; // Fly towards camera
+        groupRef.current.scale.y += delta * 5;     // Stretch
+    }
+  });
 
   return (
-    <group position={[x, 0, z]}>
-      {/* 🔹 Glass Slab */}
-      <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+    <group ref={groupRef} position={[x, 0, z]}>
+      {/* 🔹 Glass Sentinel */}
+      <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2}>
         <RoundedBox 
           ref={meshRef} 
-          args={[1, 6, 0.4]} 
-          radius={0.1} 
+          args={[1.2, 8, 0.5]} 
+          radius={0.05} 
           smoothness={4}
-          position={[0, 3, 0]} // Pivot from bottom
+          position={[0, 4, 0]}
         >
-          <MeshTransmissionMaterial
-            backside={false}
-            samples={4}
-            thickness={2}
-            chromaticAberration={0.05}
-            anisotropy={0.1}
-            distortion={0}
-            distortionScale={0}
-            temporalDistortion={0}
-            clearcoat={1}
-            attenuationDistance={0.5}
-            attenuationColor="#ffffff"
-            color="#ffffff"
-            transmission={0.95}
-            roughness={0.1}
-          />
+          {isMobile ? (
+            <meshStandardMaterial 
+              color={app.hex}
+              transparent
+              opacity={0.4}
+              metalness={1}
+              roughness={0}
+              emissive={app.hex}
+              emissiveIntensity={intensity * 0.5}
+            />
+          ) : (
+            <MeshTransmissionMaterial
+              backside={false}
+              samples={4}
+              thickness={2}
+              chromaticAberration={0.05}
+              anisotropy={0.1}
+              color="#ffffff"
+              transmission={1}
+              roughness={0.1}
+              emissive={app.hex}
+              emissiveIntensity={intensity * 0.5}
+            />
+          )}
         </RoundedBox>
+
+        {/* 🏷️ INTERNAL BRANDING (Vertical) */}
+        <group position={[0, 5, 0.3]} rotation={[0, 0, Math.PI / 2]}>
+          <Text
+            fontSize={0.4}
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+            fillOpacity={intensity}
+          >
+            {app.name.toUpperCase()}
+          </Text>
+        </group>
       </Float>
 
-      {/* 🔹 Internal Glow (PointLight is lighter than RectAreaLight) */}
+      {/* 💡 INTENSE CORE LIGHT */}
       <pointLight
         ref={lightRef}
-        intensity={intensity * 15}
-        distance={10}
+        intensity={intensity * (isWarping ? 100 : 25)}
+        distance={15}
         color={app.hex}
-        position={[0, 3, 0.5]}
+        position={[0, 4, 0.6]}
       />
-      
-      {/* 🔹 Vertical Beam (Visual Hack using a thin glowing box) */}
-      <mesh position={[0, 10, 0]}>
-        <boxGeometry args={[0.01, 20, 0.01]} />
+
+      {/* 🎨 VOLUMETRIC BEAM */}
+      <mesh position={[0, 15, 0]}>
+        <boxGeometry args={[0.02, 30, 0.02]} />
         <meshBasicMaterial 
           color={app.hex} 
           transparent 
-          opacity={intensity * 0.3} 
+          opacity={intensity * 0.2} 
           blending={THREE.AdditiveBlending} 
         />
       </mesh>
@@ -94,41 +130,40 @@ function Monolith({
 }
 
 // ==========================================
-// 🎥 LOADER SCENE
+// 🎥 SENTINEL SCENE
 // ==========================================
 
 function LoaderScene({ setComplete }: { setComplete: () => void }) {
   const { camera } = useThree();
   const [intensities, setIntensities] = useState<number[]>(new Array(APPS.length).fill(0));
-  const [isTopDown, setIsTopDown] = useState(false);
-  const canvasOpacity = useRef(1);
-  const groupRef = useRef<THREE.Group>(null);
+  const [isWarping, setIsWarping] = useState(false);
+  const [bloomIntensity, setBloomIntensity] = useState(1.5);
 
   useEffect(() => {
-    // Initialize RectAreaLightUniformsLib
-    // (In a real app we might need to import and call this once)
-    // THREE.RectAreaLightUniformsLib.init();
-
     const tl = gsap.timeline({
       onComplete: () => {
-        // Handoff to DOM happens after transition
-        setTimeout(() => {
-          setComplete();
-        }, 500);
+        // Warp transition
+        setIsWarping(true);
+        gsap.to({ b: 1.5 }, {
+            b: 15,
+            duration: 0.8,
+            onUpdate: function() { setBloomIntensity(this.targets()[0].b); },
+            onComplete: () => {
+                setComplete();
+            }
+        });
       }
     });
 
-    // Phase 1: Ignition (0s - 3.0s) - Slower cascade
+    // Phase 1: Ignition (0s - 1.5s)
     APPS.forEach((_, i) => {
       tl.to({}, {
-        duration: 0.3, // Slower stagger
+        duration: 0.2,
         onStart: () => {
-          // Animate the state for each monolith intensity
           const update = { val: 0 };
           gsap.to(update, {
             val: 1,
-            duration: 1.5, // Much slower ignition
-            ease: "power2.out",
+            duration: 0.8,
             onUpdate: () => {
               setIntensities(prev => {
                 const next = [...prev];
@@ -138,83 +173,78 @@ function LoaderScene({ setComplete }: { setComplete: () => void }) {
             }
           });
         }
-      }, i * 0.3);
+      }, i * 0.2);
     });
 
-    // Phase 2 & 3: Ascent & Orbital Lock (3.0s - 7.0s)
+    // Phase 2: The Ascent (1.5s - 3.5s)
     tl.to(camera.position, {
-      y: 12,
-      z: 0.1, 
-      duration: 4, // Slower ascent
-      ease: "power3.inOut"
-    }, 3.0);
+      y: 15,
+      z: 5,
+      duration: 2.5,
+      ease: "power2.inOut"
+    }, 1.5);
 
     tl.to(camera.rotation, {
-      x: -Math.PI / 2,
-      duration: 4, // Slower rotation
-      ease: "power3.inOut",
-      onStart: () => setIsTopDown(true)
-    }, 3.0);
-
-    // Zoom and finish
-    tl.to(camera, {
-      zoom: 1.2,
-      duration: 2,
-      onUpdate: () => camera.updateProjectionMatrix()
-    }, 5.0);
+      x: -Math.PI / 2.2,
+      duration: 2.5,
+      ease: "power2.inOut"
+    }, 1.5);
 
     return () => { tl.kill(); };
   }, [camera, setComplete]);
 
   return (
     <>
-      <color attach="background" args={["#050505"]} />
+      <color attach="background" args={["#030303"]} />
       
-      {/* 💡 AMBIENT HINT */}
-      <ambientLight intensity={0.1} />
-      
-      <group ref={groupRef}>
-        {/* 🌟 THE MONOLITHS */}
-        {APPS.map((app, i) => (
-          <Monolith 
-            key={app.name} 
-            app={app} 
-            index={i} 
-            total={APPS.length} 
-            intensity={intensities[i]}
-          />
-        ))}
+      {/* 🌟 THE SENTINELS */}
+      {APPS.map((app, i) => (
+        <Monolith 
+          key={app.name} 
+          app={app} 
+          index={i} 
+          total={APPS.length} 
+          intensity={intensities[i]}
+          isWarping={isWarping}
+        />
+      ))}
 
-        {/* 🪞 REFLECTION FLOOR */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+      {/* 🪞 PERFORMANCE TIERED FLOOR */}
+      {!isMobile && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
           <planeGeometry args={[100, 100]} />
           <MeshReflectorMaterial
-            blur={[200, 50]}
-            resolution={256} // Lower resolution for performance
+            blur={[300, 100]}
+            resolution={512}
             mixBlur={1}
-            mixStrength={20}
+            mixStrength={15}
             roughness={1}
             depthScale={1.2}
-            minDepthThreshold={0.4}
-            maxDepthThreshold={1.4}
             color="#050505"
             metalness={0.5}
             mirror={1}
           />
         </mesh>
-      </group>
+      )}
+      
+      {isMobile && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
+          <planeGeometry args={[100, 100]} />
+          <meshStandardMaterial color="#050505" roughness={1} />
+        </mesh>
+      )}
 
       {/* 🎥 POST PROCESSING */}
       <EffectComposer enableNormalPass={false}>
         <Bloom 
           luminanceThreshold={0.1} 
           luminanceSmoothing={0.9} 
-          intensity={1.5} 
+          intensity={bloomIntensity} 
+          kernelSize={isMobile ? KernelSize.VERY_SMALL : KernelSize.LARGE}
           mipmapBlur
         />
       </EffectComposer>
 
-      {/* 🌍 ENVIRONMENT */}
       <Environment preset="night" />
     </>
   );
@@ -226,32 +256,36 @@ function LoaderScene({ setComplete }: { setComplete: () => void }) {
 
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
-  const [fadeOut, setFadeOut] = useState(false);
-
-  const handleComplete = () => {
-    setFadeOut(true);
-    setTimeout(() => {
-      setComplete();
-    }, 1000);
-  };
+  const [showCanvas, setShowCanvas] = useState(true);
 
   if (isComplete) return null;
 
   return (
-    <div className={`fixed inset-0 z-50 bg-[#050505] transition-opacity duration-1000 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
-      <Canvas 
-        shadows
-        gl={{ antialias: false, stencil: false, depth: true }}
-        camera={{ position: [0, -2, 8], fov: 60 }}
-      >
-        <Suspense fallback={null}>
-          <LoaderScene setComplete={handleComplete} />
-        </Suspense>
-      </Canvas>
+    <div className="fixed inset-0 z-50 bg-[#030303]">
+      {showCanvas && (
+        <Canvas 
+          shadows
+          gl={{ antialias: false, stencil: false, depth: true }}
+          camera={{ position: [0, 2, 10], fov: 60 }}
+        >
+          <Suspense fallback={null}>
+            <LoaderScene setComplete={() => {
+                setShowCanvas(false);
+                setComplete();
+            }} />
+          </Suspense>
+        </Canvas>
+      )}
       
-      {/* 🏷️ SYSTEM_INIT OVERLAY (Minimal) */}
-      <div className="absolute bottom-10 left-10 font-mono text-[10px] text-white/10 tracking-[0.3em] uppercase pointer-events-none">
-        INITIALIZING // PILLARS_OF_CREATION
+      {/* 🏷️ STATUS */}
+      <div className="absolute top-10 left-10 overflow-hidden">
+        <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="font-mono text-[9px] text-white/20 tracking-[0.5em] uppercase"
+        >
+            Establishing Sentinel Cluster // Tier: {isMobile ? "Mobile_Perf" : "Desktop_Ultra"}
+        </motion.div>
       </div>
     </div>
   );
