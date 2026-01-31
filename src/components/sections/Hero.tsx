@@ -16,73 +16,120 @@ export function Hero() {
   }, [isComplete]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 md:px-12 overflow-hidden bg-black">
+    <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-20 overflow-hidden bg-[#050505]">
       
-      {/* 🟢 STATUS INDICATOR (Bottom Left/Center) */}
-      <motion.div 
-        className="absolute bottom-12 left-6 md:left-12 flex items-center gap-3 z-20"
-        initial={{ opacity: 0, x: -20 }}
-        animate={showContent ? { opacity: 1, x: 0 } : {}}
-        transition={{ delay: 1.2, duration: 0.8 }}
-      >
-        <span className="relative flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-        </span>
-        <span className="text-white/60 font-sans text-sm font-medium tracking-wide">
-          Open to New Opportunities
-        </span>
-      </motion.div>
+      {/* 📐 TECHNICAL GRID / GUIDE LINES */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-10">
+        {/* Horizontal Lines */}
+        <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
+        <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
+        {/* Vertical Lines */}
+        <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
+        <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
+      </div>
 
       <AnimatePresence>
         {isComplete && (
-          <div className="relative z-10 max-w-5xl w-full text-left">
+          <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             
-            {/* 🖊️ TYPOGRAPHIC HERO STATEMENT */}
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-white">
-              <motion.span 
-                 className="block text-white/90 mb-2"
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={showContent ? { opacity: 1, y: 0 } : {}}
-                 transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                Engineer at the core, I am a
-              </motion.span>
+            {/* 🟢 COLUMN 1: SYSTEM META (Left) */}
+            <motion.div 
+              className="md:col-span-2 flex flex-col gap-4 font-mono text-[10px] text-white/40 tracking-widest uppercase md:pt-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={showContent ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 1.0, duration: 0.8 }}
+            >
+              <div className="flex items-center gap-2">
+                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                 <span>SYS.ONLINE</span>
+              </div>
+              <div>LOC: BOMBAY_</div>
+              <div>ID: HARSHAL_V1.0</div>
+            </motion.div>
+
+            {/* 🟦 COLUMN 2: MAIN CONTENT (Center/Right) */}
+            <div className="md:col-span-10">
               
-              <motion.span 
-                className="block text-[#b684f2] mb-2" // Purple Highlight
+              {/* HEADLINE: TECHNICAL + HUMAN */}
+              <h1 className="font-space font-bold text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter text-white mb-8">
+                <motion.div 
+                   initial={{ opacity: 0, y: 50 }}
+                   animate={showContent ? { opacity: 1, y: 0 } : {}}
+                   transition={{ duration: 0.8, ease: "circOut", delay: 0.2 }}
+                >
+                  SYSTEM
+                </motion.div>
+                <motion.div 
+                   className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400"
+                   initial={{ opacity: 0, y: 50 }}
+                   animate={showContent ? { opacity: 1, y: 0 } : {}}
+                   transition={{ duration: 0.8, ease: "circOut", delay: 0.3 }}
+                >
+                  ARCHITECT
+                </motion.div>
+              </h1>
+
+              {/* SUBTEXT: BLUEPRINT STYLE */}
+              <motion.div 
+                className="max-w-2xl border-l-[1px] border-white/20 pl-6 space-y-4"
+                initial={{ opacity: 0 }}
+                animate={showContent ? { opacity: 1 } : {}}
+                transition={{ delay: 0.6, duration: 1 }}
+              >
+                <p className="font-mono text-sm md:text-base text-white/70 leading-relaxed">
+                  <span className="text-emerald-500 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
+                </p>
+                <p className="font-mono text-sm md:text-base text-white/70 leading-relaxed">
+                  <span className="text-cyan-500 font-bold">{`>`}</span> Optimizing for scale, performance, and aesthetic precision.
+                </p>
+              </motion.div>
+
+              {/* CTA BUTTONS: TERMINAL STYLE */}
+              <motion.div 
+                className="flex flex-wrap gap-4 mt-12"
                 initial={{ opacity: 0, y: 20 }}
                 animate={showContent ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{ delay: 0.8 }}
               >
-                System Architect
-              </motion.span>
-              
-              <motion.span 
-                className="block text-white/90"
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={showContent ? { opacity: 1, y: 0 } : {}}
-                 transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                who translates complex logic into elegant interfaces
-              </motion.span>
-              
-              <motion.span 
-                className="block text-white/90 mt-2"
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={showContent ? { opacity: 1, y: 0 } : {}}
-                 transition={{ duration: 0.6, delay: 0.8 }}
-              >
-                while ensuring performance meets scale.
-              </motion.span>
-            </h1>
+                 <a 
+                   href="#work"
+                   className="group relative px-6 py-3 bg-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors overflow-hidden"
+                 >
+                    <div className="absolute inset-0 bg-emerald-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <span className="font-mono text-xs font-bold text-white tracking-[0.2em] group-hover:text-emerald-400 transition-colors">
+                      [ ACCESS_WORK ]
+                    </span>
+                 </a>
+                 
+                 <a 
+                   href="#contact"
+                   className="px-6 py-3 border border-transparent hover:border-white/10 transition-colors"
+                 >
+                    <span className="font-mono text-xs text-white/50 hover:text-white transition-colors tracking-[0.2em]">
+                      // INITIATE_CONTACT
+                    </span>
+                 </a>
+              </motion.div>
+
+            </div>
 
           </div>
         )}
       </AnimatePresence>
       
-      {/* 🎞️ SCANLINE (Subtle Texture) */}
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-5 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+      {/* 🟢 STATUS INDICATOR (Absolute Context) */}
+      <motion.div 
+        className="absolute bottom-12 right-6 md:right-20 text-right"
+        initial={{ opacity: 0 }}
+        animate={showContent ? { opacity: 1 } : {}}
+        transition={{ delay: 1.5 }}
+      >
+        <span className="block font-mono text-[9px] text-white/30 tracking-widest mb-1">CURRENT_STATUS</span>
+        <span className="text-emerald-400 font-mono text-xs tracking-wider">
+          OPEN_FOR_OPPORTUNITIES
+        </span>
+      </motion.div>
+
     </section>
   );
 }

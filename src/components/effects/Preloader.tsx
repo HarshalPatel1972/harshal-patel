@@ -63,9 +63,8 @@ function GlassPillar({
            
            {/* TASK 3: ROTATION ISOLATED TO ICON */}
            {/* TASK 9 Re-fix: "Earth rotate on its axis" -> Y-axis spin */}
-           {/* Using custom style for Y-axis rotation if tailwind fails, but 'animate-[spin]' is Z-axis */}
-           {/* Let's try CSS transform with standard spin for now, but 3D feel comes from perspective */}
-           <div className="animate-[spin_4s_linear_infinite] [transform-style:preserve-3d]">
+           {/* Using custom spinY animation defined in tailwind config */}
+           <div className="animate-spinY [transform-style:preserve-3d]">
               <Icon size={isMobile ? 24 : 32} color={app.hex} strokeWidth={1} /> 
            </div>
 
