@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const BUILD_ID = 29;
+const BUILD_ID = 30;
 
 export function BuildTag() {
   const [mounted, setMounted] = useState(false);
