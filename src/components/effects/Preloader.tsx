@@ -6,7 +6,8 @@ import {
   RoundedBox, 
   MeshTransmissionMaterial, 
   Text,
-  Float
+  Float,
+  Environment
 } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { KernelSize } from "postprocessing";
@@ -55,7 +56,7 @@ function ChargingCell({
         ref={meshRef} 
         args={[cellWidth, cellHeight, cellDepth]} 
         radius={0.03} 
-        smoothness={8}
+        smoothness={4} // Reduced geometry complexity
       >
         {isMobile ? (
           <meshStandardMaterial 
@@ -68,19 +69,20 @@ function ChargingCell({
             emissiveIntensity={0.2 + fillProgress * 0.5} // Base emissive
           />
         ) : (
-          <MeshTransmissionMaterial
-            backside={false} // Disable backside to save memory
-            samples={4} // Reduce samples
-            resolution={512} // Cap resolution
-            thickness={2}
-            chromaticAberration={0.03}
-            anisotropy={0.3}
+          <meshPhysicalMaterial 
+            transparent
+            opacity={0.2} // Base visibility
             color="#ffffff"
-            transmission={0.95}
-            roughness={0.05}
+            roughness={0}
+            metalness={0.1}
+            transmission={1} // Native transmission (cheaper)
+            thickness={2}
             ior={1.5}
+            envMapIntensity={2} // Needs environment map
             emissive={app.hex}
-            emissiveIntensity={0.2 + fillProgress * 0.6} // Base emissive
+            emissiveIntensity={fillProgress * 0.5}
+            clearcoat={1}
+            clearcoatRoughness={0}
           />
         )}
       </RoundedBox>
@@ -199,8 +201,9 @@ function CoreChargeScene({ onComplete }: { onComplete: () => void }) {
   return (
     <>
       <color attach="background" args={["#030303"]} />
-      <ambientLight intensity={0.5} /> {/* Add ambient light for visibility */}
-      <spotLight position={[0, 10, 10]} intensity={1} angle={0.5} penumbra={1} /> {/* Highlight glass edges */}
+      <ambientLight intensity={2} /> {/* High ambient for visibility */}
+      <spotLight position={[0, 0, 10]} intensity={5} angle={0.5} penumbra={1} /> {/* High front light */}
+      <Environment preset="city" /> {/* Critical for glass reflections */}
       
       {/* 🔋 THE CHARGING CORE */}
       <group ref={groupRef} scale={scale}>
