@@ -1,238 +1,212 @@
 "use client";
 
-import React, { useRef, useState, useEffect, Suspense, useMemo } from "react";
+import React, { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { 
   RoundedBox, 
   MeshTransmissionMaterial, 
-  MeshReflectorMaterial, 
-  Environment, 
-  Float,
   Text,
-  PerspectiveCamera,
-  Billboard
+  Float
 } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { KernelSize } from "postprocessing";
 import * as THREE from "three";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { isMobile } from "react-device-detect";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
 
 // ==========================================
-// 🏛️ MONOLITH COMPONENT (THE SENTINEL)
+// 🔋 CHARGING CELL COMPONENT
 // ==========================================
 
-function Monolith({ 
+function ChargingCell({ 
   app, 
   index, 
   total, 
-  intensity,
-  isWarping 
+  fillProgress,
+  isOvercharging
 }: { 
   app: any; 
   index: number; 
   total: number; 
-  intensity: number;
-  isWarping: boolean;
+  fillProgress: number;
+  isOvercharging: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const groupRef = useRef<THREE.Group>(null);
-  const lightRef = useRef<THREE.PointLight>(null);
+  const lightRef = useRef<THREE.Mesh>(null);
   
-  // Calculate horizontal position
-  const spacing = 2.2;
-  const x = (index - (total - 1) / 2) * spacing;
-  const z = -Math.pow(Math.abs(x), 1.5) * 0.3;
+  // Horizontal layout - centered
+  const cellWidth = 1.2;
+  const gap = 0.15;
+  const totalWidth = (cellWidth + gap) * total - gap;
+  const x = (index - (total - 1) / 2) * (cellWidth + gap);
 
-  // Warp acceleration
-  useFrame((state, delta) => {
-    if (isWarping && groupRef.current) {
-        groupRef.current.position.z += delta * 50; // Fly towards camera
-        groupRef.current.scale.y += delta * 5;     // Stretch
-    }
-  });
+  // Light fill position (back to front on Z-axis)
+  const lightZ = THREE.MathUtils.lerp(-0.4, 0.3, fillProgress);
+  const lightIntensity = fillProgress * (isOvercharging ? 3 : 1);
 
   return (
-    <group ref={groupRef} position={[x, 0, z]}>
-      {/* 🔹 Glass Sentinel */}
-      <Float speed={2} rotationIntensity={0.1} floatIntensity={0.2}>
-        <RoundedBox 
-          ref={meshRef} 
-          args={[1.2, 8, 0.5]} 
-          radius={0.05} 
-          smoothness={4}
-          position={[0, 4, 0]}
-        >
-          {isMobile ? (
-            <meshStandardMaterial 
-              color={app.hex}
-              transparent
-              opacity={0.4}
-              metalness={1}
-              roughness={0}
-              emissive={app.hex}
-              emissiveIntensity={intensity * 0.5}
-            />
-          ) : (
-            <MeshTransmissionMaterial
-              backside={false}
-              samples={4}
-              thickness={2}
-              chromaticAberration={0.05}
-              anisotropy={0.1}
-              color="#ffffff"
-              transmission={1}
-              roughness={0.1}
-              emissive={app.hex}
-              emissiveIntensity={intensity * 0.5}
-            />
-          )}
-        </RoundedBox>
+    <group position={[x, 0, 0]}>
+      {/* 🔹 Glass Shell */}
+      <RoundedBox 
+        ref={meshRef} 
+        args={[cellWidth, 2, 0.8]} 
+        radius={0.05} 
+        smoothness={4}
+      >
+        {isMobile ? (
+          <meshStandardMaterial 
+            color={app.hex}
+            transparent
+            opacity={0.3 + fillProgress * 0.3}
+            metalness={0.9}
+            roughness={0.1}
+            emissive={app.hex}
+            emissiveIntensity={fillProgress * 0.5}
+          />
+        ) : (
+          <MeshTransmissionMaterial
+            backside={false}
+            samples={4}
+            thickness={1.5}
+            chromaticAberration={0.02}
+            color="#ffffff"
+            transmission={0.9}
+            roughness={0.05}
+            emissive={app.hex}
+            emissiveIntensity={fillProgress * 0.8}
+          />
+        )}
+      </RoundedBox>
 
-        {/* 🏷️ INTERNAL BRANDING (Vertical) */}
-        <group position={[0, 5, 0.3]} rotation={[0, 0, Math.PI / 2]}>
-          <Text
-            fontSize={0.4}
-            color="white"
-            anchorX="center"
-            anchorY="middle"
-            fillOpacity={intensity}
-          >
-            {app.name.toUpperCase()}
-          </Text>
-        </group>
-      </Float>
-
-      {/* 💡 INTENSE CORE LIGHT */}
-      <pointLight
-        ref={lightRef}
-        intensity={intensity * (isWarping ? 100 : 25)}
-        distance={15}
-        color={app.hex}
-        position={[0, 4, 0.6]}
-      />
-
-      {/* 🎨 VOLUMETRIC BEAM */}
-      <mesh position={[0, 15, 0]}>
-        <boxGeometry args={[0.02, 30, 0.02]} />
+      {/* 💡 THE FILL LIGHT (Moving Plane) */}
+      <mesh ref={lightRef} position={[0, 0, lightZ]}>
+        <planeGeometry args={[cellWidth * 0.9, 1.8]} />
         <meshBasicMaterial 
           color={app.hex} 
           transparent 
-          opacity={intensity * 0.2} 
-          blending={THREE.AdditiveBlending} 
+          opacity={fillProgress * 0.8}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
+
+      {/* 🏷️ APP NAME (Front Face) */}
+      <Text
+        position={[0, -0.5, 0.45]}
+        fontSize={0.15}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+        fillOpacity={0.2 + fillProgress * 0.8}
+      >
+        {app.name.toUpperCase()}
+      </Text>
+
+      {/* ✨ CHARGED INDICATOR GLOW */}
+      {fillProgress > 0.9 && (
+        <pointLight
+          intensity={lightIntensity * 5}
+          distance={3}
+          color={app.hex}
+          position={[0, 0, 0.5]}
+        />
+      )}
     </group>
   );
 }
 
 // ==========================================
-// 🎥 SENTINEL SCENE
+// 🎥 CORE CHARGE SCENE
 // ==========================================
 
-function LoaderScene({ setComplete }: { setComplete: () => void }) {
-  const { camera } = useThree();
-  const [intensities, setIntensities] = useState<number[]>(new Array(APPS.length).fill(0));
-  const [isWarping, setIsWarping] = useState(false);
-  const [bloomIntensity, setBloomIntensity] = useState(1.5);
+function CoreChargeScene({ onComplete }: { onComplete: () => void }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const [fillProgress, setFillProgress] = useState<number[]>(new Array(APPS.length).fill(0));
+  const [phase, setPhase] = useState<"materialize" | "charge" | "overcharge" | "project">("materialize");
+  const [bloomIntensity, setBloomIntensity] = useState(1.0);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // Warp transition
-        setIsWarping(true);
-        gsap.to({ b: 1.5 }, {
-            b: 15,
-            duration: 0.8,
-            onUpdate: function() { setBloomIntensity(this.targets()[0].b); },
-            onComplete: () => {
-                setComplete();
-            }
-        });
-      }
-    });
+    const tl = gsap.timeline();
 
-    // Phase 1: Ignition (0s - 1.5s)
+    // Phase 1: Materialization (0s - 0.5s)
+    tl.to({}, { duration: 0.5, onComplete: () => setPhase("charge") });
+
+    // Phase 2: The Charge (0.5s - 2.5s)
     APPS.forEach((_, i) => {
       tl.to({}, {
-        duration: 0.2,
+        duration: 0.25,
         onStart: () => {
-          const update = { val: 0 };
-          gsap.to(update, {
+          const fill = { val: 0 };
+          gsap.to(fill, {
             val: 1,
-            duration: 0.8,
+            duration: 0.5,
+            ease: "power2.out",
             onUpdate: () => {
-              setIntensities(prev => {
+              setFillProgress(prev => {
                 const next = [...prev];
-                next[i] = update.val;
+                next[i] = fill.val;
                 return next;
               });
             }
           });
         }
-      }, i * 0.2);
+      }, 0.5 + i * 0.25);
     });
 
-    // Phase 2: The Ascent (1.5s - 3.5s)
-    tl.to(camera.position, {
-      y: 15,
-      z: 5,
-      duration: 2.5,
-      ease: "power2.inOut"
-    }, 1.5);
+    // Phase 3: Overcharge (2.5s - 3.5s)
+    tl.call(() => setPhase("overcharge"), [], 2.5);
+    tl.to({ b: 1.0 }, {
+      b: 3.0,
+      duration: 1.0,
+      onUpdate: function() { setBloomIntensity(this.targets()[0].b); }
+    }, 2.5);
 
-    tl.to(camera.rotation, {
-      x: -Math.PI / 2.2,
-      duration: 2.5,
-      ease: "power2.inOut"
-    }, 1.5);
+    // Phase 4: Projection (3.5s - 4.0s)
+    tl.call(() => setPhase("project"), [], 3.5);
+    tl.to({ s: 1 }, {
+      s: 15,
+      duration: 0.5,
+      ease: "power4.in",
+      onUpdate: function() { setScale(this.targets()[0].s); }
+    }, 3.5);
+    tl.to({ b: 3.0 }, {
+      b: 20,
+      duration: 0.5,
+      onUpdate: function() { setBloomIntensity(this.targets()[0].b); },
+      onComplete: () => onComplete()
+    }, 3.5);
 
     return () => { tl.kill(); };
-  }, [camera, setComplete]);
+  }, [onComplete]);
+
+  // Camera shake during overcharge
+  useFrame((state) => {
+    if (phase === "overcharge" && groupRef.current) {
+      groupRef.current.position.x = (Math.random() - 0.5) * 0.02;
+      groupRef.current.position.y = (Math.random() - 0.5) * 0.02;
+    }
+  });
 
   return (
     <>
       <color attach="background" args={["#030303"]} />
       
-      {/* 🌟 THE SENTINELS */}
-      {APPS.map((app, i) => (
-        <Monolith 
-          key={app.name} 
-          app={app} 
-          index={i} 
-          total={APPS.length} 
-          intensity={intensities[i]}
-          isWarping={isWarping}
-        />
-      ))}
-
-      {/* 🪞 PERFORMANCE TIERED FLOOR */}
-      {!isMobile && (
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
-          <planeGeometry args={[100, 100]} />
-          <MeshReflectorMaterial
-            blur={[300, 100]}
-            resolution={512}
-            mixBlur={1}
-            mixStrength={15}
-            roughness={1}
-            depthScale={1.2}
-            color="#050505"
-            metalness={0.5}
-            mirror={1}
+      {/* 🔋 THE CHARGING CORE */}
+      <group ref={groupRef} scale={scale}>
+        {APPS.map((app, i) => (
+          <ChargingCell 
+            key={app.name} 
+            app={app} 
+            index={i} 
+            total={APPS.length} 
+            fillProgress={fillProgress[i]}
+            isOvercharging={phase === "overcharge" || phase === "project"}
           />
-        </mesh>
-      )}
-      
-      {isMobile && (
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
-          <planeGeometry args={[100, 100]} />
-          <meshStandardMaterial color="#050505" roughness={1} />
-        </mesh>
-      )}
+        ))}
+      </group>
 
       {/* 🎥 POST PROCESSING */}
       <EffectComposer enableNormalPass={false}>
@@ -240,12 +214,10 @@ function LoaderScene({ setComplete }: { setComplete: () => void }) {
           luminanceThreshold={0.1} 
           luminanceSmoothing={0.9} 
           intensity={bloomIntensity} 
-          kernelSize={isMobile ? KernelSize.VERY_SMALL : KernelSize.LARGE}
+          kernelSize={isMobile ? KernelSize.SMALL : KernelSize.LARGE}
           mipmapBlur
         />
       </EffectComposer>
-
-      <Environment preset="night" />
     </>
   );
 }
@@ -258,35 +230,37 @@ export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
   const [showCanvas, setShowCanvas] = useState(true);
 
+  const handleComplete = () => {
+    setShowCanvas(false);
+    setTimeout(() => setComplete(), 100);
+  };
+
   if (isComplete) return null;
 
   return (
     <div className="fixed inset-0 z-50 bg-[#030303]">
       {showCanvas && (
         <Canvas 
-          shadows
           gl={{ antialias: false, stencil: false, depth: true }}
-          camera={{ position: [0, 2, 10], fov: 60 }}
+          camera={{ position: [0, 0, 8], fov: 35 }}
         >
           <Suspense fallback={null}>
-            <LoaderScene setComplete={() => {
-                setShowCanvas(false);
-                setComplete();
-            }} />
+            <CoreChargeScene onComplete={handleComplete} />
           </Suspense>
         </Canvas>
       )}
       
       {/* 🏷️ STATUS */}
-      <div className="absolute top-10 left-10 overflow-hidden">
-        <motion.div 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="font-mono text-[9px] text-white/20 tracking-[0.5em] uppercase"
-        >
-            Establishing Sentinel Cluster // Tier: {isMobile ? "Mobile_Perf" : "Desktop_Ultra"}
-        </motion.div>
-      </div>
+      <motion.div 
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <div className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase text-center">
+          CHARGING CORE // {isMobile ? "PERF_MODE" : "ULTRA_MODE"}
+        </div>
+      </motion.div>
     </div>
   );
 }
