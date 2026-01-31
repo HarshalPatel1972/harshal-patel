@@ -115,7 +115,7 @@ function GlassPillar({
            <div 
              className="font-space font-light tracking-[0.5em] text-center text-white/90" 
              style={{ 
-               fontSize: '8px',
+               fontSize: '10px',        // 📏 FIX: Increased font size (8px -> 10px)
                writingMode: 'vertical-rl', 
                textOrientation: 'upright', 
                textShadow: `0 0 20px ${app.hex}`,
