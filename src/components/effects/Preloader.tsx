@@ -74,6 +74,7 @@ function GlassPillar({
             color={app.hex}              // Base Color
             attenuationColor={app.hex}   // 🌈 FIX: Match Color Core (No white sun)
             attenuationDistance={1.0}    // Smooth attenuation
+            roughness={0.1}              // 🌫️ FIX: Slight diffusion to kill sharp sun glare
             emissive={app.hex}
             emissiveIntensity={0.0}      // Controlled by Ref
             toneMapped={false}
@@ -165,7 +166,7 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
       {/* 🏭 STUDIO LIGHTING - Back to Clean Reflections */}
       <Environment preset="city" /> 
       <ambientLight intensity={0.5} />
-      <spotLight position={[0, 0, 10]} intensity={2} color="white" />
+      {/* 🚫 FRONTAL LIGHT REMOVED to prevent "Sun Glare" reflection */}
       
       {/* 🔦 RIM LIGHTS - Subtle edge catchers */}
       <spotLight position={[10, 10, 10]} intensity={1} color="white" angle={0.5} penumbra={1} />
