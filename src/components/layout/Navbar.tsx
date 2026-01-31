@@ -27,40 +27,32 @@ export function Navbar() {
           HARSHAL<span className="text-zinc-500">.</span>OS
         </motion.div>
 
-        {/* 📦 THE CAPSULE (NOW THE NAVBAR PILL) */}
-        <motion.div
-           layout
-           layoutId="navbar-pill"
-           className={cn(
-             "relative flex items-center px-4 py-2 rounded-full border border-white/10 bg-zinc-900/60 backdrop-blur-md shadow-xl transition-all duration-500",
-             isComplete ? "opacity-100" : "opacity-0"
-           )}
-        >
-            <div className="flex items-center gap-4">
-               {APPS.map((app) => (
-                    <motion.div
-                        key={app.name}
-                        layoutId={app.name}
-                        className="group relative cursor-pointer"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    >
+        {/* 🏛️ THE PILLARS (NAV ROW) */}
+        {/* We use a centered row to match the 'Satellite View' landing */}
+        <div className="flex items-center gap-6">
+           {APPS.map((app) => (
+                <motion.div
+                    key={app.name}
+                    className="group relative cursor-pointer"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                >
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors">
                         <app.icon 
                             size={18} 
-                            className="text-white hover:text-white transition-colors"
                             style={{ 
                                 filter: `drop-shadow(0 0 8px ${app.hex}80)`,
                                 color: app.hex
                             }}
                         />
-                        {/* Hover Tooltip (Optional) */}
-                        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-zinc-900 text-[10px] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
-                            {app.name}
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
-        </motion.div>
+                    </div>
+                    {/* Tooltip */}
+                    <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-zinc-950 text-[10px] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
+                        {app.name}
+                    </div>
+                </motion.div>
+            ))}
+        </div>
 
         {/* Right Actions / Contact */}
         <motion.div
@@ -70,7 +62,7 @@ export function Navbar() {
         >
            <a 
              href="#contact" 
-             className="px-4 py-2 text-[10px] font-mono tracking-widest uppercase border border-white/10 rounded-full hover:bg-white/5 transition-colors text-white/70 hover:text-white"
+             className="hidden md:block px-5 py-2 text-[10px] font-mono tracking-widest uppercase border border-white/10 rounded-full hover:bg-white/5 transition-colors text-white/70 hover:text-white"
            >
              CONNECT_USER
            </a>
