@@ -46,7 +46,7 @@ export function Hero() {
                  animate={showContent ? { opacity: 1, y: 0 } : {}}
                  transition={{ duration: 0.6, delay: 0.2 }}
               >
-                A problem-solver at heart, I am a
+                Engineer at the core, I am a
               </motion.span>
               
               <motion.span 
@@ -55,7 +55,7 @@ export function Hero() {
                 animate={showContent ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                Product Designer
+                System Architect
               </motion.span>
               
               <motion.span 
@@ -64,7 +64,7 @@ export function Hero() {
                  animate={showContent ? { opacity: 1, y: 0 } : {}}
                  transition={{ duration: 0.6, delay: 0.6 }}
               >
-                who turns user needs into impactful solutions
+                who translates complex logic into elegant interfaces
               </motion.span>
               
               <motion.span 
@@ -73,7 +73,7 @@ export function Hero() {
                  animate={showContent ? { opacity: 1, y: 0 } : {}}
                  transition={{ duration: 0.6, delay: 0.8 }}
               >
-                while ensuring product teams meet their KPIs.
+                while ensuring performance meets scale.
               </motion.span>
             </h1>
 
