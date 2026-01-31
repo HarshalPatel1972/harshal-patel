@@ -7,6 +7,7 @@ import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
 import { isMobile } from "react-device-detect";
+import { useHandoff } from "@/lib/handoff-context";
 
 // ==========================================
 // 💎 TASK 2-5: DYNAMIC VIEWPORT SCALED PILLARS
@@ -20,6 +21,7 @@ function GlassPillar({
   height,    // Dynamic height
   gap,       // Dynamic gap
   isActive,   // Animation State
+  visible,   // 🙈 Handoff Visibility
 }: { 
   app: any; 
   index: number; 
@@ -28,6 +30,7 @@ function GlassPillar({
   height: number;
   gap: number;
   isActive: boolean;
+  visible: boolean;
 }) {
   const depth = width;
   const x = (index - (total - 1) / 2) * (width + gap); // Auto-center based on index
@@ -55,8 +58,19 @@ function GlassPillar({
     }
   });
 
+  const targetScale = visible ? 1 : 0;
+  const currentScale = useRef(1);
+  
+  useFrame((state, delta) => {
+    // Smoothly animate scale
+    currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale, delta * 5);
+    if (materialRef.current) {
+        // ... existing logic ...
+    }
+  });
+
   return (
-    <group position={[x, 0, 0]}>
+    <group position={[x, 0, 0]} scale={[currentScale.current, currentScale.current, currentScale.current]}>
       {/* 🧊 PILLAR GEOMETRY - Enhanced Bevels for Light Catching */}
       <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={8}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
@@ -161,11 +175,43 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
     }
   });
 
+  // 🔀 HANDOFF SEQUENCE
+  const { nextStage } = useHandoff();
+  const [visiblePillars, setVisiblePillars] = useState<boolean[]>(new Array(APPS.length).fill(true));
+
   useEffect(() => {
-    // ⚡ FASTER LOADING TIME (Since animation is fast)
-    const timer = setTimeout(() => onComplete(), 5500); 
-    return () => clearTimeout(timer);
-  }, [onComplete]);
+    // ⏳ WAIT 4.5s (Loop a few times) then start vanishing
+    const startDelay = 4500;
+    
+    // Create sequence timeouts
+    const timeouts: NodeJS.Timeout[] = [];
+    
+    // Start sequence
+    timeouts.push(setTimeout(() => {
+      // Create a sequence for each pillar to vanish
+      APPS.forEach((_, i) => {
+        const vanishTime = 500 * i; // 0.5s per pillar
+        timeouts.push(setTimeout(() => {
+          // 1. Hide Pillar
+          setVisiblePillars(prev => {
+            const next = [...prev];
+            next[i] = false;
+            return next;
+          });
+          
+          // 2. Trigger Bubble Reveal (Next Stage)
+          nextStage();
+
+          // 3. If last one, complete global loader
+          if (i === APPS.length - 1) {
+            setTimeout(onComplete, 1000); // Wait for final bubble expansion
+          }
+        }, vanishTime));
+      });
+    }, startDelay));
+
+    return () => timeouts.forEach(clearTimeout);
+  }, [onComplete, nextStage]);
 
   return (
     <group ref={groupRef}>
@@ -188,6 +234,7 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
           gap={gap}
           app={app}
           isActive={i === activeIndex}
+          visible={visiblePillars[i]} // 🙈 Pass visibility state
         />
       ))}
     </group>
