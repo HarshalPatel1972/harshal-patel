@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/effects/ThemeProvider";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
@@ -15,6 +15,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Harshal Patel | Portfolio",
   description: "Creative Developer & Designer crafting digital experiences.",
@@ -24,14 +29,9 @@ export const metadata: Metadata = {
  * Root Layout
  * 
  * ARCHITECTURE:
- * - PreloaderWrapper: Cinematic intro animation (hand breaking glass)
+ * - PreloaderWrapper: Cinematic intro animation
  * - ThemeProvider: Dark/Light mode switching
  * - SmoothScroll: Lenis-powered smooth scrolling
- * 
- * RESPONSIVE DESIGN RULES:
- * 1. Always write CSS Mobile-First (e.g., `w-full md:w-1/2`)
- * 2. Use dynamic viewport units (`dvh`, `svh`) for full-screen sections
- * 3. Test on: Mobile → Tablet → Laptop → Desktop → Ultra-wide
  */
 export default function RootLayout({
   children,
@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeProvider>
           <PreloaderWrapper>

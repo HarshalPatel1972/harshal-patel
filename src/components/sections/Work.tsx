@@ -1,51 +1,91 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { APPS } from "@/lib/apps";
 
 export function Work() {
-  const projects = [
-    { title: "Project One", category: "Web Development", color: "from-indigo-500 to-purple-600" },
-    { title: "Project Two", category: "UI/UX Design", color: "from-emerald-500 to-teal-600" },
-    { title: "Project Three", category: "Mobile App", color: "from-orange-500 to-red-600" },
-  ];
-
   return (
-    <section id="work" className="py-24 px-6 md:px-12 bg-black">
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          className="text-3xl md:text-5xl font-bold text-white mb-12"
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
+    <section id="work" className="py-24 px-6 md:px-12 bg-black relative">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* HEADER */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
+          className="mb-16 border-b border-white/10 pb-4 flex justify-between items-end"
         >
-          Selected Work<span className="text-indigo-400">.</span>
-        </motion.h2>
+          <h2 className="text-4xl md:text-6xl font-bold font-space tracking-tighter text-white">
+            MODULE<br/>REGISTRY<span className="text-rose-400">.</span>
+          </h2>
+          <div className="hidden md:block text-right font-mono text-xs text-white/40">
+            TOTAL_MODULES: {APPS.length.toString().padStart(2, '0')}<br/>
+            STATUS: ACTIVE
+          </div>
+        </motion.div>
 
+        {/* MODULE GRID */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, i) => (
+          {APPS.map((app, i) => (
             <motion.div
-              key={project.title}
-              className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer"
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
+              key={app.name}
+              className="group relative h-64 bg-zinc-900/50 border border-white/10 rounded-sm overflow-hidden cursor-pointer"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ y: -5 }}
             >
-              {/* Gradient background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.color}`} />
-              
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-              
-              {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <p className="text-white/70 text-sm mb-1">{project.category}</p>
-                <h3 className="text-white text-xl font-semibold">{project.title}</h3>
+              {/* Background Glow */}
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+                style={{ background: `radial-gradient(circle at center, ${app.hex}, transparent)` }}
+              />
+
+              {/* Scanline Overlay */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.2)_50%)] bg-[length:100%_4px] pointer-events-none opacity-50" />
+
+              <div className="absolute inset-0 p-6 flex flex-col justify-between">
+                
+                {/* Top: Header */}
+                <div className="flex justify-between items-start">
+                  <div className="font-mono text-[10px] text-white/40 tracking-widest">
+                    MOD_0{i + 1}
+                  </div>
+                  <div className={`w-2 h-2 rounded-full ${i % 2 === 0 ? 'bg-green-500' : 'bg-amber-500'} animate-pulse`} />
+                </div>
+
+                {/* Center: Icon */}
+                <div className="self-center transform group-hover:scale-110 transition-transform duration-500">
+                  <app.icon 
+                    size={48} 
+                    className="opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ color: app.hex, filter: `drop-shadow(0 0 15px ${app.hex}60)` }}
+                  />
+                </div>
+
+                {/* Bottom: Label */}
+                <div>
+                  <h3 className="text-2xl font-space font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">
+                    {app.name.toUpperCase()}
+                  </h3>
+                  <p className="font-mono text-[10px] text-white/40 uppercase">
+                    Core System Component
+                  </p>
+                </div>
+
               </div>
+
+              {/* Corner Accents */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-white/20" />
+              <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-white/20" />
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-white/20" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-white/20" />
+
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );
