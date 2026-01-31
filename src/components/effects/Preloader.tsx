@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { RoundedBox, Html, Environment } from "@react-three/drei";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
@@ -58,7 +59,7 @@ function GlassPillar({
           pointerEvents: 'none',
           userSelect: 'none',
           // TASK 5: 3D LOOK (Drop shadow + brightness)
-          filter: `drop-shadow(0 0 10px ${app.hex}) brightness(1.2)` 
+          filter: `drop-shadow(0 0 10px ${app.hex}) brightness(1.5)` 
         }}
         zIndexRange={[100, 0]}
         scale={scale} // Scale content with pillar size
@@ -75,7 +76,7 @@ function GlassPillar({
                fontSize: '8px',
                writingMode: 'vertical-rl', 
                textOrientation: 'upright', 
-               textShadow: `0 0 15px ${app.hex}`,
+               textShadow: `0 0 20px ${app.hex}`,
                height: '100px',
                marginTop: '10px'
              }} 
@@ -101,8 +102,6 @@ function Scene({ onComplete }: { onComplete: () => void }) {
   // Constrain maximums so they don't get huge on ultra-wides
   const pillarWidth = Math.min(0.5, unitSize * 0.75); 
   const gap = Math.min(0.15, unitSize * 0.25);
-  // Re-calculate total utilized width to ensure center alignment logic works
-  // Actually x position logic handles centering automatically
 
   const pillarHeight = isMobile ? 2.0 : 2.5;
 
@@ -119,17 +118,19 @@ function Scene({ onComplete }: { onComplete: () => void }) {
       opacity: 0.3,            // Lower base opacity
       emissive: app.hex,
       emissiveIntensity: 0.0,
+      toneMapped: false        // IMPORTANT for Bloom to work
     }));
   }, []);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
-    const speed = 2.5; 
+    const speed = 0.8; // 🐢 SLOWER SPEED (Was 2.5) -> ~3x slower scan
     const activeIndex = Math.floor((time * speed) % APPS.length);
 
     materials.forEach((mat, i) => {
       const isTarget = i === activeIndex;
-      const targetEmissive = isTarget ? 0.8 : 0.0;
+      // 🌟 GLOW EFFECT INCREASED
+      const targetEmissive = isTarget ? 3.0 : 0.0; // Was 0.8, now 3.0 for BLOOM
       const targetMetalness = isTarget ? 1.0 : 0.9;
       
       mat.emissiveIntensity = THREE.MathUtils.lerp(mat.emissiveIntensity, targetEmissive, 0.1);
@@ -138,7 +139,8 @@ function Scene({ onComplete }: { onComplete: () => void }) {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => onComplete(), 4500); 
+    // 🐢 SLOWER LOADING TIME
+    const timer = setTimeout(() => onComplete(), 7000); // Was 4500ms -> 7000ms (~1.5x slower total)
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -147,6 +149,16 @@ function Scene({ onComplete }: { onComplete: () => void }) {
       <Environment preset="city" /> 
       <ambientLight intensity={0.5} />
       <spotLight position={[0, 0, 10]} intensity={2} color="white" />
+      
+      {/* ✨ POST PROCESSING BLOOM */}
+      <EffectComposer>
+        <Bloom 
+           luminanceThreshold={1.0} 
+           mipmapBlur 
+           intensity={1.5} 
+           radius={0.4}
+        />
+      </EffectComposer>
       
       {APPS.map((app, i) => (
         <GlassPillar 
