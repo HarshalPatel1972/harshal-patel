@@ -202,7 +202,7 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l-[1.5px] border-white/30 flex flex-col justify-center bg-white/[0.04] backdrop-blur-[4px] backdrop-saturate-150 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5),inset_1px_0_0_rgba(255,255,255,0.5)] transition-opacity duration-1000 overflow-hidden"
+        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] flex flex-col justify-center bg-white/[0.04] backdrop-blur-[4px] backdrop-saturate-150 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5),inset_1px_0_0_rgba(255,255,255,0.5)] transition-opacity duration-1000 overflow-hidden"
         fill="rgba(255, 255, 255, 0.4)"
       > 
         <motion.div
@@ -223,7 +223,7 @@ export function DesktopDashboard() {
                     onMouseLeave={() => setHoveredLink(null)}
                     className={`
                         group aspect-square w-full border-t border-b border-white/[0.03] relative flex flex-col items-center justify-center cursor-pointer transition-all duration-500
-                        ${isActive ? 'bg-white/[0.05]' : 'hover:bg-white/[0.02]'}
+                        hover:bg-white/[0.02]
                         first:border-t-white/[0.03]
                         z-10
                     `}
