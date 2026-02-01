@@ -34,7 +34,7 @@ export function DesktopDashboard() {
       {/* =========================================
           LEFT: MAIN STAGE (Transparent for Void to show through)
       ========================================= */}
-      <div className="flex-1 relative border-r border-white/5 flex flex-col min-w-0">
+      <div className="flex-1 relative flex flex-col min-w-0 mr-[100px] md:mr-[120px] lg:mr-[140px]">
           
           {/* 🟢 GLOBAL HEADER (Fades in) */}
           <motion.div 
@@ -220,7 +220,7 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/10 flex flex-col justify-center bg-white/[0.03] backdrop-blur-3xl z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] transition-opacity duration-1000 flex-shrink-0 h-full ml-auto"
+        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/10 flex flex-col justify-center bg-white/[0.03] backdrop-blur-3xl z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] transition-opacity duration-1000 overflow-hidden"
         fill="rgba(255, 255, 255, 0.1)"
       > 
         <motion.div
