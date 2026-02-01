@@ -1,15 +1,15 @@
+```
 "use client";
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconCpu, IconGridDots, IconMail, IconArrowUpRight, IconHome, IconMenu2, IconArrowRight, IconPrompt } from "@tabler/icons-react";
+import { House, SquaresFour, Cpu, EnvelopeSimple } from "@phosphor-icons/react";
 import { Work } from "@/components/sections/Work";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
 import { Spotlight } from "@/components/ui/Spotlight";
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
-
 
 
 
@@ -22,10 +22,10 @@ export function DesktopDashboard() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   const navItems = [
-    { id: 'hero', label: 'HOME', icon: IconHome },
-    { id: 'work', label: 'WORK', icon: IconGridDots },
-    { id: 'about', label: 'ABOUT', icon: IconCpu },
-    { id: 'contact', label: 'CONTACT', icon: IconMail },
+    { id: 'hero', label: 'HOME', icon: House },
+    { id: 'work', label: 'WORK', icon: SquaresFour },
+    { id: 'about', label: 'ABOUT', icon: Cpu },
+    { id: 'contact', label: 'CONTACT', icon: EnvelopeSimple },
   ];
 
   return (
@@ -310,7 +310,7 @@ export function DesktopDashboard() {
                         >
                             <item.icon 
                                 size={28} 
-                                stroke={1.5}
+                                weight="duotone"
                                 className={isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]' : 'drop-shadow-sm'}
                             />
                         </motion.div>
