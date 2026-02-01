@@ -211,9 +211,29 @@ export function DesktopDashboard() {
            animate={{ opacity: 1, x: 0 }}
            transition={{ duration: 0 }}
         >
-          {navItems.map((item) => {
+          {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
+
+              // 🌈 DYNAMIC GRADIENT: Alternates direction per item
+              // Item 1 (Work): Cyan -> Blue
+              // Item 2 (About): Blue -> Cyan (Reverse)
+              // Item 3 (Contact): Cyan -> Blue
+              const colors = [
+                  'rgba(6,182,212,0.15)', // Cyan
+                  'rgba(244,63,94,0.15)', // Rose
+                  'rgba(124,58,237,0.15)', // Violet
+                  'rgba(249,115,22,0.15)', // Orange
+                  'rgba(250,204,21,0.15)', // Yellow
+                  'rgba(16,185,129,0.15)', // Emerald
+                  'rgba(59,130,246,0.15)'  // Blue
+              ];
+              
+              const activeGradient = idx % 2 === 0 
+                  ? colors 
+                  : [...colors].reverse();
+
+              const gradientString = `linear-gradient(135deg, ${activeGradient.join(', ')})`;
 
               return (
                 <button
@@ -228,12 +248,6 @@ export function DesktopDashboard() {
                         z-10
                     `}
                 >
-
-
-
-
-
-
                     {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
                     <AnimatePresence mode="wait">
                         {isActive && (
@@ -263,15 +277,7 @@ export function DesktopDashboard() {
                                                 ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
                                             `}
                                             style={{
-                                                background: `linear-gradient(135deg, 
-                                                    rgba(6,182,212,0.15), 
-                                                    rgba(244,63,94,0.15), 
-                                                    rgba(124,58,237,0.15), 
-                                                    rgba(249,115,22,0.15), 
-                                                    rgba(250,204,21,0.15), 
-                                                    rgba(16,185,129,0.15), 
-                                                    rgba(59,130,246,0.15)
-                                                )`
+                                                background: gradientString
                                             }}
                                         />
                                     );
