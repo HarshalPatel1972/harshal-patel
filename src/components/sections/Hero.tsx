@@ -23,7 +23,7 @@ export function Hero() {
       {/* 🖼️ HERO BACKGROUND IMAGE (Full Page) */}
       <div className="absolute inset-0 z-0">
         <Image 
-          src="/harshal-0.png" 
+          src="/harshal-1.png" 
           alt="Harshal Patel"
           fill
           className="object-cover object-center"
