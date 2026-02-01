@@ -228,13 +228,7 @@ export function DesktopDashboard() {
                         z-10
                     `}
                 >
-                    {/* Active Indicator Corner */}
-                    {isActive && (
-                        <motion.div 
-                            layoutId="activeCorner"
-                            className="absolute top-2 right-2 w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"
-                        />
-                    )}
+
 
                     <motion.div 
                        animate={{ 
