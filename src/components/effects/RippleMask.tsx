@@ -54,7 +54,10 @@ export default function RippleMask() {
         // Radius + Variance
         // 🌊 BOOST: 2.0x base multiplier to ensure better overlaps and faster clearing
         // Stage 7: "Tsunami Mode" - Massive ripples to clear everything
-        const multiplier = stage === 7 ? 4.0 : 2.2; 
+        const isMobileWidth = viewport.w < 768;
+        const baseMult = isMobileWidth ? 1.5 : 2.5; // 📱 Smaller on mobile to prevent "Big Blob" look
+        
+        const multiplier = stage === 7 ? 4.0 : baseMult; 
         const baseRadius = Math.sqrt(rippleArea / Math.PI) * multiplier; 
         const variance = Math.random() * 0.6 + 0.8; 
 
