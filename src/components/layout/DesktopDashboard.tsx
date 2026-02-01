@@ -29,7 +29,7 @@ export function DesktopDashboard() {
   ];
 
   return (
-    <div className="h-screen w-full bg-transparent text-white overflow-hidden flex font-space">
+    <div className="h-screen w-full bg-transparent text-white overflow-hidden flex font-space relative">
       
       {/* =========================================
           LEFT: MAIN STAGE (Transparent for Void to show through)
