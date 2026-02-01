@@ -44,6 +44,14 @@ export function Hero() {
         }}
       />
 
+      {/* 📐 CORNER GUIDES / MAJOR LINES (Overlay) */}
+      <div className="absolute inset-0 pointer-events-none z-0 hidden md:block opacity-10">
+         <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
+         <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
+         <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
+         <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
+      </div>
+
       <AnimatePresence>
         {isComplete && (
           <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
