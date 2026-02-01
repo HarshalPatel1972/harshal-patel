@@ -19,7 +19,28 @@ export function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-4 md:px-20 overflow-hidden bg-[#050505] pt-20 md:pt-0">
       
-      {/* ... existing detailed grid lines ... */}
+      {/* 🖼️ HERO BACKGROUND IMAGE (Full Page) */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-black/60 z-10" /> {/* Darken base */}
+        <Image 
+          src="/harshal-0.png" 
+          alt="Harshal Patel"
+          fill
+          className="object-cover object-center opacity-80"
+          priority
+        />
+        {/* Gradient Scrims: Fade Left (Text) -> Right (Image) */}
+        <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#050505] via-[#050505]/95 md:via-[#050505]/50 to-transparent" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/50" />
+      </div>
+
+      {/* 📐 TECHNICAL GRID / GUIDE LINES (Hidden on Mobile) */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-10 hidden md:block">
+        <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
+        <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
+        <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
+        <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
+      </div>
 
       <AnimatePresence>
         {isComplete && (
