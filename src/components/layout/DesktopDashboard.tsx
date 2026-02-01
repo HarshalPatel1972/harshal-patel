@@ -233,7 +233,7 @@ export function DesktopDashboard() {
 
 
 
-                >
+
                     {/* 💎 POLISHED PILLAR GLASS (Active Background) - HALF SIZE */}
                     {isActive && (
                         <motion.div 
