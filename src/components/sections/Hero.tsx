@@ -20,18 +20,18 @@ export function Hero() {
     <section className="relative min-h-screen flex flex-col justify-center px-4 md:px-20 overflow-hidden bg-[#050505] pt-20 md:pt-0">
       
       {/* 🖼️ HERO BACKGROUND IMAGE (Full Page) */}
+      {/* 🖼️ HERO BACKGROUND IMAGE (Full Page) */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-black/60 z-10" /> {/* Darken base */}
         <Image 
           src="/harshal-0.png" 
           alt="Harshal Patel"
           fill
-          className="object-cover object-center opacity-80"
+          className="object-cover object-center"
           priority
         />
         {/* Gradient Scrims: Fade Left (Text) -> Right (Image) */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#050505] via-[#050505]/95 md:via-[#050505]/50 to-transparent" />
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/50" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/80 md:via-transparent to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
       </div>
 
       {/* 📐 TECHNICAL GRID / GUIDE LINES (Hidden on Mobile) */}
