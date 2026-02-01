@@ -41,44 +41,43 @@ export function Hero() {
                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                  <span>SYS.ONLINE</span>
               </div>
-              <div>LOC: BOMBAY_</div>
+              <div>LOC: VARANASI_</div>
               <div className="hidden md:block">ID: HARSHAL_V1.0</div>
             </motion.div>
 
-            {/* 🟦 COLUMN 2: MAIN CONTENT */}
-            <div className="md:col-span-10">
-              
-              <h1 className="font-space font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tighter text-white mb-6 md:mb-8">
-                <motion.div 
-                   initial={{ opacity: 0, y: 50 }}
-                   animate={showContent ? { opacity: 1, y: 0 } : {}}
-                   transition={{ duration: 0.8, ease: "circOut", delay: 0.2 }}
-                >
-                  SYSTEM
-                </motion.div>
-                <motion.div 
-                   className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400"
-                   initial={{ opacity: 0, y: 50 }}
-                   animate={showContent ? { opacity: 1, y: 0 } : {}}
-                   transition={{ duration: 0.8, ease: "circOut", delay: 0.3 }}
-                >
-                  ARCHITECT
-                </motion.div>
-              </h1>
+              <div className="md:col-span-10">
+                
+                <h1 className="font-space font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tighter text-white mb-6 md:mb-8">
+                  <motion.div 
+                     initial={{ opacity: 0, y: 50 }}
+                     animate={showContent ? { opacity: 1, y: 0 } : {}}
+                     transition={{ duration: 0.8, ease: "circOut", delay: 0.2 }}
+                  >
+                    SOFTWARE
+                  </motion.div>
+                  <motion.div 
+                     className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400"
+                     initial={{ opacity: 0, y: 50 }}
+                     animate={showContent ? { opacity: 1, y: 0 } : {}}
+                     transition={{ duration: 0.8, ease: "circOut", delay: 0.3 }}
+                  >
+                    ENGINEER
+                  </motion.div>
+                </h1>
 
-              <motion.div 
-                className="max-w-2xl border-l-[1px] border-white/20 pl-4 md:pl-6 space-y-4"
-                initial={{ opacity: 0 }}
-                animate={showContent ? { opacity: 1 } : {}}
-                transition={{ delay: 0.6, duration: 1 }}
-              >
-                <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-                  <span className="text-emerald-500 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
-                </p>
-                <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-                  <span className="text-cyan-500 font-bold">{`>`}</span> Optimizing for scale, performance, and aesthetic precision.
-                </p>
-              </motion.div>
+                <motion.div 
+                  className="max-w-2xl border-l-[1px] border-white/20 pl-4 md:pl-6 space-y-4"
+                  initial={{ opacity: 0 }}
+                  animate={showContent ? { opacity: 1 } : {}}
+                  transition={{ delay: 0.6, duration: 1 }}
+                >
+                  <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
+                    <span className="text-emerald-500 font-bold">{`>`}</span> High-performance systems via Go & WebAssembly.
+                  </p>
+                  <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
+                    <span className="text-cyan-500 font-bold">{`>`}</span> Scalable applications with React & Next.js.
+                  </p>
+                </motion.div>
 
               <motion.div 
                 className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-12 w-full sm:w-auto"
