@@ -30,7 +30,7 @@ export function Hero() {
           priority
         />
         {/* Gradient Scrims: Fade Left (Text) -> Right (Image) */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/80 md:via-transparent to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/20 md:via-transparent to-transparent" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
       </div>
 
