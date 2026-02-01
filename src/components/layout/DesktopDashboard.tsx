@@ -258,11 +258,21 @@ export function DesktopDashboard() {
                                             }}
                                             className={`
                                                 w-full h-[25%] 
-                                                bg-white/[0.04]
                                                 backdrop-blur-[4px] border-l border-r border-white/30
                                                 ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
                                                 ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
                                             `}
+                                            style={{
+                                                background: `linear-gradient(135deg, 
+                                                    rgba(6,182,212,0.15), 
+                                                    rgba(244,63,94,0.15), 
+                                                    rgba(124,58,237,0.15), 
+                                                    rgba(249,115,22,0.15), 
+                                                    rgba(250,204,21,0.15), 
+                                                    rgba(16,185,129,0.15), 
+                                                    rgba(59,130,246,0.15)
+                                                )`
+                                            }}
                                         />
                                     );
                                 })}
