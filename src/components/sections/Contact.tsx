@@ -41,23 +41,6 @@ export function Contact() {
           </p>
         </motion.div>
 
-        {/* CONTACT DETAILS */}
-        <motion.div 
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-        >
-             <div className="p-4 border border-white/10 bg-white/5 rounded-sm hover:border-green-500/50 transition-colors">
-                 <div className="text-[10px] text-white/40 font-mono mb-1">PHONE_UPLINK</div>
-                 <div className="text-white font-space font-bold">+91-7017297823</div>
-             </div>
-             <div className="p-4 border border-white/10 bg-white/5 rounded-sm hover:border-green-500/50 transition-colors">
-                 <div className="text-[10px] text-white/40 font-mono mb-1">MAIL_RELAY</div>
-                 <a href="mailto:harshalpatel6828@gmail.com" className="text-white font-space font-bold hover:text-green-400 transition-colors break-all">harshalpatel6828@gmail.com</a>
-             </div>
-        </motion.div>
-
         {/* TERMINAL FORM */}
         <motion.div
            initial={{ opacity: 0, y: 30 }}

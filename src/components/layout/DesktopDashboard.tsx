@@ -46,7 +46,7 @@ export function DesktopDashboard() {
                   HARSHAL PATEL<span className="text-emerald-500/80">.</span>
               </h1>
               <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
-                  SYSTEM ARCHITECT
+                  SOFTWARE ENGINEER
               </p>
           </motion.div>
 
