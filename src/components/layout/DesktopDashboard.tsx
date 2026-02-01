@@ -228,7 +228,7 @@ export function DesktopDashboard() {
                         z-10
                     `}
                 >
-                >
+
                     {/* 💧 OBSIDIAN BUBBLE OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
