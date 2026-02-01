@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { Lightning } from "@phosphor-icons/react";
 import Image from "next/image";
 import { usePreloader } from "@/lib/preloader-context";
 import { useEffect, useState } from "react";
@@ -135,10 +136,11 @@ export function Hero() {
         animate={showContent ? { opacity: 1 } : {}}
         transition={{ delay: 1.5 }}
       >
-        <span className="block font-mono text-[8px] md:text-[9px] text-white/30 tracking-widest mb-1">CURRENT_STATUS</span>
-        <span className="text-emerald-400 font-mono text-[10px] md:text-xs tracking-wider">
-          OPEN_FOR_OPPORTUNITIES
-        </span>
+        <span className="block font-mono text-[8px] md:text-[9px] text-white/30 tracking-widest mb-1">CREDITS</span>
+        <a href="https://fiddle.digital" target="_blank" rel="noopener noreferrer" className="text-white font-space font-bold text-[10px] md:text-xs tracking-wider flex items-center justify-end gap-2 hover:text-cyan-400 transition-colors">
+          <Lightning weight="fill" className="text-cyan-400 w-3 h-3" />
+          Fiddle.Digital
+        </a>
       </motion.div>
 
     </section>
