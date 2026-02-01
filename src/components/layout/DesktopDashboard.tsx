@@ -1,115 +1,183 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { IconCpu, IconGridDots, IconMail, IconArrowUpRight } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IconCpu, IconGridDots, IconMail, IconArrowUpRight, IconHome, IconMenu2, IconArrowRight, IconPrompt } from "@tabler/icons-react";
+import { Work } from "@/components/sections/Work";
+import { About } from "@/components/sections/About";
+import { Contact } from "@/components/sections/Contact";
+import { Hero } from "@/components/sections/Hero";
 
-/**
- * DESKTOP DASHBOARD (No-Scroll)
- * A grid-based interface where navigation is embedded in the cells.
- */
+type ViewState = 'hero' | 'about' | 'work' | 'contact';
+
+
+
+
+
 export function DesktopDashboard() {
-  const [hoveredCell, setHoveredCell] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<ViewState>('hero');
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
-  // Helper to handle hover state
-  const handleHover = (id: string | null) => setHoveredCell(id);
+  const navItems = [
+    { id: 'hero', label: 'HOME', icon: IconHome },
+    { id: 'work', label: 'WORK', icon: IconGridDots },
+    { id: 'about', label: 'ABOUT', icon: IconCpu },
+    { id: 'contact', label: 'CONTACT', icon: IconMail },
+  ];
 
   return (
-    <div className="h-screen w-full bg-black text-white overflow-hidden relative font-space">
+    <div className="h-screen w-full bg-black text-white overflow-hidden flex font-space">
       
-      {/* 🔮 BACKGROUND GRID LINES */}
-      <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none opacity-20 z-0">
-        {[...Array(9)].map((_, i) => (
-          <div key={i} className="border border-white/10" />
-        ))}
-      </div>
+      {/* =========================================
+          LEFT: MAIN STAGE (Rest of Space)
+      ========================================= */}
+      <div className="flex-1 relative border-r border-white/5 flex flex-col min-w-0">
+          
+          {/* 🟢 GLOBAL HEADER (FIXED TOP-LEFT) */}
+          <div className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-difference">
+              <h1 className="text-2xl font-black tracking-tighter text-white">
+                  HARSHAL PATEL<span className="text-mint-500">.</span>
+              </h1>
+              <p className="text-[10px] tracking-[0.2em] text-white/60 mt-1">
+                  SYSTEM ARCHITECT
+              </p>
+          </div>
 
-      <div className="relative z-10 w-full h-full grid grid-cols-3 grid-rows-3">
+          {/* 🟢 GLOBAL FOOTER (FIXED BOTTOM-LEFT) */}
+          <div className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-difference flex gap-4 text-[10px] font-mono text-white/40">
+               <span>© 2026</span>
+               <span>//</span>
+               <span>ALL_SYSTEMS_NOMINAL</span>
+          </div>
 
-        {/* 1. TOP LEFT: Status */}
-        <div className="p-8 border-r border-b border-white/5 flex flex-col justify-between">
-            <div className="text-xs text-mint-500 animate-pulse">● SYS.ONLINE</div>
-            <div className="text-[10px] text-white/40 font-mono">ID: HARSHAL_V1.0</div>
-        </div>
-
-        {/* 2. TOP CENTER: Empty / Decoration */}
-        <div className="border-r border-b border-white/5 p-8 flex items-center justify-center">
-            {/* Maybe a small clock or weather? */}
-        </div>
-
-        {/* 3. TOP RIGHT: CONNECT */}
-        <Link 
-            href="/contact" 
-            className="group border-b border-white/5 bg-black hover:bg-white/5 transition-colors relative flex flex-col items-center justify-center cursor-pointer"
-            onMouseEnter={() => handleHover('contact')}
-            onMouseLeave={() => handleHover(null)}
-        >
-            <IconMail size={40} className="text-white/50 group-hover:text-mint-400 transition-colors mb-4" />
-            <span className="text-sm tracking-widest text-white/60 group-hover:text-white">INITIATE_CONTACT</span>
-            <IconArrowUpRight className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-mint-500" />
-        </Link>
-
-
-        {/* 4. MIDDLE LEFT: WORK (MODULES) */}
-        <Link 
-            href="/work" 
-            className="group border-r border-b border-white/5 bg-black hover:bg-white/5 transition-colors relative flex flex-col items-center justify-center cursor-pointer"
-            onMouseEnter={() => handleHover('work')}
-            onMouseLeave={() => handleHover(null)}
-        >
-            <IconGridDots size={40} className="text-white/50 group-hover:text-mint-400 transition-colors mb-4" />
-            <span className="text-sm tracking-widest text-white/60 group-hover:text-white">MODULE_REGISTRY</span>
-            <IconArrowUpRight className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-mint-500" />
-        </Link>
-
-
-        {/* 5. CENTER: IDENTITY (HERO) */}
-        <div className="border-r border-b border-white/5 flex flex-col items-center justify-center bg-black relative overflow-hidden group">
-            {/* Glitch Effect on Hover? */}
-            <h2 className="text-xs tracking-[0.5em] text-mint-500 mb-2">SYSTEM ARCHITECT</h2>
-            <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white group-hover:scale-105 transition-transform duration-500">
-                HARSHAL
-            </h1>
-            <div className="flex gap-2 mt-2">
-                <span className="w-2 h-2 bg-mint-500 rounded-full" />
-                <span className="w-2 h-2 bg-white/20 rounded-full" />
-                <span className="w-2 h-2 bg-white/20 rounded-full" />
+          {/* 🎭 CONTENT AREA (FULL FILL) */}
+          <div className="flex-1 relative overflow-hidden bg-black/50">
+             
+             {/* BACKGROUND GRID */}
+             <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 pointer-events-none opacity-5">
+                {[...Array(144)].map((_, i) => (
+                    <div key={i} className="border border-white/10" />
+                ))}
             </div>
-        </div>
+
+            <AnimatePresence mode="wait">
+                
+                {/* HERO VIEW - MAXIMIZED */}
+                {activeView === 'hero' && (
+                    <motion.div 
+                        key="hero"
+                        className="absolute inset-0 overflow-hidden"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                         {/* Using the original Hero component as requested */}
+                         <div className="w-full h-full flex items-center justify-center scale-90 md:scale-100 origin-center">
+                            <Hero />
+                         </div>
+                    </motion.div>
+                )}
+
+                {/* WORK VIEW */}
+                {activeView === 'work' && (
+                    <motion.div 
+                        key="work"
+                        className="absolute inset-0 overflow-y-auto no-scrollbar"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                    > 
+                       <div className="min-h-full p-8 md:p-16 pt-32">
+                           <Work />
+                       </div>
+                    </motion.div>
+                )}
+
+                {/* ABOUT VIEW */}
+                {activeView === 'about' && (
+                    <motion.div 
+                        key="about"
+                        className="absolute inset-0 overflow-y-auto no-scrollbar"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                    > 
+                       <div className="min-h-full p-8 md:p-16 pt-32">
+                           <About />
+                       </div>
+                    </motion.div>
+                )}
+
+                {/* CONTACT VIEW */}
+                {activeView === 'contact' && (
+                    <motion.div 
+                        key="contact"
+                        className="absolute inset-0 overflow-y-auto no-scrollbar flex items-center justify-center"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                    > 
+                       <div className="w-full h-full flex items-center justify-center p-8 pt-32">
+                           <Contact />
+                       </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+          </div>
+      </div>
 
 
-        {/* 6. MIDDLE RIGHT: ABOUT (SPECS) */}
-        <Link 
-            href="/about" 
-            className="group border-b border-white/5 bg-black hover:bg-white/5 transition-colors relative flex flex-col items-center justify-center cursor-pointer"
-            onMouseEnter={() => handleHover('about')}
-            onMouseLeave={() => handleHover(null)}
-        >
-            <IconCpu size={40} className="text-white/50 group-hover:text-mint-400 transition-colors mb-4" />
-            <span className="text-sm tracking-widest text-white/60 group-hover:text-white">SYSTEM_SPECS</span>
-            <IconArrowUpRight className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-mint-500" />
-        </Link>
+      {/* =========================================
+          RIGHT: NAVIGATION (CLEAN STACK)
+      ========================================= */}
+      <div className="w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/5 flex flex-col justify-center bg-black z-20">
+          
+          {/* JUST NAV SQUARES - Centered Vertically */}
+          
+          {navItems.map((item) => {
+              const isActive = activeView === item.id;
+              const isHovered = hoveredLink === item.id;
 
+              return (
+                <button
+                    key={item.id}
+                    onClick={() => setActiveView(item.id as ViewState)}
+                    onMouseEnter={() => setHoveredLink(item.id)}
+                    onMouseLeave={() => setHoveredLink(null)}
+                    className={`
+                        group aspect-square w-full border-b border-t border-white/5 relative flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+                        ${isActive ? 'bg-white/10' : 'hover:bg-white/5'}
+                        first:border-t-white/5
+                    `}
+                >
+                    {/* Active Indicator Corner */}
+                    {isActive && (
+                        <motion.div 
+                            layoutId="activeCorner"
+                            className="absolute top-2 right-2 w-2 h-2 bg-mint-500"
+                        />
+                    )}
 
-        {/* 7. BOTTOM LEFT: Decoration */}
-        <div className="border-r border-white/5 p-8">
-             <div className="h-full w-full border border-dashed border-white/10 rounded flex items-center justify-center">
-                <span className="text-[10px] text-white/20">AWAITING_INPUT</span>
-             </div>
-        </div>
-
-        {/* 8. BOTTOM CENTER: Footer / Copyright */}
-        <div className="border-r border-white/5 p-8 flex items-end justify-center">
-            <span className="text-[10px] text-white/30">© 2026 HARSHAL OS</span>
-        </div>
-
-        {/* 9. BOTTOM RIGHT: Socials? */}
-        <div className="p-8 flex items-center justify-center gap-4">
-             {/* Social Icons could go here */}
-        </div>
+                    <motion.div 
+                       animate={{ scale: isHovered || isActive ? 1.1 : 1 }}
+                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                        <item.icon 
+                            size={28} 
+                            stroke={1.5}
+                            className={`mb-2 transition-colors ${isActive ? 'text-mint-400' : 'text-white/40 group-hover:text-white'}`} 
+                        />
+                    </motion.div>
+                    
+                    <span className={`text-[10px] tracking-widest font-bold transition-colors uppercase ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
+                        {item.label}
+                    </span>
+                </button>
+              );
+          })}
 
       </div>
+
     </div>
   );
 }
