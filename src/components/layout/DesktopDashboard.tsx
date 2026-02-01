@@ -232,7 +232,7 @@ export function DesktopDashboard() {
 
 
 
-                >
+
                     {/* 💎 POLISHED PILLAR GLASS (Active Background) */}
                     {isActive && (
                         <motion.div 
