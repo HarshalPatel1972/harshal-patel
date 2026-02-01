@@ -234,19 +234,41 @@ export function DesktopDashboard() {
 
 
 
-                    {/* 💎 POLISHED PILLAR GLASS (Active Background) - HALF SIZE */}
-                    {isActive && (
-                        <motion.div 
-                            layoutId="activeWater"
-                            className="absolute inset-[25%] rounded-[12px] bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.2),0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-[4px] z-0"
-                            transition={{ 
-                                type: "spring", 
-                                stiffness: 300, 
-                                damping: 20, 
-                                mass: 0.6 
-                            }}
-                        />
-                    )}
+                    {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
+                    <AnimatePresence mode="wait">
+                        {isActive && (
+                            <div className="absolute inset-[25%] z-0 flex flex-col rounded-[12px] overflow-visible">
+                                {/* Use 4 Shards for the Split Effect */}
+                                {[0, 1, 2, 3].map((i) => {
+                                    // Direction: Top/Bottom Left (-1), Middle Right (1)
+                                    const direction = (i === 0 || i === 3) ? -1 : 1;
+                                    
+                                    return (
+                                        <motion.div
+                                            key={i}
+                                            initial={{ x: direction * 40, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            exit={{ x: direction * 40, opacity: 0 }}
+                                            transition={{ 
+                                                type: "spring", 
+                                                stiffness: 350, 
+                                                damping: 25,
+                                                mass: 0.8,
+                                                delay: i * 0.02 // Subtle stagger
+                                            }}
+                                            className={`
+                                                w-full h-[25%] 
+                                                bg-gradient-to-br from-white/[0.08] to-white/[0.01] 
+                                                backdrop-blur-[4px] border-l border-r border-white/30
+                                                ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
+                                                ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
+                                            `}
+                                        />
+                                    );
+                                })}
+                            </div> 
+                        )}
+                    </AnimatePresence>
 
                     <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white group-hover:text-white transition-colors">
                         {/* ICON: Slides Left on Hover */}
