@@ -226,11 +226,17 @@ export function DesktopDashboard() {
                         ${isActive ? 'bg-white/[0.05]' : 'hover:bg-white/[0.02]'}
                         first:border-t-white/[0.03]
                         z-10
-                    `}
                 >
+                    {/* 💧 WATERY GLASS OVERLAY (Active Background) */}
+                    {isActive && (
+                        <motion.div 
+                            layoutId="activeWater"
+                            className="absolute inset-2 md:inset-4 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.15),0_4px_20px_rgba(0,0,0,0.1)] backdrop-blur-sm z-0"
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                    )}
 
-
-                    <div className="relative w-full h-full flex items-center justify-center overflow-hidden text-white/70 group-hover:text-white transition-colors">
+                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white/70 group-hover:text-white transition-colors">
                         {/* ICON: Slides Left on Hover */}
                         <motion.div 
                            animate={{ 
