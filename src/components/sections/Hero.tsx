@@ -40,7 +40,7 @@ export function Hero() {
         className="absolute inset-0 pointer-events-none z-0 hidden md:block opacity-[0.07]"
         style={{
           backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-          backgroundSize: '120px 120px'
+          backgroundSize: '240px 240px'
         }}
       />
 
