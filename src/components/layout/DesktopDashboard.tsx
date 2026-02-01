@@ -208,6 +208,9 @@ export function DesktopDashboard() {
         <motion.div
            className="flex flex-col flex-1 justify-center w-full"
            initial={{ opacity: 1, x: 0 }}
+           animate={{ opacity: 1, x: 0 }}
+           transition={{ duration: 0 }}
+        >
           {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
