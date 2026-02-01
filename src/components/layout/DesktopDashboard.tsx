@@ -40,7 +40,7 @@ export function DesktopDashboard() {
           <motion.div 
              className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter"
              initial={{ opacity: 0 }}
-             animate={{ opacity: isComplete ? 1 : 0 }}
+             animate={{ opacity: 1 }}
              transition={{ duration: 1, delay: 0.5 }}
           >
               <h1 className="text-2xl font-black tracking-tighter text-white/90">
@@ -55,7 +55,7 @@ export function DesktopDashboard() {
           <motion.div 
              className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30"
              initial={{ opacity: 0 }}
-             animate={{ opacity: isComplete ? 1 : 0 }}
+             animate={{ opacity: 1 }}
              transition={{ duration: 1, delay: 0.5 }}
           >
                <span>© 2026</span>
@@ -70,7 +70,7 @@ export function DesktopDashboard() {
              <motion.div 
                 className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: isComplete ? 0.03 : 0 }}
+                animate={{ opacity: 0.03 }}
                 transition={{ duration: 2 }}
              >
                 {[...Array(200)].map((_, i) => (
@@ -81,7 +81,7 @@ export function DesktopDashboard() {
             <AnimatePresence mode="wait">
                 
                 {/* HERO VIEW - MAXIMIZED CONTENT */}
-                {isComplete && activeView === 'hero' && (
+                {activeView === 'hero' && (
                     <motion.div 
                         key="hero"
                         className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-16 z-10"
@@ -93,29 +93,17 @@ export function DesktopDashboard() {
                              
                              {/* 1. Main Title with Animations */}
                              <h1 className="font-space font-bold text-5xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter text-white mb-8 opacity-90">
-                                <motion.div 
-                                   initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
-                                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                                   transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                                >
+                                <div className="inline-block">
                                   SYSTEM
-                                </motion.div>
-                                <motion.div 
-                                   className="text-white/80"
-                                   initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
-                                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                                   transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-                                >
+                                </div>
+                                <div className="inline-block text-white/80">
                                   ARCHITECT
-                                </motion.div>
+                                </div>
                              </h1>
 
                              {/* 2. Description */}
                              <motion.div 
                                 className="max-w-2xl border-l border-white/10 pl-6 space-y-4 mb-12"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.4, duration: 1 }}
                              >
                                 <p className="font-mono text-sm md:text-lg text-white/50 leading-relaxed max-w-md">
                                   <span className="text-emerald-500/50 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
@@ -125,9 +113,6 @@ export function DesktopDashboard() {
                              {/* 3. Action Buttons (Glassy) */}
                              <motion.div 
                                 className="flex flex-col sm:flex-row gap-6"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.6 }}
                              >
                                  <button 
                                    onClick={() => setActiveView('work')}
@@ -151,9 +136,6 @@ export function DesktopDashboard() {
                          {/* 4. Status Indicator */}
                          <motion.div 
                             className="absolute bottom-12 right-12 text-right hidden md:block opacity-40 mix-blend-plus-lighter"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 0.4 }}
-                            transition={{ delay: 0.8 }}
                          >
                             <span className="block font-mono text-[9px] text-white/50 tracking-widest mb-1">STATUS</span>
                             <span className="text-emerald-500 font-mono text-xs tracking-wider flex items-center gap-2 justify-end">
@@ -225,9 +207,9 @@ export function DesktopDashboard() {
       > 
         <motion.div
            className="flex flex-col flex-1 justify-center w-full"
-           initial={{ opacity: 0, x: 20 }}
-           animate={{ opacity: isComplete ? 1 : 0, x: isComplete ? 0 : 20 }}
-           transition={{ duration: 1, delay: 0.2 }}
+           initial={{ opacity: 1, x: 0 }}
+           animate={{ opacity: 1, x: 0 }}
+           transition={{ duration: 0 }}
         >
           {navItems.map((item) => {
               const isActive = activeView === item.id;

@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React from "react";
 
 interface HandoffContextType {
   stage: number;           // 0 to 7 (0=Hidden, 1-7=Progressive Reveal)
@@ -13,8 +14,8 @@ const HandoffContext = createContext<HandoffContextType | null>(null);
 export function HandoffProvider({ children }: { children: ReactNode }) {
   const [stage, setStage] = useState(0);
 
-  const nextStage = () => setStage(prev => Math.min(prev + 1, 7));
-  const resetStage = () => setStage(0);
+  const nextStage = useCallback(() => setStage(prev => Math.min(prev + 1, 7)), []);
+  const resetStage = useCallback(() => setStage(0), []);
 
   return (
     <HandoffContext.Provider value={{ stage, nextStage, resetStage }}>

@@ -22,29 +22,37 @@ export default function RippleMask() {
     return () => window.removeEventListener("resize", updateMetrics);
   }, []);
 
-  // 💥 SPAWN RIPPLE ON STAGE CHANGE
+  // 💥 SPAWN RIPPLE CLUSTER ON STAGE CHANGE
   useEffect(() => {
     if (stage > 0 && stage <= 7 && viewport.w > 0) {
       
-      // AREA CALCULATION:
-      // We want to reveal ~1/7th of the screen per ripple.
-      // Area = PI * r^2
-      // TargetArea = (W * H) / 7
-      // r = sqrt(TargetArea / PI)
-      // * 1.2 Multiplier to account for some overlap and ensuring full coverage by end
-      const totalArea = viewport.w * viewport.h;
-      const targetArea = totalArea / 7;
-      const calculatedRadius = Math.sqrt(targetArea / Math.PI) * 1.3; 
+      const newRipples: { id: number; x: number; y: number; r: number }[] = [];
+      const count = 5 + Math.floor(Math.random() * 4); // 5 to 8 ripples per stage
 
-      const newRipple = {
-        id: stage,
-        // Random Position (Keep away from extreme edges to ensure meaningful reveal)
-        x: Math.random() * (viewport.w * 0.8) + (viewport.w * 0.1), 
-        y: Math.random() * (viewport.h * 0.8) + (viewport.h * 0.1),
-        r: calculatedRadius 
-      };
+      for (let i = 0; i < count; i++) {
+        // Area logic: Smaller circles since there are many
+        // Total target area per stage: (W*H)/7. 
+        // Per ripple: ((W*H)/7) / count.
+        const totalArea = viewport.w * viewport.h;
+        const stageArea = totalArea / 7;
+        const rippleArea = stageArea / count;
+        
+        // Radius + Variance
+        // 🌊 BOOST: 2.0x base multiplier to ensure better overlaps and faster clearing
+        // Stage 7: "Tsunami Mode" - Massive ripples to clear everything
+        const multiplier = stage === 7 ? 4.0 : 2.2; 
+        const baseRadius = Math.sqrt(rippleArea / Math.PI) * multiplier; 
+        const variance = Math.random() * 0.6 + 0.8; 
 
-      setRipples((prev) => [...prev, newRipple]);
+        newRipples.push({
+          id: Date.now() + i, 
+          x: Math.random() * viewport.w,
+          y: Math.random() * viewport.h,
+          r: baseRadius * variance
+        });
+      }
+
+      setRipples((prev) => [...prev, ...newRipples]);
     }
   }, [stage, viewport]);
 
@@ -65,15 +73,13 @@ export default function RippleMask() {
                 r={ripple.r}
                 fill="black"
                 initial={{ r: 0 }}
-                animate={{ 
-                  r: stage === 7 ? Math.max(viewport.w, viewport.h) * 1.5 : ripple.r // Stage 7: Total Washout
-                }}
+                animate={{ r: ripple.r }}
                 transition={{ 
-                  duration: stage === 7 ? 1.5 : 0.8, // Snappy tension break
+                  duration: 1.0, 
                   ease: "circOut" 
                 }}
                 style={{
-                    filter: "blur(20px)" // Liquid edges
+                    filter: "blur(30px)" // 💧 Soften liquid edges even more
                 }}
               />
             ))}

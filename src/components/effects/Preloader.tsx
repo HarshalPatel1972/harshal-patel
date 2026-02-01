@@ -163,55 +163,43 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
   const pillarHeight = Math.min(maxH, viewport.height * 0.5);
 
   // 🏃‍♂️ ANIMATION LOOP STATE
+  // 🏃‍♂️ ANIMATION LOOP STATE
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useFrame((state) => {
-    const time = state.clock.elapsedTime;
-    const speed = 3.0; // 🚀 SUPER FAST (Butter Oily)
-    const index = Math.floor((time * speed) % APPS.length);
-    if (index !== activeIndex) {
-        setActiveIndex(index);
-        onIndexChange(index); // 🌈 Notify parent for ambient color change
-    }
-  });
-
-  // 🔀 HANDOFF SEQUENCE
+  // 🔀 MASTER SEQUENCER (2 CYCLES)
+  // Cycle 1: Loading (Just Glow)
+  // Cycle 2: Reveal (Glow + Ripple)
   const { nextStage } = useHandoff();
-  const [visiblePillars, setVisiblePillars] = useState<boolean[]>(new Array(APPS.length).fill(true));
 
   useEffect(() => {
-    // ⏳ WAIT 1s (Loop a few times) then start vanishing
-    const startDelay = 1000;
-    
-    // Create sequence timeouts
-    const timeouts: NodeJS.Timeout[] = [];
-    
-    // Start sequence
-    timeouts.push(setTimeout(() => {
-      // Create a sequence for each pillar to vanish
-      APPS.forEach((_, i) => {
-        const vanishTime = 500 * i; // 0.5s per pillar
-        timeouts.push(setTimeout(() => {
-          // 1. Hide Pillar
-          setVisiblePillars(prev => {
-            const next = [...prev];
-            next[i] = false;
-            return next;
-          });
-          
-          // 2. Trigger Bubble Reveal (Next Stage)
-          nextStage();
+    let step = 0;
+    const totalSteps = APPS.length * 2; // 14 steps total
+    const tempo = 600; // 600ms per beat (Slower for better visual registration)
 
-          // 3. If last one, complete global loader
-          if (i === APPS.length - 1) {
-            setTimeout(onComplete, 1000); // Wait for final bubble expansion
-          }
-        }, vanishTime));
-      });
-    }, startDelay));
+    const interval = setInterval(() => {
+      const cycle = Math.floor(step / APPS.length) + 1; // 1 or 2
+      const index = step % APPS.length; // 0 to 6
 
-    return () => timeouts.forEach(clearTimeout);
-  }, [onComplete, nextStage]);
+      // 1. Update Glow
+      setActiveIndex(index);
+      onIndexChange(index);
+
+      // 2. Trigger Ripple (Cycle 2 Only)
+      if (cycle === 2) {
+        nextStage();
+      }
+
+      // 3. Completion Check
+      if (step >= totalSteps - 1) {
+        clearInterval(interval);
+        setTimeout(onComplete, 1500); // Wait for final washout
+      }
+
+      step++;
+    }, tempo);
+
+    return () => clearInterval(interval);
+  }, [onComplete, nextStage, onIndexChange]);
 
   return (
     <group ref={groupRef}>
@@ -234,7 +222,7 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
           gap={gap}
           app={app}
           isActive={i === activeIndex}
-          visible={visiblePillars[i]} // 🙈 Pass visibility state
+          visible={true} // 👁️ Pillars ALWAYS visible now (per user request)
         />
       ))}
     </group>
@@ -251,24 +239,33 @@ import RippleMask from "@/components/effects/RippleMask";
 
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
+  const { nextStage } = useHandoff();
   const [showCanvas, setShowCanvas] = useState(true);
   const [activeColor, setActiveColor] = useState(APPS[0].hex);
+  const [isExiting, setIsExiting] = useState(false); // 📉 Exit State
+
+  const handleComplete = React.useCallback(() => {
+    // 1. Start Fade Out
+    setIsExiting(true);
+    // 2. Unmount after fade
+    setTimeout(() => {
+        setShowCanvas(false);
+        setComplete();
+    }, 1000);
+  }, [setComplete]);
+
+  const handleIndexChange = React.useCallback((i: number) => {
+    setActiveColor(APPS[i].hex);
+  }, []);
 
   if (isComplete) return null;
 
-  const handleComplete = () => {
-    setShowCanvas(false);
-    setComplete();
-  };
-
   return (
     <>
-      {/* 1. MASK DEFINITION (Must exist outside the masked element to avoid self-clipping issues) */}
       <RippleMask />
 
-      {/* 2. THE SURFACE (Masked) */}
       <div 
-        className="fixed inset-0 z-[100] bg-[#050507] flex items-center justify-center overflow-hidden"
+        className={`fixed inset-0 z-[100] bg-[#050507] flex items-center justify-center overflow-hidden transition-opacity duration-1000 ${isExiting ? 'opacity-0' : 'opacity-100'}`}
         style={{ 
           maskImage: 'url(#ripple-mask)', 
           WebkitMaskImage: 'url(#ripple-mask)' 
@@ -288,7 +285,7 @@ export function Preloader() {
             camera={{ position: [0, 0, 8], fov: 35 }}
           >
             <React.Suspense fallback={null}>
-               <Scene onComplete={handleComplete} onIndexChange={(i) => setActiveColor(APPS[i].hex)} />
+               <Scene onComplete={handleComplete} onIndexChange={handleIndexChange} />
             </React.Suspense>
           </Canvas>
         )}
