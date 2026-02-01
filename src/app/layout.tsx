@@ -6,6 +6,7 @@ import { SmoothScroll } from "@/components/effects/SmoothScroll";
 import { PreloaderWrapper } from "@/components/effects/PreloaderWrapper";
 import { BuildTag } from "@/components/ui/BuildTag";
 import { HandoffProvider } from "@/lib/handoff-context";
+import { ScrollEasterEgg } from "@/components/effects/ScrollEasterEgg";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
