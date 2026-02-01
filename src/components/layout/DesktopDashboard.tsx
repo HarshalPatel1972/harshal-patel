@@ -257,7 +257,7 @@ export function DesktopDashboard() {
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
-                            <span className="font-mono text-[10px] tracking-[0.2em] font-bold">
+                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-emerald-100">
                                 {item.label}
                             </span>
                         </motion.div>
