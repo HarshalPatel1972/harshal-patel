@@ -88,39 +88,34 @@ function GlassPillar({
       <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={2}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {isOptimized ? (
-           // 📱 MOBILE FALLBACK (Or Optimised Desktop)
+           // 📱 MOBILE: Simple Transparent (No Transmission)
            <meshPhysicalMaterial 
               ref={materialRef}
               color={app.hex}
               transparent
-              opacity={0.3} // See-through without refraction cost
+              opacity={0.3} 
               roughness={0.2}
               metalness={0.8}
               emissive={app.hex}
-              emissiveIntensity={0.0} // Controlled by Ref
+              emissiveIntensity={0.0} 
            />
          ) : (
-           // 🖥️ DESKTOP: Full Transmission Shader (Ultra-Optimized)
-           <MeshTransmissionMaterial 
+           // 🖥️ DESKTOP: Native PBR Transmission (Fast & Beautiful)
+           // Replaces the heavy MeshTransmissionMaterial (which forced 7x render passes)
+           <meshPhysicalMaterial 
               ref={materialRef}
-              backside={true}
-              samples={2}                  // ⚡ ULTRA-OPT: 2 samples (Fastest noise)
-              resolution={128}             // ⚡ ULTRA-OPT: 128 (Tiny refraction buffer)
-              thickness={0.2}              
-              chromaticAberration={0.3}    
-              anisotropy={0.0}             
-              distortion={0.0}             
-              distortionScale={0.0}
-              temporalDistortion={0.0}
-              ior={1.5}                    
-              color={app.hex}              
-              attenuationColor={app.hex}   
-              attenuationDistance={1.0}    
-              roughness={0.1}              
-              metalness={0.5}              
+              transmission={1.0}  // 💎 Real PBR Glass
+              thickness={1.5}     // Volume
+              roughness={0.15}    // Frosted hint
+              ior={1.45}          // Glass Index
+              clearcoat={1.0}     // Polish
+              clearcoatRoughness={0.0}
+              color={app.hex}
+              transparent={false} // Transmission material handles transparency internally
               emissive={app.hex}
-              emissiveIntensity={0.0}      
-              toneMapped={false}
+              emissiveIntensity={0.0}
+              attenuationColor={app.hex} // Internal glass color
+              attenuationDistance={2.0}
            />
          )}
 
