@@ -47,21 +47,7 @@ export function Hero() {
         {isComplete && (
           <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             
-            {/* 🟢 COLUMN 1: SYSTEM META (2 Cols) */}
-            <motion.div 
-              className="md:col-span-2 flex flex-row md:flex-col gap-4 font-mono text-[9px] md:text-[10px] text-white/40 tracking-widest uppercase md:pt-4 justify-between md:justify-start border-b md:border-b-0 border-white/10 pb-4 md:pb-0"
-              initial={{ opacity: 0, x: -20 }}
-              animate={showContent ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 1.0, duration: 0.8 }}
-            >
-               {/* ... Keep existing content (SYS.ONLINE, LOC, ID) ... */}
-               <div className="flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                 <span>SYS.ONLINE</span>
-              </div>
-              <div>LOC: VARANASI_</div>
-              <div className="hidden md:block">ID: HARSHAL_V1.0</div>
-            </motion.div>
+
 
             {/* 🟦 COLUMN 2: MAIN TEXT CONTENT (6 Cols) */}
             <div className="md:col-span-6 relative z-20">
@@ -98,30 +84,7 @@ export function Hero() {
                 </p>
               </motion.div>
 
-              <motion.div 
-                className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-12 w-full sm:w-auto"
-                initial={{ opacity: 0, y: 20 }}
-                animate={showContent ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.8 }}
-              >
-                 <a 
-                   href="#work"
-                   className="group relative px-6 py-4 sm:py-3 bg-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors overflow-hidden text-center sm:text-left"
-                 >
-                    <div className="absolute inset-0 bg-emerald-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    <span className="font-mono text-xs font-bold text-white tracking-[0.2em] group-hover:text-emerald-400 transition-colors">
-                      [ ACCESS_WORK ]
-                    </span>
-                 </a>
-                 <a 
-                   href="#contact"
-                   className="px-6 py-4 sm:py-3 border border-transparent hover:border-white/10 transition-colors text-center sm:text-left"
-                 >
-                    <span className="font-mono text-xs text-white/50 hover:text-white transition-colors tracking-[0.2em]">
-                      // INITIATE_CONTACT
-                    </span>
-                 </a>
-              </motion.div>
+
             </div>
 
             {/* 🖼️ HERO IMAGE MOVED TO BACKGROUND */}
