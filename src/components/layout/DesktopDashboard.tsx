@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { House, SquaresFour, Cpu, EnvelopeSimple } from "@phosphor-icons/react";
+import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/react";
 import { Work } from "@/components/sections/Work";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
@@ -22,9 +22,9 @@ export function DesktopDashboard() {
 
   const navItems = [
     { id: 'hero', label: 'HOME', icon: House },
-    { id: 'work', label: 'WORK', icon: SquaresFour },
-    { id: 'about', label: 'ABOUT', icon: Cpu },
-    { id: 'contact', label: 'CONTACT', icon: EnvelopeSimple },
+    { id: 'work', label: 'WORK', icon: Briefcase },
+    { id: 'about', label: 'ABOUT', icon: Fingerprint },
+    { id: 'contact', label: 'CONTACT', icon: PaperPlaneTilt },
   ];
 
   return (
