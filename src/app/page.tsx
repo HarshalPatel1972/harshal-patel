@@ -4,19 +4,14 @@ import { About } from "@/components/sections/About";
 import { Work } from "@/components/sections/Work";
 import { Contact } from "@/components/sections/Contact";
 import { DesktopDashboard } from "@/components/layout/DesktopDashboard";
+import { MobileDashboard } from "@/components/layout/MobileDashboard";
 
 export default function Home() {
   return (
     <>
-      {/* 📱 MOBILE: Standard Vertical Scroll */}
+      {/* 📱 MOBILE: OS Dashboard */}
       <div className="block md:hidden">
-        <Navbar />
-        <main>
-          <Hero />
-          <About />
-          <Work />
-          <Contact />
-        </main>
+        <MobileDashboard />
       </div>
 
       {/* 🖥️ DESKTOP: No-Scroll Grid Dashboard */}
