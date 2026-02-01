@@ -73,8 +73,8 @@ function GlassPillar({
 
   return (
     <group position={[x, 0, 0]} scale={[currentScale.current, currentScale.current, currentScale.current]}>
-      {/* 🧊 PILLAR GEOMETRY - Enhanced Bevels for Light Catching */}
-      <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={8}>
+      {/* 🧊 PILLAR GEOMETRY - Optimized Smoothness */}
+      <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={4}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {isOptimized ? (
@@ -91,15 +91,15 @@ function GlassPillar({
               emissiveIntensity={0.0} // Controlled by Ref
            />
          ) : (
-           // 🖥️ DESKTOP: Full Transmission Shader
+           // 🖥️ DESKTOP: Full Transmission Shader (Optimized)
            <MeshTransmissionMaterial 
               ref={materialRef}
               backside={true}
-              samples={6}                  
-              resolution={512}             
+              samples={4}                  // ⚡ OPTIMIZED: 6 -> 4 ( indistinguishable on simple shapes)
+              resolution={256}             // ⚡ OPTIMIZED: 512 -> 256 (Glass blur hides low res)
               thickness={0.2}              
               chromaticAberration={0.3}    
-              anisotropy={0.1}             
+              anisotropy={0.0}             // ⚡ OPTIMIZED: 0.1 -> 0 (Saves bandwidth)
               distortion={0.0}             
               distortionScale={0.0}
               temporalDistortion={0.0}
