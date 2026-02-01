@@ -58,6 +58,32 @@ export function Preloader() {
     <>
       <RippleMask />
 
+      {/* 🧠 ARCHITECTURE FIX: SEPARATE LAYERS = 60FPS */}
+      
+      {/* LAYER 3 (Top): WebGL Scene - UNMASKED 
+          The 3D pillars float ABOVE the floor. 
+          The browser doesn't have to re-cut them every frame. */}
+      {showCanvas && (
+        <div className={`fixed inset-0 z-[101] pointer-events-none transition-opacity duration-1000 ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
+          <Canvas 
+            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
+            dpr={[1, 1.5]} 
+            camera={{ position: [0, 0, 8], fov: 35 }}
+          >
+            <React.Suspense fallback={null}>
+               <PreloaderScene 
+                  onComplete={handleComplete} 
+                  onIndexChange={handleIndexChange} 
+                  isOptimized={isOptimized} 
+               />
+            </React.Suspense>
+          </Canvas>
+        </div>
+      )}
+
+      {/* LAYER 2 (Middle): The Floor - MASKED 
+          This blocks the website content. 
+          Ripples cut holes in THIS layer only. */}
       <div 
         className={`fixed inset-0 z-[100] bg-[#050507] flex items-center justify-center overflow-hidden transition-opacity duration-1000 ${isExiting ? 'opacity-0' : 'opacity-100'}`}
         style={{ 
@@ -72,22 +98,6 @@ export function Preloader() {
             background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 70%)`,
           }}
         />
-        
-        {showCanvas && (
-          <Canvas 
-            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
-            dpr={[1, 1.5]} // ⚡ GLOBAL CAP: Even Desktop shouldn't exceed 1.5x for heavier shaders
-            camera={{ position: [0, 0, 8], fov: 35 }}
-          >
-            <React.Suspense fallback={null}>
-               <PreloaderScene 
-                  onComplete={handleComplete} 
-                  onIndexChange={handleIndexChange} 
-                  isOptimized={isOptimized} 
-               />
-            </React.Suspense>
-          </Canvas>
-        )}
       </div>
     </>
   );
