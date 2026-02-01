@@ -245,6 +245,10 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
 // 🚀 EXPORTED COMPONENT
 // ==========================================
 
+import BubbleMask from "@/components/effects/BubbleMask";
+
+// ... existing imports
+
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
   const [showCanvas, setShowCanvas] = useState(true);
@@ -258,21 +262,26 @@ export function Preloader() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#030303] flex items-center justify-center overflow-hidden">
+    <div 
+      className="fixed inset-0 z-[100] bg-[#050507] flex items-center justify-center overflow-hidden"
+      style={{ 
+        mask: 'url(#reveal-mask)', 
+        WebkitMask: 'url(#reveal-mask)' 
+      }}
+    >
+      <BubbleMask />
       
       {/* 🌈 AMBIENT GLOW BACKDROP (YouTube Style) */}
       <div 
-        className="absolute inset-0 transition-colors duration-500 ease-linear opacity-20 blur-[100px] scale-[2.0]" // 🌬️ FIX: More Spread, Less Strong
+        className="absolute inset-0 transition-colors duration-500 ease-linear opacity-20 blur-[100px] scale-[2.0]" 
         style={{
           background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 70%)`,
         }}
       />
       
-      {/* 🛡️ FAILSAFE REMOVED */}
-      
       {showCanvas && (
         <Canvas 
-          gl={{ antialias: true, alpha: true }} // Alpha true for background
+          gl={{ antialias: true, alpha: true }} 
           camera={{ position: [0, 0, 8], fov: 35 }}
         >
           <React.Suspense fallback={null}>

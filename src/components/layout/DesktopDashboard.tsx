@@ -14,7 +14,10 @@ type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
 
 
+import { usePreloader } from "@/lib/preloader-context";
+
 export function DesktopDashboard() {
+  const { isComplete } = usePreloader();
   const [activeView, setActiveView] = useState<ViewState>('hero');
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
@@ -26,44 +29,59 @@ export function DesktopDashboard() {
   ];
 
   return (
-    <div className="h-screen w-full bg-black text-white overflow-hidden flex font-space">
+    <div className="h-screen w-full bg-transparent text-white overflow-hidden flex font-space">
       
       {/* =========================================
           LEFT: MAIN STAGE (Transparent for Void to show through)
       ========================================= */}
       <div className="flex-1 relative border-r border-white/5 flex flex-col min-w-0">
           
-          {/* 🟢 GLOBAL HEADER (FIXED TOP-LEFT) */}
-          <div className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter">
+          {/* 🟢 GLOBAL HEADER (Fades in) */}
+          <motion.div 
+             className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter"
+             initial={{ opacity: 0 }}
+             animate={{ opacity: isComplete ? 1 : 0 }}
+             transition={{ duration: 1, delay: 0.5 }}
+          >
               <h1 className="text-2xl font-black tracking-tighter text-white/90">
                   HARSHAL PATEL<span className="text-emerald-500/80">.</span>
               </h1>
               <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
                   SYSTEM ARCHITECT
               </p>
-          </div>
+          </motion.div>
 
-          {/* 🟢 GLOBAL FOOTER (FIXED BOTTOM-LEFT) */}
-          <div className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30">
+          {/* 🟢 GLOBAL FOOTER (Fades in) */}
+          <motion.div 
+             className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30"
+             initial={{ opacity: 0 }}
+             animate={{ opacity: isComplete ? 1 : 0 }}
+             transition={{ duration: 1, delay: 0.5 }}
+          >
                <span>© 2026</span>
                <span>//</span>
                <span>ALL_SYSTEMS_NOMINAL</span>
-          </div>
+          </motion.div>
 
           {/* 🎭 CONTENT AREA (FULL FILL) */}
           <div className="flex-1 relative overflow-hidden">
              
              {/* BACKGROUND GRID (Subtle Map) */}
-             <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]">
+             <motion.div 
+                className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isComplete ? 0.03 : 0 }}
+                transition={{ duration: 2 }}
+             >
                 {[...Array(200)].map((_, i) => (
                     <div key={i} className="border-[0.5px] border-white/20" />
                 ))}
-            </div>
+            </motion.div>
 
             <AnimatePresence mode="wait">
                 
                 {/* HERO VIEW - MAXIMIZED CONTENT */}
-                {activeView === 'hero' && (
+                {isComplete && activeView === 'hero' && (
                     <motion.div 
                         key="hero"
                         className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-16 z-10"
@@ -147,7 +165,7 @@ export function DesktopDashboard() {
                 )}
 
                 {/* WORK VIEW */}
-                {activeView === 'work' && (
+                {isComplete && activeView === 'work' && (
                     <motion.div 
                         key="work"
                         className="absolute inset-0 overflow-y-auto no-scrollbar z-10"
@@ -163,7 +181,7 @@ export function DesktopDashboard() {
                 )}
 
                 {/* ABOUT VIEW */}
-                {activeView === 'about' && (
+                {isComplete && activeView === 'about' && (
                     <motion.div 
                         key="about"
                         className="absolute inset-0 overflow-y-auto no-scrollbar z-10"
@@ -179,7 +197,7 @@ export function DesktopDashboard() {
                 )}
 
                 {/* CONTACT VIEW */}
-                {activeView === 'contact' && (
+                {isComplete && activeView === 'contact' && (
                     <motion.div 
                         key="contact"
                         className="absolute inset-0 overflow-y-auto no-scrollbar flex items-center justify-center z-10"
@@ -202,10 +220,15 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/10 flex flex-col justify-center bg-white/[0.03] backdrop-blur-3xl z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)]"
+        className="w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/10 flex flex-col justify-center bg-white/[0.03] backdrop-blur-3xl z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] transition-opacity duration-1000"
         fill="rgba(255, 255, 255, 0.1)"
-      >
-          
+      > 
+        <motion.div
+           className="flex flex-col flex-1 justify-center w-full"
+           initial={{ opacity: 0, x: 20 }}
+           animate={{ opacity: isComplete ? 1 : 0, x: isComplete ? 0 : 20 }}
+           transition={{ duration: 1, delay: 0.2 }}
+        >
           {navItems.map((item) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
@@ -247,6 +270,7 @@ export function DesktopDashboard() {
                 </button>
               );
           })}
+        </motion.div>
       </Spotlight>
 
     </div>
