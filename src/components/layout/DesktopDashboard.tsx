@@ -6,6 +6,7 @@ import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/r
 import { Work } from "@/components/sections/Work";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
+import { Hero } from "@/components/sections/Hero";
 import { Spotlight } from "@/components/ui/Spotlight";
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
@@ -33,7 +34,7 @@ export function DesktopDashboard() {
       {/* =========================================
           LEFT: MAIN STAGE (Transparent for Void to show through)
       ========================================= */}
-      <div className="flex-1 relative flex flex-col min-w-0 mr-[100px] md:mr-[120px] lg:mr-[140px]">
+      <div className="flex-1 relative flex flex-col min-w-0">
           
           {/* 🟢 GLOBAL HEADER (DISABLED) */}
           {/* <motion.div 
