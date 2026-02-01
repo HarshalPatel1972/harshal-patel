@@ -5,7 +5,7 @@ import { APPS } from "@/lib/apps";
 
 export function Work() {
   return (
-    <section id="work" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 bg-black relative">
+    <section id="work" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 bg-transparent relative">
       <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}

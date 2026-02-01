@@ -13,7 +13,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 relative overflow-hidden bg-black">
+    <section id="contact" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 relative overflow-hidden bg-transparent">
       <div className="max-w-3xl mx-auto">
         
         {/* HEADER */}
