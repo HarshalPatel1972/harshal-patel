@@ -180,8 +180,8 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
   const [visiblePillars, setVisiblePillars] = useState<boolean[]>(new Array(APPS.length).fill(true));
 
   useEffect(() => {
-    // ⏳ WAIT 4.5s (Loop a few times) then start vanishing
-    const startDelay = 4500;
+    // ⏳ WAIT 1s (Loop a few times) then start vanishing
+    const startDelay = 1000;
     
     // Create sequence timeouts
     const timeouts: NodeJS.Timeout[] = [];
@@ -245,7 +245,7 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
 // 🚀 EXPORTED COMPONENT
 // ==========================================
 
-import BubbleMask from "@/components/effects/BubbleMask";
+import RippleMask from "@/components/effects/RippleMask";
 
 // ... existing imports
 
@@ -262,33 +262,37 @@ export function Preloader() {
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-[100] bg-[#050507] flex items-center justify-center overflow-hidden"
-      style={{ 
-        mask: 'url(#reveal-mask)', 
-        WebkitMask: 'url(#reveal-mask)' 
-      }}
-    >
-      <BubbleMask />
-      
-      {/* 🌈 AMBIENT GLOW BACKDROP (YouTube Style) */}
+    <>
+      {/* 1. MASK DEFINITION (Must exist outside the masked element to avoid self-clipping issues) */}
+      <RippleMask />
+
+      {/* 2. THE SURFACE (Masked) */}
       <div 
-        className="absolute inset-0 transition-colors duration-500 ease-linear opacity-20 blur-[100px] scale-[2.0]" 
-        style={{
-          background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 70%)`,
+        className="fixed inset-0 z-[100] bg-[#050507] flex items-center justify-center overflow-hidden"
+        style={{ 
+          maskImage: 'url(#ripple-mask)', 
+          WebkitMaskImage: 'url(#ripple-mask)' 
         }}
-      />
-      
-      {showCanvas && (
-        <Canvas 
-          gl={{ antialias: true, alpha: true }} 
-          camera={{ position: [0, 0, 8], fov: 35 }}
-        >
-          <React.Suspense fallback={null}>
-             <Scene onComplete={handleComplete} onIndexChange={(i) => setActiveColor(APPS[i].hex)} />
-          </React.Suspense>
-        </Canvas>
-      )}
-    </div>
+      > 
+        {/* 🌈 AMBIENT GLOW BACKDROP (YouTube Style) */}
+        <div 
+          className="absolute inset-0 transition-colors duration-500 ease-linear opacity-20 blur-[100px] scale-[2.0]" 
+          style={{
+            background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 70%)`,
+          }}
+        />
+        
+        {showCanvas && (
+          <Canvas 
+            gl={{ antialias: true, alpha: true }} 
+            camera={{ position: [0, 0, 8], fov: 35 }}
+          >
+            <React.Suspense fallback={null}>
+               <Scene onComplete={handleComplete} onIndexChange={(i) => setActiveColor(APPS[i].hex)} />
+            </React.Suspense>
+          </Canvas>
+        )}
+      </div>
+    </>
   );
 }
