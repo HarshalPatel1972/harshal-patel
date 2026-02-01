@@ -98,15 +98,36 @@ export function Contact() {
                disabled={status !== 'idle'}
                className="w-full bg-white/5 border border-white/10 py-5 hover:bg-white/10 transition-all group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
              >
-               <span className="relative z-10 font-mono text-xs tracking-[0.2em] text-white group-hover:text-cyan-400 transition-colors uppercase">
-                 {status === 'transmitting' ? 'TRANSMITTING...' : status === 'sent' ? 'PACKET_SENT' : 'TRANSMIT_DATA'}
+               <div className="absolute inset-0 bg-green-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+               <span className="font-mono text-xs font-bold text-white tracking-[0.2em] group-hover:text-green-400 transition-colors relative z-10">
+                 {status === 'idle' ? '[ TRANSMIT_DATA ]' : (status === 'transmitting' ? 'TRANSMITTING...' : 'TRANSMISSION_COMPLETE')}
                </span>
-               {status === 'idle' && (
-                 <div className="absolute inset-0 bg-white/5 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
-               )}
              </button>
           </form>
 
+           {/* DIRECT CONTACT DATA */}
+           <div className="mt-8 pt-8 border-t border-white/10 grid grid-cols-2 gap-4">
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// DIRECT_LINE</div>
+                  <div className="text-white font-mono text-xs">+91-7017297823</div>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// NEURAL_MAIL</div>
+                  <div className="text-white font-mono text-xs">harshalpatel6828@gmail.com</div>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// GITHUB_REPO</div>
+                  <div className="text-white font-mono text-xs">HarshalPatel1972</div>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// LINKEDIN_PROFILE</div>
+                  <a href="https://www.linkedin.com/in/harshal-patel" target="_blank" rel="noopener noreferrer" className="text-white font-mono text-xs hover:text-cyan-400 transition-colors">Harshal Patel</a>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// LOCATION_NODE</div>
+                  <div className="text-white font-mono text-xs">Varanasi, UP</div>
+              </div>
+           </div>
         </motion.div>
 
         {/* FOOTER METADATA */}
