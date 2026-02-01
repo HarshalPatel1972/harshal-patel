@@ -233,16 +233,17 @@ export function DesktopDashboard() {
 
 
 
-                    {/* 💎 POLISHED PILLAR GLASS (Active Background) */}
+                >
+                    {/* 💎 POLISHED PILLAR GLASS (Active Background) - HALF SIZE */}
                     {isActive && (
                         <motion.div 
                             layoutId="activeWater"
-                            className="absolute inset-2 rounded-[18px] bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.2),0_8px_20px_rgba(0,0,0,0.3)] backdrop-blur-[4px] z-0"
+                            className="absolute inset-[25%] rounded-[12px] bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.2),0_4px_10px_rgba(0,0,0,0.3)] backdrop-blur-[4px] z-0"
                             transition={{ 
                                 type: "spring", 
                                 stiffness: 300, 
                                 damping: 20, 
-                                mass: 0.8 
+                                mass: 0.6 
                             }}
                         />
                     )}
