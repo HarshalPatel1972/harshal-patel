@@ -228,12 +228,13 @@ export function DesktopDashboard() {
                         z-10
                     `}
                 >
-                    {/* 💧 WATERY GLASS OVERLAY (Active Background) */}
+                >
+                    {/* 💧 OBSIDIAN BUBBLE OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
                             layoutId="activeWater"
-                            className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent border-l border-t border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(0,0,0,0.1),0_10px_20px_rgba(0,0,0,0.2)] backdrop-blur-md z-0"
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="absolute inset-0 rounded-[24px] bg-gradient-to-br from-white/[0.08] via-black/80 to-black border border-white/[0.05] shadow-[inset_4px_4px_12px_rgba(255,255,255,0.25),inset_-4px_-4px_12px_rgba(255,255,255,0.15),inset_0_0_30px_black,0_15px_30px_rgba(0,0,0,0.8)] backdrop-blur-sm z-0"
+                            transition={{ type: "spring", stiffness: 250, damping: 25 }}
                         />
                     )}
 
@@ -243,14 +244,14 @@ export function DesktopDashboard() {
                            animate={{ 
                                x: isHovered ? -50 : 0,
                                opacity: isHovered ? 0 : (isActive ? 1 : 0.5),
-                               scale: isActive ? 1.1 : 1
+                               scale: isActive ? 0.9 : 1 // Slightly smaller to float inside
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             <item.icon 
-                                size={24} 
+                                size={26} 
                                 stroke={1}
-                                className={isActive ? 'drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] text-white' : ''}
+                                className={isActive ? 'text-white/60 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] blur-[0.5px]' : ''}
                             />
                         </motion.div>
 
@@ -264,7 +265,7 @@ export function DesktopDashboard() {
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
-                            <span className="font-mono text-sm tracking-[0.2em] font-bold text-emerald-100">
+                            <span className="font-mono text-sm tracking-[0.2em] font-bold text-white/90 drop-shadow-md">
                                 {item.label}
                             </span>
                         </motion.div>
