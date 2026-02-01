@@ -6,7 +6,7 @@ import { IconCpu, IconGridDots, IconMail, IconArrowUpRight, IconHome, IconMenu2,
 import { Work } from "@/components/sections/Work";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
-import { Hero } from "@/components/sections/Hero";
+import { Spotlight } from "@/components/ui/Spotlight";
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
@@ -29,52 +29,120 @@ export function DesktopDashboard() {
     <div className="h-screen w-full bg-black text-white overflow-hidden flex font-space">
       
       {/* =========================================
-          LEFT: MAIN STAGE (Rest of Space)
+          LEFT: MAIN STAGE (Transparent for Void to show through)
       ========================================= */}
       <div className="flex-1 relative border-r border-white/5 flex flex-col min-w-0">
           
           {/* 🟢 GLOBAL HEADER (FIXED TOP-LEFT) */}
-          <div className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-difference">
-              <h1 className="text-2xl font-black tracking-tighter text-white">
-                  HARSHAL PATEL<span className="text-mint-500">.</span>
+          <div className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter">
+              <h1 className="text-2xl font-black tracking-tighter text-white/90">
+                  HARSHAL PATEL<span className="text-emerald-500/80">.</span>
               </h1>
-              <p className="text-[10px] tracking-[0.2em] text-white/60 mt-1">
+              <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
                   SYSTEM ARCHITECT
               </p>
           </div>
 
           {/* 🟢 GLOBAL FOOTER (FIXED BOTTOM-LEFT) */}
-          <div className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-difference flex gap-4 text-[10px] font-mono text-white/40">
+          <div className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30">
                <span>© 2026</span>
                <span>//</span>
                <span>ALL_SYSTEMS_NOMINAL</span>
           </div>
 
           {/* 🎭 CONTENT AREA (FULL FILL) */}
-          <div className="flex-1 relative overflow-hidden bg-black/50">
+          <div className="flex-1 relative overflow-hidden">
              
-             {/* BACKGROUND GRID */}
-             <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 pointer-events-none opacity-5">
-                {[...Array(144)].map((_, i) => (
-                    <div key={i} className="border border-white/10" />
+             {/* BACKGROUND GRID (Subtle Map) */}
+             <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]">
+                {[...Array(200)].map((_, i) => (
+                    <div key={i} className="border-[0.5px] border-white/20" />
                 ))}
             </div>
 
             <AnimatePresence mode="wait">
                 
-                {/* HERO VIEW - MAXIMIZED */}
+                {/* HERO VIEW - MAXIMIZED CONTENT */}
                 {activeView === 'hero' && (
                     <motion.div 
                         key="hero"
-                        className="absolute inset-0 overflow-hidden"
+                        className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-16 z-10"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                         {/* Using the original Hero component as requested */}
-                         <div className="w-full h-full flex items-center justify-center scale-90 md:scale-100 origin-center">
-                            <Hero />
+                         <div className="flex flex-col items-start max-w-4xl w-full">
+                             
+                             {/* 1. Main Title with Animations */}
+                             <h1 className="font-space font-bold text-5xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter text-white mb-8 mix-blend-overlay opacity-90">
+                                <motion.div 
+                                   initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
+                                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                                   transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                                >
+                                  SYSTEM
+                                </motion.div>
+                                <motion.div 
+                                   className="text-white/80"
+                                   initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
+                                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                                   transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
+                                >
+                                  ARCHITECT
+                                </motion.div>
+                             </h1>
+
+                             {/* 2. Description */}
+                             <motion.div 
+                                className="max-w-2xl border-l border-white/10 pl-6 space-y-4 mb-12"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.4, duration: 1 }}
+                             >
+                                <p className="font-mono text-sm md:text-lg text-white/50 leading-relaxed max-w-md">
+                                  <span className="text-emerald-500/50 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
+                                </p>
+                             </motion.div>
+
+                             {/* 3. Action Buttons (Glassy) */}
+                             <motion.div 
+                                className="flex flex-col sm:flex-row gap-6"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6 }}
+                             >
+                                 <button 
+                                   onClick={() => setActiveView('work')}
+                                   className="group relative px-8 py-4 bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-500 overflow-hidden text-left backdrop-blur-sm"
+                                 >
+                                    <span className="font-mono text-xs font-bold text-white/70 tracking-[0.2em] group-hover:text-white transition-colors relative z-10">
+                                      [ ACCESS_WORK ]
+                                    </span>
+                                 </button>
+                                 <button 
+                                   onClick={() => setActiveView('contact')}
+                                   className="px-8 py-4 border border-transparent hover:border-white/5 text-left text-white/30 hover:text-white/60 transition-colors"
+                                 >
+                                    <span className="font-mono text-xs tracking-[0.2em]">
+                                      // INITIATE_CONTACT
+                                    </span>
+                                 </button>
+                             </motion.div>
                          </div>
+
+                         {/* 4. Status Indicator */}
+                         <motion.div 
+                            className="absolute bottom-12 right-12 text-right hidden md:block opacity-40 mix-blend-plus-lighter"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.4 }}
+                            transition={{ delay: 0.8 }}
+                         >
+                            <span className="block font-mono text-[9px] text-white/50 tracking-widest mb-1">STATUS</span>
+                            <span className="text-emerald-500 font-mono text-xs tracking-wider flex items-center gap-2 justify-end">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                              ONLINE
+                            </span>
+                         </motion.div>
                     </motion.div>
                 )}
 
@@ -82,10 +150,11 @@ export function DesktopDashboard() {
                 {activeView === 'work' && (
                     <motion.div 
                         key="work"
-                        className="absolute inset-0 overflow-y-auto no-scrollbar"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
+                        className="absolute inset-0 overflow-y-auto no-scrollbar z-10"
+                        initial={{ opacity: 0, filter: "blur(10px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(10px)" }}
+                        transition={{ duration: 0.5 }}
                     > 
                        <div className="min-h-full p-8 md:p-16 pt-32">
                            <Work />
@@ -97,10 +166,11 @@ export function DesktopDashboard() {
                 {activeView === 'about' && (
                     <motion.div 
                         key="about"
-                        className="absolute inset-0 overflow-y-auto no-scrollbar"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
+                        className="absolute inset-0 overflow-y-auto no-scrollbar z-10"
+                        initial={{ opacity: 0, filter: "blur(10px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(10px)" }}
+                        transition={{ duration: 0.5 }}
                     > 
                        <div className="min-h-full p-8 md:p-16 pt-32">
                            <About />
@@ -112,10 +182,11 @@ export function DesktopDashboard() {
                 {activeView === 'contact' && (
                     <motion.div 
                         key="contact"
-                        className="absolute inset-0 overflow-y-auto no-scrollbar flex items-center justify-center"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
+                        className="absolute inset-0 overflow-y-auto no-scrollbar flex items-center justify-center z-10"
+                        initial={{ opacity: 0, filter: "blur(10px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(10px)" }}
+                        transition={{ duration: 0.5 }}
                     > 
                        <div className="w-full h-full flex items-center justify-center p-8 pt-32">
                            <Contact />
@@ -128,11 +199,12 @@ export function DesktopDashboard() {
 
 
       {/* =========================================
-          RIGHT: NAVIGATION (CLEAN STACK)
+          RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
-      <div className="w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/5 flex flex-col justify-center bg-black z-20">
-          
-          {/* JUST NAV SQUARES - Centered Vertically */}
+      <Spotlight 
+        className="w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/10 flex flex-col justify-center bg-white/[0.03] backdrop-blur-3xl z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)]"
+        fill="rgba(255, 255, 255, 0.1)"
+      >
           
           {navItems.map((item) => {
               const isActive = activeView === item.id;
@@ -145,38 +217,37 @@ export function DesktopDashboard() {
                     onMouseEnter={() => setHoveredLink(item.id)}
                     onMouseLeave={() => setHoveredLink(null)}
                     className={`
-                        group aspect-square w-full border-b border-t border-white/5 relative flex flex-col items-center justify-center cursor-pointer transition-all duration-300
-                        ${isActive ? 'bg-white/10' : 'hover:bg-white/5'}
-                        first:border-t-white/5
+                        group aspect-square w-full border-t border-b border-white/[0.03] relative flex flex-col items-center justify-center cursor-pointer transition-all duration-500
+                        ${isActive ? 'bg-white/[0.05]' : 'hover:bg-white/[0.02]'}
+                        first:border-t-white/[0.03]
+                        z-10
                     `}
                 >
                     {/* Active Indicator Corner */}
                     {isActive && (
                         <motion.div 
                             layoutId="activeCorner"
-                            className="absolute top-2 right-2 w-2 h-2 bg-mint-500"
+                            className="absolute top-2 right-2 w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"
                         />
                     )}
 
                     <motion.div 
-                       animate={{ scale: isHovered || isActive ? 1.1 : 1 }}
+                       animate={{ 
+                           scale: isHovered || isActive ? 1.05 : 1,
+                           opacity: isActive ? 1 : 0.4
+                       }}
                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     >
                         <item.icon 
-                            size={28} 
-                            stroke={1.5}
-                            className={`mb-2 transition-colors ${isActive ? 'text-mint-400' : 'text-white/40 group-hover:text-white'}`} 
+                            size={24} 
+                            stroke={1}
+                            className={`mb-4 transition-colors duration-500 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'}`} 
                         />
                     </motion.div>
-                    
-                    <span className={`text-[10px] tracking-widest font-bold transition-colors uppercase ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
-                        {item.label}
-                    </span>
                 </button>
               );
           })}
-
-      </div>
+      </Spotlight>
 
     </div>
   );
