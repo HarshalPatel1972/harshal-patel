@@ -92,7 +92,7 @@ export function DesktopDashboard() {
                          <div className="flex flex-col items-start max-w-4xl w-full">
                              
                              {/* 1. Main Title with Animations */}
-                             <h1 className="font-space font-bold text-5xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter text-white mb-8 mix-blend-overlay opacity-90">
+                             <h1 className="font-space font-bold text-5xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter text-white mb-8 opacity-90">
                                 <motion.div 
                                    initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
                                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
