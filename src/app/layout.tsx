@@ -49,6 +49,7 @@ export default function RootLayout({
         <ThemeProvider>
           <HandoffProvider>
             <BuildTag />
+            <ScrollEasterEgg />
             <PreloaderWrapper>
               <SmoothScroll>
                 {children}
