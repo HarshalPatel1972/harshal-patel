@@ -26,7 +26,7 @@ export function Hero() {
           src="/harshal-1.png" 
           alt="Harshal Patel"
           fill
-          className="object-cover object-top"
+          className="object-cover object-[50%_25%]"
           priority
         />
         {/* Gradient Scrims: Fade Left (Text) -> Right (Image) */}
