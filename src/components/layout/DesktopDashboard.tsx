@@ -202,8 +202,8 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/20 flex flex-col justify-center bg-white/[0.02] backdrop-blur-[6px] backdrop-saturate-150 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5),inset_1px_0_0_rgba(255,255,255,0.1)] transition-opacity duration-1000 overflow-hidden"
-        fill="rgba(255, 255, 255, 0.2)"
+        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l-[1.5px] border-white/30 flex flex-col justify-center bg-white/[0.04] backdrop-blur-[4px] backdrop-saturate-150 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5),inset_1px_0_0_rgba(255,255,255,0.5)] transition-opacity duration-1000 overflow-hidden"
+        fill="rgba(255, 255, 255, 0.4)"
       > 
         <motion.div
            className="flex flex-col flex-1 justify-center w-full"
@@ -232,11 +232,12 @@ export function DesktopDashboard() {
 
 
 
-                    {/* 🌫️ SOFT EDGE-LIT FROSTED OVERLAY (Active Background) */}
+                >
+                    {/* 💎 POLISHED PILLAR GLASS (Active Background) */}
                     {isActive && (
                         <motion.div 
                             layoutId="activeWater"
-                            className="absolute inset-2 rounded-[20px] bg-white/[0.03] border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.15),0_10px_20px_rgba(0,0,0,0.5)] backdrop-blur-md z-0"
+                            className="absolute inset-2 rounded-[18px] bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.2),0_8px_20px_rgba(0,0,0,0.3)] backdrop-blur-[4px] z-0"
                             transition={{ 
                                 type: "spring", 
                                 stiffness: 300, 
@@ -252,14 +253,14 @@ export function DesktopDashboard() {
                            animate={{ 
                                x: isHovered ? -50 : 0,
                                opacity: isHovered ? 0 : (isActive ? 1 : 0.5),
-                               scale: isActive ? 1.0 : 1
+                               scale: isActive ? 1.05 : 1
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             <item.icon 
                                 size={26} 
                                 stroke={1.5}
-                                className={isActive ? 'text-white' : ''}
+                                className={isActive ? 'text-white drop-shadow-sm' : ''}
                             />
                         </motion.div>
 
