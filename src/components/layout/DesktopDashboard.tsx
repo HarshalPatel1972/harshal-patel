@@ -208,32 +208,40 @@ export function DesktopDashboard() {
         <motion.div
            className="flex flex-col flex-1 justify-center w-full"
            initial={{ opacity: 1, x: 0 }}
-           animate={{ opacity: 1, x: 0 }}
-           transition={{ duration: 0 }}
-        >
           {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
 
-              // 🌈 DYNAMIC GRADIENT: Alternates direction per item
-              // Item 1 (Work): Cyan -> Blue
-              // Item 2 (About): Blue -> Cyan (Reverse)
-              // Item 3 (Contact): Cyan -> Blue
-              const colors = [
-                  'rgba(6,182,212,0.15)', // Cyan
-                  'rgba(244,63,94,0.15)', // Rose
-                  'rgba(124,58,237,0.15)', // Violet
-                  'rgba(249,115,22,0.15)', // Orange
-                  'rgba(250,204,21,0.15)', // Yellow
-                  'rgba(16,185,129,0.15)', // Emerald
-                  'rgba(59,130,246,0.15)'  // Blue
+              // 🎨 HEX COLORS (For calculating opacities)
+              const hexColors = [
+                  '#06b6d4', // Cyan
+                  '#f43f5e', // Rose
+                  '#7c3aed', // Violet
+                  '#f97316', // Orange
+                  '#facc15', // Yellow
+                  '#10b981', // Emerald
+                  '#3b82f6'  // Blue
               ];
-              
-              const activeGradient = idx % 2 === 0 
-                  ? colors 
-                  : [...colors].reverse();
 
-              const gradientString = `linear-gradient(135deg, ${activeGradient.join(', ')})`;
+              // 1. GLASS GRADIENT (Stronger, 15%) - FIXED DIRECTION
+              const glassGradientCols = hexColors.map(hex => {
+                  const r = parseInt(hex.slice(1, 3), 16);
+                  const g = parseInt(hex.slice(3, 5), 16);
+                  const b = parseInt(hex.slice(5, 7), 16);
+                  return `rgba(${r},${g},${b},0.15)`;
+              });
+              const glassStyle = `linear-gradient(135deg, ${glassGradientCols.join(', ')})`;
+
+              // 2. BACKGROUND GRADIENT (Subtle, 3%) - ALTERNATING DIRECTION
+              const bgGradientCols = hexColors.map(hex => {
+                  const r = parseInt(hex.slice(1, 3), 16);
+                  const g = parseInt(hex.slice(3, 5), 16);
+                  const b = parseInt(hex.slice(5, 7), 16);
+                  return `rgba(${r},${g},${b},0.03)`;
+              });
+              
+              const activeBgSeries = idx % 2 === 0 ? bgGradientCols : [...bgGradientCols].reverse();
+              const buttonStyle = `linear-gradient(135deg, ${activeBgSeries.join(', ')})`;
 
               return (
                 <button
@@ -247,6 +255,7 @@ export function DesktopDashboard() {
                         first:border-t-white/[0.03]
                         z-10
                     `}
+                    style={{ background: buttonStyle }}
                 >
                     {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
                     <AnimatePresence mode="wait">
@@ -277,7 +286,7 @@ export function DesktopDashboard() {
                                                 ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
                                             `}
                                             style={{
-                                                background: gradientString
+                                                background: glassStyle
                                             }}
                                         />
                                     );
