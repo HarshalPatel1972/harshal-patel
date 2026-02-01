@@ -49,8 +49,8 @@ export function Hero() {
             
 
 
-            {/* 🟦 COLUMN 2: MAIN TEXT CONTENT (6 Cols) */}
-            <div className="md:col-span-6 relative z-20">
+            {/* 🟦 COLUMN 2: MAIN TEXT CONTENT (5 Cols - Safe Zone) */}
+            <div className="md:col-span-5 relative z-20">
               
               <h1 className="font-space font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tighter text-white mb-6 md:mb-8">
                 <motion.div 
