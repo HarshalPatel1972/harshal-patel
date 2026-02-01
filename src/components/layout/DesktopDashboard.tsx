@@ -232,7 +232,7 @@ export function DesktopDashboard() {
                     {isActive && (
                         <motion.div 
                             layoutId="activeWater"
-                            className="absolute inset-2 md:inset-4 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.15),0_4px_20px_rgba(0,0,0,0.1)] backdrop-blur-sm z-0"
+                            className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent border-l border-t border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(0,0,0,0.1),0_10px_20px_rgba(0,0,0,0.2)] backdrop-blur-md z-0"
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         />
                     )}
@@ -264,7 +264,7 @@ export function DesktopDashboard() {
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
-                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-emerald-100">
+                            <span className="font-mono text-sm tracking-[0.2em] font-bold text-emerald-100">
                                 {item.label}
                             </span>
                         </motion.div>
