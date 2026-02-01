@@ -229,7 +229,7 @@ export function DesktopDashboard() {
                     `}
                 >
 
-                >
+
                     {/* ☁️ SOFT MATTE STEALTH OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
