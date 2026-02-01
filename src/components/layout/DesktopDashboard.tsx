@@ -35,8 +35,8 @@ export function DesktopDashboard() {
       ========================================= */}
       <div className="flex-1 relative flex flex-col min-w-0 mr-[100px] md:mr-[120px] lg:mr-[140px]">
           
-          {/* 🟢 GLOBAL HEADER (Fades in) */}
-          <motion.div 
+          {/* 🟢 GLOBAL HEADER (DISABLED) */}
+          {/* <motion.div 
              className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter"
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
@@ -48,7 +48,7 @@ export function DesktopDashboard() {
               <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
                   SOFTWARE ENGINEER
               </p>
-          </motion.div>
+          </motion.div> */}
 
           {/* 🟢 GLOBAL FOOTER (Fades in) */}
           <motion.div 
