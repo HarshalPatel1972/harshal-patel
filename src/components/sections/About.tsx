@@ -4,19 +4,19 @@ import { motion } from "framer-motion";
 
 export function About() {
   const specs = [
-    { label: "ARCHITECTURE", value: "Full-Stack Humanoid" },
-    { label: "KERNEL", value: "Creative Development v3.0" },
-    { label: "UPTIME", value: "99.9% (Coffee Dependent)" },
-    { label: "LOCATION", value: "Mumbai, IN (Remote Capable)" },
+    { label: "ROLE", value: "Software Engineer" },
+    { label: "STACK", value: "Go / TS / WASM" },
+    { label: "EDUCATION", value: "B.E. CSE (2022-26)" },
+    { label: "LOCATION", value: "Varanasi, IN" },
   ];
 
   const hardware = [
+    "Go (Golang) / C++",
     "React / Next.js",
-    "TypeScript / Node",
-    "WebGL / Three.js",
-    "Tailwind / CSS",
+    "WebAssembly (WASM)",
     "System Architecture",
-    "UI / UX Design"
+    "IndexedDB / SQL",
+    "Docker / CI/CD"
   ];
 
   return (
@@ -52,8 +52,8 @@ export function About() {
               // BIOS_DESCRIPTION
             </h3>
             <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
-              I construct digital ecosystems that blend <span className="text-white font-medium">high-performance engineering</span> with immersive visuals. 
-              My core directive is to eliminate friction between heavy-duty functionality and cinematic user experience.
+              Aspiring <span className="text-white font-medium">Software Engineer</span> with strong DSA fundamentals and hands-on experience building high-performance systems. 
+              I specialize in scalable web applications and optimizing client-server synchronization.
             </p>
             
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12">
@@ -101,6 +101,16 @@ export function About() {
                   </span>
                 </div>
               ))}
+            </div>
+
+            {/* EDUCATION DB */}
+            <div className="mt-12">
+                <h3 className="text-sm font-mono text-rose-400 mb-6 tracking-widest uppercase">// EDUCATION_DB</h3>
+                <div className="border border-white/10 bg-white/5 p-4 rounded-sm hover:border-rose-400 transition-colors group">
+                    <div className="text-white font-bold font-space group-hover:text-rose-400 transition-colors">Chandigarh University</div>
+                    <div className="text-[10px] font-mono text-white/40">B.E. CSE AIML | 2022 - 2026</div>
+                    <div className="text-xs text-cyan-400 mt-2 font-mono">CGPA: 8.96</div>
+                </div>
             </div>
           </motion.div>
 
