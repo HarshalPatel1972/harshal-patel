@@ -1,43 +1,28 @@
-"use client";
+import Image from "next/image";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { usePreloader } from "@/lib/preloader-context";
-import { useEffect, useState } from "react";
+// ... existing imports
 
 export function Hero() {
-  const { isComplete } = usePreloader();
-  const [showContent, setShowContent] = useState(false);
-
-  useEffect(() => {
-    if (isComplete) {
-      const timer = setTimeout(() => setShowContent(true), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isComplete]);
+  // ... existing code
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-4 md:px-20 overflow-hidden bg-[#050505] pt-20 md:pt-0">
       
-      {/* 📐 TECHNICAL GRID / GUIDE LINES (Hidden on Mobile) */}
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-10 hidden md:block">
-        <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
-        <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
-        <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
-        <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
-      </div>
+      {/* ... existing detailed grid lines ... */}
 
       <AnimatePresence>
         {isComplete && (
-          <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             
-            {/* 🟢 COLUMN 1: SYSTEM META */}
+            {/* 🟢 COLUMN 1: SYSTEM META (2 Cols) */}
             <motion.div 
               className="md:col-span-2 flex flex-row md:flex-col gap-4 font-mono text-[9px] md:text-[10px] text-white/40 tracking-widest uppercase md:pt-4 justify-between md:justify-start border-b md:border-b-0 border-white/10 pb-4 md:pb-0"
               initial={{ opacity: 0, x: -20 }}
               animate={showContent ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 1.0, duration: 0.8 }}
             >
-              <div className="flex items-center gap-2">
+               {/* ... Keep existing content (SYS.ONLINE, LOC, ID) ... */}
+               <div className="flex items-center gap-2">
                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                  <span>SYS.ONLINE</span>
               </div>
@@ -45,8 +30,8 @@ export function Hero() {
               <div className="hidden md:block">ID: HARSHAL_V1.0</div>
             </motion.div>
 
-            {/* 🟦 COLUMN 2: MAIN CONTENT */}
-            <div className="md:col-span-10">
+            {/* 🟦 COLUMN 2: MAIN TEXT CONTENT (6 Cols) */}
+            <div className="md:col-span-6 relative z-20">
               
               <h1 className="font-space font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tighter text-white mb-6 md:mb-8">
                 <motion.div 
@@ -67,7 +52,7 @@ export function Hero() {
               </h1>
 
               <motion.div 
-                className="max-w-2xl border-l-[1px] border-white/20 pl-4 md:pl-6 space-y-4"
+                className="max-w-xl border-l-[1px] border-white/20 pl-4 md:pl-6 space-y-4"
                 initial={{ opacity: 0 }}
                 animate={showContent ? { opacity: 1 } : {}}
                 transition={{ delay: 0.6, duration: 1 }}
@@ -104,8 +89,43 @@ export function Hero() {
                     </span>
                  </a>
               </motion.div>
-
             </div>
+
+            {/* 🖼️ COLUMN 3: HERO IMAGE (4 Cols) */}
+            <motion.div 
+               className="md:col-span-4 relative flex justify-center md:justify-end mt-12 md:mt-0"
+               initial={{ opacity: 0, x: 50, filter: "blur(10px)" }}
+               animate={showContent ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+               transition={{ duration: 1, delay: 0.5 }}
+            >
+               <div className="relative w-[280px] h-[350px] md:w-[320px] md:h-[400px] border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden group">
+                  {/* Decorative Corners */}
+                  <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-emerald-500/50 z-20" />
+                  <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-emerald-500/50 z-20" />
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-emerald-500/50 z-20" />
+                  <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-emerald-500/50 z-20" />
+
+                  {/* Image */}
+                  <div className="absolute inset-2 overflow-hidden bg-black">
+                      <Image 
+                        src="/harshal-0.png" 
+                        alt="Harshal Patel"
+                        fill
+                        className="object-cover object-top opacity-80 group-hover:opacity-100 grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+                      />
+                      {/* Scanline Overlay */}
+                      <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none opacity-20" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+                  </div>
+
+                  {/* Meta Label */}
+                  <div className="absolute bottom-4 left-4 z-20">
+                     <div className="font-mono text-[9px] text-emerald-500 tracking-widest mb-1">IDENTITY_CONFIRMED</div>
+                     <div className="font-space font-bold text-white text-lg leading-none">HARSHAL.P</div>
+                  </div>
+               </div>
+            </motion.div>
+
           </div>
         )}
       </AnimatePresence>
