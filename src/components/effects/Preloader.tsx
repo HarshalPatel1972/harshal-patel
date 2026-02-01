@@ -22,6 +22,7 @@ function GlassPillar({
   gap,       // Dynamic gap
   isActive,   // Animation State
   visible,   // 🙈 Handoff Visibility
+  isOptimized // ⚡ Forced Optimization Flag
 }: { 
   app: any; 
   index: number; 
@@ -31,6 +32,7 @@ function GlassPillar({
   gap: number;
   isActive: boolean;
   visible: boolean;
+  isOptimized: boolean;
 }) {
   const depth = width;
   const x = (index - (total - 1) / 2) * (width + gap); // Auto-center based on index
@@ -75,9 +77,9 @@ function GlassPillar({
       <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={8}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
-         {isMobile ? (
-           // 📱 MOBILE FALLBACK: Lightweight Physical Material (No Transmission Pass)
-           // Prevents "10s Load" and "Random Lags" caused by FBO rendering
+         {isOptimized ? (
+           // 📱 MOBILE FALLBACK (Or Optimised Desktop): Lightweight Material
+           // Prevents "10s Load" and "Random Lags"
            <meshPhysicalMaterial 
               ref={materialRef}
               color={app.hex}
@@ -147,7 +149,7 @@ function GlassPillar({
            <div 
              className="font-space font-light tracking-[0.5em] text-center text-white/90" 
              style={{ 
-               fontSize: isMobile ? '12px' : '10px', // 📱 FIX: Larger font on mobile for readability
+               fontSize: isOptimized ? '12px' : '10px', // 📱 FIX: Larger font on mobile
                writingMode: 'vertical-rl', 
                textOrientation: 'upright', 
                textShadow: `0 0 20px ${app.hex}`,
@@ -163,7 +165,7 @@ function GlassPillar({
   );
 }
 
-function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexChange: (index: number) => void }) {
+function Scene({ onComplete, onIndexChange, isOptimized }: { onComplete: () => void, onIndexChange: (index: number) => void, isOptimized: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const { viewport } = useThree();
 
@@ -176,7 +178,7 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
   const gap = Math.min(0.15, unitSize * 0.25);
   // 📐 FIX: Height based on viewport to prevent cutoff on landscape mobile/short screens
   // 📱 MOBILE TWEAK: Cap at 1.8 for mobile (so they don't look like needles), 2.5 for desktop
-  const maxH = isMobile ? 1.8 : 2.5;
+  const maxH = isOptimized ? 1.8 : 2.5;
   const pillarHeight = Math.min(maxH, viewport.height * 0.5);
 
   // 🏃‍♂️ ANIMATION LOOP STATE
@@ -240,6 +242,7 @@ function Scene({ onComplete, onIndexChange }: { onComplete: () => void, onIndexC
           app={app}
           isActive={i === activeIndex}
           visible={true} // 👁️ Pillars ALWAYS visible now (per user request)
+          isOptimized={isOptimized} // ⚡ PASS DOWN
         />
       ))}
     </group>
@@ -254,17 +257,35 @@ import RippleMask from "@/components/effects/RippleMask";
 
 // ... existing imports
 
+// ... imports
+
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
   const { nextStage } = useHandoff();
   const [showCanvas, setShowCanvas] = useState(true);
   const [activeColor, setActiveColor] = useState(APPS[0].hex);
-  const [isExiting, setIsExiting] = useState(false); // 📉 Exit State
+  const [isExiting, setIsExiting] = useState(false);
+  
+  // 🛡️ FORCE OPTIMIZATION: Check Screen Width
+  // If User Agent fails (Request Desktop Site), this fallback ensures
+  // the phone STILL gets the optimized materials/DPR.
+  const [isOptimized, setIsOptimized] = useState(false);
+
+  useEffect(() => {
+    const checkSpec = () => {
+        // Force "Mobile Mode" if screen is narrow OR if library says mobile
+        const shouldOptimize = window.innerWidth < 1024 || isMobile; 
+        setIsOptimized(shouldOptimize);
+    };
+    
+    checkSpec();
+    window.addEventListener('resize', checkSpec);
+    return () => window.removeEventListener('resize', checkSpec);
+  }, []);
 
   const handleComplete = React.useCallback(() => {
-    // 1. Start Fade Out
+    // ... complete logic
     setIsExiting(true);
-    // 2. Unmount after fade
     setTimeout(() => {
         setShowCanvas(false);
         setComplete();
@@ -272,7 +293,7 @@ export function Preloader() {
   }, [setComplete]);
 
   const handleIndexChange = React.useCallback((i: number) => {
-    setActiveColor(APPS[i].hex);
+      setActiveColor(APPS[i].hex);
   }, []);
 
   if (isComplete) return null;
@@ -288,7 +309,7 @@ export function Preloader() {
           WebkitMaskImage: 'url(#ripple-mask)' 
         }}
       > 
-        {/* 🌈 AMBIENT GLOW BACKDROP (YouTube Style) */}
+        {/* 🌈 AMBIENT GLOW */}
         <div 
           className="absolute inset-0 transition-colors duration-500 ease-linear opacity-20 blur-[100px] scale-[2.0]" 
           style={{
@@ -299,11 +320,15 @@ export function Preloader() {
         {showCanvas && (
           <Canvas 
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
-            dpr={[1, 1.5]} // ⚡ CRITICAL FIX: Cap max pixel ratio to 1.5x. 3x/4x kills mobile GPUs.
+            dpr={isOptimized ? [1, 1.5] : [1, 2]} // ⚡ Force 1.5x cap if optimized
             camera={{ position: [0, 0, 8], fov: 35 }}
           >
             <React.Suspense fallback={null}>
-               <Scene onComplete={handleComplete} onIndexChange={handleIndexChange} />
+               <Scene 
+                  onComplete={handleComplete} 
+                  onIndexChange={handleIndexChange} 
+                  isOptimized={isOptimized} // Pass down
+               />
             </React.Suspense>
           </Canvas>
         )}
