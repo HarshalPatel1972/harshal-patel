@@ -230,19 +230,38 @@ export function DesktopDashboard() {
                 >
 
 
-                    <motion.div 
-                       animate={{ 
-                           scale: isHovered || isActive ? 1.05 : 1,
-                           opacity: isActive ? 1 : 0.4
-                       }}
-                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                        <item.icon 
-                            size={24} 
-                            stroke={1}
-                            className={`mb-4 transition-colors duration-500 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'}`} 
-                        />
-                    </motion.div>
+                    <div className="relative w-full h-full flex items-center justify-center overflow-hidden text-white/70 group-hover:text-white transition-colors">
+                        {/* ICON: Slides Left on Hover */}
+                        <motion.div 
+                           animate={{ 
+                               x: isHovered ? -50 : 0,
+                               opacity: isHovered ? 0 : (isActive ? 1 : 0.5),
+                               scale: isActive ? 1.1 : 1
+                           }}
+                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            <item.icon 
+                                size={24} 
+                                stroke={1}
+                                className={isActive ? 'drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] text-white' : ''}
+                            />
+                        </motion.div>
+
+                        {/* TEXT: Slides In from Right on Hover */}
+                        <motion.div 
+                           className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                           initial={{ x: 50, opacity: 0 }}
+                           animate={{ 
+                               x: isHovered ? 0 : 50, 
+                               opacity: isHovered ? 1 : 0 
+                           }}
+                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            <span className="font-mono text-[10px] tracking-[0.2em] font-bold">
+                                {item.label}
+                            </span>
+                        </motion.div>
+                    </div>
                 </button>
               );
           })}
