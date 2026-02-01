@@ -231,29 +231,30 @@ export function DesktopDashboard() {
 
 
 
-                    {/* 💎 CRYSTAL MAGNIFIER OVERLAY (Active Background) */}
+                >
+                    {/* 🌫️ SOFT EDGE-LIT FROSTED OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
                             layoutId="activeWater"
-                            className="absolute inset-2 rounded-[18px] bg-white/[0.01] border-[1.5px] border-white/40 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1),inset_4px_4px_12px_rgba(255,255,255,0.4),0_8px_16px_rgba(0,0,0,0.3)] backdrop-blur-[2px] z-0"
+                            className="absolute inset-2 rounded-[20px] bg-white/[0.03] border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.15),0_10px_20px_rgba(0,0,0,0.5)] backdrop-blur-md z-0"
                             transition={{ type: "spring", stiffness: 250, damping: 25 }}
                         />
                     )}
 
-                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white/80 group-hover:text-white transition-colors">
+                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white/90 group-hover:text-white transition-colors">
                         {/* ICON: Slides Left on Hover */}
                         <motion.div 
                            animate={{ 
                                x: isHovered ? -50 : 0,
                                opacity: isHovered ? 0 : (isActive ? 1 : 0.5),
-                               scale: isActive ? 1.05 : 1
+                               scale: isActive ? 1.0 : 1
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             <item.icon 
                                 size={26} 
                                 stroke={1.5}
-                                className={isActive ? 'text-white drop-shadow-sm' : ''}
+                                className={isActive ? 'text-white' : ''}
                             />
                         </motion.div>
 
