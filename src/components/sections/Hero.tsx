@@ -35,6 +35,15 @@ export function Hero() {
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
       </div>
 
+      {/* 📐 TECHNICAL GRID: 11x9 SCREEN DIVIDES */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0 hidden md:block opacity-10"
+        style={{
+          backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
+          backgroundSize: 'calc(100% / 11) calc(100% / 9)'
+        }}
+      />
+
 
 
       <AnimatePresence>
