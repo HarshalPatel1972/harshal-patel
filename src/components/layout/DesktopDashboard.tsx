@@ -202,7 +202,7 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/20 flex flex-col justify-center bg-white/[0.07] backdrop-blur-3xl backdrop-saturate-150 z-20 shadow-[-20px_0_60px_rgba(0,0,0,0.6)] transition-opacity duration-1000 overflow-hidden"
+        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/20 flex flex-col justify-center bg-gradient-to-b from-white/[0.08] to-transparent backdrop-blur-3xl backdrop-saturate-[1.8] z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5),inset_1px_0_0_rgba(255,255,255,0.1)] transition-opacity duration-1000 overflow-hidden"
         fill="rgba(255, 255, 255, 0.2)"
       > 
         <motion.div
