@@ -9,23 +9,37 @@ export default function RippleMask() {
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number; r: number }[]>([]);
   const [viewport, setViewport] = useState({ w: 0, h: 0 });
 
+  // 🛡️ PREVENT DUPLICATE SPAWNS ON RESIZE
+  const processedRef = React.useRef<Set<number>>(new Set());
+  
+  // 📏 CALC VIEWPORT & RADIUS (DEBOUNCED)
   useEffect(() => {
-    // 📏 CALC VIEWPORT & RADIUS
+    let timeoutId: NodeJS.Timeout;
+    
     const updateMetrics = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      setViewport({ w, h });
+      setViewport({ w: window.innerWidth, h: window.innerHeight });
     };
     
-    updateMetrics();
-    window.addEventListener("resize", updateMetrics);
-    return () => window.removeEventListener("resize", updateMetrics);
+    const debouncedUpdate = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(updateMetrics, 100);
+    };
+    
+    updateMetrics(); // Init
+    window.addEventListener("resize", debouncedUpdate);
+    return () => {
+      window.removeEventListener("resize", debouncedUpdate);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   // 💥 SPAWN RIPPLE CLUSTER ON STAGE CHANGE
   useEffect(() => {
-    if (stage > 0 && stage <= 7 && viewport.w > 0) {
+    // Only spawn if valid stage AND not already processed for this stage
+    if (stage > 0 && stage <= 7 && viewport.w > 0 && !processedRef.current.has(stage)) {
       
+      processedRef.current.add(stage); // 🔒 Mark as processed
+
       const newRipples: { id: number; x: number; y: number; r: number }[] = [];
       const count = 5 + Math.floor(Math.random() * 4); // 5 to 8 ripples per stage
 
