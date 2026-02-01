@@ -2,14 +2,13 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconCpu, IconGridDots, IconMail, IconArrowUpRight, IconHome, IconMenu2, IconArrowRight, IconPrompt } from "@tabler/icons-react";
+import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/react";
 import { Work } from "@/components/sections/Work";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
 import { Spotlight } from "@/components/ui/Spotlight";
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
-
 
 
 
@@ -22,10 +21,10 @@ export function DesktopDashboard() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   const navItems = [
-    { id: 'hero', label: 'HOME', icon: IconHome },
-    { id: 'work', label: 'WORK', icon: IconGridDots },
-    { id: 'about', label: 'ABOUT', icon: IconCpu },
-    { id: 'contact', label: 'CONTACT', icon: IconMail },
+    { id: 'hero', label: 'HOME', icon: House },
+    { id: 'work', label: 'WORK', icon: Briefcase },
+    { id: 'about', label: 'ABOUT', icon: Fingerprint },
+    { id: 'contact', label: 'CONTACT', icon: PaperPlaneTilt },
   ];
 
   return (
@@ -202,18 +201,49 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] flex flex-col justify-center bg-white/[0.04] backdrop-blur-[4px] backdrop-saturate-150 z-20 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] transition-opacity duration-1000 overflow-hidden"
-        fill="rgba(255, 255, 255, 0.4)"
+        className="absolute top-1/2 -translate-y-1/2 right-6 w-[100px] md:w-[120px] lg:w-[140px] h-fit rounded-[24px] flex flex-col bg-transparent z-20 transition-opacity duration-1000 overflow-hidden"
+        fill="rgba(255, 255, 255, 0.15)"
       > 
         <motion.div
-           className="flex flex-col flex-1 justify-center w-full"
+           className="flex flex-col w-full"
            initial={{ opacity: 1, x: 0 }}
            animate={{ opacity: 1, x: 0 }}
            transition={{ duration: 0 }}
         >
-          {navItems.map((item) => {
+          {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
+
+              // 🎨 HEX COLORS (For calculating opacities)
+              const hexColors = [
+                  '#06b6d4', // Cyan
+                  '#f43f5e', // Rose
+                  '#7c3aed', // Violet
+                  '#f97316', // Orange
+                  '#facc15', // Yellow
+                  '#10b981', // Emerald
+                  '#3b82f6'  // Blue
+              ];
+
+              // 1. GLASS GRADIENT (Stronger, 15%) - FIXED DIRECTION
+              const glassGradientCols = hexColors.map(hex => {
+                  const r = parseInt(hex.slice(1, 3), 16);
+                  const g = parseInt(hex.slice(3, 5), 16);
+                  const b = parseInt(hex.slice(5, 7), 16);
+                  return `rgba(${r},${g},${b},0.15)`;
+              });
+              const glassStyle = `linear-gradient(135deg, ${glassGradientCols.join(', ')})`;
+
+              // 2. BACKGROUND GRADIENT (Subtle, 3%) - ALTERNATING DIRECTION
+              const bgGradientCols = hexColors.map(hex => {
+                  const r = parseInt(hex.slice(1, 3), 16);
+                  const g = parseInt(hex.slice(3, 5), 16);
+                  const b = parseInt(hex.slice(5, 7), 16);
+                  return `rgba(${r},${g},${b},0.03)`;
+              });
+              
+              const activeBgSeries = idx % 2 === 0 ? bgGradientCols : [...bgGradientCols].reverse();
+              const buttonStyle = `linear-gradient(135deg, ${activeBgSeries.join(', ')})`;
 
               return (
                 <button
@@ -227,17 +257,12 @@ export function DesktopDashboard() {
                         first:border-t-white/[0.03]
                         z-10
                     `}
+                    style={{ background: buttonStyle }}
                 >
-
-
-
-
-
-
                     {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
                     <AnimatePresence mode="wait">
                         {isActive && (
-                            <div className="absolute inset-[25%] z-0 flex flex-col rounded-[12px] overflow-visible">
+                            <div className={`absolute z-0 flex flex-col rounded-[12px] overflow-visible transition-all duration-300 ${isHovered ? 'inset-x-4 inset-y-[25%]' : 'inset-[25%]'}`}>
                                 {/* Use 4 Shards for the Split Effect */}
                                 {[0, 1, 2, 3].map((i) => {
                                     // Direction: Top/Bottom Left (-1), Middle Right (1)
@@ -258,11 +283,13 @@ export function DesktopDashboard() {
                                             }}
                                             className={`
                                                 w-full h-[25%] 
-                                                bg-white/[0.04]
                                                 backdrop-blur-[4px] border-l border-r border-white/30
                                                 ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
                                                 ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
                                             `}
+                                            style={{
+                                                background: glassStyle
+                                            }}
                                         />
                                     );
                                 })}
@@ -282,7 +309,7 @@ export function DesktopDashboard() {
                         >
                             <item.icon 
                                 size={28} 
-                                stroke={1.5}
+                                weight="duotone"
                                 className={isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]' : 'drop-shadow-sm'}
                             />
                         </motion.div>
@@ -297,7 +324,7 @@ export function DesktopDashboard() {
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
-                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-white/90">
+                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-white/90 uppercase mr-[-0.2em]">
                                 {item.label}
                             </span>
                         </motion.div>
