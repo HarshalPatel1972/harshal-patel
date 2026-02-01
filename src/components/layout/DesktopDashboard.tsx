@@ -231,7 +231,7 @@ export function DesktopDashboard() {
 
 
 
-                >
+
                     {/* 🌫️ SOFT EDGE-LIT FROSTED OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
