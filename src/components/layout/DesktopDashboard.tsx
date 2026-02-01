@@ -230,7 +230,7 @@ export function DesktopDashboard() {
                 >
 
 
-                >
+
                     {/* 💎 CRYSTAL MAGNIFIER OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
