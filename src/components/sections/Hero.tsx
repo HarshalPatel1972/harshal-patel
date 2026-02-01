@@ -49,43 +49,7 @@ export function Hero() {
             
 
 
-            {/* 🟦 COLUMN 2: MAIN TEXT CONTENT (5 Cols - Safe Zone) */}
-            <div className="md:col-span-5 relative z-20">
-              
-              <h1 className="font-space font-bold text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tighter text-white mb-6 md:mb-8">
-                <motion.div 
-                   initial={{ opacity: 0, y: 50 }}
-                   animate={showContent ? { opacity: 1, y: 0 } : {}}
-                   transition={{ duration: 0.8, ease: "circOut", delay: 0.2 }}
-                >
-                  SOFTWARE
-                </motion.div>
-                <motion.div 
-                   className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400"
-                   initial={{ opacity: 0, y: 50 }}
-                   animate={showContent ? { opacity: 1, y: 0 } : {}}
-                   transition={{ duration: 0.8, ease: "circOut", delay: 0.3 }}
-                >
-                  ENGINEER
-                </motion.div>
-              </h1>
 
-              <motion.div 
-                className="max-w-xl border-l-[1px] border-white/20 pl-4 md:pl-6 space-y-4"
-                initial={{ opacity: 0 }}
-                animate={showContent ? { opacity: 1 } : {}}
-                transition={{ delay: 0.6, duration: 1 }}
-              >
-                <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-                  <span className="text-emerald-500 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
-                </p>
-                <p className="font-mono text-xs sm:text-sm md:text-base text-white/70 leading-relaxed">
-                  <span className="text-cyan-500 font-bold">{`>`}</span> Optimizing for scale, performance, and aesthetic precision.
-                </p>
-              </motion.div>
-
-
-            </div>
 
             {/* 🖼️ HERO IMAGE MOVED TO BACKGROUND */}
 
