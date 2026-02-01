@@ -37,26 +37,19 @@ export function Hero() {
 
       {/* 📐 TECHNICAL GRID / GUIDE LINES (Hidden on Mobile) */}
       <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
-         {/* Major Guides (Stronger) */}
          <div className="absolute inset-0 opacity-10">
+            {/* HORIZONTAL LINES */}
             <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
+            <div className="absolute top-[40%] left-0 w-full h-[1px] bg-white"></div>
+            <div className="absolute top-[60%] left-0 w-full h-[1px] bg-white"></div>
             <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
+
+            {/* VERTICAL LINES */}
             <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
+            <div className="absolute top-0 left-[33%] w-[1px] h-full bg-white"></div>
+            <div className="absolute top-0 left-[50%] w-[1px] h-full bg-white"></div>
+            <div className="absolute top-0 left-[66%] w-[1px] h-full bg-white"></div>
             <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
-         </div>
-         
-         {/* Fine Mesh (Faint Vertical Lines) */}
-         <div className="absolute inset-0 flex justify-between opacity-[0.03]">
-            {[...Array(12)].map((_, i) => (
-                <div key={i} className="w-[1px] h-full bg-white/50" />
-            ))}
-         </div>
-         
-         {/* Horizontal Mesh (Faint Horizontal Lines) */}
-         <div className="absolute inset-0 flex flex-col justify-between opacity-[0.03]">
-            {[...Array(8)].map((_, i) => (
-                <div key={i} className="w-full h-[1px] bg-white/50" />
-            ))}
          </div>
       </div>
 
