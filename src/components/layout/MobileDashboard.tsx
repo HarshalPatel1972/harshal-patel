@@ -8,6 +8,7 @@ import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { usePreloader } from "@/lib/preloader-context";
 import { IconBattery4, IconWifi, IconSignal4g, IconHome, IconGridDots, IconCpu, IconMail } from "@tabler/icons-react";
+import { isMobile } from "react-device-detect";
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
@@ -50,6 +51,7 @@ export function MobileDashboard() {
             <span>{time}</span>
          </div>
          <div className="flex items-center gap-2">
+            <span className="text-[9px] tracking-widest opacity-50">{isMobile ? "LTE" : "WIFI"}</span>
             <IconSignal4g size={14} />
             <IconWifi size={14} />
             <IconBattery4 size={14} />

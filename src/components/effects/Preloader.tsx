@@ -298,7 +298,8 @@ export function Preloader() {
         
         {showCanvas && (
           <Canvas 
-            gl={{ antialias: true, alpha: true }} 
+            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
+            dpr={[1, 1.5]} // ⚡ CRITICAL FIX: Cap max pixel ratio to 1.5x. 3x/4x kills mobile GPUs.
             camera={{ position: [0, 0, 8], fov: 35 }}
           >
             <React.Suspense fallback={null}>
