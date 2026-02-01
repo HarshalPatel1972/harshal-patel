@@ -248,20 +248,20 @@ export function DesktopDashboard() {
                         />
                     )}
 
-                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white/90 group-hover:text-white transition-colors">
+                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white group-hover:text-white transition-colors">
                         {/* ICON: Slides Left on Hover */}
                         <motion.div 
                            animate={{ 
                                x: isHovered ? -50 : 0,
-                               opacity: isHovered ? 0 : (isActive ? 1 : 0.5),
-                               scale: isActive ? 1.05 : 1
+                               opacity: isHovered ? 0 : (isActive ? 1 : 0.6),
+                               scale: isActive ? 1.1 : 1
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             <item.icon 
-                                size={26} 
+                                size={28} 
                                 stroke={1.5}
-                                className={isActive ? 'text-white drop-shadow-sm' : ''}
+                                className={isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]' : 'drop-shadow-sm'}
                             />
                         </motion.div>
 
