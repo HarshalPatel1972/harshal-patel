@@ -35,22 +35,7 @@ export function Hero() {
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
       </div>
 
-      {/* 📐 TECHNICAL GRID: EXACT SQUARES (Hidden on Mobile) */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 hidden md:block opacity-[0.07]"
-        style={{
-          backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-          backgroundSize: '240px 240px'
-        }}
-      />
 
-      {/* 📐 CORNER GUIDES / MAJOR LINES (Overlay) */}
-      <div className="absolute inset-0 pointer-events-none z-0 hidden md:block opacity-10">
-         <div className="absolute top-[20%] left-0 w-full h-[1px] bg-white"></div>
-         <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-white"></div>
-         <div className="absolute top-0 left-[10%] w-[1px] h-full bg-white"></div>
-         <div className="absolute top-0 right-[10%] w-[1px] h-full bg-white"></div>
-      </div>
 
       <AnimatePresence>
         {isComplete && (
