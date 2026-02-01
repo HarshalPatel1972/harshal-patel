@@ -76,12 +76,12 @@ function GlassPillar({
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          <MeshTransmissionMaterial 
             ref={materialRef}
-            backside={true}
-            samples={6}                  // ⚡ PERFORMANCE FIX: Reduced from 16 -> 6
-            resolution={512}             // ⚡ PERFORMANCE FIX: Cap resolution
+            backside={!isMobile}         // ⚡ PERFORMANCE FIX: Disable backside on mobile (2x speedup)
+            samples={isMobile ? 3 : 6}   // ⚡ PERFORMANCE FIX: Reduce samples
+            resolution={isMobile ? 256 : 512} // ⚡ PERFORMANCE FIX: Cap resolution
             thickness={0.2}              // Thinner glass = less refraction cost
             chromaticAberration={0.3}    // Reduced for performance
-            anisotropy={0.1}             // ⚡ PERFORMANCE FIX: Reduced from 0.5
+            anisotropy={isMobile ? 0 : 0.1} // ⚡ PERFORMANCE FIX: Disable anisotropy
             distortion={0.0}             // Keep it straight
             distortionScale={0.0}
             temporalDistortion={0.0}
