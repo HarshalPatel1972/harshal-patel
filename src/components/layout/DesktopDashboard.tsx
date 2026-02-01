@@ -226,6 +226,7 @@ export function DesktopDashboard() {
                         ${isActive ? 'bg-white/[0.05]' : 'hover:bg-white/[0.02]'}
                         first:border-t-white/[0.03]
                         z-10
+                    `}
                 >
                     {/* 💧 WATERY GLASS OVERLAY (Active Background) */}
                     {isActive && (
