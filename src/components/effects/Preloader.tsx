@@ -74,27 +74,44 @@ function GlassPillar({
       {/* 🧊 PILLAR GEOMETRY - Enhanced Bevels for Light Catching */}
       <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={8}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
-         <MeshTransmissionMaterial 
-            ref={materialRef}
-            backside={!isMobile}         // ⚡ PERFORMANCE FIX: Disable backside on mobile (2x speedup)
-            samples={isMobile ? 3 : 6}   // ⚡ PERFORMANCE FIX: Reduce samples
-            resolution={isMobile ? 256 : 512} // ⚡ PERFORMANCE FIX: Cap resolution
-            thickness={0.2}              // Thinner glass = less refraction cost
-            chromaticAberration={0.3}    // Reduced for performance
-            anisotropy={isMobile ? 0 : 0.1} // ⚡ PERFORMANCE FIX: Disable anisotropy
-            distortion={0.0}             // Keep it straight
-            distortionScale={0.0}
-            temporalDistortion={0.0}
-            ior={1.5}                    // Standard Glass
-            color={app.hex}              // Base Color
-            attenuationColor={app.hex}   // 🌈 FIX: Match Color Core (No white sun)
-            attenuationDistance={1.0}    // Smooth attenuation
-            roughness={0.1}              // 🌫️ FIX: Slight diffusion to kill sharp sun glare
-            metalness={0.5}              // 🤘 FIX: Metallic Glow (Polished look)
-            emissive={app.hex}
-            emissiveIntensity={0.0}      // Controlled by Ref
-            toneMapped={false}
-         />
+         {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
+         {isMobile ? (
+           // 📱 MOBILE FALLBACK: Lightweight Physical Material (No Transmission Pass)
+           // Prevents "10s Load" and "Random Lags" caused by FBO rendering
+           <meshPhysicalMaterial 
+              ref={materialRef}
+              color={app.hex}
+              transparent
+              opacity={0.3} // See-through without refraction cost
+              roughness={0.2}
+              metalness={0.8}
+              emissive={app.hex}
+              emissiveIntensity={0.0} // Controlled by Ref
+           />
+         ) : (
+           // 🖥️ DESKTOP: Full Transmission Shader
+           <MeshTransmissionMaterial 
+              ref={materialRef}
+              backside={true}
+              samples={6}                  
+              resolution={512}             
+              thickness={0.2}              
+              chromaticAberration={0.3}    
+              anisotropy={0.1}             
+              distortion={0.0}             
+              distortionScale={0.0}
+              temporalDistortion={0.0}
+              ior={1.5}                    
+              color={app.hex}              
+              attenuationColor={app.hex}   
+              attenuationDistance={1.0}    
+              roughness={0.1}              
+              metalness={0.5}              
+              emissive={app.hex}
+              emissiveIntensity={0.0}      
+              toneMapped={false}
+           />
+         )}
 
       </RoundedBox>
 
