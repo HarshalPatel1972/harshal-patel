@@ -81,68 +81,16 @@ export function DesktopDashboard() {
             <AnimatePresence mode="wait">
                 
                 {/* HERO VIEW - MAXIMIZED CONTENT */}
+                {/* HERO VIEW */}
                 {activeView === 'hero' && (
                     <motion.div 
                         key="hero"
-                        className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-16 z-10"
+                        className="absolute inset-0 z-10"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                         <div className="flex flex-col items-start max-w-4xl w-full">
-                             
-                             {/* 1. Main Title with Animations */}
-                             <h1 className="font-space font-bold text-5xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter text-white mb-8 opacity-90">
-                                <div className="inline-block">
-                                  SYSTEM
-                                </div>
-                                <div className="inline-block text-white/80">
-                                  ARCHITECT
-                                </div>
-                             </h1>
-
-                             {/* 2. Description */}
-                             <motion.div 
-                                className="max-w-2xl border-l border-white/10 pl-6 space-y-4 mb-12"
-                             >
-                                <p className="font-mono text-sm md:text-lg text-white/50 leading-relaxed max-w-md">
-                                  <span className="text-emerald-500/50 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
-                                </p>
-                             </motion.div>
-
-                             {/* 3. Action Buttons (Glassy) */}
-                             <motion.div 
-                                className="flex flex-col sm:flex-row gap-6"
-                             >
-                                 <button 
-                                   onClick={() => setActiveView('work')}
-                                   className="group relative px-8 py-4 bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-500 overflow-hidden text-left backdrop-blur-sm"
-                                 >
-                                    <span className="font-mono text-xs font-bold text-white/70 tracking-[0.2em] group-hover:text-white transition-colors relative z-10">
-                                      [ ACCESS_WORK ]
-                                    </span>
-                                 </button>
-                                 <button 
-                                   onClick={() => setActiveView('contact')}
-                                   className="px-8 py-4 border border-transparent hover:border-white/5 text-left text-white/30 hover:text-white/60 transition-colors"
-                                 >
-                                    <span className="font-mono text-xs tracking-[0.2em]">
-                                      // INITIATE_CONTACT
-                                    </span>
-                                 </button>
-                             </motion.div>
-                         </div>
-
-                         {/* 4. Status Indicator */}
-                         <motion.div 
-                            className="absolute bottom-12 right-12 text-right hidden md:block opacity-40 mix-blend-plus-lighter"
-                         >
-                            <span className="block font-mono text-[9px] text-white/50 tracking-widest mb-1">STATUS</span>
-                            <span className="text-emerald-500 font-mono text-xs tracking-wider flex items-center gap-2 justify-end">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                              ONLINE
-                            </span>
-                         </motion.div>
+                        <Hero />
                     </motion.div>
                 )}
 
