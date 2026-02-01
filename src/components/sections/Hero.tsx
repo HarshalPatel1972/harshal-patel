@@ -1,9 +1,20 @@
-import Image from "next/image";
+"use client";
 
-// ... existing imports
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { usePreloader } from "@/lib/preloader-context";
+import { useEffect, useState } from "react";
 
 export function Hero() {
-  // ... existing code
+  const { isComplete } = usePreloader();
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    if (isComplete) {
+      const timer = setTimeout(() => setShowContent(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isComplete]);
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-4 md:px-20 overflow-hidden bg-[#050505] pt-20 md:pt-0">
