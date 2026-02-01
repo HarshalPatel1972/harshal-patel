@@ -258,7 +258,7 @@ export function DesktopDashboard() {
                                             }}
                                             className={`
                                                 w-full h-[25%] 
-                                                bg-gradient-to-br from-white/[0.08] to-white/[0.01] 
+                                                bg-white/[0.04]
                                                 backdrop-blur-[4px] border-l border-r border-white/30
                                                 ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
                                                 ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
