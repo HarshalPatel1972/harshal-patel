@@ -263,7 +263,7 @@ export function DesktopDashboard() {
                     {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
                     <AnimatePresence mode="wait">
                         {isActive && (
-                            <div className="absolute inset-[25%] z-0 flex flex-col rounded-[12px] overflow-visible">
+                            <div className={`absolute z-0 flex flex-col rounded-[12px] overflow-visible transition-all duration-300 ${isHovered ? 'inset-x-4 inset-y-[25%]' : 'inset-[25%]'}`}>
                                 {/* Use 4 Shards for the Split Effect */}
                                 {[0, 1, 2, 3].map((i) => {
                                     // Direction: Top/Bottom Left (-1), Middle Right (1)
@@ -325,7 +325,7 @@ export function DesktopDashboard() {
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
-                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-white/90">
+                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-white/90 uppercase mr-[-0.2em]">
                                 {item.label}
                             </span>
                         </motion.div>
