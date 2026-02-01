@@ -230,29 +230,30 @@ export function DesktopDashboard() {
                 >
 
 
-                    {/* ☁️ SOFT MATTE STEALTH OVERLAY (Active Background) */}
+                >
+                    {/* 💎 CRYSTAL MAGNIFIER OVERLAY (Active Background) */}
                     {isActive && (
                         <motion.div 
                             layoutId="activeWater"
-                            className="absolute inset-2 rounded-[24px] bg-gradient-to-b from-white/[0.12] to-transparent border-t border-white/[0.08] shadow-[0_24px_50px_-12px_rgba(0,0,0,0.8)] z-0"
+                            className="absolute inset-2 rounded-[18px] bg-white/[0.01] border-[1.5px] border-white/40 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1),inset_4px_4px_12px_rgba(255,255,255,0.4),0_8px_16px_rgba(0,0,0,0.3)] backdrop-blur-[2px] z-0"
                             transition={{ type: "spring", stiffness: 250, damping: 25 }}
                         />
                     )}
 
-                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white/70 group-hover:text-white transition-colors">
+                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white/80 group-hover:text-white transition-colors">
                         {/* ICON: Slides Left on Hover */}
                         <motion.div 
                            animate={{ 
                                x: isHovered ? -50 : 0,
                                opacity: isHovered ? 0 : (isActive ? 1 : 0.5),
-                               scale: isActive ? 1.0 : 1
+                               scale: isActive ? 1.05 : 1
                            }}
                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             <item.icon 
                                 size={26} 
-                                stroke={1}
-                                className={isActive ? 'text-white drop-shadow-md' : ''}
+                                stroke={1.5}
+                                className={isActive ? 'text-white drop-shadow-sm' : ''}
                             />
                         </motion.div>
 
