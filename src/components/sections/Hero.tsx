@@ -69,6 +69,7 @@ export function Hero() {
                   exit={{ y: "-100%", opacity: 0 }}
                   transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
                   className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-lausanne tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                  style={{ fontFamily: '"TWK Lausanne", sans-serif' }}
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
@@ -82,6 +83,7 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black uppercase font-lausanne tracking-tighter whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-b from-white via-white/80 to-white/10"
               style={{ 
+                fontFamily: '"TWK Lausanne", sans-serif',
                 wordSpacing: '0.4em',
                 WebkitTextStroke: '1px rgba(255,255,255,0.3)',
                 filter: 'drop-shadow(0 0 25px rgba(255,255,255,0.2))'
