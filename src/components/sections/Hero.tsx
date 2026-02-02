@@ -11,13 +11,13 @@ export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [fontSize, setFontSize] = useState(8); // 🎛️ Tuning State
 
   const questions = [
     "Problem Solving?",
     "Web Designing?",
-    "UI Engineering?",
     "Performance Tuning?",
-    "Backend Architecture?"
+    "UI Engineering?",
   ];
 
   // Cycle Questions
@@ -40,6 +40,23 @@ export function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12">
       
+      {/* 🎛️ FONT SIZE TUNER */}
+      <div className="absolute top-24 left-4 z-50 flex flex-col gap-2 p-4 bg-black/50 backdrop-blur-md rounded-lg border border-white/10 text-white">
+        <span className="text-xs font-mono text-cyan-400">FONT TUNER</span>
+        <div className="flex items-center gap-2">
+          <input 
+            type="range" 
+            min="2" 
+            max="15" 
+            step="0.1" 
+            value={fontSize} 
+            onChange={(e) => setFontSize(parseFloat(e.target.value))}
+            className="w-32 accent-cyan-400 cursor-pointer"
+          />
+          <span className="text-sm font-bold w-12">{fontSize}vw</span>
+        </div>
+      </div>
+
       {/* 🖼️ HERO BACKGROUND IMAGE */}
       <div className="absolute inset-0 z-0">
         <Image 
@@ -60,18 +77,26 @@ export function Hero() {
         <motion.h1 
           drag
           dragMomentum={false}
-          onDragEnd={(event, info) => console.log('HARSHAL Offset:', info.offset, 'Point:', info.point)}
-          className="text-[8vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
-          style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
+          onDragEnd={(event, info) => console.log('HARSHAL | Offset:', info.offset, '| Size:', fontSize + 'vw')}
+          className="font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
+          style={{ 
+            fontSize: `${fontSize}vw`,
+            fontFamily: '"TWK Lausanne", sans-serif', 
+            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
+          }}
         >
           HARSHAL
         </motion.h1>
         <motion.h1 
           drag
           dragMomentum={false}
-          onDragEnd={(event, info) => console.log('PATEL Offset:', info.offset, 'Point:', info.point)}
-          className="text-[8vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
-          style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
+          onDragEnd={(event, info) => console.log('PATEL | Offset:', info.offset, '| Size:', fontSize + 'vw')}
+          className="font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
+          style={{ 
+            fontSize: `${fontSize}vw`,
+            fontFamily: '"TWK Lausanne", sans-serif', 
+            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
+          }}
         >
           PATEL
         </motion.h1>
