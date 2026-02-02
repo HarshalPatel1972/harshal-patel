@@ -25,7 +25,7 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 3000); // ⏱️ 3s Cycle
+    }, 3500); // ⏱️ 3.5s Hold
     return () => clearInterval(interval);
   }, [showContent]);
 
