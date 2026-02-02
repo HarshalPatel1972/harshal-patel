@@ -278,7 +278,11 @@ export function Preloader() {
   // the phone STILL gets the optimized materials/DPR.
   const [isOptimized, setIsOptimized] = useState(false);
 
+  // 🚀 Fix 6: Staged Boot
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
+    const t = setTimeout(() => setIsReady(true), 200); // Defer Mount
     const checkSpec = () => {
         // Force "Mobile Mode" if screen is narrow OR if library says mobile
         const shouldOptimize = window.innerWidth < 1024 || isMobile; 
