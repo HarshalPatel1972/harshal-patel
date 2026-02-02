@@ -93,7 +93,7 @@ function GlassPillar({
               transparent
               opacity={0.3}
               roughness={0.2}
-              metalness={0.8}
+              metalness={0.0} // 🚫 Metal Disabled
               emissive={app.hex}
               emissiveIntensity={0.0}
            />
