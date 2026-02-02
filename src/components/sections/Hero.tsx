@@ -1,12 +1,10 @@
-```javascript
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, useEffect, useRef } from "react"; // Added useRef
-import { Lightning } from "@phosphor-icons/react";
 import Image from "next/image";
-import { usePreloader } from "@/components/effects/Preloader"; // Updated import path
-import { HeroGrid } from "./HeroGrid"; // Updated import path
+import { usePreloader } from "@/lib/preloader-context";
+import { HeroGrid } from "@/components/ui/HeroGrid";
 
 export function Hero() {
   const { isComplete } = usePreloader();
@@ -14,23 +12,38 @@ export function Hero() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null); // 🧱 Ref for Coordinate Tracking
   
-  // 🎛️ TUNING STATE
-  const [fontSize, setFontSize] = useState(8); 
-  const [fontFamily, setFontFamily] = useState('Impact, sans-serif');
-  const [blendMode, setBlendMode] = useState("normal");
-  const [textZIndex, setTextZIndex] = useState(20);
+  // TUNING STATE
+  const [footerPos, setFooterPos] = useState({ x: 3.2, y: 72 });
+  const [footerText, setFooterText] = useState("I CAN DO THIS ALL DAY");
+  const [footerWordSizes, setFooterWordSizes] = useState([10, 10, 10, 10, 10, 10, 10, 10]); // Defaults
+  const [selectedWordIndex, setSelectedWordIndex] = useState(0);
+  const [footerFont, setFooterFont] = useState('var(--font-anton)');
 
-  const fontOptions = [
-    { name: "Impact", value: 'Impact, sans-serif' },
-    { name: "TWK Lausanne", value: '"TWK Lausanne", sans-serif' },
-    { name: "Space Grotesk", value: 'var(--font-space-grotesk), sans-serif' },
-    { name: "Geist Sans", value: 'var(--font-geist-sans), sans-serif' },
-    { name: "Arial Black", value: '"Arial Black", sans-serif' },
-    { name: "Helvetica", value: 'Helvetica, sans-serif' },
-  ];
+  // Helper to safely set size
+  const updateWordSize = (size: number) => {
+    const newSizes = [...footerWordSizes];
+    newSizes[selectedWordIndex] = size;
+    setFooterWordSizes(newSizes);
+  };
 
-  const blendOptions = ["normal", "overlay", "screen", "soft-light", "color-dodge", "difference", "multiply"];
-  
+  // Helper to set GLOBAL size
+  const updateGlobalSize = (size: number) => {
+    const newSizes = new Array(footerWordSizes.length).fill(size);
+    setFooterWordSizes(newSizes);
+  };
+
+  const updatePos = (info: any) => {
+    if (!containerRef.current) return;
+    const { width, height } = containerRef.current.getBoundingClientRect();
+    const { x, y } = info.point;
+    
+    // Convert to percentage relative to screen
+    const xPercent = (x / width) * 100;
+    const yPercent = (y / height) * 100;
+    
+    setFooterPos({ x: parseFloat(xPercent.toFixed(1)), y: parseFloat(yPercent.toFixed(1)) });
+  };
+
   const questions = [
     "Problem Solving?",
     "Web Designing?",
@@ -54,88 +67,12 @@ export function Hero() {
       return () => clearTimeout(timer);
     }
   }, [isComplete]);
-
-  // 📐 POS CALCULATION
-  const logPosition = (label: string, info: any) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const leftPx = info.point.x - rect.left;
-    const topPx = info.point.y - rect.top;
-    const leftPct = ((leftPx / rect.width) * 100).toFixed(1);
-    const topPct = ((topPx / rect.height) * 100).toFixed(1);
-    
-    console.log(`%c ${label} `, "background: #222; color: #bada55; font-weight: bold;");
-    console.log(`Margin-Left: ${leftPx.toFixed(0)}px (${leftPct}%)`);
-    console.log(`Margin-Top:  ${topPx.toFixed(0)}px (${topPct}%)`);
-    console.log(`Font Size:   ${fontSize}vw | Font: ${fontFamily}`);
-  };
-
+  
   return (
     <section 
       ref={containerRef}
       className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12"
     >
-      
-      {/* 🟦 THE SCREEN BORDER (Visual Guide) */}
-      <div className="absolute inset-0 border-[10px] border-cyan-400/20 pointer-events-none z-[100]" />
-
-      {/* 🎛️ TUNING CONSOLE */}
-      <div className="absolute top-24 left-4 z-50 flex flex-col gap-3 p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white w-72 shadow-2xl pointer-events-auto">
-        <span className="text-xs font-mono text-cyan-400 tracking-widest border-b border-white/10 pb-1 uppercase">Coordinate Console</span>
-        
-        {/* Size Slider */}
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-bold text-neutral-400 w-8">SIZE</label>
-          <input 
-            type="range" 
-            min="2" 
-            max="25" 
-            step="0.1" 
-            value={fontSize} 
-            onChange={(e) => setFontSize(parseFloat(e.target.value))}
-            className="flex-1 accent-cyan-400 cursor-pointer h-1 bg-white/20 rounded-full appearance-none"
-          />
-          <span className="text-xs font-mono w-10 text-right">{fontSize.toFixed(1)}vw</span>
-        </div>
-
-        {/* Font Selector */}
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-bold text-neutral-400 w-8">FONT</label>
-          <select 
-            value={fontFamily} 
-            onChange={(e) => setFontFamily(e.target.value)}
-            className="flex-1 bg-neutral-900/80 border border-white/20 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400"
-          >
-            {fontOptions.map(f => (
-              <option key={f.name} value={f.value}>{f.name}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Blend Selector */}
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-bold text-neutral-400 w-8">BLEND</label>
-          <select 
-            value={blendMode} 
-            onChange={(e) => setBlendMode(e.target.value)}
-            className="flex-1 bg-neutral-900/80 border border-white/20 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400"
-          >
-            {blendOptions.map(b => (
-              <option key={b} value={b} className="uppercase">{b}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Z-Index Toggles */}
-        <div className="flex items-center gap-2">
-           <label className="text-xs font-bold text-neutral-400 w-8">LAYER</label>
-           <div className="flex gap-2 flex-1">
-             <button onClick={() => setTextZIndex(0)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 0 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>BACK</button>
-             <button onClick={() => setTextZIndex(20)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 20 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>FRONT</button>
-           </div>
-        </div>
-      </div>
-
       {/* 🖼️ HERO BACKGROUND IMAGE */}
       <div className="absolute inset-0 z-10">
         <Image 
@@ -151,40 +88,33 @@ export function Hero() {
 
       <HeroGrid />
 
-      {/* 📛 NEW ABSOLUTE COORDINATE DRAGGER */}
+      {/* 📛 FINALIZED NAME LAYOUT (Locked) */}
       <div 
-        className="absolute inset-0 pointer-events-none select-none overflow-visible"
-        style={{ zIndex: textZIndex }}
+        className="absolute inset-0 pointer-events-none select-none z-20"
       >
         <motion.h1 
-          drag
-          dragMomentum={false}
-          onDragEnd={(event, info) => logPosition('HARSHAL', info)}
-          className="absolute font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing border border-dashed border-white/0 hover:border-white/20" 
+          className="absolute font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
           style={{ 
-            fontSize: `${fontSize}vw`, 
-            fontFamily: fontFamily, 
-            mixBlendMode: blendMode as any,
+            fontSize: '8vw', 
+            fontFamily: 'Impact, sans-serif', 
+            mixBlendMode: 'normal',
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))',
-            left: '10%', // Initial start
-            top: '30%'
+            left: '3.2%', 
+            top: '40.3%'
           }}
         >
           HARSHAL
         </motion.h1>
         
         <motion.h1 
-          drag
-          dragMomentum={false}
-          onDragEnd={(event, info) => logPosition('PATEL', info)}
-          className="absolute font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing border border-dashed border-white/0 hover:border-white/20" 
+          className="absolute font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
           style={{ 
-            fontSize: `${fontSize}vw`, 
-            fontFamily: fontFamily, 
-            mixBlendMode: blendMode as any,
+            fontSize: '8vw', 
+            fontFamily: 'Impact, sans-serif', 
+            mixBlendMode: 'normal',
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))',
-            left: '20%', // Initial start
-            top: '50%'
+            left: '16.4%', 
+            top: '55.0%'
           }}
         >
           PATEL
@@ -192,60 +122,103 @@ export function Hero() {
       </div>
 
       <AnimatePresence>
-        {false && showContent && (
-          <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
-            
-            {/* 1. SLOT MACHINE VERTICAL */}
-            <div className="mb-0 h-8 md:h-16 relative flex items-end w-full overflow-hidden"> 
-              <AnimatePresence mode="wait">
-                <motion.h2 
-                  key={currentQuestion}
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{ y: "0%", opacity: 1 }}
-                  exit={{ y: "-100%", opacity: 0 }}
-                  transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-lausanne tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
-                  style={{ fontFamily: '"TWK Lausanne", sans-serif' }}
-                >
-                  {questions[currentQuestion]}
-                </motion.h2>
-              </AnimatePresence>
-            </div>
-
-            {/* 2. MASSIVE ANSWER (Brilliant Glass) */}
-            <motion.h1 
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-2xl md:text-[2.5rem] lg:text-[4rem] xl:text-[5.5rem] 2xl:text-[6.5rem] leading-none font-black uppercase font-lausanne tracking-tighter whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-b from-white via-white/80 to-white/10"
+        {showContent && (
+          <>
+            {/* 1. MORPHING TITLES */}
+            <div 
+              className="absolute z-20 pointer-events-none select-none"
               style={{ 
-                fontFamily: '"TWK Lausanne", sans-serif',
-                wordSpacing: '0.4em',
-                WebkitTextStroke: '1px rgba(255,255,255,0.3)',
-                filter: 'drop-shadow(0 0 25px rgba(255,255,255,0.2))'
+                left: '3.2%', 
+                top: '72%', 
+                width: 'max-content' 
               }}
             >
-              I CAN DO THIS ALL DAY
-            </motion.h1>
+              <div className="h-8 md:h-12 relative overflow-hidden"> 
+                <AnimatePresence mode="wait">
+                  <motion.h2 
+                    key={currentQuestion}
+                    initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="absolute bottom-0 left-0 text-xl md:text-3xl font-bold font-playfair italic tracking-widest text-white/50"
+                    style={{ fontFamily: 'var(--font-playfair)' }}
+                  >
+                    {questions[currentQuestion]}
+                  </motion.h2>
+                </AnimatePresence>
+              </div>
+            </div>
 
-          </div>
+            {/* 2. FINALIZED FOOTER (Locked) */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+              className="absolute z-30 font-black uppercase leading-none select-none whitespace-pre-wrap"
+              style={{ 
+                fontFamily: 'Impact, sans-serif',
+                backgroundImage: "url('/All Day.png')",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                wordSpacing: '0.2em',
+                transform: 'scaleY(1.3)', 
+                transformOrigin: 'top left',
+                // HD SMUDGE + Shadow
+                filter: 'url(#hd-smudge) drop-shadow(0 0 15px rgba(255,255,255,0.1))',
+                // FINALIZED COORDINATES from User
+                left: '9.2%',
+                top: '63.6%',
+                width: 'max-content',
+                maxWidth: '90%'
+              }}
+            >
+              <span style={{ fontSize: '4rem' }}>I</span>
+              <span style={{ fontSize: '4rem' }}> </span>
+              <span style={{ fontSize: '4rem' }}>CAN</span>
+              <span style={{ fontSize: '4rem' }}>{'\n'}</span>
+              <span style={{ fontSize: '4rem' }}>DO</span>
+              <span style={{ fontSize: '4rem' }}> </span>
+              <span style={{ fontSize: '9rem' }}>THIS</span>
+              <span style={{ fontSize: '4rem' }}> </span>
+              <span style={{ fontSize: '4rem' }}>ALL</span>
+              <span style={{ fontSize: '4rem' }}> </span>
+              <span style={{ fontSize: '4rem' }}>DAY</span>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
-      
-      {/* CREDITS */}
-      <motion.div 
-        className="absolute bottom-6 md:bottom-12 right-6 md:right-20 text-right z-30"
-        initial={{ opacity: 0 }}
-        animate={showContent ? { opacity: 1 } : {}}
-        transition={{ delay: 1.5 }}
-      >
-        <span className="block font-mono text-[8px] md:text-[9px] text-white/30 tracking-widest mb-1">CREDITS</span>
-        <a href="https://fiddle.digital" target="_blank" rel="noopener noreferrer" className="text-white font-space font-bold text-[10px] md:text-xs tracking-wider flex items-center justify-end gap-2 hover:text-cyan-400 transition-colors">
-          <Lightning weight="fill" className="text-cyan-400 w-3 h-3" />
-          Fiddle.Digital
-        </a>
-      </motion.div>
 
+      {/* 🧪 HD SMUDGE FILTER DEFINITION */}
+      <svg className="absolute w-0 h-0 pointer-events-none">
+        <defs>
+          <filter id="hd-smudge">
+            <feTurbulence 
+              type="fractalNoise" 
+              baseFrequency="0.03" 
+              numOctaves="3" 
+              result="noise" 
+            />
+            <feDisplacementMap 
+              in="SourceGraphic" 
+              in2="noise" 
+              scale="30" 
+              xChannelSelector="R" 
+              yChannelSelector="G" 
+            />
+            {/* Soft Blur for "Paint" look */}
+            <feGaussianBlur stdDeviation="0.5" /> 
+            {/* Boost Contrast to keep it HD */}
+            <feComponentTransfer>
+               <feFuncA type="linear" slope="1.1"/>
+            </feComponentTransfer>
+          </filter>
+        </defs>
+      </svg>
+      
     </section>
   );
 }

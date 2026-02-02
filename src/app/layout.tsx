@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk, Anton, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/effects/ThemeProvider";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
@@ -23,6 +23,18 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
 });
 
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+});
+
 export const metadata: Metadata = {
   title: "Harshal Patel | Portfolio",
   description: "Creative Developer & Designer crafting digital experiences.",
@@ -44,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} ${playfair.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeProvider>
           <HandoffProvider>
