@@ -81,7 +81,7 @@ export function Hero() {
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black uppercase font-lausanne tracking-tighter whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-b from-white via-white/80 to-white/10"
+              className="text-2xl md:text-[2.5rem] lg:text-[4rem] xl:text-[5.5rem] 2xl:text-[6.5rem] leading-none font-black uppercase font-lausanne tracking-tighter whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-b from-white via-white/80 to-white/10"
               style={{ 
                 fontFamily: '"TWK Lausanne", sans-serif',
                 wordSpacing: '0.4em',
