@@ -44,31 +44,40 @@ function GlassPillar({
   
   // 🎬 ANIMATION STATE REFS
   const materialRef = useRef<any>(null);
-
-  useFrame((state, delta) => {
-    if (materialRef.current) {
-      // Smoothly interp values based on 'isActive' prop
-      const targetEmissive = isActive ? 3.0 : 0.0; // 🤘 FIX: Hotter Metallic Glow (Was 1.5)
-      
-      // Animate uniform/props if available
-      // Let's do a simple direct ref update for performance (avoiding re-render)
-      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
-        materialRef.current.emissiveIntensity, 
-        targetEmissive, 
-        delta * 6 // ⚡ FASTER PULSE
-      );
-    }
-  });
-
   const targetScale = visible ? 1 : 0;
   const currentScale = useRef(1);
-  
+  const { invalidate } = useThree(); // 🛑 Fix 5: Grab invalidate handle
+
   useFrame((state, delta) => {
-    // Smoothly animate scale
-    currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale, delta * 5);
+    let needsUpdate = false;
+
+    // 1. Animate Emissive Pulse
     if (materialRef.current) {
-        // ... existing logic ...
+      const targetEmissive = isActive ? 3.0 : 0.0;
+      const currentEmissive = materialRef.current.emissiveIntensity;
+      
+      // Check if we need to animate (Threshold 0.01)
+      if (Math.abs(currentEmissive - targetEmissive) > 0.01) {
+        materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(currentEmissive, targetEmissive, delta * 6);
+        needsUpdate = true;
+      } else if (currentEmissive !== targetEmissive) {
+        // Snap to final value
+        materialRef.current.emissiveIntensity = targetEmissive;
+        needsUpdate = true;
+      }
     }
+
+    // 2. Animate Scale
+    if (Math.abs(currentScale.current - targetScale) > 0.001) {
+      currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale, delta * 5);
+      needsUpdate = true;
+    } else if (currentScale.current !== targetScale) {
+        currentScale.current = targetScale; // Snap
+        needsUpdate = true;
+    }
+
+    // 🛑 Smart Sleep: Request next frame ONLY if animating
+    if (needsUpdate) invalidate();
   });
 
   return (
@@ -317,6 +326,7 @@ export function Preloader() {
         
         {showCanvas && (
           <Canvas 
+            frameloop="demand"            // 🛑 Fix 5: Event-Driven Rendering (0fps idle)
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
             dpr={[1, 1.5]} // ⚡ Performance Cap
             camera={{ position: [0, 0, 8], fov: 35 }}
