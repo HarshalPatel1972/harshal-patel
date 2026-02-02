@@ -128,9 +128,9 @@ export function Hero() {
                   className="absolute bg-[#050505] flex items-center justify-center overflow-hidden z-50"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
-                    top: '0px', 
-                    left: '0px', 
-                    width: '187px', 
+                    top: '24px', 
+                    left: '35px', 
+                    width: '194px', 
                     height: '96px', 
                   }}
                 >
@@ -143,9 +143,9 @@ export function Hero() {
                       transition={{ duration: 0.3 }}
                       className="flex flex-col items-center justify-center font-bold text-blue-500 leading-none text-center"
                       style={{ 
-                        fontSize: '2rem', 
+                        fontSize: '2.4rem', 
                         fontFamily: 'Impact, sans-serif',
-                        letterSpacing: '0.05em'
+                        letterSpacing: '-0.02em'
                       }}
                     >
                       {questions[currentQuestion].split(' ').map((word, i) => (
