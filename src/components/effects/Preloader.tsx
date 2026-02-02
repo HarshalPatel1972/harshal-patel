@@ -78,35 +78,35 @@ function GlassPillar({
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {isOptimized ? (
-           // 📱 MOBILE FALLBACK (Or Optimised Desktop): Lightweight Material
-           // Prevents "10s Load" and "Random Lags"
            <meshPhysicalMaterial 
               ref={materialRef}
               color={app.hex}
               transparent
-              opacity={0.3} // See-through without refraction cost
+              opacity={0.3}
               roughness={0.2}
               metalness={0.8}
               emissive={app.hex}
-              emissiveIntensity={0.0} // Controlled by Ref
+              emissiveIntensity={0.0}
            />
          ) : (
-           {/* 🖥️ DESKTOP: Standard Transmission (Single-Pass Efficient) */}
-           <meshPhysicalMaterial 
-              ref={materialRef}
-              color={app.hex}
-              transmission={1.0}           
-              thickness={0.5}              
-              roughness={0.05}             
-              ior={1.5}                    
-              clearcoat={1.0}              
-              clearcoatRoughness={0.0}
-              attenuationColor={app.hex}
-              attenuationDistance={1.0}
-              emissive={app.hex}  
-              emissiveIntensity={0.0}
-              toneMapped={false}
-           />
+           <>
+             {/* 🖥️ DESKTOP: Standard Transmission (Single-Pass Efficient) */}
+             <meshPhysicalMaterial 
+                ref={materialRef}
+                color={app.hex}
+                transmission={1.0}           
+                thickness={0.5}              
+                roughness={0.05}             
+                ior={1.5}                    
+                clearcoat={1.0}              
+                clearcoatRoughness={0.0}
+                attenuationColor={app.hex}
+                attenuationDistance={1.0}
+                emissive={app.hex}  
+                emissiveIntensity={0.0}
+                toneMapped={false}
+             />
+           </>
          )}
 
       </RoundedBox>
