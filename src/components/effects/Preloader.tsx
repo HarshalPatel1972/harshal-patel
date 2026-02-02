@@ -328,7 +328,7 @@ export function Preloader() {
           }}
         />
         
-        {showCanvas && (
+        {isReady && showCanvas && (
           <Canvas 
             frameloop="demand"            // 🛑 Fix 5: Event-Driven Rendering (0fps idle)
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
