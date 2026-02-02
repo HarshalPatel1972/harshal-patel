@@ -104,6 +104,9 @@ function GlassPillar({
                 attenuationDistance={1.0}
                 emissive={app.hex}  
                 emissiveIntensity={0.0}
+                iridescence={1}              // 🌈 Fix 3: Efficient "Vertex/PBR" Rainbows
+                iridescenceIOR={1.5}         // Match Glass IOR
+                iridescenceThicknessRange={[0, 1400]} // Thin film interference
                 toneMapped={false}
              />
            </>
