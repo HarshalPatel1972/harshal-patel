@@ -96,7 +96,8 @@ function GlassPillar({
                 color={app.hex}
                 transmission={1.0}           
                 thickness={0.5}              
-                roughness={0.05}             
+                roughness={0.15}             // 🌫️ Fix 4: Pre-blurred Mip Selection
+                anisotropy={0.5}             // 🌫️ Fix 4: Directional Smear
                 ior={1.5}                    
                 clearcoat={1.0}              
                 clearcoatRoughness={0.0}
