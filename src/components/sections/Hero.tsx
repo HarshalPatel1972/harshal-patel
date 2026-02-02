@@ -132,19 +132,19 @@ export function Hero() {
                     backgroundClip: "text", 
                     WebkitBackgroundClip: "text", 
                     color: "transparent",
-                    // ✂️ CUTOUT MASK (Hole: x=35, y=24, w=194, h=96)
+                    // ✂️ CUTOUT MASK (Hole: x=35, y=44 (added 20px padding), w=194, h=96)
                     // Construct 4 rectangles around the hole:
-                    // 1. Top Bar (h=24)
-                    // 2. Bottom Bar (y=120)
-                    // 3. Left Side (w=35, h=96, y=24)
-                    // 4. Right Side (x=229, h=96, y=24)
+                    // 1. Top Bar (h=44)
+                    // 2. Bottom Bar (y=140)
+                    // 3. Left Side (w=35, h=96, y=44)
+                    // 4. Right Side (x=229, h=96, y=44)
                     maskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
-                    maskPosition: '0 0, 0 120px, 0 24px, 229px 24px',
-                    maskSize: '100% 24px, 100% calc(100% - 120px), 35px 96px, calc(100% - 229px) 96px',
+                    maskPosition: '0 0, 0 140px, 0 44px, 229px 44px',
+                    maskSize: '100% 44px, 100% calc(100% - 140px), 35px 96px, calc(100% - 229px) 96px',
                     maskRepeat: 'no-repeat',
                     WebkitMaskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
-                    WebkitMaskPosition: '0 0, 0 120px, 0 24px, 229px 24px',
-                    WebkitMaskSize: '100% 24px, 100% calc(100% - 120px), 35px 96px, calc(100% - 229px) 96px',
+                    WebkitMaskPosition: '0 0, 0 140px, 0 44px, 229px 44px',
+                    WebkitMaskSize: '100% 44px, 100% calc(100% - 140px), 35px 96px, calc(100% - 229px) 96px',
                     WebkitMaskRepeat: 'no-repeat'
                   }}
                 >
@@ -156,7 +156,7 @@ export function Hero() {
                   className="absolute bg-transparent flex items-center justify-center overflow-hidden z-20"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
-                    top: '24px', 
+                    top: '44px', 
                     left: '35px', 
                     width: '194px', 
                     height: '96px', 
