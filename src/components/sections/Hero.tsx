@@ -212,7 +212,7 @@ export function Hero() {
             </motion.div>
             
             {/* 🎛️ TUNER PANEL */}
-            <div className="fixed top-24 right-10 z-[100] bg-black/80 text-green-400 p-4 border border-green-500 font-mono text-xs rounded grid gap-2 shadow-2xl backdrop-blur">
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-black/80 text-green-400 p-4 border border-green-500 font-mono text-xs rounded grid gap-2 shadow-2xl backdrop-blur">
               <div className="font-bold text-lg text-white mb-2 border-b border-white/20 pb-1">GLOBAL TUNER</div>
               
               <div className="grid grid-cols-2 gap-x-6 gap-y-2 mb-4 border-b border-white/10 pb-4">
