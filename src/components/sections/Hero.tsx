@@ -25,7 +25,7 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 5000); // 🐢🐢 5s Cycle
+    }, 6000); // 🐢🐢🐢 6s Reading Time
     return () => clearInterval(interval);
   }, [showContent]);
 
@@ -64,10 +64,10 @@ export function Hero() {
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
-                  initial={{ y: 40, opacity: 0 }}
+                  initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -40, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  exit={{ y: -20, opacity: 0 }}
+                  transition={{ duration: 1.0, ease: "easeInOut" }}
                   className="text-xl md:text-4xl lg:text-5xl font-bold text-white/80 font-space tracking-tight pl-2"
                 >
                   {questions[currentQuestion]}
@@ -75,12 +75,12 @@ export function Hero() {
               </AnimatePresence>
             </div>
 
-            {/* 2. MASSIVE ANSWER (Single Line) */}
+            {/* 2. MASSIVE ANSWER (Wide Tracking) */}
             <motion.h1 
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-4xl md:text-[4rem] lg:text-[6rem] xl:text-[8rem] 2xl:text-[9rem] leading-none font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90 whitespace-nowrap"
+              className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black text-white uppercase font-space tracking-[0.2em] mix-blend-overlay opacity-90 whitespace-nowrap"
             >
               I CAN DO THIS ALL DAY
             </motion.h1>
