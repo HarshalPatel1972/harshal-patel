@@ -120,12 +120,40 @@ export function Hero() {
               <span style={{ fontSize: '4rem' }}> </span>
               {/* "THIS" text wrapper */}
               <span className="relative inline-block mx-4">
-                {/* 1. THE TEXT ITSELF (Clipped) */}
-                <span className="bg-clip-text text-transparent" style={{ fontSize: '9rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>THIS</span>
+                {/* 1. THE TEXT ITSELF (Clipped with Hole) */}
+                <span 
+                  className="bg-clip-text text-transparent" 
+                  style={{ 
+                    fontSize: '9rem', 
+                    backgroundImage: "url('/All Day Blurred.png')", 
+                    backgroundSize: "cover", 
+                    backgroundPosition: "center", 
+                    backgroundAttachment: "fixed", 
+                    backgroundClip: "text", 
+                    WebkitBackgroundClip: "text", 
+                    color: "transparent",
+                    // ✂️ CUTOUT MASK (Hole: x=35, y=24, w=194, h=96)
+                    // Construct 4 rectangles around the hole:
+                    // 1. Top Bar (h=24)
+                    // 2. Bottom Bar (y=120)
+                    // 3. Left Side (w=35, h=96, y=24)
+                    // 4. Right Side (x=229, h=96, y=24)
+                    maskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
+                    maskPosition: '0 0, 0 120px, 0 24px, 229px 24px',
+                    maskSize: '100% 24px, 100% calc(100% - 120px), 35px 96px, calc(100% - 229px) 96px',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
+                    WebkitMaskPosition: '0 0, 0 120px, 0 24px, 229px 24px',
+                    WebkitMaskSize: '100% 24px, 100% calc(100% - 120px), 35px 96px, calc(100% - 229px) 96px',
+                    WebkitMaskRepeat: 'no-repeat'
+                  }}
+                >
+                  THIS
+                </span>
                 
                 {/* 2. THE HOLE (Overlay Box) */}
                 <div 
-                  className="absolute bg-transparent flex items-center justify-center overflow-hidden z-50"
+                  className="absolute bg-transparent flex items-center justify-center overflow-hidden z-20"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
                     top: '24px', 
