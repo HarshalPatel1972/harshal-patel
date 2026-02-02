@@ -124,6 +124,7 @@ export function Hero() {
                 <span 
                   className="bg-clip-text text-transparent" 
                   style={{ 
+                    display: 'inline-block', // 🟢 FIX: Enforce block coords for mask alignment
                     fontSize: '9rem', 
                     backgroundImage: "url('/All Day Blurred.png')", 
                     backgroundSize: "cover", 
