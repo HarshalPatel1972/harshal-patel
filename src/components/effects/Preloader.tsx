@@ -91,26 +91,20 @@ function GlassPillar({
               emissiveIntensity={0.0} // Controlled by Ref
            />
          ) : (
-           // 🖥️ DESKTOP: Full Transmission Shader
-           <MeshTransmissionMaterial 
+           {/* 🖥️ DESKTOP: Standard Transmission (Single-Pass Efficient) */}
+           <meshPhysicalMaterial 
               ref={materialRef}
-              backside={true}
-              samples={3}                  
-              resolution={256}             
-              thickness={0.2}              
-              chromaticAberration={0.3}    
-              anisotropy={0.1}             
-              distortion={0.0}             
-              distortionScale={0.0}
-              temporalDistortion={0.0}
+              color={app.hex}
+              transmission={1.0}           
+              thickness={0.5}              
+              roughness={0.05}             
               ior={1.5}                    
-              color={app.hex}              
-              attenuationColor={app.hex}   
-              attenuationDistance={1.0}    
-              roughness={0.1}              
-              metalness={0.5}              
-              emissive={app.hex}
-              emissiveIntensity={0.0}      
+              clearcoat={1.0}              
+              clearcoatRoughness={0.0}
+              attenuationColor={app.hex}
+              attenuationDistance={1.0}
+              emissive={app.hex}  
+              emissiveIntensity={0.0}
               toneMapped={false}
            />
          )}
