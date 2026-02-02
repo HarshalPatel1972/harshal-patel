@@ -25,7 +25,7 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 6000); // 🐢🐢🐢 6s Reading Time
+    }, 3000); // ⏱️ 3s Cycle
     return () => clearInterval(interval);
   }, [showContent]);
 
@@ -67,7 +67,7 @@ export function Hero() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -20, opacity: 0 }}
-                  transition={{ duration: 1.0, ease: "easeInOut" }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="text-xl md:text-4xl lg:text-5xl font-bold text-white/80 font-space tracking-tight pl-2"
                 >
                   {questions[currentQuestion]}
@@ -75,12 +75,13 @@ export function Hero() {
               </AnimatePresence>
             </div>
 
-            {/* 2. MASSIVE ANSWER (Wide Tracking) */}
+            {/* 2. MASSIVE ANSWER (Word Spacing) */}
             <motion.h1 
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black text-white uppercase font-space tracking-[0.2em] mix-blend-overlay opacity-90 whitespace-nowrap"
+              className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90 whitespace-nowrap"
+              style={{ wordSpacing: '0.4em' }}
             >
               I CAN DO THIS ALL DAY
             </motion.h1>
