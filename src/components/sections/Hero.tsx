@@ -158,7 +158,7 @@ export function Hero() {
               className="absolute z-30 font-black uppercase leading-none select-none whitespace-pre-wrap"
               style={{ 
                 fontFamily: 'Impact, sans-serif',
-                backgroundImage: "url('/All Day.png')",
+                backgroundImage: "url('/All Day Blurred.png')",
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
                 color: "transparent",
@@ -168,7 +168,8 @@ export function Hero() {
                 transform: 'scaleY(1.3)', 
                 transformOrigin: 'top left',
                 // HD SMUDGE + Shadow
-                filter: 'url(#hd-smudge) drop-shadow(0 0 15px rgba(255,255,255,0.1))',
+                // HD SMUDGE (Baked) + Shadow
+                filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.1))',
                 // FINALIZED COORDINATES from User
                 left: '9.2%',
                 top: '63.6%',
@@ -192,32 +193,6 @@ export function Hero() {
         )}
       </AnimatePresence>
 
-      {/* 🧪 HD SMUDGE FILTER DEFINITION */}
-      <svg className="absolute w-0 h-0 pointer-events-none">
-        <defs>
-          <filter id="hd-smudge">
-            <feTurbulence 
-              type="fractalNoise" 
-              baseFrequency="0.03" 
-              numOctaves="3" 
-              result="noise" 
-            />
-            <feDisplacementMap 
-              in="SourceGraphic" 
-              in2="noise" 
-              scale="30" 
-              xChannelSelector="R" 
-              yChannelSelector="G" 
-            />
-            {/* Soft Blur for "Paint" look */}
-            <feGaussianBlur stdDeviation="0.5" /> 
-            {/* Boost Contrast to keep it HD */}
-            <feComponentTransfer>
-               <feFuncA type="linear" slope="1.1"/>
-            </feComponentTransfer>
-          </filter>
-        </defs>
-      </svg>
       
     </section>
   );
