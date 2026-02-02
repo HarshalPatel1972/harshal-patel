@@ -78,7 +78,7 @@ export function Hero() {
       </div>
 
       <AnimatePresence>
-        {showContent && (
+        {false && showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
             {/* 1. SLOT MACHINE VERTICAL */}
