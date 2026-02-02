@@ -25,7 +25,7 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 3500); // 🐢 Slower cycle
+    }, 5000); // 🐢🐢 5s Cycle
     return () => clearInterval(interval);
   }, [showContent]);
 
@@ -68,7 +68,7 @@ export function Hero() {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -40, opacity: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-2xl md:text-5xl lg:text-6xl font-bold text-white/80 font-space tracking-tight pl-2"
+                  className="text-xl md:text-4xl lg:text-5xl font-bold text-white/80 font-space tracking-tight pl-2"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
@@ -80,7 +80,7 @@ export function Hero() {
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-[2.5rem] md:text-[5rem] lg:text-[8rem] xl:text-[10rem] 2xl:text-[12rem] leading-none font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90 whitespace-nowrap"
+              className="text-4xl md:text-[4rem] lg:text-[6rem] xl:text-[8rem] 2xl:text-[9rem] leading-none font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90 whitespace-nowrap"
             >
               I CAN DO THIS ALL DAY
             </motion.h1>
