@@ -112,6 +112,7 @@ function GlassPillar({
                 clearcoatRoughness={0.0}
                 attenuationColor={app.hex}
                 attenuationDistance={1.0}
+                metalness={0.0}              // 🚫 Metal Disabled
                 emissive={app.hex}  
                 emissiveIntensity={0.0}
                 iridescence={1}              // 🌈 Fix 3: Efficient "Vertex/PBR" Rainbows
