@@ -59,16 +59,16 @@ export function Hero() {
         {showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
-            {/* 1. KINETIC ROTATING QUESTION */}
-            <div className="mb-0 h-8 md:h-16 overflow-hidden relative flex items-end w-full"> 
+            {/* 1. 3D FLIP QUESTION */}
+            <div className="mb-0 h-8 md:h-16 relative flex items-end w-full" style={{ perspective: '1000px' }}> 
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "-100%" }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} // Custom Quintic Ease
-                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                  initial={{ rotateX: -90, opacity: 0 }}
+                  animate={{ rotateX: 0, opacity: 1 }}
+                  exit={{ rotateX: 90, opacity: 0 }}
+                  transition={{ duration: 0.8, ease: [0.2, 1.2, 0.4, 1] }} // Heavy Snap
+                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 origin-bottom bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
