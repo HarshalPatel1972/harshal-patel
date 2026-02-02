@@ -13,7 +13,7 @@ export function Hero() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   
   // 🎛️ TUNING STATE
-  const [fontSize, setFontSize] = useState(12); 
+  const [fontSize, setFontSize] = useState(8); 
   const [fontFamily, setFontFamily] = useState('Impact, sans-serif');
   const [blendMode, setBlendMode] = useState("normal");
   const [textZIndex, setTextZIndex] = useState(20);
@@ -28,35 +28,15 @@ export function Hero() {
   ];
 
   const blendOptions = ["normal", "overlay", "screen", "soft-light", "color-dodge", "difference", "multiply"];
+  
+  // ... (Questions array) ...
 
-  const questions = [
-    "Problem Solving?",
-    "Web Designing?",
-    "Performance Tuning?",
-    "UI Engineering?",
-  ];
-
-  // Cycle Questions
-  useEffect(() => {
-    if (!showContent) return;
-    const interval = setInterval(() => {
-      setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 4500); // ⏱️ 4.5s Hold
-    return () => clearInterval(interval);
-  }, [showContent]);
-
-  // Trigger Content Show
-  useEffect(() => {
-    if (isComplete) {
-      const timer = setTimeout(() => setShowContent(true), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isComplete]);
+  // ... (useEffects) ...
 
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12">
       
-      {/* 🎛️ TUNING CONSOLE */}
+      {/* 🎛️ TUNING CONSOLE  ... (Keep existing UI) ... */}
       <div className="absolute top-24 left-4 z-50 flex flex-col gap-3 p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white w-72 shadow-2xl">
         <span className="text-xs font-mono text-cyan-400 tracking-widest border-b border-white/10 pb-1">TUNING CONSOLE</span>
         
@@ -141,6 +121,8 @@ export function Hero() {
           style={{ 
             fontSize: `${fontSize}vw`, 
             fontFamily: fontFamily, 
+            x: 165,
+            y: -23,
             mixBlendMode: blendMode as any,
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
@@ -156,6 +138,8 @@ export function Hero() {
             fontSize: `${fontSize}vw`, 
             fontFamily: fontFamily, 
             marginTop: '-1vw',
+            x: 59,
+            y: -27,
             mixBlendMode: blendMode as any,
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
