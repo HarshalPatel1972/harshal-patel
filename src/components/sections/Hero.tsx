@@ -11,7 +11,17 @@ export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [fontSize, setFontSize] = useState(8); // 🎛️ Tuning State
+  const [fontSize, setFontSize] = useState(8); // 🎛️ Size State
+  const [fontFamily, setFontFamily] = useState('"TWK Lausanne", sans-serif'); // 🔠 Font State
+
+  const fontOptions = [
+    { name: "TWK Lausanne", value: '"TWK Lausanne", sans-serif' },
+    { name: "Space Grotesk", value: 'var(--font-space-grotesk), sans-serif' },
+    { name: "Geist Sans", value: 'var(--font-geist-sans), sans-serif' },
+    { name: "Impact", value: 'Impact, sans-serif' },
+    { name: "Arial Black", value: '"Arial Black", sans-serif' },
+    { name: "Helvetica", value: 'Helvetica, sans-serif' },
+  ];
 
   const questions = [
     "Problem Solving?",
@@ -40,10 +50,13 @@ export function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12">
       
-      {/* 🎛️ FONT SIZE TUNER */}
-      <div className="absolute top-24 left-4 z-50 flex flex-col gap-2 p-4 bg-black/50 backdrop-blur-md rounded-lg border border-white/10 text-white">
-        <span className="text-xs font-mono text-cyan-400">FONT TUNER</span>
+      {/* 🎛️ TUNING CONSOLE */}
+      <div className="absolute top-24 left-4 z-50 flex flex-col gap-3 p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white w-72 shadow-2xl">
+        <span className="text-xs font-mono text-cyan-400 tracking-widest border-b border-white/10 pb-1">TUNING CONSOLE</span>
+        
+        {/* Size Slider */}
         <div className="flex items-center gap-2">
+          <label className="text-xs font-bold text-neutral-400 w-8">SIZE</label>
           <input 
             type="range" 
             min="2" 
@@ -51,9 +64,23 @@ export function Hero() {
             step="0.1" 
             value={fontSize} 
             onChange={(e) => setFontSize(parseFloat(e.target.value))}
-            className="w-32 accent-cyan-400 cursor-pointer"
+            className="flex-1 accent-cyan-400 cursor-pointer h-1 bg-white/20 rounded-full appearance-none"
           />
-          <span className="text-sm font-bold w-12">{fontSize}vw</span>
+          <span className="text-xs font-mono w-10 text-right">{fontSize.toFixed(1)}vw</span>
+        </div>
+
+        {/* Font Selector */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-bold text-neutral-400 w-8">FONT</label>
+          <select 
+            value={fontFamily} 
+            onChange={(e) => setFontFamily(e.target.value)}
+            className="flex-1 bg-neutral-900/80 border border-white/20 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400"
+          >
+            {fontOptions.map(f => (
+              <option key={f.name} value={f.value}>{f.name}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -77,11 +104,11 @@ export function Hero() {
         <motion.h1 
           drag
           dragMomentum={false}
-          onDragEnd={(event, info) => console.log('HARSHAL | Offset:', info.offset, '| Size:', fontSize + 'vw')}
-          className="font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
+          onDragEnd={(event, info) => console.log('HARSHAL | Offset:', info.offset, '| Size:', fontSize + 'vw', '| Font:', fontFamily)}
+          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
           style={{ 
             fontSize: `${fontSize}vw`,
-            fontFamily: '"TWK Lausanne", sans-serif', 
+            fontFamily: fontFamily, 
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
@@ -90,11 +117,11 @@ export function Hero() {
         <motion.h1 
           drag
           dragMomentum={false}
-          onDragEnd={(event, info) => console.log('PATEL | Offset:', info.offset, '| Size:', fontSize + 'vw')}
-          className="font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
+          onDragEnd={(event, info) => console.log('PATEL | Offset:', info.offset, '| Size:', fontSize + 'vw', '| Font:', fontFamily)}
+          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
           style={{ 
             fontSize: `${fontSize}vw`,
-            fontFamily: '"TWK Lausanne", sans-serif', 
+            fontFamily: fontFamily, 
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
