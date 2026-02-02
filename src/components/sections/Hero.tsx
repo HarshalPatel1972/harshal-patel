@@ -153,13 +153,13 @@ export function Hero() {
                 
                 {/* 2. THE HOLE (Overlay Box) */}
                 <div 
-                  className="absolute bg-transparent flex items-end justify-center pb-[26px] overflow-hidden z-20"
+                  className="absolute bg-transparent flex items-end justify-center pb-[30px] overflow-hidden z-20"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
                     top: '40px', 
                     left: '35px', 
                     width: '194px', 
-                    height: '102px', 
+                    height: '104px', 
                   }}
                 >
                   <AnimatePresence mode="wait">
