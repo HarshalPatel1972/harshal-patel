@@ -5,6 +5,7 @@ import { Lightning } from "@phosphor-icons/react";
 import Image from "next/image";
 import { usePreloader } from "@/lib/preloader-context";
 import { useEffect, useState } from "react";
+import { HeroGrid } from "@/components/ui/HeroGrid";
 
 export function Hero() {
   const { isComplete } = usePreloader();
