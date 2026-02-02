@@ -25,7 +25,7 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 2000);
+    }, 3500); // 🐢 Slower cycle
     return () => clearInterval(interval);
   }, [showContent]);
 
@@ -38,7 +38,7 @@ export function Hero() {
   }, [isComplete]);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-20 overflow-hidden bg-[#050505] pb-20 md:pb-32">
+    <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12">
       
       {/* 🖼️ HERO BACKGROUND IMAGE */}
       <div className="absolute inset-0 z-0">
@@ -57,10 +57,10 @@ export function Hero() {
 
       <AnimatePresence>
         {showContent && (
-          <div className="relative z-20 w-full max-w-[90rem] mx-auto flex flex-col justify-end h-full pointer-events-none">
+          <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
             {/* 1. ROTATING QUESTION */}
-            <div className="mb-2 md:mb-6 h-12 md:h-20 overflow-hidden relative">
+            <div className="mb-2 md:mb-4 h-12 md:h-24 overflow-hidden relative">
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
@@ -68,21 +68,21 @@ export function Hero() {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -40, opacity: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-2xl md:text-5xl font-bold text-white/80 font-space tracking-tight pl-2"
+                  className="text-2xl md:text-5xl lg:text-6xl font-bold text-white/80 font-space tracking-tight pl-2"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
               </AnimatePresence>
             </div>
 
-            {/* 2. MASSIVE ANSWER */}
+            {/* 2. MASSIVE ANSWER (Single Line) */}
             <motion.h1 
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-6xl md:text-[8rem] lg:text-[10rem] leading-[0.85] font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90"
+              className="text-[2.5rem] md:text-[5rem] lg:text-[8rem] xl:text-[10rem] 2xl:text-[12rem] leading-none font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90 whitespace-nowrap"
             >
-              I CAN DO<br />THIS ALL DAY
+              I CAN DO THIS ALL DAY
             </motion.h1>
 
           </div>
