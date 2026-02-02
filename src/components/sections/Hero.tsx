@@ -60,7 +60,7 @@ export function Hero() {
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
             {/* 1. ROTATING QUESTION */}
-            <div className="mb-2 md:mb-4 h-12 md:h-24 overflow-hidden relative">
+            <div className="mb-0 h-8 md:h-16 overflow-hidden relative flex items-end">
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
