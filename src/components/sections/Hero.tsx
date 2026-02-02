@@ -1,16 +1,18 @@
+```javascript
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react"; // Added useRef
 import { Lightning } from "@phosphor-icons/react";
 import Image from "next/image";
-import { usePreloader } from "@/lib/preloader-context";
-import { useEffect, useState } from "react";
-import { HeroGrid } from "@/components/ui/HeroGrid";
+import { usePreloader } from "@/components/effects/Preloader"; // Updated import path
+import { HeroGrid } from "./HeroGrid"; // Updated import path
 
 export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null); // 🧱 Ref for Coordinate Tracking
   
   // 🎛️ TUNING STATE
   const [fontSize, setFontSize] = useState(8); 
@@ -29,16 +31,57 @@ export function Hero() {
 
   const blendOptions = ["normal", "overlay", "screen", "soft-light", "color-dodge", "difference", "multiply"];
   
-  // ... (Questions array) ...
+  const questions = [
+    "Problem Solving?",
+    "Web Designing?",
+    "Performance Tuning?",
+    "UI Engineering?",
+  ];
 
-  // ... (useEffects) ...
+  // Cycle Questions
+  useEffect(() => {
+    if (!showContent) return;
+    const interval = setInterval(() => {
+      setCurrentQuestion((prev) => (prev + 1) % questions.length);
+    }, 4500); 
+    return () => clearInterval(interval);
+  }, [showContent, questions.length]);
+
+  // Trigger Content Show
+  useEffect(() => {
+    if (isComplete) {
+      const timer = setTimeout(() => setShowContent(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isComplete]);
+
+  // 📐 POS CALCULATION
+  const logPosition = (label: string, info: any) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const leftPx = info.point.x - rect.left;
+    const topPx = info.point.y - rect.top;
+    const leftPct = ((leftPx / rect.width) * 100).toFixed(1);
+    const topPct = ((topPx / rect.height) * 100).toFixed(1);
+    
+    console.log(`%c ${label} `, "background: #222; color: #bada55; font-weight: bold;");
+    console.log(`Margin-Left: ${leftPx.toFixed(0)}px (${leftPct}%)`);
+    console.log(`Margin-Top:  ${topPx.toFixed(0)}px (${topPct}%)`);
+    console.log(`Font Size:   ${fontSize}vw | Font: ${fontFamily}`);
+  };
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12">
+    <section 
+      ref={containerRef}
+      className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12"
+    >
       
-      {/* 🎛️ TUNING CONSOLE  ... (Keep existing UI) ... */}
-      <div className="absolute top-24 left-4 z-50 flex flex-col gap-3 p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white w-72 shadow-2xl">
-        <span className="text-xs font-mono text-cyan-400 tracking-widest border-b border-white/10 pb-1">TUNING CONSOLE</span>
+      {/* 🟦 THE SCREEN BORDER (Visual Guide) */}
+      <div className="absolute inset-0 border-[10px] border-cyan-400/20 pointer-events-none z-[100]" />
+
+      {/* 🎛️ TUNING CONSOLE */}
+      <div className="absolute top-24 left-4 z-50 flex flex-col gap-3 p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white w-72 shadow-2xl pointer-events-auto">
+        <span className="text-xs font-mono text-cyan-400 tracking-widest border-b border-white/10 pb-1 uppercase">Coordinate Console</span>
         
         {/* Size Slider */}
         <div className="flex items-center gap-2">
@@ -46,7 +89,7 @@ export function Hero() {
           <input 
             type="range" 
             min="2" 
-            max="20" 
+            max="25" 
             step="0.1" 
             value={fontSize} 
             onChange={(e) => setFontSize(parseFloat(e.target.value))}
@@ -108,40 +151,40 @@ export function Hero() {
 
       <HeroGrid />
 
-      {/* 📛 CENTER STACKED NAME (Draggable Mode) */}
+      {/* 📛 NEW ABSOLUTE COORDINATE DRAGGER */}
       <div 
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none"
+        className="absolute inset-0 pointer-events-none select-none overflow-visible"
         style={{ zIndex: textZIndex }}
       >
         <motion.h1 
           drag
           dragMomentum={false}
-          onDragEnd={(event, info) => console.log('HARSHAL | Offset:', info.offset, '| Size:', fontSize + 'vw', '| Font:', fontFamily)}
-          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
+          onDragEnd={(event, info) => logPosition('HARSHAL', info)}
+          className="absolute font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing border border-dashed border-white/0 hover:border-white/20" 
           style={{ 
             fontSize: `${fontSize}vw`, 
             fontFamily: fontFamily, 
-            x: 165,
-            y: -23,
             mixBlendMode: blendMode as any,
-            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
+            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))',
+            left: '10%', // Initial start
+            top: '30%'
           }}
         >
           HARSHAL
         </motion.h1>
+        
         <motion.h1 
           drag
           dragMomentum={false}
-          onDragEnd={(event, info) => console.log('PATEL | Offset:', info.offset, '| Size:', fontSize + 'vw', '| Font:', fontFamily)}
-          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
+          onDragEnd={(event, info) => logPosition('PATEL', info)}
+          className="absolute font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing border border-dashed border-white/0 hover:border-white/20" 
           style={{ 
             fontSize: `${fontSize}vw`, 
             fontFamily: fontFamily, 
-            marginTop: '-1vw',
-            x: 59,
-            y: -27,
             mixBlendMode: blendMode as any,
-            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
+            filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))',
+            left: '20%', // Initial start
+            top: '50%'
           }}
         >
           PATEL
