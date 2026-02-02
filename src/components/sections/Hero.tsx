@@ -59,16 +59,16 @@ export function Hero() {
         {showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
-            {/* 1. ROTATING QUESTION */}
-            <div className="mb-0 h-8 md:h-16 overflow-hidden relative flex items-end">
+            {/* 1. KINETIC ROTATING QUESTION */}
+            <div className="mb-0 h-8 md:h-16 overflow-hidden relative flex items-end w-full"> 
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
-                  initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
-                  animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-                  exit={{ y: -20, opacity: 0, filter: 'blur(10px)' }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-100%" }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} // Custom Quintic Ease
+                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
