@@ -59,21 +59,19 @@ export function Hero() {
         {showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
-            {/* 1. TYPEWRITER REVEAL */}
-            <div className="mb-0 h-8 md:h-16 relative flex items-end w-full"> 
+            {/* 1. SLOT MACHINE VERTICAL */}
+            <div className="mb-0 h-8 md:h-16 relative flex items-end w-full overflow-hidden"> 
               <AnimatePresence mode="wait">
-                <motion.div
+                <motion.h2 
                   key={currentQuestion}
-                  initial={{ width: 0 }}
-                  animate={{ width: "auto" }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 1.2, ease: "linear" }}
-                  className="overflow-hidden whitespace-nowrap border-r-4 border-cyan-400 pr-2"
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: "0%", opacity: 1 }}
+                  exit={{ y: "-100%", opacity: 0 }}
+                  transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 >
-                  <h2 className="text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] pb-1">
-                    {questions[currentQuestion]}
-                  </h2>
-                </motion.div>
+                  {questions[currentQuestion]}
+                </motion.h2>
               </AnimatePresence>
             </div>
 
