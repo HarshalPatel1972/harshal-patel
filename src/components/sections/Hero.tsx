@@ -46,7 +46,7 @@ export function Hero() {
           src="/harshal-1.png" 
           alt="Harshal Patel"
           fill
-          className="object-cover object-[80%_25%]"
+          className="object-cover object-[50%_25%]"
           priority
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/40 md:via-transparent to-transparent" />
@@ -54,6 +54,22 @@ export function Hero() {
       </div>
 
       <HeroGrid />
+
+      {/* 📛 CENTER SPLIT NAME */}
+      <div className="absolute inset-0 z-10 flex items-center justify-between px-2 md:px-10 pointer-events-none select-none">
+        <h1 
+          className="text-[15vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+          style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
+        >
+          HARSHAL
+        </h1>
+        <h1 
+          className="text-[15vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+          style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
+        >
+          PATEL
+        </h1>
+      </div>
 
       <AnimatePresence>
         {showContent && (
