@@ -64,24 +64,28 @@ export function Hero() {
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -20, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="text-xl md:text-4xl lg:text-5xl font-bold text-white/80 font-space tracking-tight pl-2"
+                  initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
+                  animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                  exit={{ y: -20, opacity: 0, filter: 'blur(10px)' }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
               </AnimatePresence>
             </div>
 
-            {/* 2. MASSIVE ANSWER (Word Spacing) */}
+            {/* 2. MASSIVE ANSWER (Brilliant Glass) */}
             <motion.h1 
               initial={{ y: 100, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90 whitespace-nowrap"
-              style={{ wordSpacing: '0.4em' }}
+              className="text-3xl md:text-[3rem] lg:text-[5rem] xl:text-[7rem] 2xl:text-[8rem] leading-none font-black uppercase font-space tracking-tighter whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-b from-white via-white/80 to-white/10"
+              style={{ 
+                wordSpacing: '0.4em',
+                WebkitTextStroke: '1px rgba(255,255,255,0.3)',
+                filter: 'drop-shadow(0 0 25px rgba(255,255,255,0.2))'
+              }}
             >
               I CAN DO THIS ALL DAY
             </motion.h1>
