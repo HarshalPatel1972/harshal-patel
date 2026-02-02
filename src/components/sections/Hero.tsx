@@ -162,7 +162,6 @@ export function Hero() {
                     width: '194px', 
                     height: '98px', 
                     // 🌫️ EDGE BLUR (Softens the hard cut)
-                    borderRadius: '8px',
                     boxShadow: '0 0 8px 4px #050505'
                   }}
                 >
