@@ -36,14 +36,8 @@ export function Hero() {
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
       </div>
 
-      {/* 📐 TECHNICAL GRID: 10 COLUMNS (SQUARES) */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 hidden md:block opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)',
-          backgroundSize: '10vw 10vw'
-        }}
-      />
+      {/* 📐 DYNAMIC HERO GRID (Calculated Perfect Fit) */}
+      <HeroGrid />
 
 
 
