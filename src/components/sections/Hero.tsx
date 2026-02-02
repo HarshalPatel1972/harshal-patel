@@ -132,19 +132,19 @@ export function Hero() {
                     backgroundClip: "text", 
                     WebkitBackgroundClip: "text", 
                     color: "transparent",
-                    // ✂️ CUTOUT MASK (Hole: x=35, y=42 (18px padding), w=194, h=96)
+                    // ✂️ CUTOUT MASK (Hole: x=35, y=40 (16px padding), w=194, h=96)
                     // Construct 4 rectangles around the hole:
-                    // 1. Top Bar (h=42)
-                    // 2. Bottom Bar (y=138)
-                    // 3. Left Side (w=35, h=96, y=42)
-                    // 4. Right Side (x=229, h=96, y=42)
+                    // 1. Top Bar (h=40)
+                    // 2. Bottom Bar (y=136)
+                    // 3. Left Side (w=35, h=96, y=40)
+                    // 4. Right Side (x=229, h=96, y=40)
                     maskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
-                    maskPosition: '0 0, 0 138px, 0 42px, 229px 42px',
-                    maskSize: '100% 42px, 100% calc(100% - 138px), 35px 96px, calc(100% - 229px) 96px',
+                    maskPosition: '0 0, 0 136px, 0 40px, 229px 40px',
+                    maskSize: '100% 40px, 100% calc(100% - 136px), 35px 96px, calc(100% - 229px) 96px',
                     maskRepeat: 'no-repeat',
                     WebkitMaskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
-                    WebkitMaskPosition: '0 0, 0 138px, 0 42px, 229px 42px',
-                    WebkitMaskSize: '100% 42px, 100% calc(100% - 138px), 35px 96px, calc(100% - 229px) 96px',
+                    WebkitMaskPosition: '0 0, 0 136px, 0 40px, 229px 40px',
+                    WebkitMaskSize: '100% 40px, 100% calc(100% - 136px), 35px 96px, calc(100% - 229px) 96px',
                     WebkitMaskRepeat: 'no-repeat'
                   }}
                 >
@@ -153,13 +153,13 @@ export function Hero() {
                 
                 {/* 2. THE HOLE (Overlay Box) */}
                 <div 
-                  className="absolute bg-transparent flex items-center justify-center overflow-hidden z-20"
+                  className="absolute bg-transparent flex items-end justify-center pb-[26px] overflow-hidden z-20"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
-                    top: '42px', 
+                    top: '40px', 
                     left: '35px', 
                     width: '194px', 
-                    height: '96px', 
+                    height: '102px', 
                   }}
                 >
                   <AnimatePresence mode="wait">
