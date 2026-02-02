@@ -46,7 +46,7 @@ export function Hero() {
           src="/harshal-1.png" 
           alt="Harshal Patel"
           fill
-          className="object-cover object-[75%_25%]"
+          className="object-cover object-[85%_25%]"
           priority
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/40 md:via-transparent to-transparent" />
