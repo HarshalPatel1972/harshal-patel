@@ -10,7 +10,26 @@ import { HeroGrid } from "@/components/ui/HeroGrid";
 export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
 
+  const questions = [
+    "Problem Solving?",
+    "Web Designing?",
+    "UI Engineering?",
+    "Performance Tuning?",
+    "Backend Architecture?"
+  ];
+
+  // Cycle Questions
+  useEffect(() => {
+    if (!showContent) return;
+    const interval = setInterval(() => {
+      setCurrentQuestion((prev) => (prev + 1) % questions.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [showContent]);
+
+  // Trigger Content Show
   useEffect(() => {
     if (isComplete) {
       const timer = setTimeout(() => setShowContent(true), 100);
@@ -19,10 +38,9 @@ export function Hero() {
   }, [isComplete]);
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center px-4 md:px-20 overflow-hidden bg-[#050505] pt-20 md:pt-0">
+    <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-20 overflow-hidden bg-[#050505] pb-20 md:pb-32">
       
-      {/* 🖼️ HERO BACKGROUND IMAGE (Full Page) */}
-      {/* 🖼️ HERO BACKGROUND IMAGE (Full Page) */}
+      {/* 🖼️ HERO BACKGROUND IMAGE */}
       <div className="absolute inset-0 z-0">
         <Image 
           src="/harshal-1.png" 
@@ -31,32 +49,49 @@ export function Hero() {
           className="object-cover object-[50%_25%]"
           priority
         />
-        {/* Gradient Scrims: Fade Left (Text) -> Right (Image) */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/20 md:via-transparent to-transparent" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#050505] via-[#050505]/40 md:via-transparent to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent" />
       </div>
 
-      {/* 📐 DYNAMIC HERO GRID (Calculated Perfect Fit) */}
       <HeroGrid />
 
-
-
       <AnimatePresence>
-        {isComplete && (
-          <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        {showContent && (
+          <div className="relative z-20 w-full max-w-[90rem] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
+            {/* 1. ROTATING QUESTION */}
+            <div className="mb-2 md:mb-6 h-12 md:h-20 overflow-hidden relative">
+              <AnimatePresence mode="wait">
+                <motion.h2 
+                  key={currentQuestion}
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -40, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="text-2xl md:text-5xl font-bold text-white/80 font-space tracking-tight pl-2"
+                >
+                  {questions[currentQuestion]}
+                </motion.h2>
+              </AnimatePresence>
+            </div>
 
-
-
-
-            {/* 🖼️ HERO IMAGE MOVED TO BACKGROUND */}
+            {/* 2. MASSIVE ANSWER */}
+            <motion.h1 
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="text-6xl md:text-[8rem] lg:text-[10rem] leading-[0.85] font-black text-white uppercase font-space tracking-tighter mix-blend-overlay opacity-90"
+            >
+              I CAN DO<br />THIS ALL DAY
+            </motion.h1>
 
           </div>
         )}
       </AnimatePresence>
       
+      {/* CREDITS */}
       <motion.div 
-        className="absolute bottom-6 md:bottom-12 right-6 md:right-20 text-right"
+        className="absolute bottom-6 md:bottom-12 right-6 md:right-20 text-right z-30"
         initial={{ opacity: 0 }}
         animate={showContent ? { opacity: 1 } : {}}
         transition={{ delay: 1.5 }}
