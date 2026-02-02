@@ -336,7 +336,20 @@ export function Preloader() {
           }}
         />
         
-        {isReady && showCanvas && (
+        {/* Tier 2: Static Fallback (Potato Mode) */}
+        {tier === 'low' && (
+           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+              <div className="flex gap-4 opacity-30">
+                 {APPS.map((app, i) => (
+                    <div key={i} className="w-2 h-16 rounded-full bg-white/20" style={{ backgroundColor: app.hex }} />
+                 ))}
+              </div>
+              <div className="text-white/50 font-mono text-xs tracking-[0.5em] animate-pulse">LOADING</div>
+           </div>
+        )}
+
+        {/* Tier 1: High-Performance 3D */}
+        {isReady && showCanvas && tier === 'high' && (
           <Canvas 
             frameloop="demand"            // 🛑 Fix 5: Event-Driven Rendering (0fps idle)
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
