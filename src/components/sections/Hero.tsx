@@ -162,7 +162,8 @@ export function Hero() {
                     width: '194px', 
                     height: '98px', 
                     // 🌫️ EDGE BLUR (Softens the hard cut)
-                    boxShadow: '0 0 15px 10px #050505'
+                    borderRadius: '8px',
+                    boxShadow: '0 0 8px 4px #050505'
                   }}
                 >
                   <AnimatePresence mode="wait">
