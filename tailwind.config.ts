@@ -61,6 +61,7 @@ const config: Config = {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
         space: ["var(--font-space-grotesk)", "sans-serif"],
+        lausanne: ['"TWK Lausanne"', "sans-serif"],
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",
