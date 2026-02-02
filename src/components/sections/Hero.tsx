@@ -27,7 +27,7 @@ export function Hero() {
       },
       item: {
         initial: { filter: 'blur(10px)', opacity: 0, scale: 0.9, y: 10 },
-        animate: { filter: 'blur(0px)', opacity: 1, scale: 1, y: 0 },
+        visible: { filter: 'blur(0px)', opacity: 1, scale: 1, y: 0 },
         exit: { filter: 'blur(5px)', opacity: 0, scale: 1.1, y: -10 }
       }
     },
@@ -37,7 +37,7 @@ export function Hero() {
       },
       item: {
         initial: { y: 40, opacity: 0 },
-        animate: { y: 0, opacity: 1 },
+        visible: { y: 0, opacity: 1 },
         exit: { y: -40, opacity: 0 }
       }
     },
@@ -47,7 +47,7 @@ export function Hero() {
       },
       item: {
         initial: { scale: 1.5, opacity: 0, filter: 'brightness(2)' },
-        animate: { scale: 1, opacity: 1, filter: 'brightness(1)' },
+        visible: { scale: 1, opacity: 1, filter: 'brightness(1)' },
         exit: { scale: 0.8, opacity: 0 }
       }
     },
@@ -57,7 +57,7 @@ export function Hero() {
       },
       item: {
         initial: { opacity: 0, letterSpacing: '1em', filter: 'blur(4px)' },
-        animate: { opacity: 1, letterSpacing: '0.05em', filter: 'blur(0px)' },
+        visible: { opacity: 1, letterSpacing: '0.05em', filter: 'blur(0px)' },
         exit: { opacity: 0, scale: 1.2, filter: 'blur(10px)' }
       }
     }
