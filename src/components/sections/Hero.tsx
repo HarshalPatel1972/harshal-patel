@@ -55,20 +55,26 @@ export function Hero() {
 
       <HeroGrid />
 
-      {/* 📛 CENTER SPLIT NAME */}
-      <div className="absolute inset-0 z-10 flex items-center justify-between px-8 md:px-32 pointer-events-none select-none">
-        <h1 
-          className="text-[8vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+      {/* 📛 CENTER SPLIT NAME (Draggable Mode) */}
+      <div className="absolute inset-0 z-10 flex items-center justify-between px-8 md:px-16 pointer-events-none select-none">
+        <motion.h1 
+          drag
+          dragMomentum={false}
+          onDragEnd={(event, info) => console.log('HARSHAL Offset:', info.offset, 'Point:', info.point)}
+          className="text-[8vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
           style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
         >
           HARSHAL
-        </h1>
-        <h1 
-          className="text-[8vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+        </motion.h1>
+        <motion.h1 
+          drag
+          dragMomentum={false}
+          onDragEnd={(event, info) => console.log('PATEL Offset:', info.offset, 'Point:', info.point)}
+          className="text-[8vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
           style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
         >
           PATEL
-        </h1>
+        </motion.h1>
       </div>
 
       <AnimatePresence>
