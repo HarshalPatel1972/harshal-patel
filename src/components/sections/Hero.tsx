@@ -14,7 +14,7 @@ export function Hero() {
   const [fontSize, setFontSize] = useState(8); // 🎛️ Size State
   const [fontFamily, setFontFamily] = useState('"TWK Lausanne", sans-serif'); // 🔠 Font State
   const [blendMode, setBlendMode] = useState("normal"); // 🌫️ Blend Mode
-  const [textZIndex, setTextZIndex] = useState(10); // 📚 Layer Depth
+  const [textZIndex, setTextZIndex] = useState(20); // 📚 Layer Depth
 
   const fontOptions = [
     { name: "TWK Lausanne", value: '"TWK Lausanne", sans-serif' },
@@ -105,14 +105,14 @@ export function Hero() {
         <div className="flex items-center gap-2">
            <label className="text-xs font-bold text-neutral-400 w-8">LAYER</label>
            <div className="flex gap-2 flex-1">
-             <button onClick={() => setTextZIndex(0)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 0 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>BACK (0)</button>
-             <button onClick={() => setTextZIndex(10)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 10 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>FRONT (10)</button>
+             <button onClick={() => setTextZIndex(0)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 0 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>BACK</button>
+             <button onClick={() => setTextZIndex(20)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 20 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>FRONT</button>
            </div>
         </div>
       </div>
 
       {/* 🖼️ HERO BACKGROUND IMAGE */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-10">
         <Image 
           src="/harshal-1.png" 
           alt="Harshal Patel"
