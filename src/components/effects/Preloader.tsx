@@ -95,8 +95,8 @@ function GlassPillar({
            <MeshTransmissionMaterial 
               ref={materialRef}
               backside={true}
-              samples={6}                  
-              resolution={512}             
+              samples={3}                  
+              resolution={256}             
               thickness={0.2}              
               chromaticAberration={0.3}    
               anisotropy={0.1}             
