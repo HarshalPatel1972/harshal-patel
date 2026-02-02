@@ -10,39 +10,35 @@ export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null); // 🧱 Ref for Coordinate Tracking
+  const containerRef = useRef<HTMLDivElement>(null);
   
-  // TUNING STATE
-  const [footerPos, setFooterPos] = useState({ x: 3.2, y: 72 });
-  const [footerText, setFooterText] = useState("I CAN DO THIS ALL DAY");
-  const [footerWordSizes, setFooterWordSizes] = useState([10, 10, 10, 10, 10, 10, 10, 10]); // Defaults
-  const [selectedWordIndex, setSelectedWordIndex] = useState(0);
-  const [footerFont, setFooterFont] = useState('var(--font-anton)');
+  // 🎛️ BOX TUNER STATE (New)
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [tunerState, setTunerState] = useState({ 
+    x: 0, y: 0, w: 200, h: 100, 
+    fontSize: 1.5, 
+    font: 'var(--font-space)' 
+  });
 
-  // Helper to safely set size
-  const updateWordSize = (size: number) => {
-    const newSizes = [...footerWordSizes];
-    newSizes[selectedWordIndex] = size;
-    setFooterWordSizes(newSizes);
+  const updateTunerState = () => {
+    if (boxRef.current && containerRef.current) {
+      const box = boxRef.current;
+      setTunerState(prev => ({
+        ...prev,
+        x: box.offsetLeft,
+        y: box.offsetTop,
+        w: box.clientWidth,
+        h: box.clientHeight
+      }));
+    }
   };
 
-  // Helper to set GLOBAL size
-  const updateGlobalSize = (size: number) => {
-    const newSizes = new Array(footerWordSizes.length).fill(size);
-    setFooterWordSizes(newSizes);
-  };
-
-  const updatePos = (info: any) => {
-    if (!containerRef.current) return;
-    const { width, height } = containerRef.current.getBoundingClientRect();
-    const { x, y } = info.point;
-    
-    // Convert to percentage relative to screen
-    const xPercent = (x / width) * 100;
-    const yPercent = (y / height) * 100;
-    
-    setFooterPos({ x: parseFloat(xPercent.toFixed(1)), y: parseFloat(yPercent.toFixed(1)) });
-  };
+  // Deprecated Tuning State (Cleaning up to avoid confusion)
+  // const [footerPos, setFooterPos] = useState({ x: 3.2, y: 72 });
+  // const [footerText, setFooterText] = useState("I CAN DO THIS ALL DAY");
+  // const [footerWordSizes, setFooterWordSizes] = useState([10, 10, 10, 10, 10, 10, 10, 10]); 
+  // const [selectedWordIndex, setSelectedWordIndex] = useState(0);
+  // const [footerFont, setFooterFont] = useState('var(--font-anton)');
 
   const questions = [
     "Designing Systems?",   // SDE
@@ -129,6 +125,7 @@ export function Hero() {
 
 
             {/* 2. FINALIZED FOOTER (Locked) */}
+            {/* 2. FINALIZED FOOTER (Locked) */}
             <motion.div 
               initial={{ opacity: 0, x: -20, filter: 'blur(10px)' }}
               animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
@@ -136,74 +133,107 @@ export function Hero() {
               className="absolute z-30 font-black uppercase leading-none select-none whitespace-pre-wrap"
               style={{ 
                 fontFamily: 'Impact, sans-serif',
-                backgroundImage: "url('/All Day Blurred.png')",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                color: "transparent",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                color: "white", 
                 wordSpacing: '0.2em',
                 transform: 'scaleY(1.3)', 
                 transformOrigin: 'top left',
-                // HD SMUDGE + Shadow
-                // HD SMUDGE (Baked) + Shadow
                 filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.1))',
-                // FINALIZED COORDINATES from User
                 left: '9.2%',
                 top: '63.6%',
                 width: 'max-content',
                 maxWidth: '90%'
               }}
             >
-              <span style={{ fontSize: '4rem' }}>I</span>
+              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>I</span>
               <span style={{ fontSize: '4rem' }}> </span>
-              <span style={{ fontSize: '4rem' }}>CAN</span>
+              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>CAN</span>
               <span style={{ fontSize: '4rem' }}>{'\n'}</span>
-              <span style={{ fontSize: '4rem' }}>DO</span>
+              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>DO</span>
               <span style={{ fontSize: '4rem' }}> </span>
               {/* "THIS" text wrapper */}
               <span className="relative inline-block mx-4">
-                {/* 1. THE TEXT ITSELF (Clean, no children) */}
-                <span style={{ fontSize: '9rem' }}>THIS</span>
+                {/* 1. THE TEXT ITSELF (Clipped) */}
+                <span className="bg-clip-text text-transparent" style={{ fontSize: '9rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>THIS</span>
                 
                 {/* 2. THE TUNER OVERLAY (Sibling, Absolute) */}
                 <motion.div 
+                  ref={boxRef}
                   drag
                   dragMomentum={false}
+                  onDragEnd={updateTunerState}
+                  onMouseUp={updateTunerState} // Capture resize end
                   className="absolute bg-blue-500/30 border-2 border-yellow-400 flex items-center justify-center cursor-move z-50 overflow-hidden"
                   style={{ 
-                    top: '0%', left: '0%', // Start aligned
-                    width: '100%', height: '100%', // Cover it initially
-                    resize: 'both', overflow: 'auto'
-                  }}
-                  onDragEnd={(_, info) => {
-                    console.log("📍 Moved:", info.point);
+                    top: '0%', left: '0%', 
+                    width: '100%', height: '100%', 
+                    resize: 'both', overflow: 'auto',
+                    color: 'white' // Override parent opacity
                   }}
                 >
                   <AnimatePresence mode="wait">
                     <motion.div 
                       key={questions[currentQuestion]}
                       className="flex flex-col items-center justify-center font-bold text-white leading-tight text-center pointer-events-none"
-                      style={{ fontSize: '1.5rem', fontFamily: 'var(--font-space)' }}
+                      style={{ 
+                        fontSize: `${tunerState.fontSize}rem`, 
+                        fontFamily: tunerState.font,
+                        textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+                      }}
                     >
                       {questions[currentQuestion].split(' ').map((word, i) => (
                          <span key={i}>{word}</span>
                       ))}
                     </motion.div>
                   </AnimatePresence>
-                  
-                  {/* Debug Info */}
-                  <div className="absolute top-0 left-0 bg-black text-[10px] text-yellow-400 p-1 font-mono pointer-events-none">
-                    Resize Me
-                  </div>
                 </motion.div>
               </span>
 
               <span style={{ fontSize: '4rem' }}> </span>
-              <span style={{ fontSize: '4rem' }}>ALL</span>
+              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>ALL</span>
               <span style={{ fontSize: '4rem' }}> </span>
-              <span style={{ fontSize: '4rem' }}>DAY</span>
+              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>DAY</span>
             </motion.div>
+            
+            {/* 🎛️ TUNER PANEL */}
+            <div className="fixed top-24 right-10 z-[100] bg-black/80 text-green-400 p-4 border border-green-500 font-mono text-xs rounded grid gap-2 shadow-2xl backdrop-blur">
+              <div className="font-bold text-lg text-white mb-2 border-b border-white/20 pb-1">BOX TUNER</div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-gray-400">OFFSET LEFT</div>
+                  <div className="text-xl">{tunerState.x}px</div>
+                </div>
+                <div>
+                  <div className="text-gray-400">OFFSET TOP</div>
+                  <div className="text-xl">{tunerState.y}px</div>
+                </div>
+                <div>
+                  <div className="text-gray-400">WIDTH</div>
+                  <div className="text-xl">{tunerState.w}px</div>
+                </div>
+                <div>
+                  <div className="text-gray-400">HEIGHT</div>
+                  <div className="text-xl">{tunerState.h}px</div>
+                </div>
+              </div>
+
+              <div className="mt-2 border-t border-white/20 pt-2 space-y-2">
+                 <div className="flex items-center justify-between">
+                    <span>FONT SIZE: {tunerState.fontSize}rem</span>
+                    <div className="space-x-1">
+                      <button onClick={() => setTunerState(p => ({...p, fontSize: Math.max(0.5, p.fontSize - 0.5)}))} className="bg-white/10 px-2 py-1 hover:bg-white/20">-</button>
+                      <button onClick={() => setTunerState(p => ({...p, fontSize: p.fontSize + 0.5}))} className="bg-white/10 px-2 py-1 hover:bg-white/20">+</button>
+                    </div>
+                 </div>
+                 
+                 <div className="flex flex-col gap-1">
+                    <span>FONT FAMILY</span>
+                    <button onClick={() => setTunerState(p => ({...p, font: 'var(--font-space)'}))} className={`text-left px-2 py-1 ${tunerState.font.includes('space') ? 'bg-green-900/50 text-white' : 'hover:bg-white/5'}`}>Space Grotesk</button>
+                    <button onClick={() => setTunerState(p => ({...p, font: 'var(--font-anton)'}))} className={`text-left px-2 py-1 ${tunerState.font.includes('anton') ? 'bg-green-900/50 text-white' : 'hover:bg-white/5'}`}>Anton (Impact-like)</button>
+                    <button onClick={() => setTunerState(p => ({...p, font: 'sans-serif'}))} className={`text-left px-2 py-1 ${tunerState.font === 'sans-serif' ? 'bg-green-900/50 text-white' : 'hover:bg-white/5'}`}>System Sans</button>
+                 </div>
+              </div>
+            </div>
           </>
         )}
       </AnimatePresence>
