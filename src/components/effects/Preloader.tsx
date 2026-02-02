@@ -281,9 +281,17 @@ export function Preloader() {
   // 🚀 Fix 6: Staged Boot
   const [isReady, setIsReady] = useState(false);
 
+  // 🚀 Fix 7: Device Capability Ladder
+  const [tier, setTier] = useState<'high' | 'low'>('high');
+
   useEffect(() => {
     const t = setTimeout(() => setIsReady(true), 200); // Defer Mount
+
     const checkSpec = () => {
+        // Simple Heuristic: If mobile has low pixel density or potato CPU, downgrade
+        const isLowEnd = isMobile && (window.devicePixelRatio < 2 || (navigator.hardwareConcurrency || 4) < 4);
+        setTier(isLowEnd ? 'low' : 'high');
+
         // Force "Mobile Mode" if screen is narrow OR if library says mobile
         const shouldOptimize = window.innerWidth < 1024 || isMobile; 
         setIsOptimized(shouldOptimize);
