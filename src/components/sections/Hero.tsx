@@ -11,6 +11,23 @@ export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  
+  // 🎛️ TUNING STATE
+  const [fontSize, setFontSize] = useState(12); 
+  const [fontFamily, setFontFamily] = useState('Impact, sans-serif');
+  const [blendMode, setBlendMode] = useState("normal");
+  const [textZIndex, setTextZIndex] = useState(20);
+
+  const fontOptions = [
+    { name: "Impact", value: 'Impact, sans-serif' },
+    { name: "TWK Lausanne", value: '"TWK Lausanne", sans-serif' },
+    { name: "Space Grotesk", value: 'var(--font-space-grotesk), sans-serif' },
+    { name: "Geist Sans", value: 'var(--font-geist-sans), sans-serif' },
+    { name: "Arial Black", value: '"Arial Black", sans-serif' },
+    { name: "Helvetica", value: 'Helvetica, sans-serif' },
+  ];
+
+  const blendOptions = ["normal", "overlay", "screen", "soft-light", "color-dodge", "difference", "multiply"];
 
   const questions = [
     "Problem Solving?",
@@ -39,6 +56,63 @@ export function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-4 md:px-10 overflow-hidden bg-[#050505] pb-8 md:pb-12">
       
+      {/* 🎛️ TUNING CONSOLE */}
+      <div className="absolute top-24 left-4 z-50 flex flex-col gap-3 p-4 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 text-white w-72 shadow-2xl">
+        <span className="text-xs font-mono text-cyan-400 tracking-widest border-b border-white/10 pb-1">TUNING CONSOLE</span>
+        
+        {/* Size Slider */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-bold text-neutral-400 w-8">SIZE</label>
+          <input 
+            type="range" 
+            min="2" 
+            max="20" 
+            step="0.1" 
+            value={fontSize} 
+            onChange={(e) => setFontSize(parseFloat(e.target.value))}
+            className="flex-1 accent-cyan-400 cursor-pointer h-1 bg-white/20 rounded-full appearance-none"
+          />
+          <span className="text-xs font-mono w-10 text-right">{fontSize.toFixed(1)}vw</span>
+        </div>
+
+        {/* Font Selector */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-bold text-neutral-400 w-8">FONT</label>
+          <select 
+            value={fontFamily} 
+            onChange={(e) => setFontFamily(e.target.value)}
+            className="flex-1 bg-neutral-900/80 border border-white/20 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400"
+          >
+            {fontOptions.map(f => (
+              <option key={f.name} value={f.value}>{f.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Blend Selector */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-bold text-neutral-400 w-8">BLEND</label>
+          <select 
+            value={blendMode} 
+            onChange={(e) => setBlendMode(e.target.value)}
+            className="flex-1 bg-neutral-900/80 border border-white/20 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400"
+          >
+            {blendOptions.map(b => (
+              <option key={b} value={b} className="uppercase">{b}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Z-Index Toggles */}
+        <div className="flex items-center gap-2">
+           <label className="text-xs font-bold text-neutral-400 w-8">LAYER</label>
+           <div className="flex gap-2 flex-1">
+             <button onClick={() => setTextZIndex(0)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 0 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>BACK</button>
+             <button onClick={() => setTextZIndex(20)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 20 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>FRONT</button>
+           </div>
+        </div>
+      </div>
+
       {/* 🖼️ HERO BACKGROUND IMAGE */}
       <div className="absolute inset-0 z-10">
         <Image 
@@ -54,29 +128,40 @@ export function Hero() {
 
       <HeroGrid />
 
-      {/* 📛 CENTER STACKED NAME (Vertical Layout) */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none">
-        <h1 
-          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+      {/* 📛 CENTER STACKED NAME (Draggable Mode) */}
+      <div 
+        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none"
+        style={{ zIndex: textZIndex }}
+      >
+        <motion.h1 
+          drag
+          dragMomentum={false}
+          onDragEnd={(event, info) => console.log('HARSHAL | Offset:', info.offset, '| Size:', fontSize + 'vw', '| Font:', fontFamily)}
+          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
           style={{ 
-            fontSize: '12vw', 
-            fontFamily: 'Impact, sans-serif', 
+            fontSize: `${fontSize}vw`, 
+            fontFamily: fontFamily, 
+            mixBlendMode: blendMode as any,
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
           HARSHAL
-        </h1>
-        <h1 
-          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+        </motion.h1>
+        <motion.h1 
+          drag
+          dragMomentum={false}
+          onDragEnd={(event, info) => console.log('PATEL | Offset:', info.offset, '| Size:', fontSize + 'vw', '| Font:', fontFamily)}
+          className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5 pointer-events-auto cursor-grab active:cursor-grabbing" 
           style={{ 
-            fontSize: '12vw', 
-            fontFamily: 'Impact, sans-serif', 
-            marginTop: '-1vw', // Slight tighten
+            fontSize: `${fontSize}vw`, 
+            fontFamily: fontFamily, 
+            marginTop: '-1vw',
+            mixBlendMode: blendMode as any,
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
           PATEL
-        </h1>
+        </motion.h1>
       </div>
 
       <AnimatePresence>
