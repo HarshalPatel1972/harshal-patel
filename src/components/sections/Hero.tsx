@@ -13,6 +13,8 @@ export function Hero() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [fontSize, setFontSize] = useState(8); // 🎛️ Size State
   const [fontFamily, setFontFamily] = useState('"TWK Lausanne", sans-serif'); // 🔠 Font State
+  const [blendMode, setBlendMode] = useState("normal"); // 🌫️ Blend Mode
+  const [textZIndex, setTextZIndex] = useState(10); // 📚 Layer Depth
 
   const fontOptions = [
     { name: "TWK Lausanne", value: '"TWK Lausanne", sans-serif' },
@@ -22,6 +24,8 @@ export function Hero() {
     { name: "Arial Black", value: '"Arial Black", sans-serif' },
     { name: "Helvetica", value: 'Helvetica, sans-serif' },
   ];
+
+  const blendOptions = ["normal", "overlay", "screen", "soft-light", "color-dodge", "difference", "multiply"];
 
   const questions = [
     "Problem Solving?",
@@ -82,6 +86,29 @@ export function Hero() {
             ))}
           </select>
         </div>
+
+        {/* Blend Selector */}
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-bold text-neutral-400 w-8">BLEND</label>
+          <select 
+            value={blendMode} 
+            onChange={(e) => setBlendMode(e.target.value)}
+            className="flex-1 bg-neutral-900/80 border border-white/20 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-cyan-400"
+          >
+            {blendOptions.map(b => (
+              <option key={b} value={b} className="uppercase">{b}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Z-Index Toggles */}
+        <div className="flex items-center gap-2">
+           <label className="text-xs font-bold text-neutral-400 w-8">LAYER</label>
+           <div className="flex gap-2 flex-1">
+             <button onClick={() => setTextZIndex(0)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 0 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>BACK (0)</button>
+             <button onClick={() => setTextZIndex(10)} className={`flex-1 text-xs py-1 rounded transition-colors ${textZIndex === 10 ? 'bg-cyan-500 text-black font-bold' : 'bg-white/10 hover:bg-white/20'}`}>FRONT (10)</button>
+           </div>
+        </div>
       </div>
 
       {/* 🖼️ HERO BACKGROUND IMAGE */}
@@ -100,7 +127,10 @@ export function Hero() {
       <HeroGrid />
 
       {/* 📛 CENTER SPLIT NAME (Draggable Mode) */}
-      <div className="absolute inset-0 z-10 flex items-center justify-between px-8 md:px-16 pointer-events-none select-none">
+      <div 
+        className="absolute inset-0 flex items-center justify-between px-8 md:px-16 pointer-events-none select-none"
+        style={{ zIndex: textZIndex }}
+      >
         <motion.h1 
           drag
           dragMomentum={false}
@@ -109,6 +139,7 @@ export function Hero() {
           style={{ 
             fontSize: `${fontSize}vw`,
             fontFamily: fontFamily, 
+            mixBlendMode: blendMode as any,
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
@@ -122,6 +153,7 @@ export function Hero() {
           style={{ 
             fontSize: `${fontSize}vw`,
             fontFamily: fontFamily, 
+            mixBlendMode: blendMode as any,
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
