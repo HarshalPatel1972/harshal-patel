@@ -59,19 +59,21 @@ export function Hero() {
         {showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
-            {/* 1. CINEMATIC BLUR ZOOM */}
+            {/* 1. TYPEWRITER REVEAL */}
             <div className="mb-0 h-8 md:h-16 relative flex items-end w-full"> 
               <AnimatePresence mode="wait">
-                <motion.h2 
+                <motion.div
                   key={currentQuestion}
-                  initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
-                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
-                  transition={{ duration: 0.8, ease: "circOut" }}
-                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 origin-left bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                  initial={{ width: 0 }}
+                  animate={{ width: "auto" }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 1.2, ease: "linear" }}
+                  className="overflow-hidden whitespace-nowrap border-r-4 border-cyan-400 pr-2"
                 >
-                  {questions[currentQuestion]}
-                </motion.h2>
+                  <h2 className="text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] pb-1">
+                    {questions[currentQuestion]}
+                  </h2>
+                </motion.div>
               </AnimatePresence>
             </div>
 
