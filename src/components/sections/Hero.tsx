@@ -68,7 +68,7 @@ export function Hero() {
                   animate={{ y: "0%", opacity: 1 }}
                   exit={{ y: "-100%", opacity: 0 }}
                   transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
-                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-lausanne tracking-tight pl-2 bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
