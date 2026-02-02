@@ -320,7 +320,7 @@ export function Preloader() {
         {showCanvas && (
           <Canvas 
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
-            dpr={isOptimized ? [1, 1.5] : [1, 2]} // ⚡ Force 1.5x cap if optimized
+            dpr={[1, 1.5]} // ⚡ Performance Cap
             camera={{ position: [0, 0, 8], fov: 35 }}
           >
             <React.Suspense fallback={null}>
