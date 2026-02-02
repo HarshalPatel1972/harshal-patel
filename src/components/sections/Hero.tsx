@@ -125,7 +125,7 @@ export function Hero() {
                 
                 {/* 2. THE HOLE (Overlay Box) */}
                 <div 
-                  className="absolute bg-[#050505] flex items-center justify-center overflow-hidden z-50"
+                  className="absolute bg-transparent flex items-center justify-center overflow-hidden z-50"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
                     top: '24px', 
