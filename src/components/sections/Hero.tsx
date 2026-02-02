@@ -45,10 +45,12 @@ export function Hero() {
   };
 
   const questions = [
-    "Problem Solving?",
-    "Web Designing?",
-    "Performance Tuning?",
-    "UI Engineering?",
+    "Designing Systems?",   // SDE
+    "Shipping Features?",   // Full Stack
+    "Crafting UI?",         // Frontend
+    "Training Models?",     // Data Scientist
+    "Analyzing Trends?",    // Data Analyst
+    "Solving Problems?",    // Core Engineering
   ];
 
   // Cycle Questions
@@ -124,31 +126,7 @@ export function Hero() {
       <AnimatePresence>
         {showContent && (
           <>
-            {/* 1. MORPHING TITLES */}
-            <div 
-              className="absolute z-20 pointer-events-none select-none"
-              style={{ 
-                left: '3.2%', 
-                top: '72%', 
-                width: 'max-content' 
-              }}
-            >
-              <div className="h-8 md:h-12 relative overflow-hidden"> 
-                <AnimatePresence mode="wait">
-                  <motion.h2 
-                    key={currentQuestion}
-                    initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="absolute bottom-0 left-0 text-xl md:text-3xl font-bold font-playfair italic tracking-widest text-white/50"
-                    style={{ fontFamily: 'var(--font-playfair)' }}
-                  >
-                    {questions[currentQuestion]}
-                  </motion.h2>
-                </AnimatePresence>
-              </div>
-            </div>
+
 
             {/* 2. FINALIZED FOOTER (Locked) */}
             <motion.div 
@@ -183,7 +161,44 @@ export function Hero() {
               <span style={{ fontSize: '4rem' }}>{'\n'}</span>
               <span style={{ fontSize: '4rem' }}>DO</span>
               <span style={{ fontSize: '4rem' }}> </span>
-              <span style={{ fontSize: '9rem' }}>THIS</span>
+              {/* "THIS" text wrapper */}
+              <span className="relative inline-block mx-4">
+                {/* 1. THE TEXT ITSELF (Clean, no children) */}
+                <span style={{ fontSize: '9rem' }}>THIS</span>
+                
+                {/* 2. THE TUNER OVERLAY (Sibling, Absolute) */}
+                <motion.div 
+                  drag
+                  dragMomentum={false}
+                  className="absolute bg-blue-500/30 border-2 border-yellow-400 flex items-center justify-center cursor-move z-50 overflow-hidden"
+                  style={{ 
+                    top: '0%', left: '0%', // Start aligned
+                    width: '100%', height: '100%', // Cover it initially
+                    resize: 'both', overflow: 'auto'
+                  }}
+                  onDragEnd={(_, info) => {
+                    console.log("📍 Moved:", info.point);
+                  }}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div 
+                      key={questions[currentQuestion]}
+                      className="flex flex-col items-center justify-center font-bold text-white leading-tight text-center pointer-events-none"
+                      style={{ fontSize: '1.5rem', fontFamily: 'var(--font-space)' }}
+                    >
+                      {questions[currentQuestion].split(' ').map((word, i) => (
+                         <span key={i}>{word}</span>
+                      ))}
+                    </motion.div>
+                  </AnimatePresence>
+                  
+                  {/* Debug Info */}
+                  <div className="absolute top-0 left-0 bg-black text-[10px] text-yellow-400 p-1 font-mono pointer-events-none">
+                    Resize Me
+                  </div>
+                </motion.div>
+              </span>
+
               <span style={{ fontSize: '4rem' }}> </span>
               <span style={{ fontSize: '4rem' }}>ALL</span>
               <span style={{ fontSize: '4rem' }}> </span>
