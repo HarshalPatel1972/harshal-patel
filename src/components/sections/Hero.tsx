@@ -54,14 +54,13 @@ export function Hero() {
 
       <HeroGrid />
 
-      {/* 📛 CENTER SPLIT NAME (Final Layout) */}
-      <div className="absolute inset-0 z-20 flex items-center justify-between px-8 md:px-16 pointer-events-none select-none">
+      {/* 📛 CENTER STACKED NAME (Vertical Layout) */}
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none select-none">
         <h1 
           className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
           style={{ 
-            fontSize: '8.5vw', 
+            fontSize: '12vw', 
             fontFamily: 'Impact, sans-serif', 
-            transform: 'translate(-24px, 5px)',
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
@@ -70,9 +69,9 @@ export function Hero() {
         <h1 
           className="font-black tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
           style={{ 
-            fontSize: '8.5vw', 
+            fontSize: '12vw', 
             fontFamily: 'Impact, sans-serif', 
-            transform: 'translate(-4px, 0px)',
+            marginTop: '-1vw', // Slight tighten
             filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' 
           }}
         >
@@ -81,7 +80,7 @@ export function Hero() {
       </div>
 
       <AnimatePresence>
-        {showContent && (
+        {false && showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
             {/* 1. SLOT MACHINE VERTICAL */}
