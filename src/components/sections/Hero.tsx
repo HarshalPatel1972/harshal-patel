@@ -56,15 +56,15 @@ export function Hero() {
       <HeroGrid />
 
       {/* 📛 CENTER SPLIT NAME */}
-      <div className="absolute inset-0 z-10 flex items-center justify-between px-2 md:px-10 pointer-events-none select-none">
+      <div className="absolute inset-0 z-10 flex items-center justify-between px-4 md:px-12 pointer-events-none select-none">
         <h1 
-          className="text-[15vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+          className="text-[10vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
           style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
         >
           HARSHAL
         </h1>
         <h1 
-          className="text-[15vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
+          className="text-[10vw] font-black font-lausanne tracking-tighter leading-none bg-clip-text text-transparent bg-gradient-to-b from-white via-white/50 to-white/5" 
           style={{ fontFamily: '"TWK Lausanne", sans-serif', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.1))' }}
         >
           PATEL
