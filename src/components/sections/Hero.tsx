@@ -25,7 +25,7 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 3500); // ⏱️ 3.5s Hold
+    }, 4500); // ⏱️ 4.5s Hold
     return () => clearInterval(interval);
   }, [showContent]);
 
@@ -59,16 +59,16 @@ export function Hero() {
         {showContent && (
           <div className="relative z-20 w-full max-w-[95%] mx-auto flex flex-col justify-end h-full pointer-events-none">
             
-            {/* 1. 3D FLIP QUESTION */}
-            <div className="mb-0 h-8 md:h-16 relative flex items-end w-full" style={{ perspective: '1000px' }}> 
+            {/* 1. CINEMATIC BLUR ZOOM */}
+            <div className="mb-0 h-8 md:h-16 relative flex items-end w-full"> 
               <AnimatePresence mode="wait">
                 <motion.h2 
                   key={currentQuestion}
-                  initial={{ rotateX: -90, opacity: 0 }}
-                  animate={{ rotateX: 0, opacity: 1 }}
-                  exit={{ rotateX: 90, opacity: 0 }}
-                  transition={{ duration: 0.8, ease: [0.2, 1.2, 0.4, 1] }} // Heavy Snap
-                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 origin-bottom bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                  initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+                  transition={{ duration: 0.8, ease: "circOut" }}
+                  className="absolute bottom-0 left-0 text-xl md:text-4xl lg:text-5xl font-bold font-space tracking-tight pl-2 origin-left bg-clip-text text-transparent bg-gradient-to-br from-white via-white/90 to-white/40 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
                 >
                   {questions[currentQuestion]}
                 </motion.h2>
