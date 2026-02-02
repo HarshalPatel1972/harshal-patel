@@ -216,8 +216,8 @@ function Scene({ onComplete, onIndexChange, isOptimized }: { onComplete: () => v
 
   return (
     <group ref={groupRef}>
-      {/* 🏭 STUDIO LIGHTING - Back to Clean Reflections */}
-      <Environment preset="city" /> 
+      {/* 🏭 STUDIO LIGHTING - Static Baked HDR (Fix 2: Efficient Sampling) */}
+      <Environment preset="city" resolution={256} frames={1} background={false} /> 
       <ambientLight intensity={0.5} />
       {/* 🚫 FRONTAL LIGHT REMOVED to prevent "Sun Glare" reflection */}
       
