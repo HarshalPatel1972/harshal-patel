@@ -218,7 +218,7 @@ export function Hero() {
                 filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.1))',
                 // 🔒 FINALIZED POS (From User)
                 left: 'calc(9.2% - 30px)',
-                top: 'calc(63.6% - 25px)',
+                top: 'calc(63.6% - 15px)',
                 width: 'max-content',
                 maxWidth: '90%'
               }}
