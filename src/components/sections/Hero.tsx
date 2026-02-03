@@ -217,8 +217,8 @@ export function Hero() {
                 transformOrigin: 'top left',
                 filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.1))',
                 // 🔒 FINALIZED POS (From User)
-                left: '9.2%',
-                top: '63.6%',
+                left: 'calc(9.2% - 30px)',
+                top: 'calc(63.6% - 25px)',
                 width: 'max-content',
                 maxWidth: '90%'
               }}
