@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk, Anton, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk, Anton, Playfair_Display, Inter, EB_Garamond, Montserrat, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/effects/ThemeProvider";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
 import { PreloaderWrapper } from "@/components/effects/PreloaderWrapper";
-import { BuildTag } from "@/components/ui/BuildTag";
 import { HandoffProvider } from "@/lib/handoff-context";
 import { ScrollEasterEgg } from "@/components/effects/ScrollEasterEgg";
 
@@ -35,6 +34,26 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const ebGaramond = EB_Garamond({
+  variable: "--font-eb-garamond",
+  subsets: ["latin"],
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Harshal Patel | Portfolio",
   description: "Creative Developer & Designer crafting digital experiences.",
@@ -56,11 +75,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} ${playfair.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${anton.variable} ${playfair.variable} ${inter.variable} ${ebGaramond.variable} ${montserrat.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeProvider>
           <HandoffProvider>
-            <BuildTag />
             <ScrollEasterEgg />
             <PreloaderWrapper>
               <SmoothScroll>

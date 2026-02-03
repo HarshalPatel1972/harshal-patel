@@ -10,14 +10,16 @@ export function Hero() {
   const { isComplete } = usePreloader();
   const [showContent, setShowContent] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [blinkerIndex, setBlinkerIndex] = useState(0);
 
   // 🧪 DESIGN LAB STATE
-  const [titleSettings, setTitleSettings] = useState({
-    font: 'var(--font-playfair)',
-    fontSize: 2.4,
-    animation: 'FOCUS',
+  // 🔒 FINALIZED CONFIG
+  const titleSettings = {
+    font: 'var(--font-anton)',
+    fontSize: 2.0,
+    animation: 'FLIP',
     letterSpacing: '0.05em'
-  });
+  };
 
   // 🎭 ANIMATION PRESETS
   const animationPresets = {
@@ -60,6 +62,40 @@ export function Hero() {
         visible: { opacity: 1, letterSpacing: '0.05em', filter: 'blur(0px)' },
         exit: { opacity: 0, scale: 1.2, filter: 'blur(10px)' }
       }
+    },
+    DIAL: {
+      container: { 
+        visible: { transition: { staggerChildren: 0.05 } } 
+      },
+      item: {
+        initial: { rotateX: 90, y: 30, opacity: 0 },
+        visible: { rotateX: 0, y: 0, opacity: 1 },
+        exit: { rotateX: -90, y: -30, opacity: 0 }
+      }
+    },
+    FLIP: {
+      container: { 
+        visible: { transition: { staggerChildren: 0.05 } } 
+      },
+      item: {
+        initial: { rotateY: 90, opacity: 0 },
+        visible: { rotateY: 0, opacity: 1, transition: { type: 'spring', damping: 15, stiffness: 100 } },
+        exit: { rotateY: -90, opacity: 0, transition: { duration: 0.2 } }
+      }
+    },
+    WAVE: {
+      container: { 
+        visible: { transition: { staggerChildren: 0.04 } } 
+      },
+      item: {
+        initial: { y: 20, opacity: 0 },
+        visible: { 
+          y: [20, -10, 0], 
+          opacity: 1,
+          transition: { times: [0, 0.6, 1], duration: 0.6 }
+        },
+        exit: { y: -20, opacity: 0 }
+      }
     }
   };
 
@@ -68,7 +104,10 @@ export function Hero() {
     { name: 'Strict Tech', value: 'var(--font-space-grotesk)', style: 'normal' },
     { name: 'Luxury Mono', value: 'var(--font-geist-mono)', style: 'normal' },
     { name: 'Impact Block', value: 'var(--font-anton)', style: 'normal' },
-    { name: 'Clean Sans', value: 'var(--font-geist-sans)', style: 'normal' }
+    { name: 'Clean Sans', value: 'var(--font-geist-sans)', style: 'normal' },
+    { name: 'Elegant Classic', value: 'var(--font-eb-garamond)', style: 'normal' },
+    { name: 'Modern Sans', value: 'var(--font-inter)', style: 'normal' },
+    { name: 'Cyber Punk', value: 'var(--font-jetbrains-mono)', style: 'normal' }
   ];
 
   const questions = [
@@ -85,9 +124,19 @@ export function Hero() {
     if (!showContent) return;
     const interval = setInterval(() => {
       setCurrentQuestion((prev) => (prev + 1) % questions.length);
-    }, 4500); 
+      setBlinkerIndex(-1); // Start with 0.5s pause
+    }, 3500); 
     return () => clearInterval(interval);
   }, [showContent, questions.length]);
+
+  // Handle Truth Blinker sequence (500ms steps)
+  useEffect(() => {
+    if (!showContent) return;
+    const blinkerTimer = setInterval(() => {
+      setBlinkerIndex((prev) => (prev < 6 ? prev + 1 : prev)); 
+    }, 400);
+    return () => clearInterval(blinkerTimer);
+  }, [showContent, currentQuestion]);
 
   // Trigger Content Show
   useEffect(() => {
@@ -174,14 +223,61 @@ export function Hero() {
                 maxWidth: '90%'
               }}
             >
-              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>I</span>
+              <span 
+                className="bg-clip-text text-transparent transition-all duration-300" 
+                style={{ 
+                  fontSize: '4rem', 
+                  backgroundImage: "url('/All Day Blurred.png')", 
+                  backgroundSize: "cover", 
+                  backgroundPosition: "center", 
+                  backgroundAttachment: "fixed", 
+                  backgroundClip: "text", 
+                  WebkitBackgroundClip: "text", 
+                  color: "transparent",
+                  opacity: blinkerIndex === 0 ? 1 : 0.3,
+                  transition: 'opacity 0.2s ease-out'
+                }}
+              >I</span>
               <span style={{ fontSize: '4rem' }}> </span>
-              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>CAN</span>
+              <span 
+                className="bg-clip-text text-transparent" 
+                style={{ 
+                  fontSize: '4rem', 
+                  backgroundImage: "url('/All Day Blurred.png')", 
+                  backgroundSize: "cover", 
+                  backgroundPosition: "center", 
+                  backgroundAttachment: "fixed", 
+                  backgroundClip: "text", 
+                  WebkitBackgroundClip: "text", 
+                  color: "transparent",
+                  opacity: blinkerIndex === 1 ? 1 : 0.3,
+                  transition: 'opacity 0.2s ease-out'
+                }}
+              >CAN</span>
               <span style={{ fontSize: '4rem' }}>{'\n'}</span>
-              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>DO</span>
+              <span 
+                className="bg-clip-text text-transparent" 
+                style={{ 
+                  fontSize: '4rem', 
+                  backgroundImage: "url('/All Day Blurred.png')", 
+                  backgroundSize: "cover", 
+                  backgroundPosition: "center", 
+                  backgroundAttachment: "fixed", 
+                  backgroundClip: "text", 
+                  WebkitBackgroundClip: "text", 
+                  color: "transparent",
+                  opacity: blinkerIndex === 2 ? 1 : 0.3,
+                  transition: 'opacity 0.2s ease-out'
+                }}
+              >DO</span>
               <span style={{ fontSize: '4rem' }}> </span>
               {/* "THIS" text wrapper */}
-              <span className="relative inline-block mx-4">
+              <span 
+                className="relative inline-block mx-4"
+                style={{
+                  transition: 'all 0.2s ease-out'
+                }}
+              >
                 {/* 1. THE TEXT ITSELF (Clipped with Hole) */}
                 <span 
                   className="bg-clip-text text-transparent" 
@@ -195,14 +291,12 @@ export function Hero() {
                     backgroundClip: "text", 
                     WebkitBackgroundClip: "text", 
                     color: "transparent",
-                    // ✂️ CUTOUT MASK (Hole: x=35, y=24, w=194, h=98)
-                    maskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
-                    maskPosition: '0 0, 0 122px, 0 24px, 229px 24px',
-                    maskSize: '100% 24px, 100% calc(100% - 122px), 35px 98px, calc(100% - 229px) 98px',
+                    opacity: blinkerIndex === 3 ? 1 : 0.3,
+                    transition: 'opacity 0.2s ease-out',
+                    // 🌫️ FEATHERED MASK (Radial hole centered on box: 132px, 73px)
+                    maskImage: 'radial-gradient(ellipse 110px 55px at 132px 73px, transparent 60%, black 100%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse 110px 55px at 132px 73px, transparent 60%, black 100%)',
                     maskRepeat: 'no-repeat',
-                    WebkitMaskImage: 'linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black), linear-gradient(black, black)',
-                    WebkitMaskPosition: '0 0, 0 122px, 0 24px, 229px 24px',
-                    WebkitMaskSize: '100% 24px, 100% calc(100% - 122px), 35px 98px, calc(100% - 229px) 98px',
                     WebkitMaskRepeat: 'no-repeat'
                   }}
                 >
@@ -211,107 +305,117 @@ export function Hero() {
                 
                 {/* 2. THE HOLE (Overlay Box) */}
                 <div 
-                  className="absolute bg-transparent flex items-end justify-center pb-[30px] overflow-hidden z-20"
+                  className="absolute bg-transparent flex items-center justify-center overflow-hidden z-20"
                   style={{ 
                     // 🔒 FINALIZED BOX STATS
                     top: '24px', 
                     left: '35px', 
                     width: '194px', 
                     height: '98px', 
-                    // 🌫️ EDGE BLUR (Softens the hard cut)
-                    boxShadow: '0 0 8px 4px #050505'
+                    perspective: '1000px', // 🎡 3D Support
+                    opacity: 1, // 🟢 FINAL FIX: Titles stay bright even when footer dims
+                    // 🌫️ EXTREME FEATHER (Heavy inset and outer shadows for smoke effect)
+                    boxShadow: 'inset 0 0 30px 15px #050505, 0 0 15px 5px #050505',
+                    transition: 'all 0.3s ease-out'
                   }}
                 >
-                  <AnimatePresence mode="wait">
-                    <motion.div 
-                      key={questions[currentQuestion] + titleSettings.animation}
-                      variants={currentPreset.container}
-                      initial="initial"
-                      animate="visible"
-                      exit="exit"
-                      className="flex flex-col items-center justify-center font-bold text-blue-400 leading-none text-center"
-                      style={{ 
-                        fontSize: `${titleSettings.fontSize}rem`, 
-                        fontFamily: titleSettings.font,
-                        letterSpacing: titleSettings.letterSpacing,
-                        fontStyle: fonts.find(f => f.value === titleSettings.font)?.style as any || 'normal'
-                      }}
-                    >
-                      {questions[currentQuestion].split(' ').map((word, wordIdx) => (
-                         <div key={wordIdx} className="flex gap-[0.2em]">
-                           {word.split('').map((char, charIdx) => (
-                             <motion.span 
-                               key={charIdx} 
-                               variants={currentPreset.item}
-                               transition={{ duration: 0.5 }}
-                             >
-                               {char}
-                             </motion.span>
-                           ))}
-                         </div>
-                      ))}
-                    </motion.div>
-                  </AnimatePresence>
+                  <div 
+                    className="flex flex-col items-center justify-center font-bold text-sky-300 leading-none text-center"
+                    style={{ 
+                      fontSize: `${titleSettings.fontSize}rem`, 
+                      fontFamily: titleSettings.font,
+                      letterSpacing: titleSettings.letterSpacing,
+                      fontStyle: 'normal',
+                      transformStyle: 'preserve-3d',
+                      textShadow: '0 0 15px rgba(59, 130, 246, 0.5)' // 💡 BLOOM: Makes the text look luminous
+                    }}
+                  >
+                    {/* Persistent Slot Logic */}
+                    <div className="flex flex-col items-start justify-center gap-y-1">
+                      {Array.from({ length: Math.max(...questions.map(q => q.split(' ').length)) }).map((_, wordIdx) => {
+                        const words = questions[currentQuestion].split(' ');
+                        const currentWord = words[wordIdx] || "";
+                        
+                        // Max chars for this specific word slot across all questions
+                        const maxCharsForThisWordSlot = Math.max(...questions.map(q => {
+                          const w = q.split(' ')[wordIdx];
+                          return w ? w.length : 0;
+                        }));
+
+                        return (
+                          <div key={wordIdx} className="flex flex-wrap items-center justify-start gap-x-[0.05em] min-h-[1.2em]">
+                            {Array.from({ length: maxCharsForThisWordSlot }).map((_, charIdx) => {
+                              const char = currentWord[charIdx];
+                              return (
+                                <div key={charIdx} className="relative min-w-[0.55em] h-[1.2em] flex items-center justify-center">
+                                  <AnimatePresence mode="popLayout" initial={false}>
+                                    {char && (
+                                      <motion.span
+                                        key={`${currentQuestion}-${wordIdx}-${charIdx}`}
+                                        variants={currentPreset.item}
+                                        initial="initial"
+                                        animate="visible"
+                                        exit="exit"
+                                        className="inline-block relative z-10"
+                                        transition={{ 
+                                          type: "spring", 
+                                          stiffness: 260, 
+                                          damping: 20,
+                                          delay: charIdx * 0.02 
+                                        }}
+                                      >
+                                        {char}
+                                      </motion.span>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </span>
 
               <span style={{ fontSize: '4rem' }}> </span>
-              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>ALL</span>
+              <span 
+                className="bg-clip-text text-transparent transition-all duration-300" 
+                style={{ 
+                  display: "inline-block",
+                  paddingLeft: "0.1em", // 🛡️ PROTECTION: Prevents the Impact font 'A' from clipping
+                  fontSize: '4rem', 
+                  backgroundImage: "url('/All Day Blurred.png')", 
+                  backgroundSize: "cover", 
+                  backgroundPosition: "center", 
+                  backgroundAttachment: "fixed", 
+                  backgroundClip: "text", 
+                  WebkitBackgroundClip: "text", 
+                  color: "transparent",
+                  opacity: blinkerIndex === 4 ? 1 : 0.3,
+                  transition: 'opacity 0.2s ease-out'
+                }}
+              >ALL</span>
               <span style={{ fontSize: '4rem' }}> </span>
-              <span className="bg-clip-text text-transparent" style={{ fontSize: '4rem', backgroundImage: "url('/All Day Blurred.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed", backgroundClip: "text", WebkitBackgroundClip: "text", color: "transparent" }}>DAY</span>
+              <span 
+                className="bg-clip-text text-transparent" 
+                style={{ 
+                  display: "inline-block",
+                  paddingLeft: "0.1em",
+                  fontSize: '4rem', 
+                  backgroundImage: "url('/All Day Blurred.png')", 
+                  backgroundSize: "cover", 
+                  backgroundPosition: "center", 
+                  backgroundAttachment: "fixed", 
+                  backgroundClip: "text", 
+                  WebkitBackgroundClip: "text", 
+                  color: "transparent",
+                  opacity: blinkerIndex === 5 ? 1 : 0.3,
+                  transition: 'opacity 0.2s ease-out'
+                }}
+              >DAY</span>
             </motion.div>
-
-            {/* 🎛️ TITLE DESIGN LAB (Fixed Center) */}
-            <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100] bg-black/90 p-5 border border-blue-500/50 rounded-xl shadow-2xl backdrop-blur-xl w-[320px] grid gap-4 pointer-events-auto">
-              <div className="text-blue-400 font-bold text-center border-b border-white/10 pb-2">TITLE DESIGN LAB</div>
-              
-              {/* FONTS */}
-              <div>
-                <label className="text-[10px] text-gray-400 block mb-2 uppercase tracking-widest">Select Font</label>
-                <div className="grid grid-cols-1 gap-1">
-                  {fonts.map(f => (
-                    <button 
-                      key={f.value}
-                      onClick={() => setTitleSettings(p => ({ ...p, font: f.value }))}
-                      className={`text-left px-3 py-1.5 rounded text-sm transition-colors ${titleSettings.font === f.value ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-300 hover:bg-white/10'}`}
-                      style={{ fontFamily: f.value, fontStyle: f.style }}
-                    >
-                      {f.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* ANIMATIONS */}
-              <div>
-                <label className="text-[10px] text-gray-400 block mb-2 uppercase tracking-widest">Animation Style</label>
-                <div className="grid grid-cols-2 gap-1">
-                  {Object.keys(animationPresets).map(anim => (
-                    <button 
-                      key={anim}
-                      onClick={() => setTitleSettings(p => ({ ...p, animation: anim }))}
-                      className={`px-2 py-1.5 rounded text-[10px] font-bold transition-colors ${titleSettings.animation === anim ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-300 hover:bg-white/10'}`}
-                    >
-                      {anim}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* SIZE */}
-              <div className="flex items-center justify-between bg-white/5 p-3 rounded">
-                <span className="text-xs text-gray-400 tracking-widest">FONT SIZE</span>
-                <div className="flex items-center gap-3">
-                  <button onClick={() => setTitleSettings(p => ({ ...p, fontSize: Math.max(1, p.fontSize - 0.2) }))} className="w-8 h-8 flex items-center justify-center bg-white/10 rounded hover:bg-white/20 transition-colors">-</button>
-                  <span className="text-blue-400 font-bold min-w-[3ch] text-center">{titleSettings.fontSize.toFixed(1)}</span>
-                  <button onClick={() => setTitleSettings(p => ({ ...p, fontSize: Math.min(6, p.fontSize + 0.2) }))} className="w-8 h-8 flex items-center justify-center bg-white/10 rounded hover:bg-white/20 transition-colors">+</button>
-                </div>
-              </div>
-
-              <div className="text-[10px] text-center text-gray-500 italic mt-1 border-t border-white/5 pt-2">
-                Pick your look, then tell me the settings.
-              </div>
-            </div>
           </>
         )}
       </AnimatePresence>
