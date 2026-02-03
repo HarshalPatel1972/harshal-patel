@@ -132,7 +132,7 @@ export function Contact() {
 
         {/* FOOTER METADATA */}
         <div className="mt-24 border-t border-white/5 pt-8 flex flex-col md:flex-row justify-center md:justify-between items-center gap-4 text-[10px] font-mono text-white/30 uppercase tracking-widest text-center md:text-left">
-           <div>© 2026 SOFTWARE_ENGINEER // HARSHAL_PATEL</div>
+           <div>© 2026 All right and wrongs reserved</div>
            <div className="flex gap-6">
              <a href="#" className="hover:text-white transition-colors">GITHUB_REF</a>
              <a href="#" className="hover:text-white transition-colors">LINKEDIN_REF</a>

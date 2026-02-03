@@ -58,9 +58,7 @@ export function DesktopDashboard() {
              animate={{ opacity: 1 }}
              transition={{ duration: 1, delay: 0.5 }}
           >
-               <span>© 2026</span>
-               <span>//</span>
-               <span>ALL_SYSTEMS_NOMINAL</span>
+               <span>© 2026 All right and wrongs reserved</span>
           </motion.div>
 
           {/* 🎭 CONTENT AREA (FULL FILL) */}
