@@ -82,8 +82,8 @@ function GlassPillar({
 
   return (
     <group position={[x, 0, 0]} scale={[currentScale.current, currentScale.current, currentScale.current]}>
-      {/* 🧊 PILLAR GEOMETRY - Enhanced Bevels for Light Catching */}
-      <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={8}>
+      {/* 🧊 PILLAR GEOMETRY - Reduced Poly Count for Speed */}
+      <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={4}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
          {isOptimized ? (
@@ -100,27 +100,24 @@ function GlassPillar({
            />
          ) : (
            <>
-             {/* 🖥️ DESKTOP: Standard Transmission (Single-Pass Efficient) */}
-             <meshPhysicalMaterial 
-                ref={materialRef}
-                color={app.hex}
-                transmission={1.0}           
-                thickness={0.5}              
-                roughness={0.15}             // 🌫️ Fix 4: Pre-blurred Mip Selection
-                anisotropy={0}               // 🚫 BRUSHED METAL REMOVED
-                metalness={0.0}              // 🚫 FORCE NO METAL
-                ior={1.5}                    
-                clearcoat={1.0}              
-                clearcoatRoughness={0.0}
-                attenuationColor={app.hex}
-                attenuationDistance={1.0}
-                emissive={app.hex}  
-                emissiveIntensity={0.2}
-                iridescence={0}              // 🌈 Fix 3: Efficient "Vertex/PBR" Rainbows
-                iridescenceIOR={1.5}         // Match Glass IOR
-                iridescenceThicknessRange={[0, 1400]} // Thin film interference
-                toneMapped={false}
-             />
+             <>
+              {/* ⚡ SPEED BOOST: Switched from Transmission (Refraction) to Opacity (Alpha Blend) */}
+              <meshPhysicalMaterial 
+                 ref={materialRef}
+                 color={app.hex}
+                 transparent
+                 opacity={0.3}                // 👓 See-through
+                 roughness={0.1}              // 💎 Shiny surface
+                 metalness={0.0}              // 🚫 No Metal
+                 reflectivity={1.0}           // 🪞 Fake reflections
+                 ior={1.5}
+                 clearcoat={1.0}              // ✨ Polish
+                 clearcoatRoughness={0.1}
+                 emissive={app.hex}  
+                 emissiveIntensity={0.2}      // 💡 Baseline Glow (Anti-Dark)
+                 toneMapped={false}           // 🎨 Vibrant colors
+              />
+            </>
            </>
          )}
 
