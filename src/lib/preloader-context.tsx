@@ -10,7 +10,7 @@ interface PreloaderContextType {
 const PreloaderContext = createContext<PreloaderContextType | null>(null);
 
 export function PreloaderProvider({ children }: { children: ReactNode }) {
-  const [isComplete, setIsComplete] = useState(false);
+  const [isComplete, setIsComplete] = useState(true);
 
   const setComplete = () => setIsComplete(true);
 
