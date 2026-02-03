@@ -106,7 +106,8 @@ function GlassPillar({
                 transmission={1.0}           
                 thickness={0.5}              
                 roughness={0.15}             // 🌫️ Fix 4: Pre-blurred Mip Selection
-                anisotropy={0.5}             // 🌫️ Fix 4: Directional Smear
+                anisotropy={0}               // 🚫 BRUSHED METAL REMOVED
+                metalness={0.0}              // 🚫 FORCE NO METAL
                 ior={1.5}                    
                 clearcoat={1.0}              
                 clearcoatRoughness={0.0}
