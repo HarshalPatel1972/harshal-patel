@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import React, { useState, useEffect, useRef } from "react"; // Added useRef
 import Image from "next/image";
 import { usePreloader } from "@/lib/preloader-context";
@@ -22,7 +22,7 @@ export function Hero() {
   };
 
   // 🎭 ANIMATION PRESETS
-  const animationPresets = {
+  const animationPresets: Record<string, { container: Variants; item: Variants }> = {
     FOCUS: {
       container: { 
         visible: { transition: { staggerChildren: 0.05 } } 
