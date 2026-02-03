@@ -92,7 +92,7 @@ function GlassPillar({
               color={app.hex}
               transparent
               opacity={0.3}
-              roughness={0.4}
+              roughness={0.2}
               metalness={0.0}
               emissive={app.hex}
               emissiveIntensity={0.2}
@@ -106,11 +106,11 @@ function GlassPillar({
                 color={app.hex}
                 transmission={1.0}           
                 thickness={0.5}              
-                roughness={0.4}              // 🌫️ Fix 4: Pre-blurred Mip Selection
+                roughness={0.15}             // 🌫️ Fix 4: Pre-blurred Mip Selection
                 anisotropy={0}               // 🚫 BRUSHED METAL REMOVED
                 metalness={0.0}              // 🚫 FORCE NO METAL
-                ior={1.2}                    // Lower IOR for less reflection
-                clearcoat={0.0}              
+                ior={1.5}                    
+                clearcoat={1.0}              
                 clearcoatRoughness={0.0}
                 attenuationColor={app.hex}
                 attenuationDistance={1.0}
@@ -232,7 +232,7 @@ function Scene({ onComplete, onIndexChange, isOptimized }: { onComplete: () => v
   return (
     <group ref={groupRef}>
       {/* 🏭 STUDIO LIGHTING - Static Baked HDR (Fix 2: Efficient Sampling) */}
-      {/* ENV REMOVED FOR FLAT LOOK */}
+      <Environment preset="city" resolution={256} frames={1} background={false} /> 
       <ambientLight intensity={0.5} />
       {/* 🚫 FRONTAL LIGHT REMOVED to prevent "Sun Glare" reflection */}
       
