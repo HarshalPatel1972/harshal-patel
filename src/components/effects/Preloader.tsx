@@ -100,27 +100,28 @@ function GlassPillar({
            />
          ) : (
            <>
-            <>
-             <pointLight position={[0, 0, 0]} intensity={0.3} color={app.hex} distance={2} decay={2} />
-             {/* 💎 RESTORED REAL GLASS (High Fidelity) */}
+             {/* 💎 RESTORED ORIGINAL dcb1e94 GLASS (High Chromatic/Metallic) */}
              <MeshTransmissionMaterial 
                 ref={materialRef}
-                color={app.hex}
-                transmission={1}             // 💎 Real refraction
-                thickness={0.5}              // 🧊 Glass volume
-                roughness={0.05}             // ✨ Polished surface
-                ior={1.5}                    // 🪞 Standard glass
-                chromaticAberration={0.04}   // 🌈 Subtle prism effect
-                anisotropy={0}               
-                metalness={0.0}              
-                envMapIntensity={1.5}        
-                opacity={0.45}               
-                transparent                  
-                emissive={app.hex}  
-                emissiveIntensity={0.3}      
-                toneMapped={true}            
+                backside={true}
+                samples={3}                  
+                resolution={256}             
+                thickness={0.2}              
+                chromaticAberration={0.3}    // 🌈 Original rainbow distortion
+                anisotropy={0.1}             // 🌫️ Original brushed look
+                distortion={0.0}             
+                distortionScale={0.0}
+                temporalDistortion={0.0}
+                ior={1.5}                    
+                color={app.hex}              
+                attenuationColor={app.hex}   
+                attenuationDistance={1.0}    
+                roughness={0.1}              
+                metalness={0.5}              // 🪙 Original metallic reflection
+                emissive={app.hex}
+                emissiveIntensity={0.0}      
+                toneMapped={false}           // 🎨 Original vibrant response
              />
-           </>
            </>
          )}
 
@@ -230,10 +231,9 @@ function Scene({ onComplete, onIndexChange, isOptimized }: { onComplete: () => v
 
   return (
     <group ref={groupRef}>
-      {/* 🏭 STUDIO LIGHTING - User Refined Fix List */}
-      <Environment preset="studio" resolution={256} frames={1} background={false} environmentIntensity={1.5} /> 
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[0, 0, 5]} intensity={0.5} />
+      {/* 🏭 RESTORED ORIGINAL dcb1e94 LIGHTING */}
+      <Environment preset="city" resolution={256} frames={1} background={false} /> 
+      <ambientLight intensity={0.5} />
       {/* 🚫 FRONTAL LIGHT REMOVED to prevent "Sun Glare" reflection */}
       
       {/* 🔦 RIM LIGHTS - Subtle edge catchers */}
