@@ -100,24 +100,27 @@ function GlassPillar({
            />
          ) : (
            <>
-             <>
-              {/* ⚡ SPEED BOOST: Switched from Transmission (Refraction) to Opacity (Alpha Blend) */}
-              <meshPhysicalMaterial 
-                 ref={materialRef}
-                 color={app.hex}
-                 transparent
-                 opacity={0.3}                // 👓 See-through
-                 roughness={0.1}              // 💎 Shiny surface
-                 metalness={0.0}              // 🚫 No Metal
-                 reflectivity={1.0}           // 🪞 Fake reflections
-                 ior={1.5}
-                 clearcoat={1.0}              // ✨ Polish
-                 clearcoatRoughness={0.1}
-                 emissive={app.hex}  
-                 emissiveIntensity={0.2}      // 💡 Baseline Glow (Anti-Dark)
-                 toneMapped={false}           // 🎨 Vibrant colors
-              />
-            </>
+            <>
+             <pointLight position={[0, 0, 0]} intensity={0.3} color={app.hex} distance={2} decay={2} />
+             {/* 💎 RESTORED REAL GLASS (High Fidelity) */}
+             <MeshTransmissionMaterial 
+                ref={materialRef}
+                color={app.hex}
+                transmission={1}             // 💎 Real refraction
+                thickness={0.5}              // 🧊 Glass volume
+                roughness={0.05}             // ✨ Polished surface
+                ior={1.5}                    // 🪞 Standard glass
+                chromaticAberration={0.04}   // 🌈 Subtle prism effect
+                anisotropy={0}               
+                metalness={0.0}              
+                envMapIntensity={1.5}        
+                opacity={0.45}               
+                transparent                  
+                emissive={app.hex}  
+                emissiveIntensity={0.3}      
+                toneMapped={true}            
+             />
+           </>
            </>
          )}
 
@@ -176,16 +179,15 @@ function Scene({ onComplete, onIndexChange, isOptimized }: { onComplete: () => v
   const { viewport } = useThree();
 
 
-  // 📏 PHASE 4: MATH-BASED RESPONSIVENESS
-  const maxTotalWidth = viewport.width * 0.9;
+  // 📏 PHASE 4: MATH-BASED RESPONSIVENESS (SMALLER PILLARS)
+  const maxTotalWidth = viewport.width * 0.7; // Reduced from 0.9
   const unitSize = maxTotalWidth / APPS.length;
   
-  const pillarWidth = Math.min(0.5, unitSize * 0.75); 
-  const gap = Math.min(0.15, unitSize * 0.25);
-  // 📐 FIX: Height based on viewport to prevent cutoff on landscape mobile/short screens
-  // 📱 MOBILE TWEAK: Cap at 1.8 for mobile (so they don't look like needles), 2.5 for desktop
-  const maxH = isOptimized ? 1.8 : 2.5;
-  const pillarHeight = Math.min(maxH, viewport.height * 0.5);
+  const pillarWidth = Math.min(0.35, unitSize * 0.75); // Reduced cap from 0.5 to 0.35
+  const gap = Math.min(0.12, unitSize * 0.25);
+  // 📐 REDUCED HEIGHT
+  const maxH = isOptimized ? 1.4 : 1.8; // Reduced from 1.8/2.5
+  const pillarHeight = Math.min(maxH, viewport.height * 0.4); // Reduced from 0.5
 
   // 🏃‍♂️ ANIMATION LOOP STATE
   // 🏃‍♂️ ANIMATION LOOP STATE
@@ -228,9 +230,10 @@ function Scene({ onComplete, onIndexChange, isOptimized }: { onComplete: () => v
 
   return (
     <group ref={groupRef}>
-      {/* 🏭 STUDIO LIGHTING - Static Baked HDR (Fix 2: Efficient Sampling) */}
-      <Environment preset="city" resolution={256} frames={1} background={false} /> 
-      <ambientLight intensity={0.5} />
+      {/* 🏭 STUDIO LIGHTING - User Refined Fix List */}
+      <Environment preset="studio" resolution={256} frames={1} background={false} environmentIntensity={1.5} /> 
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[0, 0, 5]} intensity={0.5} />
       {/* 🚫 FRONTAL LIGHT REMOVED to prevent "Sun Glare" reflection */}
       
       {/* 🔦 RIM LIGHTS - Subtle edge catchers */}
