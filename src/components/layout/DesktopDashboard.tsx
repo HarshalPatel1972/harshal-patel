@@ -16,6 +16,19 @@ type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
 import { usePreloader } from "@/lib/preloader-context";
 
+const BackgroundGrid = React.memo(() => (
+  <motion.div
+    className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 0.03 }}
+    transition={{ duration: 2 }}
+  >
+    {[...Array(200)].map((_, i) => (
+        <div key={i} className="border-[0.5px] border-white/20" />
+    ))}
+  </motion.div>
+));
+
 export function DesktopDashboard() {
   const { isComplete } = usePreloader();
   const [activeView, setActiveView] = useState<ViewState>('hero');
@@ -65,16 +78,7 @@ export function DesktopDashboard() {
           <div className="flex-1 relative overflow-hidden">
              
              {/* BACKGROUND GRID (Subtle Map) */}
-             <motion.div 
-                className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ duration: 2 }}
-             >
-                {[...Array(200)].map((_, i) => (
-                    <div key={i} className="border-[0.5px] border-white/20" />
-                ))}
-            </motion.div>
+             <BackgroundGrid />
 
             <AnimatePresence mode="wait">
                 
