@@ -1,7 +1,12 @@
 "use client";
 
+<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+=======
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+>>>>>>> origin/main
 import { useHandoff } from "@/lib/handoff-context";
 import { BLOB_PATHS } from "@/components/effects/BlobAssets";
 
@@ -38,33 +43,31 @@ export default function BubbleMask() {
           <rect x="0" y="0" width="100%" height="100%" fill="white" />
           
           {/* Holes: Black = Hidden Preloader (Revealing page below) */}
-          <AnimatePresence>
-            {bubbles.map((b) => (
-              <motion.path
-                key={b.id}
-                d={b.path}
-                fill="black"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ 
-                  scale: stage >= 7 ? 50 : 3.0, 
-                  opacity: 1,
-                  x: `${b.x}%`, 
-                  y: `${b.y}%`
-                }}
-                transition={{ 
-                  duration: stage >= 7 ? 1.5 : 2.5, 
-                  ease: "circIn" 
-                }}
-                style={{
-                  originX: "50%",
-                  originY: "50%",
-                  translateX: "-50%",
-                  translateY: "-50%",
-                }}
-                transform={`translate(${b.x}vw, ${b.y}vh) rotate(${b.rotate}deg)`} 
-              />
-            ))}
-          </AnimatePresence>
+          {bubbles.map((b) => (
+            <motion.path
+              key={b.id}
+              d={b.path}
+              fill="black"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{
+                scale: stage >= 7 ? 50 : 3.0,
+                opacity: 1,
+                x: `${b.x}%`,
+                y: `${b.y}%`
+              }}
+              transition={{
+                duration: stage >= 7 ? 1.5 : 2.5,
+                ease: "circIn"
+              }}
+              style={{
+                originX: "50%",
+                originY: "50%",
+                translateX: "-50%",
+                translateY: "-50%",
+              }}
+              transform={`translate(${b.x}vw, ${b.y}vh) rotate(${b.rotate}deg)`}
+            />
+          ))}
         </mask>
       </defs>
     </svg>
