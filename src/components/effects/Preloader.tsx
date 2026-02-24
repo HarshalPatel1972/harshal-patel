@@ -265,6 +265,15 @@ import RippleMask from "@/components/effects/RippleMask";
 
 // ... imports
 
+// ⚡ UTILITY: Simple debounce to avoid thrashing
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>;
+  return function(...args: Parameters<T>) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
   const { nextStage } = useHandoff();
@@ -297,8 +306,12 @@ export function Preloader() {
     };
     
     checkSpec();
-    window.addEventListener('resize', checkSpec);
-    return () => window.removeEventListener('resize', checkSpec);
+
+    // ⚡ DEBOUNCE: Prevent layout thrashing on resize
+    const debouncedCheckSpec = debounce(checkSpec, 100);
+    window.addEventListener('resize', debouncedCheckSpec);
+
+    return () => window.removeEventListener('resize', debouncedCheckSpec);
   }, []);
 
   const handleComplete = React.useCallback(() => {
