@@ -3,11 +3,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/react";
-import { Work } from "@/components/sections/Work";
-import { About } from "@/components/sections/About";
-import { Contact } from "@/components/sections/Contact";
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Spotlight } from "@/components/ui/Spotlight";
+
+// ⚡ PERFORMANCE: Lazy load heavy sections to reduce initial bundle size
+const Work = dynamic(() => import("@/components/sections/Work").then((mod) => mod.Work));
+const About = dynamic(() => import("@/components/sections/About").then((mod) => mod.About));
+const Contact = dynamic(() => import("@/components/sections/Contact").then((mod) => mod.Contact));
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
