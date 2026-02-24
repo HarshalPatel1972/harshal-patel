@@ -5,7 +5,7 @@ import { APPS } from "@/lib/apps";
 
 export function Work() {
   return (
-    <section id="work" className="py-20 md:py-32 px-4 md:px-12 lg:px-24 bg-transparent relative">
+    <section id="work" className="py-6 md:py-10 px-4 md:px-12 lg:px-24 bg-transparent relative">
       <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}
@@ -13,9 +13,9 @@ export function Work() {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="mb-12 md:mb-16 border-b border-white/10 pb-4 flex flex-col md:flex-row justify-between items-start md:items-end gap-2 md:gap-0"
+          className="mb-4 md:mb-6 border-b border-white/10 pb-2 flex flex-col md:flex-row justify-between items-start md:items-end gap-1 md:gap-0"
         >
-          <h2 className="text-4xl md:text-6xl font-bold font-space tracking-tighter text-white">
+          <h2 className="text-3xl md:text-5xl font-bold font-space tracking-tighter text-white">
             MODULE<br/>REGISTRY<span className="text-rose-400">.</span>
           </h2>
           <div className="font-mono text-[10px] md:text-xs text-white/40 text-left md:text-right">
@@ -23,17 +23,17 @@ export function Work() {
             STATUS: ACTIVE
           </div>
         </motion.div>
-
+ 
         {/* MODULE GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {APPS.map((app, i) => (
             <motion.div
               key={app.name}
-              className="group relative h-64 bg-zinc-900/50 border border-white/10 rounded-sm overflow-hidden cursor-pointer"
+              className="group relative h-48 bg-zinc-900/50 border border-white/10 rounded-sm overflow-hidden cursor-pointer"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.05 }}
               whileHover={{ y: -5 }}
             >
               {/* Background Glow */}

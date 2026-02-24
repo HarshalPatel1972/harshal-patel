@@ -117,45 +117,45 @@ export function DesktopDashboard() {
                 {isComplete && activeView === 'work' && (
                     <motion.div 
                         key="work"
-                        className="absolute inset-0 overflow-y-auto no-scrollbar z-10"
+                        className="absolute inset-0 overflow-hidden z-10"
                         initial={{ opacity: 0, filter: "blur(10px)" }}
                         animate={{ opacity: 1, filter: "blur(0px)" }}
                         exit={{ opacity: 0, filter: "blur(10px)" }}
                         transition={{ duration: 0.5 }}
                     > 
-                       <div className="min-h-full p-8 md:p-16 pt-32">
+                       <div className="min-h-full p-4 md:p-8 pt-8">
                            <Work />
                        </div>
                     </motion.div>
                 )}
-
+ 
                 {/* ABOUT VIEW */}
                 {isComplete && activeView === 'about' && (
                     <motion.div 
                         key="about"
-                        className="absolute inset-0 overflow-y-auto no-scrollbar z-10"
+                        className="absolute inset-0 overflow-hidden z-10"
                         initial={{ opacity: 0, filter: "blur(10px)" }}
                         animate={{ opacity: 1, filter: "blur(0px)" }}
                         exit={{ opacity: 0, filter: "blur(10px)" }}
                         transition={{ duration: 0.5 }}
                     > 
-                       <div className="min-h-full p-8 md:p-16 pt-32">
+                       <div className="min-h-full p-4 md:p-8 pt-8">
                            <About />
                        </div>
                     </motion.div>
                 )}
-
+ 
                 {/* CONTACT VIEW */}
                 {isComplete && activeView === 'contact' && (
                     <motion.div 
                         key="contact"
-                        className="absolute inset-0 overflow-y-auto no-scrollbar flex items-center justify-center z-10"
+                        className="absolute inset-0 overflow-hidden flex items-center justify-center z-10"
                         initial={{ opacity: 0, filter: "blur(10px)" }}
                         animate={{ opacity: 1, filter: "blur(0px)" }}
                         exit={{ opacity: 0, filter: "blur(10px)" }}
                         transition={{ duration: 0.5 }}
                     > 
-                       <div className="w-full h-full flex items-center justify-center p-8 pt-32">
+                       <div className="w-full h-full flex items-center justify-center p-4 pt-8">
                            <Contact />
                        </div>
                     </motion.div>

@@ -192,7 +192,7 @@ export default function PreloaderScene({
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 🔀 MASTER SEQUENCER
-  const { nextStage } = useHandoff();
+  const { stage, nextStage } = useHandoff();
 
   useEffect(() => {
     let step = 0;
@@ -241,7 +241,7 @@ export default function PreloaderScene({
           gap={gap}
           app={app}
           isActive={i === activeIndex}
-          visible={true}
+          visible={stage === 0}
           isOptimized={isOptimized} 
         />
       ))}

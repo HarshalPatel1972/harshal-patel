@@ -67,7 +67,7 @@ export function MobileDashboard() {
             {activeView === 'hero' && (
                 <motion.div 
                     key="hero"
-                    className="absolute inset-0 z-10 overflow-y-auto no-scrollbar pb-32" // Padding for Dock
+                    className="absolute inset-0 z-10 overflow-hidden pb-16" 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 1.05 }}
@@ -76,50 +76,50 @@ export function MobileDashboard() {
                      <Hero />
                 </motion.div>
             )}
-
+ 
             {/* WORK */}
             {activeView === 'work' && (
                 <motion.div 
                     key="work"
-                    className="absolute inset-0 z-10 overflow-y-auto no-scrollbar pb-32"
+                    className="absolute inset-0 z-10 overflow-hidden pb-16"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <div className="p-4 pt-12">
+                    <div className="p-2 pt-4">
                        <Work />
                     </div>
                 </motion.div>
             )}
-
+ 
             {/* ABOUT */}
             {activeView === 'about' && (
                 <motion.div 
                     key="about"
-                    className="absolute inset-0 z-10 overflow-y-auto no-scrollbar pb-32"
+                    className="absolute inset-0 z-10 overflow-hidden pb-16"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <div className="p-4 pt-12">
+                    <div className="p-2 pt-4">
                        <About />
                     </div>
                 </motion.div>
             )}
-
+ 
             {/* CONTACT */}
             {activeView === 'contact' && (
                 <motion.div 
                     key="contact"
-                    className="absolute inset-0 z-10 overflow-y-auto no-scrollbar pb-32 flex flex-col items-center justify-center"
+                    className="absolute inset-0 z-10 overflow-hidden pb-16 flex flex-col items-center justify-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <div className="p-4">
+                    <div className="p-2">
                        <Contact />
                     </div>
                 </motion.div>
