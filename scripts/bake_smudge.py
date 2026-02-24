@@ -3,7 +3,39 @@ from PIL import Image
 import math
 import os
 
+def validate_path(path):
+    """
+    Validates that the path is safe to use.
+    Ensures the path resolves to a location within the current working directory.
+    """
+    # Get the absolute path of the current working directory, resolving any symlinks
+    base_dir = os.path.realpath(os.getcwd())
+
+    # Get the absolute path of the target, resolving any symlinks
+    target_path = os.path.realpath(path)
+
+    # Check if the target path is within the base directory
+    # os.path.commonpath returns the longest common sub-path
+    try:
+        common = os.path.commonpath([base_dir, target_path])
+    except ValueError:
+        # Can happen on Windows if paths are on different drives
+        raise ValueError(f"Security violation: Path '{path}' is on a different drive.")
+
+    if common != base_dir:
+        raise ValueError(f"Security violation: Path '{path}' resolves to '{target_path}', which is outside the working directory.")
+
+    return target_path
+
 def bake_smudge(input_path, output_path, scale=30, freq=0.01):
+    # Validate paths to prevent path traversal
+    try:
+        validate_path(input_path)
+        validate_path(output_path)
+    except ValueError as e:
+        print(f"Error: {e}")
+        return
+
     print(f"Loading {input_path}...")
     try:
         img = Image.open(input_path).convert("RGBA")

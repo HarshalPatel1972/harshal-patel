@@ -3,11 +3,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/react";
-import { Work } from "@/components/sections/Work";
-import { About } from "@/components/sections/About";
-import { Contact } from "@/components/sections/Contact";
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Spotlight } from "@/components/ui/Spotlight";
+
+// ⚡ PERFORMANCE: Lazy load heavy sections to reduce initial bundle size
+const Work = dynamic(() => import("@/components/sections/Work").then((mod) => mod.Work));
+const About = dynamic(() => import("@/components/sections/About").then((mod) => mod.About));
+const Contact = dynamic(() => import("@/components/sections/Contact").then((mod) => mod.Contact));
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
@@ -16,6 +19,7 @@ type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
 import { usePreloader } from "@/lib/preloader-context";
 
+<<<<<<< HEAD
 const BackgroundGrid = React.memo(() => (
   <motion.div
     className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
@@ -28,6 +32,36 @@ const BackgroundGrid = React.memo(() => (
     ))}
   </motion.div>
 ));
+=======
+// 🎨 HEX COLORS (For calculating opacities)
+const HEX_COLORS = [
+    '#06b6d4', // Cyan
+    '#f43f5e', // Rose
+    '#7c3aed', // Violet
+    '#f97316', // Orange
+    '#facc15', // Yellow
+    '#10b981', // Emerald
+    '#3b82f6'  // Blue
+];
+
+// 1. GLASS GRADIENT (Stronger, 15%) - FIXED DIRECTION
+const GLASS_GRADIENT_COLS = HEX_COLORS.map(hex => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},0.15)`;
+});
+const GLASS_STYLE = `linear-gradient(135deg, ${GLASS_GRADIENT_COLS.join(', ')})`;
+
+// 2. BACKGROUND GRADIENT (Subtle, 3%) - ALTERNATING DIRECTION
+const BG_GRADIENT_COLS = HEX_COLORS.map(hex => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},0.03)`;
+});
+const BG_GRADIENT_COLS_REVERSED = [...BG_GRADIENT_COLS].reverse();
+>>>>>>> origin/main
 
 export function DesktopDashboard() {
   const { isComplete } = usePreloader();
@@ -49,21 +83,6 @@ export function DesktopDashboard() {
       ========================================= */}
       <div className="flex-1 relative flex flex-col min-w-0">
           
-          {/* 🟢 GLOBAL HEADER (DISABLED) */}
-          {/* <motion.div 
-             className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter"
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             transition={{ duration: 1, delay: 0.5 }}
-          >
-              <h1 className="text-2xl font-black tracking-tighter text-white/90">
-                  HARSHAL PATEL<span className="text-emerald-500/80">.</span>
-              </h1>
-              <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
-                  SOFTWARE ENGINEER
-              </p>
-          </motion.div> */}
-
           {/* 🟢 GLOBAL FOOTER (Fades in) */}
           <motion.div 
              className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30"
@@ -164,36 +183,8 @@ export function DesktopDashboard() {
           {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
-
-              // 🎨 HEX COLORS (For calculating opacities)
-              const hexColors = [
-                  '#06b6d4', // Cyan
-                  '#f43f5e', // Rose
-                  '#7c3aed', // Violet
-                  '#f97316', // Orange
-                  '#facc15', // Yellow
-                  '#10b981', // Emerald
-                  '#3b82f6'  // Blue
-              ];
-
-              // 1. GLASS GRADIENT (Stronger, 15%) - FIXED DIRECTION
-              const glassGradientCols = hexColors.map(hex => {
-                  const r = parseInt(hex.slice(1, 3), 16);
-                  const g = parseInt(hex.slice(3, 5), 16);
-                  const b = parseInt(hex.slice(5, 7), 16);
-                  return `rgba(${r},${g},${b},0.15)`;
-              });
-              const glassStyle = `linear-gradient(135deg, ${glassGradientCols.join(', ')})`;
-
-              // 2. BACKGROUND GRADIENT (Subtle, 3%) - ALTERNATING DIRECTION
-              const bgGradientCols = hexColors.map(hex => {
-                  const r = parseInt(hex.slice(1, 3), 16);
-                  const g = parseInt(hex.slice(3, 5), 16);
-                  const b = parseInt(hex.slice(5, 7), 16);
-                  return `rgba(${r},${g},${b},0.03)`;
-              });
               
-              const activeBgSeries = idx % 2 === 0 ? bgGradientCols : [...bgGradientCols].reverse();
+              const activeBgSeries = idx % 2 === 0 ? BG_GRADIENT_COLS : BG_GRADIENT_COLS_REVERSED;
               const buttonStyle = `linear-gradient(135deg, ${activeBgSeries.join(', ')})`;
 
               return (
@@ -239,7 +230,7 @@ export function DesktopDashboard() {
                                                 ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
                                             `}
                                             style={{
-                                                background: glassStyle
+                                                background: GLASS_STYLE
                                             }}
                                         />
                                     );

@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { throttle } from "@/lib/utils";
 
 export function ScrollEasterEgg() {
   const [showToast, setShowToast] = useState(false);
-  const [lastTrigger, setLastTrigger] = useState(0);
+  const lastTriggerRef = useRef(0);
 
   useEffect(() => {
-    const handleScrollAttempt = (e: Event) => {
+    const handleScrollAttempt = throttle((e: Event) => {
       // Allow scrolling if we are in an overlay that explicitly allows it (like the Work/About sections)
       // Check if the target is inside a scrollable container
       const target = e.target as HTMLElement;
       if (target.closest('.overflow-y-auto')) return;
 
       const now = Date.now();
-      if (now - lastTrigger < 2000) return; // Cooldown 2s
+      if (now - lastTriggerRef.current < 2000) return; // Cooldown 2s
 
       setShowToast(true);
-      setLastTrigger(now);
+      lastTriggerRef.current = now;
 
       // Vibrator API for mobile realism
       if (typeof navigator !== "undefined" && navigator.vibrate) {
@@ -27,7 +28,7 @@ export function ScrollEasterEgg() {
       
       // Auto-hide
       setTimeout(() => setShowToast(false), 3000);
-    };
+    }, 100);
 
     window.addEventListener("wheel", handleScrollAttempt);
     window.addEventListener("touchmove", handleScrollAttempt);
@@ -36,7 +37,7 @@ export function ScrollEasterEgg() {
       window.removeEventListener("wheel", handleScrollAttempt);
       window.removeEventListener("touchmove", handleScrollAttempt);
     };
-  }, [lastTrigger]);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -49,7 +50,7 @@ export function ScrollEasterEgg() {
         >
             <span className="text-2xl">🙅🏾‍♂️</span>
             <span className="text-white font-medium tracking-wide">
-                We don't do that here.
+                We don&apos;t do that here.
             </span>
         </motion.div>
       )}
