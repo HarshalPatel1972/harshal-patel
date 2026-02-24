@@ -19,6 +19,20 @@ type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
 import { usePreloader } from "@/lib/preloader-context";
 
+<<<<<<< HEAD
+const BackgroundGrid = React.memo(() => (
+  <motion.div
+    className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 0.03 }}
+    transition={{ duration: 2 }}
+  >
+    {[...Array(200)].map((_, i) => (
+        <div key={i} className="border-[0.5px] border-white/20" />
+    ))}
+  </motion.div>
+));
+=======
 // 🎨 HEX COLORS (For calculating opacities)
 const HEX_COLORS = [
     '#06b6d4', // Cyan
@@ -47,6 +61,7 @@ const BG_GRADIENT_COLS = HEX_COLORS.map(hex => {
     return `rgba(${r},${g},${b},0.03)`;
 });
 const BG_GRADIENT_COLS_REVERSED = [...BG_GRADIENT_COLS].reverse();
+>>>>>>> origin/main
 
 export function DesktopDashboard() {
   const { isComplete } = usePreloader();
@@ -82,16 +97,7 @@ export function DesktopDashboard() {
           <div className="flex-1 relative overflow-hidden">
              
              {/* BACKGROUND GRID (Subtle Map) */}
-             <motion.div 
-                className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.03 }}
-                transition={{ duration: 2 }}
-             >
-                {[...Array(200)].map((_, i) => (
-                    <div key={i} className="border-[0.5px] border-white/20" />
-                ))}
-            </motion.div>
+             <BackgroundGrid />
 
             <AnimatePresence mode="wait">
                 
