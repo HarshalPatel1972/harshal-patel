@@ -13,17 +13,22 @@ export function Spotlight({
   fill = "rgba(255, 255, 255, 0.1)" 
 }: SpotlightProps) {
   const divRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const overlayRef = useRef<HTMLDivElement>(null);
   const [opacity, setOpacity] = useState(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!divRef.current) return;
+    if (!divRef.current || !overlayRef.current) return;
+
     const rect = divRef.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
   };
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     setOpacity(1);
+    handleMouseMove(e);
   };
 
   const handleMouseLeave = () => {
@@ -39,10 +44,11 @@ export function Spotlight({
       className={cn("relative overflow-hidden", className)}
     >
       <div
+        ref={overlayRef}
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
         style={{
           opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${fill}, transparent 40%)`,
+          background: `radial-gradient(600px circle at 0px 0px, ${fill}, transparent 40%)`,
         }}
       />
       {children}
