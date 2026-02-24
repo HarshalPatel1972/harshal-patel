@@ -4,7 +4,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
-import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { isComplete } = usePreloader();
