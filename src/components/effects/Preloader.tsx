@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { RoundedBox, Html, Environment, MeshTransmissionMaterial } from "@react-three/drei";
+import { RoundedBox, Html, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
@@ -43,7 +43,8 @@ function GlassPillar({
   const scale = Math.min(width * 1.5, height * 0.45); 
   
   // 🎬 ANIMATION STATE REFS
-  const materialRef = useRef<any>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
   const targetScale = visible ? 1 : 0;
   const currentScale = useRef(1);
   const { invalidate } = useThree(); // 🛑 Fix 5: Grab invalidate handle
@@ -76,12 +77,17 @@ function GlassPillar({
         needsUpdate = true;
     }
 
+    // Apply scale to group
+    if (groupRef.current) {
+      groupRef.current.scale.setScalar(currentScale.current);
+    }
+
     // 🛑 Smart Sleep: Request next frame ONLY if animating
     if (needsUpdate) invalidate();
   });
 
   return (
-    <group position={[x, 0, 0]} scale={[currentScale.current, currentScale.current, currentScale.current]}>
+    <group ref={groupRef} position={[x, 0, 0]}>
       {/* 🧊 PILLAR GEOMETRY - Reduced Poly Count for Speed */}
       <RoundedBox args={[width, height, depth]} radius={0.05} smoothness={4}>
          {/* 💎 ULTRA-REALISTIC GLASS PHYSICS */}
@@ -267,7 +273,6 @@ import RippleMask from "@/components/effects/RippleMask";
 
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
-  const { nextStage } = useHandoff();
   const [showCanvas, setShowCanvas] = useState(true);
   const [activeColor, setActiveColor] = useState(APPS[0].hex);
   const [isExiting, setIsExiting] = useState(false);
@@ -283,8 +288,18 @@ export function Preloader() {
   // 🚀 Fix 7: Device Capability Ladder
   const [tier, setTier] = useState<'high' | 'low'>('high');
 
+  const handleComplete = React.useCallback(() => {
+    // ... complete logic
+    setIsExiting(true);
+    setTimeout(() => {
+        setShowCanvas(false);
+        setComplete();
+    }, 1000);
+  }, [setComplete]);
+
   useEffect(() => {
     const t = setTimeout(() => setIsReady(true), 200); // Defer Mount
+    return () => clearTimeout(t);
 
     const checkSpec = () => {
         // Simple Heuristic: If mobile has low pixel density or potato CPU, downgrade
@@ -301,14 +316,15 @@ export function Preloader() {
     return () => window.removeEventListener('resize', checkSpec);
   }, []);
 
-  const handleComplete = React.useCallback(() => {
-    // ... complete logic
-    setIsExiting(true);
-    setTimeout(() => {
-        setShowCanvas(false);
-        setComplete();
-    }, 1000);
-  }, [setComplete]);
+  // Fallback for low tier (or if Canvas crashes/fails to load)
+  useEffect(() => {
+    if (tier === 'low') {
+        const timer = setTimeout(() => {
+            handleComplete();
+        }, 2000);
+        return () => clearTimeout(timer);
+    }
+  }, [tier, handleComplete]);
 
   const handleIndexChange = React.useCallback((i: number) => {
       setActiveColor(APPS[i].hex);
