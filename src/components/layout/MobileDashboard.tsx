@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Clock } from "@/components/ui/Clock";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { usePreloader } from "@/lib/preloader-context";
@@ -18,7 +19,6 @@ type ViewState = 'hero' | 'about' | 'work' | 'contact';
 export function MobileDashboard() {
   const { isComplete } = usePreloader();
   const [activeView, setActiveView] = useState<ViewState>('hero');
-  const [time, setTime] = useState("");
 
   const navItems = [
     { id: 'hero', label: 'HOME', icon: IconHome },
@@ -26,17 +26,6 @@ export function MobileDashboard() {
     { id: 'about', label: 'ABOUT', icon: IconCpu },
     { id: 'contact', label: 'CONTACT', icon: IconMail },
   ];
-
-  // 🕒 Real-time Clock
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTime(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="h-screen w-full bg-[#050507] text-white overflow-hidden flex flex-col font-space relative">
@@ -51,7 +40,7 @@ export function MobileDashboard() {
         transition={{ delay: 6.0 }} // Sync with ripple end
       >
          <div className="flex items-center gap-2">
-            <span>{time}</span>
+            <Clock />
          </div>
          <div className="flex items-center gap-2">
             <span className="text-[9px] tracking-widest opacity-50">{isMobile ? "LTE" : "WIFI"}</span>
