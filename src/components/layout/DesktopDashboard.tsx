@@ -68,21 +68,6 @@ export function DesktopDashboard() {
       ========================================= */}
       <div className="flex-1 relative flex flex-col min-w-0">
           
-          {/* 🟢 GLOBAL HEADER (DISABLED) */}
-          {/* <motion.div 
-             className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter"
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             transition={{ duration: 1, delay: 0.5 }}
-          >
-              <h1 className="text-2xl font-black tracking-tighter text-white/90">
-                  HARSHAL PATEL<span className="text-emerald-500/80">.</span>
-              </h1>
-              <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
-                  SOFTWARE ENGINEER
-              </p>
-          </motion.div> */}
-
           {/* 🟢 GLOBAL FOOTER (Fades in) */}
           <motion.div 
              className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30"
