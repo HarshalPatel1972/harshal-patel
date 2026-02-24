@@ -320,6 +320,7 @@ export function Hero() {
                   }}
                 >
                   <div 
+                    data-testid="question-display"
                     className="flex flex-col items-center justify-center font-bold text-sky-300 leading-none text-center"
                     style={{ 
                       fontSize: `${titleSettings.fontSize}rem`, 
