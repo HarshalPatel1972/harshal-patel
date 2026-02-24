@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -11,14 +10,3 @@ export default defineConfig({
     globals: true,
   },
 })
-=======
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: 'jsdom',
-  },
-});
->>>>>>> origin/main
