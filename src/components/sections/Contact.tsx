@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { contact } from "@/config/contact";
 
 export function Contact() {
   const [status, setStatus] = useState<'idle' | 'transmitting' | 'sent'>('idle');
@@ -109,23 +110,23 @@ export function Contact() {
            <div className="mt-8 pt-8 border-t border-white/10 grid grid-cols-2 gap-4">
               <div>
                   <div className="text-[10px] font-mono text-white/30 mb-1">// DIRECT_LINE</div>
-                  <div className="text-white font-mono text-xs">+91-7017297823</div>
+                  <div className="text-white font-mono text-xs">{contact.phone}</div>
               </div>
               <div>
                   <div className="text-[10px] font-mono text-white/30 mb-1">// NEURAL_MAIL</div>
-                  <div className="text-white font-mono text-xs">harshalpatel6828@gmail.com</div>
+                  <div className="text-white font-mono text-xs">{contact.email}</div>
               </div>
               <div>
                   <div className="text-[10px] font-mono text-white/30 mb-1">// GITHUB_REPO</div>
-                  <div className="text-white font-mono text-xs">HarshalPatel1972</div>
+                  <div className="text-white font-mono text-xs">{contact.github}</div>
               </div>
               <div>
                   <div className="text-[10px] font-mono text-white/30 mb-1">// LINKEDIN_PROFILE</div>
-                  <a href="https://www.linkedin.com/in/harshal-patel" target="_blank" rel="noopener noreferrer" className="text-white font-mono text-xs hover:text-cyan-400 transition-colors">Harshal Patel</a>
+                  <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-white font-mono text-xs hover:text-cyan-400 transition-colors">{contact.name}</a>
               </div>
               <div>
                   <div className="text-[10px] font-mono text-white/30 mb-1">// LOCATION_NODE</div>
-                  <div className="text-white font-mono text-xs">Varanasi, UP</div>
+                  <div className="text-white font-mono text-xs">{contact.location}</div>
               </div>
            </div>
         </motion.div>
