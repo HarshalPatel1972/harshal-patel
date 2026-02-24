@@ -1,12 +1,7 @@
 "use client";
 
-<<<<<<< HEAD
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-=======
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
->>>>>>> origin/main
 import { useHandoff } from "@/lib/handoff-context";
 import { BLOB_PATHS } from "@/components/effects/BlobAssets";
 
