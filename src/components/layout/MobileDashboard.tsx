@@ -3,13 +3,16 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock } from "@/components/ui/Clock";
-import { Work } from "@/components/sections/Work";
-import { About } from "@/components/sections/About";
-import { Contact } from "@/components/sections/Contact";
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { usePreloader } from "@/lib/preloader-context";
 import { IconBattery4, IconWifi, IconSignal4g, IconHome, IconGridDots, IconCpu, IconMail } from "@tabler/icons-react";
 import { isMobile } from "react-device-detect";
+
+// ⚡ PERFORMANCE: Lazy load heavy sections to reduce initial bundle size
+const Work = dynamic(() => import("@/components/sections/Work").then((mod) => mod.Work));
+const About = dynamic(() => import("@/components/sections/About").then((mod) => mod.About));
+const Contact = dynamic(() => import("@/components/sections/Contact").then((mod) => mod.Contact));
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
