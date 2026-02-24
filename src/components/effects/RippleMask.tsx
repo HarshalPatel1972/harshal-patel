@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useHandoff } from "@/lib/handoff-context";
 
 export default function RippleMask() {
@@ -81,26 +81,24 @@ export default function RippleMask() {
           <rect x="0" y="0" width="100%" height="100%" fill="white" />
           
           {/* Holes: Black = Transparent (Revealing Page) */}
-          <AnimatePresence>
-            {ripples.map((ripple) => (
-              <motion.circle
-                key={ripple.id}
-                cx={ripple.x}
-                cy={ripple.y}
-                r={ripple.r}
-                fill="black"
-                initial={{ r: 0 }}
-                animate={{ r: ripple.r }}
-                transition={{ 
-                  duration: 1.0, 
-                  ease: "circOut" 
-                }}
-                style={{
-                    filter: "blur(30px)" // 💧 Soften liquid edges even more
-                }}
-              />
-            ))}
-          </AnimatePresence>
+          {ripples.map((ripple) => (
+            <motion.circle
+              key={ripple.id}
+              cx={ripple.x}
+              cy={ripple.y}
+              r={ripple.r}
+              fill="black"
+              initial={{ r: 0 }}
+              animate={{ r: ripple.r }}
+              transition={{
+                duration: 1.0,
+                ease: "circOut"
+              }}
+              style={{
+                  filter: "blur(30px)" // 💧 Soften liquid edges even more
+              }}
+            />
+          ))}
         </mask>
       </defs>
     </svg>
