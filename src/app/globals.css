@@ -23,11 +23,12 @@
 }
 
 html {
-  overflow-x: hidden;
+  overflow: hidden;
   background-color: var(--bg-void);
 }
 
 body {
+  overflow: hidden;
   background: 
     radial-gradient(circle at 15% 50%, #1a1a2e 0%, transparent 25%),
     radial-gradient(circle at 85% 30%, #16213e 0%, transparent 25%),
