@@ -2,19 +2,51 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconCpu, IconGridDots, IconMail, IconArrowUpRight, IconHome, IconMenu2, IconArrowRight, IconPrompt } from "@tabler/icons-react";
-import { Work } from "@/components/sections/Work";
-import { About } from "@/components/sections/About";
-import { Contact } from "@/components/sections/Contact";
+import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/react";
+import dynamic from "next/dynamic";
+import { Hero } from "@/components/sections/Hero";
 import { Spotlight } from "@/components/ui/Spotlight";
+
+// ⚡ PERFORMANCE: Lazy load heavy sections to reduce initial bundle size
+const Work = dynamic(() => import("@/components/sections/Work").then((mod) => mod.Work));
+const About = dynamic(() => import("@/components/sections/About").then((mod) => mod.About));
+const Contact = dynamic(() => import("@/components/sections/Contact").then((mod) => mod.Contact));
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
 
 
 
-
 import { usePreloader } from "@/lib/preloader-context";
+
+// 🎨 HEX COLORS (For calculating opacities)
+const HEX_COLORS = [
+    '#06b6d4', // Cyan
+    '#f43f5e', // Rose
+    '#7c3aed', // Violet
+    '#f97316', // Orange
+    '#facc15', // Yellow
+    '#10b981', // Emerald
+    '#3b82f6'  // Blue
+];
+
+// 1. GLASS GRADIENT (Stronger, 15%) - FIXED DIRECTION
+const GLASS_GRADIENT_COLS = HEX_COLORS.map(hex => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},0.15)`;
+});
+const GLASS_STYLE = `linear-gradient(135deg, ${GLASS_GRADIENT_COLS.join(', ')})`;
+
+// 2. BACKGROUND GRADIENT (Subtle, 3%) - ALTERNATING DIRECTION
+const BG_GRADIENT_COLS = HEX_COLORS.map(hex => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},0.03)`;
+});
+const BG_GRADIENT_COLS_REVERSED = [...BG_GRADIENT_COLS].reverse();
 
 export function DesktopDashboard() {
   const { isComplete } = usePreloader();
@@ -22,10 +54,10 @@ export function DesktopDashboard() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   const navItems = [
-    { id: 'hero', label: 'HOME', icon: IconHome },
-    { id: 'work', label: 'WORK', icon: IconGridDots },
-    { id: 'about', label: 'ABOUT', icon: IconCpu },
-    { id: 'contact', label: 'CONTACT', icon: IconMail },
+    { id: 'hero', label: 'HOME', icon: House },
+    { id: 'work', label: 'WORK', icon: Briefcase },
+    { id: 'about', label: 'ABOUT', icon: Fingerprint },
+    { id: 'contact', label: 'CONTACT', icon: PaperPlaneTilt },
   ];
 
   return (
@@ -34,23 +66,8 @@ export function DesktopDashboard() {
       {/* =========================================
           LEFT: MAIN STAGE (Transparent for Void to show through)
       ========================================= */}
-      <div className="flex-1 relative flex flex-col min-w-0 mr-[100px] md:mr-[120px] lg:mr-[140px]">
+      <div className="flex-1 relative flex flex-col min-w-0">
           
-          {/* 🟢 GLOBAL HEADER (Fades in) */}
-          <motion.div 
-             className="absolute top-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter"
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             transition={{ duration: 1, delay: 0.5 }}
-          >
-              <h1 className="text-2xl font-black tracking-tighter text-white/90">
-                  HARSHAL PATEL<span className="text-emerald-500/80">.</span>
-              </h1>
-              <p className="text-[10px] tracking-[0.2em] text-white/40 mt-1 font-mono">
-                  SYSTEM ARCHITECT
-              </p>
-          </motion.div>
-
           {/* 🟢 GLOBAL FOOTER (Fades in) */}
           <motion.div 
              className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30"
@@ -58,9 +75,7 @@ export function DesktopDashboard() {
              animate={{ opacity: 1 }}
              transition={{ duration: 1, delay: 0.5 }}
           >
-               <span>© 2026</span>
-               <span>//</span>
-               <span>ALL_SYSTEMS_NOMINAL</span>
+               <span>© 2026 All right and wrongs reserved</span>
           </motion.div>
 
           {/* 🎭 CONTENT AREA (FULL FILL) */}
@@ -81,68 +96,16 @@ export function DesktopDashboard() {
             <AnimatePresence mode="wait">
                 
                 {/* HERO VIEW - MAXIMIZED CONTENT */}
+                {/* HERO VIEW */}
                 {activeView === 'hero' && (
                     <motion.div 
                         key="hero"
-                        className="absolute inset-0 flex flex-col items-center justify-center p-8 md:p-16 z-10"
+                        className="absolute inset-0 z-10"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                         <div className="flex flex-col items-start max-w-4xl w-full">
-                             
-                             {/* 1. Main Title with Animations */}
-                             <h1 className="font-space font-bold text-5xl md:text-8xl lg:text-9xl leading-[0.9] tracking-tighter text-white mb-8 opacity-90">
-                                <div className="inline-block">
-                                  SYSTEM
-                                </div>
-                                <div className="inline-block text-white/80">
-                                  ARCHITECT
-                                </div>
-                             </h1>
-
-                             {/* 2. Description */}
-                             <motion.div 
-                                className="max-w-2xl border-l border-white/10 pl-6 space-y-4 mb-12"
-                             >
-                                <p className="font-mono text-sm md:text-lg text-white/50 leading-relaxed max-w-md">
-                                  <span className="text-emerald-500/50 font-bold">{`>`}</span> Executing logical design patterns to solve complex user problems.
-                                </p>
-                             </motion.div>
-
-                             {/* 3. Action Buttons (Glassy) */}
-                             <motion.div 
-                                className="flex flex-col sm:flex-row gap-6"
-                             >
-                                 <button 
-                                   onClick={() => setActiveView('work')}
-                                   className="group relative px-8 py-4 bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-500 overflow-hidden text-left backdrop-blur-sm"
-                                 >
-                                    <span className="font-mono text-xs font-bold text-white/70 tracking-[0.2em] group-hover:text-white transition-colors relative z-10">
-                                      [ ACCESS_WORK ]
-                                    </span>
-                                 </button>
-                                 <button 
-                                   onClick={() => setActiveView('contact')}
-                                   className="px-8 py-4 border border-transparent hover:border-white/5 text-left text-white/30 hover:text-white/60 transition-colors"
-                                 >
-                                    <span className="font-mono text-xs tracking-[0.2em]">
-                                      // INITIATE_CONTACT
-                                    </span>
-                                 </button>
-                             </motion.div>
-                         </div>
-
-                         {/* 4. Status Indicator */}
-                         <motion.div 
-                            className="absolute bottom-12 right-12 text-right hidden md:block opacity-40 mix-blend-plus-lighter"
-                         >
-                            <span className="block font-mono text-[9px] text-white/50 tracking-widest mb-1">STATUS</span>
-                            <span className="text-emerald-500 font-mono text-xs tracking-wider flex items-center gap-2 justify-end">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                              ONLINE
-                            </span>
-                         </motion.div>
+                        <Hero />
                     </motion.div>
                 )}
 
@@ -202,18 +165,21 @@ export function DesktopDashboard() {
           RIGHT: NAVIGATION (SMOKED GLASS + SPOTLIGHT)
       ========================================= */}
       <Spotlight 
-        className="absolute top-0 right-0 bottom-0 w-[100px] md:w-[120px] lg:w-[140px] border-l border-white/10 flex flex-col justify-center bg-white/[0.03] backdrop-blur-3xl z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] transition-opacity duration-1000 overflow-hidden"
-        fill="rgba(255, 255, 255, 0.1)"
+        className="absolute top-1/2 -translate-y-1/2 right-6 w-[100px] md:w-[120px] lg:w-[140px] h-fit rounded-[24px] flex flex-col bg-transparent z-20 transition-opacity duration-1000 overflow-hidden"
+        fill="rgba(255, 255, 255, 0.15)"
       > 
         <motion.div
-           className="flex flex-col flex-1 justify-center w-full"
+           className="flex flex-col w-full"
            initial={{ opacity: 1, x: 0 }}
            animate={{ opacity: 1, x: 0 }}
            transition={{ duration: 0 }}
         >
-          {navItems.map((item) => {
+          {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
+              
+              const activeBgSeries = idx % 2 === 0 ? BG_GRADIENT_COLS : BG_GRADIENT_COLS_REVERSED;
+              const buttonStyle = `linear-gradient(135deg, ${activeBgSeries.join(', ')})`;
 
               return (
                 <button
@@ -223,32 +189,82 @@ export function DesktopDashboard() {
                     onMouseLeave={() => setHoveredLink(null)}
                     className={`
                         group aspect-square w-full border-t border-b border-white/[0.03] relative flex flex-col items-center justify-center cursor-pointer transition-all duration-500
-                        ${isActive ? 'bg-white/[0.05]' : 'hover:bg-white/[0.02]'}
+                        hover:bg-white/[0.02]
                         first:border-t-white/[0.03]
                         z-10
                     `}
+                    style={{ background: buttonStyle }}
                 >
-                    {/* Active Indicator Corner */}
-                    {isActive && (
-                        <motion.div 
-                            layoutId="activeCorner"
-                            className="absolute top-2 right-2 w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_10px_#10b981]"
-                        />
-                    )}
+                    {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
+                    <AnimatePresence mode="wait">
+                        {isActive && (
+                            <div className={`absolute z-0 flex flex-col rounded-[12px] overflow-visible transition-all duration-300 ${isHovered ? 'inset-x-4 inset-y-[25%]' : 'inset-[25%]'}`}>
+                                {/* Use 4 Shards for the Split Effect */}
+                                {[0, 1, 2, 3].map((i) => {
+                                    // Direction: Top/Bottom Left (-1), Middle Right (1)
+                                    const direction = (i === 0 || i === 3) ? -1 : 1;
+                                    
+                                    return (
+                                        <motion.div
+                                            key={i}
+                                            initial={{ x: direction * 40, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            exit={{ x: direction * 40, opacity: 0 }}
+                                            transition={{ 
+                                                type: "spring", 
+                                                stiffness: 350, 
+                                                damping: 25,
+                                                mass: 0.8,
+                                                delay: i * 0.02 // Subtle stagger
+                                            }}
+                                            className={`
+                                                w-full h-[25%] 
+                                                backdrop-blur-[4px] border-l border-r border-white/30
+                                                ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
+                                                ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
+                                            `}
+                                            style={{
+                                                background: GLASS_STYLE
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </div> 
+                        )}
+                    </AnimatePresence>
 
-                    <motion.div 
-                       animate={{ 
-                           scale: isHovered || isActive ? 1.05 : 1,
-                           opacity: isActive ? 1 : 0.4
-                       }}
-                       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                        <item.icon 
-                            size={24} 
-                            stroke={1}
-                            className={`mb-4 transition-colors duration-500 ${isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'text-white'}`} 
-                        />
-                    </motion.div>
+                    <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white group-hover:text-white transition-colors">
+                        {/* ICON: Slides Left on Hover */}
+                        <motion.div 
+                           animate={{ 
+                               x: isHovered ? -50 : 0,
+                               opacity: isHovered ? 0 : (isActive ? 1 : 0.6),
+                               scale: isActive ? 1.1 : 1
+                           }}
+                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            <item.icon 
+                                size={28} 
+                                weight="duotone"
+                                className={isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]' : 'drop-shadow-sm'}
+                            />
+                        </motion.div>
+
+                        {/* TEXT: Slides In from Right on Hover */}
+                        <motion.div 
+                           className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                           initial={{ x: 50, opacity: 0 }}
+                           animate={{ 
+                               x: isHovered ? 0 : 50, 
+                               opacity: isHovered ? 1 : 0 
+                           }}
+                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            <span className="font-mono text-xs tracking-[0.2em] font-bold text-white/90 uppercase mr-[-0.2em]">
+                                {item.label}
+                            </span>
+                        </motion.div>
+                    </div>
                 </button>
               );
           })}

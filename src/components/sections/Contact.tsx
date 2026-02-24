@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { contact } from "@/config/contact";
 
 export function Contact() {
   const [status, setStatus] = useState<'idle' | 'transmitting' | 'sent'>('idle');
@@ -98,20 +99,41 @@ export function Contact() {
                disabled={status !== 'idle'}
                className="w-full bg-white/5 border border-white/10 py-5 hover:bg-white/10 transition-all group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
              >
-               <span className="relative z-10 font-mono text-xs tracking-[0.2em] text-white group-hover:text-cyan-400 transition-colors uppercase">
-                 {status === 'transmitting' ? 'TRANSMITTING...' : status === 'sent' ? 'PACKET_SENT' : 'TRANSMIT_DATA'}
+               <div className="absolute inset-0 bg-green-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+               <span className="font-mono text-xs font-bold text-white tracking-[0.2em] group-hover:text-green-400 transition-colors relative z-10">
+                 {status === 'idle' ? '[ TRANSMIT_DATA ]' : (status === 'transmitting' ? 'TRANSMITTING...' : 'TRANSMISSION_COMPLETE')}
                </span>
-               {status === 'idle' && (
-                 <div className="absolute inset-0 bg-white/5 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300" />
-               )}
              </button>
           </form>
 
+           {/* DIRECT CONTACT DATA */}
+           <div className="mt-8 pt-8 border-t border-white/10 grid grid-cols-2 gap-4">
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// DIRECT_LINE</div>
+                  <div className="text-white font-mono text-xs">{contact.phone}</div>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// NEURAL_MAIL</div>
+                  <div className="text-white font-mono text-xs">{contact.email}</div>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// GITHUB_REPO</div>
+                  <div className="text-white font-mono text-xs">{contact.github}</div>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// LINKEDIN_PROFILE</div>
+                  <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-white font-mono text-xs hover:text-cyan-400 transition-colors">{contact.name}</a>
+              </div>
+              <div>
+                  <div className="text-[10px] font-mono text-white/30 mb-1">// LOCATION_NODE</div>
+                  <div className="text-white font-mono text-xs">{contact.location}</div>
+              </div>
+           </div>
         </motion.div>
 
         {/* FOOTER METADATA */}
         <div className="mt-24 border-t border-white/5 pt-8 flex flex-col md:flex-row justify-center md:justify-between items-center gap-4 text-[10px] font-mono text-white/30 uppercase tracking-widest text-center md:text-left">
-           <div>© 2026 SYSTEM_ARCHITECT // HARSHAL_PATEL</div>
+           <div>© 2026 All right and wrongs reserved</div>
            <div className="flex gap-6">
              <a href="#" className="hover:text-white transition-colors">GITHUB_REF</a>
              <a href="#" className="hover:text-white transition-colors">LINKEDIN_REF</a>

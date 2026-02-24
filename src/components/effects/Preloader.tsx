@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { usePreloader } from "@/lib/preloader-context";
 import { APPS } from "@/lib/apps";
@@ -16,9 +16,17 @@ const PreloaderScene = dynamic(() => import("@/components/effects/PreloaderScene
     loading: () => null // Optional: Add spinner if needed
 });
 
+// ⚡ UTILITY: Simple debounce to avoid thrashing
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>;
+  return function(...args: Parameters<T>) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 export function Preloader() {
   const { setComplete, isComplete } = usePreloader();
-  const { nextStage } = useHandoff();
   const [showCanvas, setShowCanvas] = useState(true);
   const [activeColor, setActiveColor] = useState(APPS[0].hex);
   const [isExiting, setIsExiting] = useState(false);
@@ -26,19 +34,13 @@ export function Preloader() {
   // 🛡️ FORCE OPTIMIZATION: Check Screen Width
   const [isOptimized, setIsOptimized] = useState(false);
 
-  useEffect(() => {
-    const checkSpec = () => {
-        // Force "Mobile Mode" if screen is narrow OR if library says mobile
-        const shouldOptimize = window.innerWidth < 1024 || isMobile; 
-        setIsOptimized(shouldOptimize);
-    };
-    
-    checkSpec();
-    window.addEventListener('resize', checkSpec);
-    return () => window.removeEventListener('resize', checkSpec);
-  }, []);
+  // 🚀 Fix 6: Staged Boot
+  const [isReady, setIsReady] = useState(false);
 
-  const handleComplete = React.useCallback(() => {
+  // 🚀 Fix 7: Device Capability Ladder
+  const [tier, setTier] = useState<'high' | 'low'>('high');
+
+  const handleComplete = useCallback(() => {
     // 1. Start Fade Out
     setIsExiting(true);
     // 2. Unmount after fade
@@ -48,7 +50,42 @@ export function Preloader() {
     }, 1000);
   }, [setComplete]);
 
-  const handleIndexChange = React.useCallback((i: number) => {
+  useEffect(() => {
+    const t = setTimeout(() => setIsReady(true), 200); // Defer Mount
+    
+    const checkSpec = () => {
+        // Simple Heuristic: If mobile has low pixel density or potato CPU, downgrade
+        const isLowEnd = isMobile && (window.devicePixelRatio < 2 || (navigator.hardwareConcurrency || 4) < 4);
+        setTier(isLowEnd ? 'low' : 'high');
+
+        // Force "Mobile Mode" if screen is narrow OR if library says mobile
+        const shouldOptimize = window.innerWidth < 1024 || isMobile; 
+        setIsOptimized(shouldOptimize);
+    };
+    
+    checkSpec();
+
+    // ⚡ DEBOUNCE: Prevent layout thrashing on resize
+    const debouncedCheckSpec = debounce(checkSpec, 100);
+    window.addEventListener('resize', debouncedCheckSpec);
+
+    return () => {
+        clearTimeout(t);
+        window.removeEventListener('resize', debouncedCheckSpec);
+    };
+  }, []);
+
+  // Fallback for low tier (or if Canvas crashes/fails to load)
+  useEffect(() => {
+    if (tier === 'low') {
+        const timer = setTimeout(() => {
+            handleComplete();
+        }, 3000);
+        return () => clearTimeout(timer);
+    }
+  }, [tier, handleComplete]);
+
+  const handleIndexChange = useCallback((i: number) => {
       setActiveColor(APPS[i].hex);
   }, []);
 
@@ -63,7 +100,7 @@ export function Preloader() {
       {/* LAYER 3 (Top): WebGL Scene - UNMASKED 
           The 3D pillars float ABOVE the floor. 
           The browser doesn't have to re-cut them every frame. */}
-      {showCanvas && (
+      {showCanvas && tier === 'high' && (
         <div className={`fixed inset-0 z-[101] pointer-events-none transition-opacity duration-1000 ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
           <Canvas 
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }} 
@@ -98,7 +135,20 @@ export function Preloader() {
             background: `radial-gradient(circle at center, ${activeColor} 0%, transparent 70%)`,
           }}
         />
+        
+        {/* Tier 2: Static Fallback (Potato Mode) */}
+        {tier === 'low' && (
+           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+              <div className="flex gap-4 opacity-30">
+                 {APPS.map((app, i) => (
+                    <div key={i} className="w-2 h-16 rounded-full bg-white/20" style={{ backgroundColor: app.hex }} />
+                 ))}
+              </div>
+              <div className="text-white/50 font-mono text-xs tracking-[0.5em] animate-pulse">LOADING</div>
+           </div>
+        )}
       </div>
     </>
   );
 }
+
