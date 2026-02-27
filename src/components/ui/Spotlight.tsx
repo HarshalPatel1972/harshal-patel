@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface SpotlightProps {
@@ -16,14 +16,30 @@ export function Spotlight({
   const overlayRef = useRef<HTMLDivElement>(null);
   const [opacity, setOpacity] = useState(0);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // ⚡ PERFORMANCE: Track mouse position with refs to avoid re-renders
+  const positionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const frameRef = useRef<number>(0);
+
+  const updateSpotlight = () => {
     if (!divRef.current || !overlayRef.current) return;
 
     const rect = divRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = positionRef.current.x - rect.left;
+    const y = positionRef.current.y - rect.top;
 
     overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+
+    frameRef.current = 0;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Store latest coordinates
+    positionRef.current = { x: e.clientX, y: e.clientY };
+
+    // Schedule update if not already pending
+    if (frameRef.current === 0) {
+      frameRef.current = requestAnimationFrame(updateSpotlight);
+    }
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -33,7 +49,20 @@ export function Spotlight({
 
   const handleMouseLeave = () => {
     setOpacity(0);
+    if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = 0;
+    }
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+        if (frameRef.current) {
+            cancelAnimationFrame(frameRef.current);
+        }
+    };
+  }, []);
 
   return (
     <div
