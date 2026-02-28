@@ -16,6 +16,19 @@ const Contact = dynamic(() => import("@/components/sections/Contact").then((mod)
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
+// ⚡ Bolt: Extracted 100-div static grid into a memoized component.
+// 🎯 Why: MobileDashboard state (activeView) updates frequently on navigation.
+// 📊 Impact: Prevents React from needlessly recalculating and diffing 100 DOM nodes per state change.
+const BackgroundGrid = React.memo(function BackgroundGrid() {
+  return (
+    <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] pointer-events-none opacity-[0.03]">
+      {[...Array(100)].map((_, i) => (
+        <div key={i} className="border-[0.5px] border-white/20" />
+      ))}
+    </div>
+  );
+});
+
 export function MobileDashboard() {
   const { isComplete } = usePreloader();
   const [activeView, setActiveView] = useState<ViewState>('hero');
@@ -55,11 +68,7 @@ export function MobileDashboard() {
       ========================================= */}
       <div className="flex-1 relative overflow-hidden">
          {/* BACKGROUND GRID */}
-         <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] pointer-events-none opacity-[0.03]">
-            {[...Array(100)].map((_, i) => (
-                <div key={i} className="border-[0.5px] border-white/20" />
-            ))}
-         </div>
+         <BackgroundGrid />
 
          <AnimatePresence mode="wait">
             
