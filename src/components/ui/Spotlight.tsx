@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface SpotlightProps {
@@ -16,14 +16,38 @@ export function Spotlight({
   const overlayRef = useRef<HTMLDivElement>(null);
   const [opacity, setOpacity] = useState(0);
 
+  // ⚡ PERFORMANCE: Track animation frame to avoid layout thrashing
+  const requestRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (requestRef.current !== null) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!divRef.current || !overlayRef.current) return;
 
-    const rect = divRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
 
-    overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+    if (requestRef.current !== null) {
+      cancelAnimationFrame(requestRef.current);
+    }
+
+    // ⚡ PERFORMANCE: Batch DOM reads (getBoundingClientRect) and writes (style updates)
+    // into a single frame to prevent layout thrashing on rapid mouse movement.
+    requestRef.current = requestAnimationFrame(() => {
+      if (!divRef.current || !overlayRef.current) return;
+
+      const rect = divRef.current.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+    });
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -33,6 +57,9 @@ export function Spotlight({
 
   const handleMouseLeave = () => {
     setOpacity(0);
+    if (requestRef.current !== null) {
+      cancelAnimationFrame(requestRef.current);
+    }
   };
 
   return (
