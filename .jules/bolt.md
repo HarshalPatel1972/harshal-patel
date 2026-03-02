@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimize high-frequency mousemove events reading layout properties
+**Learning:** High-frequency mouse tracking components (like `Spotlight`) reading `getBoundingClientRect()` inline during the `mousemove` event without batching or requestAnimationFrame can cause layout thrashing and stutter.
+**Action:** Use `requestAnimationFrame` to batch DOM reads (like `getBoundingClientRect()`) and DOM writes (updating inline styles), avoiding layout thrashing. Combine this with `useRef` rather than `useState` to completely eliminate React render cycles.
