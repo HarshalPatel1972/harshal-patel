@@ -16,14 +16,31 @@ export function Spotlight({
   const overlayRef = useRef<HTMLDivElement>(null);
   const [opacity, setOpacity] = useState(0);
 
+  // ⚡ PERFORMANCE: Track animation frame to avoid layout thrashing during high-frequency mouse events
+  const rafRef = useRef<number | null>(null);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!divRef.current || !overlayRef.current) return;
 
-    const rect = divRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Cache the event coordinates
+    const clientX = e.clientX;
+    const clientY = e.clientY;
 
-    overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+
+    rafRef.current = requestAnimationFrame(() => {
+      if (!divRef.current || !overlayRef.current) return;
+
+      // DOM Read: getBoundingClientRect triggers layout if styles changed
+      const rect = divRef.current.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      // DOM Write
+      overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+    });
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
