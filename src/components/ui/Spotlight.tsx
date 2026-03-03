@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface SpotlightProps {
@@ -14,26 +14,55 @@ export function Spotlight({
 }: SpotlightProps) {
   const divRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [opacity, setOpacity] = useState(0);
+  const requestRef = useRef<number>();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!divRef.current || !overlayRef.current) return;
 
-    const rect = divRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // ⚡ OPTIMIZATION: Use requestAnimationFrame to batch DOM reads and writes
+    // This prevents layout thrashing and ensures smooth 60FPS tracking
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+    }
 
-    overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+    const { clientX, clientY } = e;
+
+    requestRef.current = requestAnimationFrame(() => {
+      if (!divRef.current || !overlayRef.current) return;
+      const rect = divRef.current.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      overlayRef.current.style.background = `radial-gradient(600px circle at ${x}px ${y}px, ${fill}, transparent 40%)`;
+    });
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    setOpacity(1);
+    // ⚡ OPTIMIZATION: Direct DOM manipulation for opacity instead of useState
+    // This completely eliminates React re-renders on hover state changes
+    if (overlayRef.current) {
+      overlayRef.current.style.opacity = "1";
+    }
     handleMouseMove(e);
   };
 
   const handleMouseLeave = () => {
-    setOpacity(0);
+    if (overlayRef.current) {
+      overlayRef.current.style.opacity = "0";
+    }
+    if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+    }
   };
+
+  // ⚡ OPTIMIZATION: Ensure we don't leak animation frames if the component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -47,7 +76,6 @@ export function Spotlight({
         ref={overlayRef}
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
         style={{
-          opacity,
           background: `radial-gradient(600px circle at 0px 0px, ${fill}, transparent 40%)`,
         }}
       />
