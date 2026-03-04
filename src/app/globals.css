@@ -63,8 +63,6 @@ body::before {
 
 /* ─── MANGA PANEL SYSTEM ─── */
 .manga-panel {
-  background: var(--bg-darker);
-  border: 2px solid var(--text-bone);
   position: relative;
   overflow: hidden;
 }
