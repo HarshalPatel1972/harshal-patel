@@ -1,18 +1,19 @@
-import { DesktopDashboard } from "@/components/layout/DesktopDashboard";
-import { MobileDashboard } from "@/components/layout/MobileDashboard";
+import { Navbar } from "@/components/Navbar";
+import { Hero } from "@/components/Hero";
+import { Projects } from "@/components/Projects";
+import { About } from "@/components/About";
+import { Contact } from "@/components/Contact";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <>
-      {/* 📱 MOBILE: OS Dashboard */}
-      <div className="block md:hidden">
-        <MobileDashboard />
-      </div>
-
-      {/* 🖥️ DESKTOP: No-Scroll Grid Dashboard */}
-      <div className="hidden md:block">
-        <DesktopDashboard />
-      </div>
-    </>
+    <main>
+      <Navbar />
+      <Hero />
+      <Projects />
+      <About />
+      <Contact />
+      <Footer />
+    </main>
   );
 }
