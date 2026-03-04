@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { animate as anime } from "animejs";
 
 /**
@@ -88,12 +88,14 @@ export function useCounter(target: number, duration: number = 2000) {
 export function TextReveal({
   text,
   className = "",
+  charStyle,
   delay = 0,
   stagger = 30,
   as: Tag = "span",
 }: {
   text: string;
   className?: string;
+  charStyle?: React.CSSProperties;
   delay?: number;
   stagger?: number;
   as?: "span" | "h1" | "h2" | "h3" | "p" | "div";
@@ -140,6 +142,7 @@ export function TextReveal({
             opacity: 0,
             transformStyle: "preserve-3d",
             whiteSpace: char === " " ? "pre" : undefined,
+            ...charStyle,
           }}
         >
           {char === " " ? "\u00A0" : char}
@@ -148,6 +151,7 @@ export function TextReveal({
     </Tag>
   );
 }
+
 
 /**
  * 🎴 3D Tilt Card — Perspective tilt on mouse hover

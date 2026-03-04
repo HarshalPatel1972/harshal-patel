@@ -101,12 +101,19 @@ export function Hero() {
             stagger={50}
             delay={100}
           />
+          <br />
           <TextReveal
             text={profile.name.split(" ")[1] || ""}
             as="h1"
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.9] bg-gradient-to-r from-violet-400 via-rose-400 to-amber-400 bg-clip-text text-transparent"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.9]"
             stagger={50}
             delay={400}
+            charStyle={{
+              background: "linear-gradient(135deg, #8b5cf6, #f43f5e, #f59e0b)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
           />
         </div>
 
