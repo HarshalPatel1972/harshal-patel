@@ -1,189 +1,125 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { animate as anime, utils } from "animejs";
 import { profile } from "@/data/profile";
-import { TextReveal, useMagnetic } from "./AnimationKit";
-
-const ROLES = [
-  "SOFTWARE ENGINEER",
-  "SYSTEM ARCHITECT",
-  "FULL-STACK DEVELOPER",
-  "CURSE USER (DEVELOPER)"
-];
+import { useMagnetic } from "./AnimationKit";
 
 export function Hero() {
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  
   const containerRef = useRef<HTMLDivElement>(null);
-  const bloodSpatterRef = useRef<SVGSVGElement>(null);
-  const cta1Ref = useMagnetic(0.3);
-  const cta2Ref = useMagnetic(0.3);
+  const titlesRef = useRef<HTMLDivElement>(null);
+  const cta1Ref = useMagnetic(0.2);
+  const cta2Ref = useMagnetic(0.2);
 
-  // Aggressive typewriter effect
-  useEffect(() => {
-    const currentRole = ROLES[roleIndex];
-    let timeout: NodeJS.Timeout;
-    
-    if (!isDeleting && displayText === currentRole) {
-      timeout = setTimeout(() => setIsDeleting(true), 1500); // Fast pacing
-    } else if (isDeleting && displayText === "") {
-      setIsDeleting(false);
-      setRoleIndex((prev) => (prev + 1) % ROLES.length);
-    } else {
-      timeout = setTimeout(
-        () => setDisplayText(isDeleting
-          ? currentRole.slice(0, displayText.length - 1)
-          : currentRole.slice(0, Math.max(0, displayText.length) + 1)
-        ),
-        isDeleting ? 20 : 50
-      );
-    }
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, roleIndex]);
-
-  // Entrance & Interactive Parallax
+  // Cinematic opening animations (MAPPA Style: slow continuous drift + sharp impacts)
   useEffect(() => {
     if (!containerRef.current) return;
-    
-    // Initial violent shatter entrance
-    const elements = containerRef.current.querySelectorAll(".shatter-in");
+
+    // Staggered harsh entrance for main elements
+    const elements = containerRef.current.querySelectorAll(".cinematic-in");
     anime(elements as any, {
       opacity: [0, 1],
-      scale: [1.2, 1],
-      rotateZ: () => utils.random(-5, 5), // Slight off-axis manga text feel
-      translateY: [100, 0],
-      duration: 800,
-      delay: utils.stagger(150, { start: 0 }),
-      easing: "easeOutElastic(1, .8)",
+      translateY: [40, 0],
+      duration: 1000,
+      delay: utils.stagger(200, { start: 300 }),
+      easing: "outCubic",
     });
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const x = (clientX / window.innerWidth - 0.5) * 2;
-      const y = (clientY / window.innerHeight - 0.5) * 2;
+    // Slow cinematic scaling of the main background ink slash
+    const slash = containerRef.current.querySelector(".ink-slash");
+    if (slash) {
+      anime(slash, {
+        scale: [0.8, 1.1],
+        opacity: [0, 1],
+        duration: 3000,
+        easing: "easeOutSine",
+      });
+    }
 
-      // Move blood spatter slightly
-      if (bloodSpatterRef.current) {
-         anime(bloodSpatterRef.current, {
-           translateX: x * -30,
-           translateY: y * -30,
-           duration: 500,
-           easing: "outQuart"
-         });
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    // Continuous ultra-slow parallax drift for the main title
+    if (titlesRef.current) {
+      anime(titlesRef.current, {
+        scale: [1, 1.05],
+        duration: 20000,
+        direction: "alternate",
+        loop: true,
+        easing: "linear"
+      });
+    }
   }, []);
 
   return (
     <section 
       id="hero" 
       ref={containerRef} 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] p-4 md:p-8"
-      onClick={() => {
-        // Trigger impact frame globally
-        document.body.style.animation = "none";
-        void document.body.offsetWidth; // trigger reflow
-        document.body.style.animation = "impact-flash 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-      }}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] px-6"
     >
-      {/* Background Halftone Pattern */}
-      <div className="absolute inset-0 halftone-bg z-0" />
+      {/* Halftone / Grain Texture Base */}
+      <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
-      {/* SVG Ink/Blood Spatter Background */}
-      <svg 
-         ref={bloodSpatterRef} 
-         className="absolute inset-0 w-full h-full object-cover z-0 opacity-10 pointer-events-none" 
-         viewBox="0 0 100 100" 
-         preserveAspectRatio="none"
-      >
-        {/* Raw, jagged shapes mimicking MAPPA ink hits */}
-        <polygon points="0,0 30,0 20,40 0,60" fill="var(--accent-blood)" />
-        <polygon points="100,100 60,100 80,40 100,20" fill="var(--text-bone)" />
-        <polygon points="50,100 40,80 60,60" fill="var(--accent-blood)" />
-        <circle cx="20" cy="80" r="1.5" fill="var(--accent-blood)" />
-        <circle cx="25" cy="75" r="0.8" fill="var(--accent-blood)" />
-        <circle cx="85" cy="15" r="1.2" fill="var(--text-bone)" />
-      </svg>
+      {/* Massive Abstract Ink Stroke (MAPPA style title card background) */}
+      <div className="ink-slash absolute left-[-10%] sm:left-[10%] top-[20%] w-[120%] sm:w-[80%] h-[60%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
+         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full text-[var(--accent-blood)] opacity-20 drop-shadow-2xl">
+            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="currentColor" />
+            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="currentColor" opacity="0.5" />
+         </svg>
+      </div>
 
-      <div className="manga-panel p-6 md:p-12 z-10 w-full max-w-7xl relative manga-cut-br brutal-shadow flex flex-col items-start min-h-[70vh] justify-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
         
-        {/* Corner Decorator Label */}
-        <div className="absolute top-0 right-0 bg-white text-black font-bold font-mono px-4 py-1 text-[10px] tracking-wider border-l-2 border-b-2 border-black z-20">
-          VOL. 01 // AWAKENING
+        {/* Professional Minimalist Status */}
+        <div className="cinematic-in block mb-8 border border-[var(--text-bone)] px-4 py-2 uppercase tracking-widest text-[10px] sm:text-xs font-bold font-sans text-[var(--text-bone)] bg-black/50 backdrop-blur-sm">
+          Available for Opportunities
         </div>
 
-        {/* Status Seal */}
-        <div className="shatter-in inline-flex items-center gap-2 border-2 border-[var(--accent-blood)] px-3 py-1 mb-8 bg-[var(--bg-ink)] chromatic-aberration">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent-blood)">
-            <path d="M12 2L22 20H2L12 2Z" />
-          </svg>
-          <span className="text-[10px] font-display font-bold text-[var(--accent-blood)] tracking-[0.3em] uppercase">
-            Domain Expanded
-          </span>
-        </div>
-
-        {/* Aggressive MAPPA Typography */}
-        <div className="relative mb-6 z-10 flex flex-col -gap-4 cursor-default w-full">
-           <div className="shatter-in text-[6rem] sm:text-[8rem] md:text-[12rem] lg:text-[15rem] leading-[0.7] font-black font-display uppercase tracking-[-0.05em] text-[var(--text-bone)] chromatic-hover select-none">
-             HARSHAL
-           </div>
+        {/* Cinematic Title Scaling container */}
+        <div ref={titlesRef} className="relative mb-8 w-full">
+           {/* FIRST NAME */}
+           <h1 className="cinematic-in text-[5rem] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase text-[var(--text-bone)] select-none chromatic-aberration" style={{ letterSpacing: "-0.04em" }}>
+             {profile.name.split(" ")[0]}
+           </h1>
            
-           <div className="shatter-in relative text-[6rem] sm:text-[8rem] md:text-[12rem] lg:text-[15rem] leading-[0.7] font-black font-display uppercase tracking-[-0.05em] text-transparent select-none ml-0 md:ml-32 mt-4"
-                style={{ WebkitTextStroke: "3px var(--text-bone)" }}
+           {/* LAST NAME (Offset, outlined, intersecting) */}
+           <h1 className="cinematic-in text-[5rem] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%]"
+               style={{ WebkitTextStroke: "2px var(--text-bone)" }}
            >
-             PATEL
-             {/* Diagonal Blood Slash overlay over the text */}
-             <div className="absolute top-1/2 left-[-10%] right-[-10%] h-[15px] bg-[var(--accent-blood)] -translate-y-1/2 -rotate-2 z-[-1]" />
+             {profile.name.split(" ").slice(1).join(" ")}
+           </h1>
+           
+           {/* Role Accent Block overlapping the typography */}
+           <div className="cinematic-in absolute bottom-0 right-0 md:bottom-[20%] md:right-[10%] bg-[var(--accent-blood)] text-white font-sans font-bold text-sm sm:text-xl md:text-2xl px-6 py-4 pt-5 uppercase tracking-wider transform translate-y-1/2 md:translate-y-0">
+             Software Engineer
            </div>
         </div>
 
-        {/* Typewriter Terminal Block */}
-        <div className="shatter-in mt-12 border-l-4 border-[var(--accent-cursed)] pl-6 py-2 mb-10 w-full max-w-2xl bg-[var(--bg-ink)]">
-           <div className="text-[10px] font-mono text-[var(--text-muted)] tracking-widest uppercase mb-1">
-             Current Target // Class
-           </div>
-           <div className="text-xl md:text-3xl font-display font-bold text-[var(--text-bone)] uppercase flex items-center h-8">
-             {displayText}
-             <div className="w-4 h-[80%] bg-[var(--accent-cursed)] ml-2 animate-pulse" />
-           </div>
-        </div>
-
-        {/* Bio Tagline */}
-        <p className="shatter-in text-sm md:text-lg text-[var(--text-muted)] max-w-2xl font-mono leading-relaxed uppercase mb-12">
+        {/* Clear, straightforward tagline without typewriter or terminal nonsense */}
+        <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-sans leading-relaxed mb-16 mt-8 md:mt-4">
           {profile.tagline}
         </p>
 
-        {/* Brutalist Manga Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 mt-auto w-full sm:w-auto">
+        {/* Bold, Minimalist CTAs */}
+        <div className="cinematic-in flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <a ref={cta1Ref as any} href="#projects"
-            className="shatter-in magnetic-btn px-10 py-5 text-sm md:text-base text-center chromatic-hover"
+            className="flex items-center justify-center gap-4 bg-[var(--text-bone)] text-[var(--bg-ink)] px-10 py-5 text-sm md:text-base font-bold uppercase tracking-widest hover:scale-105 transition-transform duration-300 transform origin-left"
           >
-            Execute Archive
+            View Work
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
           </a>
           
           <a ref={cta2Ref as any} href="#contact"
-             className="shatter-in magnetic-btn px-10 py-5 text-sm md:text-base text-center bg-[var(--accent-blood)] border-[var(--accent-blood)] text-[var(--bg-ink)]"
-             style={{ 
-                color: 'var(--bg-ink)', 
-                '--text-bone': 'var(--bg-ink)' 
-             } as React.CSSProperties} // Invert hover logic
+             className="flex items-center justify-center px-10 py-5 border-2 border-[var(--text-bone)] text-[var(--text-bone)] text-sm md:text-base font-bold uppercase tracking-widest hover:bg-[var(--text-bone)] hover:text-[var(--bg-ink)] transition-colors duration-300"
           >
-            Initiate Contact
+            Contact
           </a>
         </div>
 
       </div>
-      
-      {/* Click instruction */}
-      <div className="absolute bottom-4 right-6 text-[10px] font-display font-bold text-[var(--text-muted)] tracking-[0.2em] pointer-events-none hidden md:block">
-        [ CLICK TO IMPACT ]
-      </div>
+
+      {/* Cinematic Frame lines (Top and Bottom subtle borders) */}
+      <div className="absolute top-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
+      <div className="absolute bottom-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
     </section>
   );
 }
