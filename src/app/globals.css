@@ -30,11 +30,11 @@
 /* ─── BASE ─── */
 html {
   scroll-behavior: smooth;
-  background-color: var(--bg);
+  background-color: #050508;
 }
 
 body {
-  background: var(--bg);
+  background: #050508;
   color: var(--text);
   font-family: var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;

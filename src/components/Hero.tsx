@@ -130,7 +130,7 @@ export function Hero() {
         ref={cursorFlareRef} 
         className="absolute top-0 left-0 w-0 h-0 pointer-events-none z-0"
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full opacity-30 mix-blend-screen transition-transform"
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] rounded-full opacity-30 transition-transform"
              style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.5) 0%, rgba(59,130,246,0.1) 40%, transparent 70%)' }} />
       </div>
 
@@ -195,7 +195,7 @@ ID: ${profile.name.toUpperCase()}`}
           <TextReveal
             text={profile.name.split(" ")[0] || "HARSHAL"}
             as="div"
-            className="text-7xl sm:text-8xl md:text-[8rem] lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85] drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]"
+            className="text-7xl sm:text-8xl md:text-[8rem] lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85]"
             stagger={60}
             delay={200}
             charStyle={{
@@ -208,7 +208,7 @@ ID: ${profile.name.toUpperCase()}`}
           <TextReveal
             text={profile.name.split(" ")[1] || "PATEL"}
             as="div"
-            className="text-7xl sm:text-8xl md:text-[8rem] lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85] drop-shadow-[0_20px_40px_rgba(139,92,246,0.3)] ml-0 md:ml-32"
+            className="text-7xl sm:text-8xl md:text-[8rem] lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85] ml-0 md:ml-32"
             stagger={60}
             delay={600}
             charStyle={{
