@@ -64,7 +64,7 @@ export function About() {
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-8 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-4 border-black relative">
             <div className="absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black font-display px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black">
-              CHAPTER 01
+              CHAPTER 02
             </div>
             
             <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative z-10">

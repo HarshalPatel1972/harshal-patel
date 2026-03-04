@@ -41,7 +41,7 @@ export function Projects() {
       <div className="w-full max-w-7xl relative z-10 flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
-             CHAPTER 02
+             CHAPTER 01
            </div>
            <h2 className="text-6xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
              SELECTED <br/> WORKS
