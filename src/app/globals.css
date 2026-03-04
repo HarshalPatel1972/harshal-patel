@@ -1,102 +1,130 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════
-   🌈 PRISMATIC DRIFT — Design System
+   🩸 MAPPA CINEMATIC BRUTALISM
    ═══════════════════════════════════════════ */
 
 :root {
-  --bg: #0a0a0f;
-  --text: #f0f0f5;
-  --text-muted: #8888a0;
-  --accent-violet: #8b5cf6;
-  --accent-blue: #3b82f6;
-  --accent-teal: #14b8a6;
-  --accent-amber: #f59e0b;
-  --accent-rose: #f43f5e;
-  --accent-emerald: #10b981;
-  --glass: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --radius: 16px;
+  --bg-ink: #050505;
+  --bg-darker: #020202;
+  --text-bone: #E8E8E6;
+  --text-muted: #8E8A85;
+  --accent-blood: #d91111;
+  --accent-cursed: #0ee0c3;
+  --panel-border: rgba(232, 232, 230, 0.15);
+  --radius: 0px; /* Brutalist sharp edges */
 }
 
 @theme inline {
-  --color-background: var(--bg);
-  --color-foreground: var(--text);
+  --color-background: var(--bg-ink);
+  --color-foreground: var(--text-bone);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
-  --font-display: var(--font-space-grotesk);
+  --font-display: var(--font-oswald);
 }
 
 /* ─── BASE ─── */
 html {
   scroll-behavior: smooth;
-  background-color: #050508;
+  background-color: var(--bg-ink);
 }
 
 body {
-  background: #050508;
-  color: var(--text);
+  background: var(--bg-ink);
+  color: var(--text-bone);
   font-family: var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
-  background: var(--accent-violet);
+  background: var(--accent-blood);
   color: white;
 }
 
-/* ─── FILM GRAIN ─── */
+/* ─── FILM GRAIN & HALFTONE ─── */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 9999;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
-/* ─── GRADIENT BLOBS ─── */
-.gradient-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.3;
-  pointer-events: none;
-  will-change: transform;
+/* Halftone dots for manga shading */
+.halftone-bg {
+  background-image: radial-gradient(circle, var(--text-muted) 1px, transparent 1.5px);
+  background-size: 8px 8px;
+  opacity: 0.05;
 }
 
-/* ─── GLASS CARD ─── */
-.glass-card {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* ─── MANGA PANEL SYSTEM ─── */
+.manga-panel {
+  background: var(--bg-darker);
+  border: 2px solid var(--text-bone);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ─── GLOW TEXT ─── */
-.glow-text {
-  text-shadow: 0 0 60px currentColor;
+/* Aggressive diagonal cut panels */
+.manga-cut-tr {
+  clip-path: polygon(0 0, 100% 20px, 100% 100%, 0 100%);
+}
+.manga-cut-br {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%);
+}
+
+/* Thick brutalist shadows */
+.brutal-shadow {
+  box-shadow: 8px 8px 0px 0px var(--accent-blood);
+  transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+.brutal-shadow:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 6px 6px 0px 0px var(--accent-blood);
+}
+
+/* ─── CHROMATIC ABERRATION TEXT ─── */
+.chromatic-aberration {
+  text-shadow: 2px 0px 0px rgba(217, 17, 17, 0.8), -2px 0px 0px rgba(14, 224, 195, 0.8);
+  position: relative;
+}
+
+.chromatic-hover:hover {
+  text-shadow: 3px 0px 0px rgba(217, 17, 17, 0.8), -3px 0px 0px rgba(14, 224, 195, 0.8);
+}
+
+/* ─── IMPACT FRAMES (Anime Hit Effect) ─── */
+@keyframes impact-flash {
+  0% { filter: invert(0); }
+  10% { filter: invert(1) contrast(150%); }
+  20% { filter: invert(0); }
+  100% { filter: invert(0); }
+}
+
+.impact-trigger:active body {
+  animation: impact-flash 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ─── SCROLLBAR ─── */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-ink);
+  border-left: 1px solid var(--panel-border);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.3);
-  border-radius: 10px;
+  background: var(--text-bone);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.5);
+  background: var(--accent-blood);
 }
 
-/* ─── SECTION DIVIDER GRADIENT ─── */
+/* ─── SECTION DIVIDER (Manga Tape) ─── */
 .section-fade {
   position: relative;
 }
@@ -104,50 +132,66 @@ body::before {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-image: repeating-linear-gradient(45deg, var(--text-bone) 0, var(--text-bone) 10px, transparent 10px, transparent 20px);
+  opacity: 0.2;
 }
 
-/* ─── MAGNETIC BUTTON ─── */
+/* ─── MAGNETIC BUTTON OVERRIDE ─── */
 .magnetic-btn {
   position: relative;
   overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1);
+  border: 2px solid var(--text-bone);
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 .magnetic-btn::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
-  opacity: 0;
-  transition: opacity 0.4s;
-  border-radius: inherit;
+  background: var(--text-bone);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+  z-index: -1;
 }
 .magnetic-btn:hover::before {
-  opacity: 0.15;
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.magnetic-btn:hover {
+  color: var(--bg-ink);
 }
 
-/* ─── SKILL BAR ─── */
+/* ─── SKILL BAR (Brutalist) ─── */
 .skill-bar {
-  height: 3px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
-  overflow: hidden;
+  height: 4px;
+  background: rgba(232, 232, 230, 0.1);
+  border: 1px solid rgba(232, 232, 230, 0.2);
 }
 .skill-bar-fill {
   height: 100%;
-  border-radius: 4px;
+  background: var(--accent-blood);
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.6s cubic-bezier(0.86, 0, 0.07, 1);
 }
 .skill-bar-fill.animate {
   transform: scaleX(1);
 }
 
-/* ─── INPUT GLOW ─── */
-input:focus, textarea:focus {
-  box-shadow: 0 0 0 1px var(--accent-violet), 0 0 30px rgba(139, 92, 246, 0.15);
+/* Redundant gradient removal classes since we ripped out glassmorphism */
+.gradient-blob {
+  display: none !important;
+}
+.glass-card {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
