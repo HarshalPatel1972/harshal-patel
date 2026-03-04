@@ -88,31 +88,42 @@ export function About() {
         </ScrollReveal>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 w-full">
-           {/* =========================================
-               PANEL 2: Experience (Stacked Black Blocks)
-               ========================================= */}
-           <ScrollReveal duration={1200} delay={200} className="w-full">
-             <div className="flex flex-col gap-6">
-                <div className="bg-[var(--accent-cursed)] text-[var(--bg-ink)] font-black font-display uppercase text-3xl md:text-5xl px-6 py-3 border-2 border-[var(--text-bone)] self-start brutal-shadow">
-                   EXPERIENCE
-                </div>
-                
-                <div className="space-y-8 pl-4 sm:pl-8 border-l-4 border-[var(--text-bone)]">
-                  {profile.experience.map((job) => (
-                    <div key={job.company} className="relative group">
-                      <div className="absolute left-[-16px] sm:left-[-36px] top-2 w-[8px] h-[8px] sm:w-[12px] sm:h-[12px] bg-[var(--accent-blood)] border border-[var(--bg-ink)] rotate-45 group-hover:bg-[var(--accent-cursed)] transition-colors" />
-                      
-                      <div className="flex flex-wrap items-end gap-4 mb-2">
-                        <h4 className="text-2xl sm:text-3xl font-black font-display text-[var(--text-bone)] uppercase">{job.company}</h4>
-                        <span className="text-xs sm:text-sm font-mono text-[var(--text-muted)] border border-[var(--text-muted)] px-2 py-0.5 mb-1">{job.period}</span>
-                      </div>
-                      <div className="text-[var(--accent-cursed)] text-sm sm:text-base font-bold font-sans uppercase tracking-widest mb-3">[{job.role}]</div>
-                      <p className="text-[var(--text-muted)] text-sm sm:text-base leading-relaxed font-sans">{job.description}</p>
+         {/* =========================================
+             PANEL 2: Experience (Stacked Black Blocks)
+             ========================================= */}
+         <ScrollReveal duration={1200} delay={200} className="w-full">
+           <div className="flex flex-col border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
+              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-3xl md:text-5xl px-6 py-4 flex items-center justify-between">
+                 RECORDED <br/> EXPERIENCE
+                 <span className="text-[10px] md:text-sm font-mono tracking-normal text-black bg-[var(--accent-blood)] px-2 py-1 rotate-[-5deg]">CLASSIFIED</span>
+              </div>
+              
+              <div className="flex flex-col bg-white">
+                {profile.experience.map((job, i) => (
+                  <div key={job.company} className="relative group border-b-4 border-black last:border-b-0 p-6 md:p-8 hover:bg-black hover:text-white transition-colors duration-300">
+                    
+                    {/* Timestamp & Role Header */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-4 mb-4">
+                       <h4 className="text-3xl md:text-4xl lg:text-5xl font-black font-display uppercase leading-none text-black group-hover:text-white transition-colors">
+                         {job.company}
+                       </h4>
+                       <span className="text-[10px] sm:text-xs font-mono font-bold bg-black text-white group-hover:bg-[var(--accent-blood)] px-3 py-1 uppercase tracking-widest self-start md:self-auto border-2 border-black group-hover:border-[var(--accent-blood)] transition-colors">
+                         {job.period}
+                       </span>
                     </div>
-                  ))}
-                </div>
-             </div>
-           </ScrollReveal>
+
+                    <div className="text-lg md:text-2xl font-bold font-sans uppercase tracking-tighter mb-4 text-[var(--accent-blood)] group-hover:text-[var(--text-bone)] transition-colors">
+                       {job.role}
+                    </div>
+
+                    <p className="text-black/80 group-hover:text-white/80 text-sm md:text-base leading-relaxed font-sans border-l-4 border-black group-hover:border-[var(--accent-blood)] pl-4 transition-colors">
+                      {job.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+           </div>
+         </ScrollReveal>
 
            {/* =========================================
                PANEL 3: Skills & Stats (Brutalist Right Cut)
