@@ -100,6 +100,12 @@ export function Hero() {
             className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight leading-[0.9]"
             stagger={50}
             delay={100}
+            charStyle={{
+              background: "linear-gradient(135deg, #f0f0f5, #8b5cf6, #3b82f6)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
           />
           <br />
           <TextReveal
