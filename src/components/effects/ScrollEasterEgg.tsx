@@ -46,7 +46,7 @@ export function ScrollEasterEgg() {
             scale: [0.8, 1],
             opacity: [0, 1],
             duration: 600,
-            easing: 'easeOutQuart'
+            easing: 'outQuart'
         });
     } else if (!showToast && toastRef.current) {
         anime(toastRef.current, {
@@ -54,7 +54,7 @@ export function ScrollEasterEgg() {
             scale: 0.8,
             opacity: 0,
             duration: 400,
-            easing: 'easeInQuart',
+            easing: 'inQuart',
             onComplete: () => setShouldRender(false)
         });
     }

@@ -16,7 +16,7 @@ function HeroChar({ char, delay, animation }: { char: string; delay: number; ani
     const config: any = {
       duration: 600,
       delay,
-      easing: 'easeOutQuart'
+      easing: 'outQuart'
     };
 
     if (animation === 'FLIP') {

@@ -13,7 +13,7 @@ function Ripple({ ripple }: { ripple: any }) {
       anime(ref.current, {
         r: [0, ripple.r],
         duration: 1000,
-        easing: 'easeOutCirc'
+        easing: 'outCirc'
       });
     }
   }, [ripple.r]);

@@ -41,14 +41,14 @@ export function Work() {
                   anime(e.currentTarget, {
                     translateY: -5,
                     duration: 300,
-                    easing: 'easeOutQuad'
+                    easing: 'outQuad'
                   });
                 }}
                 onMouseLeave={(e) => {
                   anime(e.currentTarget, {
                     translateY: 0,
                     duration: 300,
-                    easing: 'easeOutQuad'
+                    easing: 'outQuad'
                   });
                 }}
               >

@@ -36,14 +36,14 @@ export function Navbar() {
                         anime(e.currentTarget, {
                           scale: 1.1,
                           duration: 400,
-                          easing: 'easeOutElastic(1, .8)'
+                          easing: 'outElastic(1, .8)'
                         });
                       }}
                       onMouseLeave={(e) => {
                         anime(e.currentTarget, {
                           scale: 1.0,
                           duration: 400,
-                          easing: 'easeOutQuad'
+                          easing: 'outQuad'
                         });
                       }}
                   >

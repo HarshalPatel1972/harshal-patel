@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { animate as anime, set } from "animejs";
+import { animate as anime, set, type AnimationParams } from "animejs";
 
 interface AnimeInProps {
   children?: React.ReactNode;
-  initial?: anime.AnimeParams;
-  animate?: anime.AnimeParams;
+  initial?: AnimationParams;
+  animate?: AnimationParams;
   duration?: number;
   delay?: number;
   easing?: string;
@@ -22,7 +22,7 @@ export function AnimeIn({
   animate,
   duration = 800,
   delay = 0,
-  easing = "easeOutExpo",
+  easing = "outExpo",
   threshold = 0.1,
   className = "",
   style,

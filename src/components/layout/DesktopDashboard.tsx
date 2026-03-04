@@ -179,15 +179,15 @@ export function DesktopDashboard() {
                         setHoveredLink(item.id);
                         const icon = e.currentTarget.querySelector('.nav-icon');
                         const text = e.currentTarget.querySelector('.nav-text');
-                        if (icon) anime(icon, { translateX: -50, opacity: 0, duration: 400, easing: 'easeOutQuart' });
-                        if (text) anime(text, { translateX: 0, opacity: 1, duration: 400, easing: 'easeOutQuart' });
+                        if (icon) anime(icon, { translateX: -50, opacity: 0, duration: 400, easing: 'outQuart' });
+                        if (text) anime(text, { translateX: 0, opacity: 1, duration: 400, easing: 'outQuart' });
                     }}
                     onMouseLeave={(e) => {
                         setHoveredLink(null);
                         const icon = e.currentTarget.querySelector('.nav-icon');
                         const text = e.currentTarget.querySelector('.nav-text');
-                        if (icon) anime(icon, { translateX: 0, opacity: isActive ? 1 : 0.6, duration: 400, easing: 'easeOutQuart' });
-                        if (text) anime(text, { translateX: 50, opacity: 0, duration: 400, easing: 'easeOutQuart' });
+                        if (icon) anime(icon, { translateX: 0, opacity: isActive ? 1 : 0.6, duration: 400, easing: 'outQuart' });
+                        if (text) anime(text, { translateX: 50, opacity: 0, duration: 400, easing: 'outQuart' });
                     }}
                     className={`
                         group aspect-square w-full border-t border-b border-white/[0.03] relative flex flex-col items-center justify-center cursor-pointer transition-all duration-500

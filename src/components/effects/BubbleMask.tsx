@@ -19,7 +19,7 @@ function Bubble({ bubble, stage }: BubbleProps) {
         scale: stage >= 7 ? 50 : 3.0,
         opacity: [0, 1],
         duration: stage >= 7 ? 1500 : 2500,
-        easing: 'easeInCirc'
+        easing: 'inCirc'
       });
     }
   }, [stage]);
