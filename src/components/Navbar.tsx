@@ -44,13 +44,13 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0a0a0f]/80 backdrop-blur-xl border border-white/[0.08] shadow-2xl shadow-violet-500/5"
-          : "bg-transparent border border-transparent"
-      } rounded-full px-2 py-2`}
+          ? "bg-[var(--bg-ink)]/95 border-b-2 border-black"
+          : "bg-transparent"
+      }`}
     >
-      <div className="flex items-center gap-1">
+      <div className="flex items-center justify-end md:justify-center p-4">
         {NAV_ITEMS.map((item) => (
           <button
             key={item.id}
@@ -71,15 +71,12 @@ export function Navbar() {
                 easing: "outQuart",
               });
             }}
-            className={`relative px-5 py-2 rounded-full text-sm font-medium transition-colors duration-300 ${
+            className={`relative px-4 py-2 text-xs md:text-sm font-bold font-mono uppercase tracking-widest transition-all duration-300 ${
               active === item.id
-                ? "text-white"
-                : "text-white/50 hover:text-white/80"
-            }`}
+                ? "text-[var(--text-bone)] bg-black"
+                : "text-[var(--text-muted)] hover:text-black hover:bg-[var(--text-bone)]"
+            } ${scrolled ? 'border border-transparent' : 'border-2 border-transparent'}`}
           >
-            {active === item.id && (
-              <span className="absolute inset-0 bg-white/[0.08] rounded-full" />
-            )}
             <span className="relative z-10">{item.label}</span>
           </button>
         ))}
