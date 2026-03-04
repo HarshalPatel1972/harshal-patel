@@ -220,7 +220,7 @@ export function Contact() {
             ========================================= */}
         <div
           ref={ringRef}
-          className="absolute z-30 pointer-events-none rounded-full border border-white/20 transition-all duration-300"
+          className="absolute z-30 pointer-events-none rounded-full border border-white/20"
           style={{
             left: "calc(var(--lens-x, 50%) - var(--lens-r, 0px))",
             top: "calc(var(--lens-y, 50%) - var(--lens-r, 0px))",
