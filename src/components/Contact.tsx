@@ -1,265 +1,193 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
-import { useMagnetic, useTilt, TextReveal } from "./AnimationKit";
-import { useState, useRef, useEffect } from "react";
-import { animate as anime } from "animejs";
 
-/* ─── Contact Card with 3D tilt + magnetic pull ─── */
-function ContactCard({
-  icon,
-  label,
-  value,
-  href,
-  color,
-  delay,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  href: string;
-  color: string;
-  delay: number;
-}) {
-  const tiltRef = useTilt(12);
+const LINKS = [
+  {
+    id: "email",
+    label: "01 // COMMUNICATION",
+    value: "INITIATE EMAIL",
+    href: `mailto:${profile.email}`,
+    color: "from-amber-300 to-orange-500",
+  },
+  {
+    id: "github",
+    label: "02 // SOURCE CODE",
+    value: "ACCESS GITHUB",
+    href: profile.github,
+    color: "from-violet-400 to-fuchsia-500",
+  },
+  {
+    id: "linkedin",
+    label: "03 // PROFESSIONAL",
+    value: "VIEW NETWORK",
+    href: profile.linkedin,
+    color: "from-blue-400 to-cyan-400",
+  },
+  {
+    id: "location",
+    label: "04 // COORDINATES",
+    value: "LOCATE BASE",
+    href: `https://maps.google.com/?q=${encodeURIComponent(profile.location)}`,
+    color: "from-emerald-400 to-teal-400",
+  },
+];
 
-  return (
-    <ScrollReveal delay={delay}>
-      <a
-        ref={tiltRef as any}
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group glass-card p-6 block relative overflow-hidden hover:border-white/15 transition-colors duration-500 cursor-pointer"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        {/* Accent glow on hover */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-          style={{ background: `radial-gradient(300px circle at 50% 100%, ${color}20, transparent 70%)` }}
-        />
-        {/* Bottom accent line */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[2px] scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-center"
-          style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }}
-        />
+/**
+ * Rapidly scrambles characters to simulate encrypted data
+ */
+function ScrambledData({ original }: { original: string }) {
+  const [text, setText] = useState(original);
 
-        <div className="relative z-10" style={{ transform: "translateZ(15px)" }}>
-          {/* Icon */}
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300"
-            style={{ background: `${color}15`, border: `1px solid ${color}30` }}
-          >
-            <div style={{ color }} className="group-hover:scale-110 transition-transform duration-300">
-              {icon}
-            </div>
-          </div>
+  useEffect(() => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>";
+    const interval = setInterval(() => {
+      setText(
+        original
+          .split("")
+          .map((c) =>
+            c === " " ? " " : chars[Math.floor(Math.random() * chars.length)]
+          )
+          .join("")
+      );
+    }, 60); // Fast update
+    return () => clearInterval(interval);
+  }, [original]);
 
-          <div className="text-[10px] font-mono uppercase tracking-widest text-white/30 mb-1">
-            {label}
-          </div>
-          <div className="text-white/80 text-sm font-medium group-hover:text-white transition-colors">
-            {value}
-          </div>
-        </div>
-
-        {/* Arrow */}
-        <div className="absolute top-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-y-1 group-hover:translate-y-0">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-            <path d="M7 17L17 7M17 7H7M17 7V17" />
-          </svg>
-        </div>
-      </a>
-    </ScrollReveal>
-  );
+  return <span className="font-mono">{text}</span>;
 }
 
-/* ─── Copy Email Button with satisfying feedback ─── */
-function CopyEmailButton() {
-  const [copied, setCopied] = useState(false);
-  const btnRef = useMagnetic(0.2);
-  const rippleRef = useRef<HTMLDivElement>(null);
+export function Contact() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const target = useRef({ x: 500, y: 500, r: 0 });
+  const current = useRef({ x: 500, y: 500, r: 0 });
+  const requestRef = useRef<number | null>(null);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(profile.email);
-    setCopied(true);
+  // Smooth lerp for the lens
+  useEffect(() => {
+    const update = () => {
+      current.current.x += (target.current.x - current.current.x) * 0.15;
+      current.current.y += (target.current.y - current.current.y) * 0.15;
+      current.current.r += (target.current.r - current.current.r) * 0.12;
 
-    // Ripple burst animation
-    if (rippleRef.current) {
-      anime(rippleRef.current, {
-        scale: [0, 2.5],
-        opacity: [0.6, 0],
-        duration: 600,
-        easing: "outQuart",
-      });
-    }
+      if (containerRef.current) {
+        containerRef.current.style.setProperty("--lens-x", `${current.current.x}px`);
+        containerRef.current.style.setProperty("--lens-y", `${current.current.y}px`);
+        containerRef.current.style.setProperty("--lens-r", `${current.current.r}px`);
+      }
 
-    setTimeout(() => setCopied(false), 2500);
+      requestRef.current = requestAnimationFrame(update);
+    };
+    requestRef.current = requestAnimationFrame(update);
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    target.current.x = e.clientX - rect.left;
+    target.current.y = e.clientY - rect.top;
+  };
+
+  const handleMouseEnter = () => {
+    target.current.r = 180; // Base lens size
+  };
+
+  const handleMouseLeave = () => {
+    target.current.r = 0; // Hide lens when cursor leaves
   };
 
   return (
-    <button
-      ref={btnRef as any}
-      onClick={handleCopy}
-      className="group relative magnetic-btn px-6 py-3 rounded-full border border-white/10 hover:border-violet-500/30 transition-colors overflow-hidden"
-    >
-      {/* Ripple */}
+    <section id="contact" className="relative bg-[#050508] border-t border-white/[0.04]">
+      <ScrollReveal className="absolute top-12 left-6 md:left-12 z-40 block pointer-events-none">
+         <span className="text-sm font-mono text-violet-400 tracking-widest uppercase">
+            Data Decryption Matrix
+         </span>
+         <p className="text-white/30 text-xs font-mono mt-2 max-w-xs">
+            Hover cursor over encrypted nodes to focus resonance frequency and decrypt transmission links.
+         </p>
+      </ScrollReveal>
+
       <div
-        ref={rippleRef}
-        className="absolute inset-0 rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.4), transparent)", transform: "scale(0)" }}
-      />
-
-      <div className="relative z-10 flex items-center gap-2">
-        {copied ? (
-          <>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5">
-              <path d="M20 6L9 17l-5-5" />
-            </svg>
-            <span className="text-emerald-400 text-sm font-medium">Copied!</span>
-          </>
-        ) : (
-          <>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/50 group-hover:text-violet-400 transition-colors">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-            </svg>
-            <span className="text-white/60 text-sm group-hover:text-white transition-colors">{profile.email}</span>
-          </>
-        )}
-      </div>
-    </button>
-  );
-}
-
-/* ─── Availability Beacon ─── */
-function AvailabilityBeacon() {
-  const ringRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ringRef.current) return;
-    // Pulsating ring
-    const loop = () => {
-      if (ringRef.current) {
-        anime(ringRef.current, {
-          scale: [1, 2.2],
-          opacity: [0.5, 0],
-          duration: 2000,
-          easing: "outQuart",
-          onComplete: loop,
-        });
-      }
-    };
-    loop();
-  }, []);
-
-  return (
-    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-card">
-      <div className="relative">
-        <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full" />
-        <div
-          ref={ringRef}
-          className="absolute inset-0 w-2.5 h-2.5 bg-emerald-400 rounded-full"
-        />
-      </div>
-      <span className="text-sm text-white/60 font-mono">
-        Open to opportunities
-      </span>
-    </div>
-  );
-}
-
-/* ─── Main Contact Section ─── */
-export function Contact() {
-  return (
-    <section id="contact" className="relative py-32 px-6">
-      {/* Background blobs */}
-      <div
-        className="gradient-blob w-[600px] h-[600px] bottom-[10%] left-[20%]"
-        style={{ background: "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)" }}
-      />
-      <div
-        className="gradient-blob w-[400px] h-[400px] top-[20%] right-[10%]"
-        style={{ background: "radial-gradient(circle, rgba(244,63,94,0.1) 0%, transparent 70%)" }}
-      />
-
-      <div className="max-w-5xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center mb-20">
-          <ScrollReveal>
-            <AvailabilityBeacon />
-          </ScrollReveal>
-
-          <div className="mt-8 mb-6">
-            <TextReveal
-              text="Let's Build"
-              as="h2"
-              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]"
-              stagger={40}
-              delay={100}
-            />
-            <br />
-            <TextReveal
-              text="Something Great"
-              as="h2"
-              className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]"
-              stagger={40}
-              delay={500}
-              charStyle={{
-                background: "linear-gradient(135deg, #8b5cf6, #f43f5e, #f59e0b)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            />
-          </div>
-
-          <ScrollReveal delay={300}>
-            <p className="text-white/40 text-lg max-w-lg mx-auto mb-8">
-              Got a project, an idea, or just want to say hi? I&apos;m always excited to connect.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={400}>
-            <CopyEmailButton />
-          </ScrollReveal>
+        ref={containerRef}
+        className="relative w-full h-[800px] flex items-center justify-center overflow-hidden cursor-none"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* =========================================
+            BACKGROUND LAYER: Scrambled & Clickable 
+            ========================================= */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-12 z-10 w-full">
+          {LINKS.map((link) => (
+            <a
+              key={link.id + "-bg"}
+              href={link.href}
+              target={link.id !== "email" ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className="text-center block outline-none w-full"
+              onMouseEnter={() => (target.current.r = 280)} // Expand lens on hover
+              onMouseLeave={() => (target.current.r = 180)} // Shrink back
+            >
+              <div className="text-xs md:text-sm font-mono text-white/20 mb-2 tracking-widest">
+                <ScrambledData original={link.label} />
+              </div>
+              <div
+                className="text-5xl md:text-7xl lg:text-8xl font-black text-white/[0.03] uppercase tracking-tighter"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                <ScrambledData original={link.value} />
+              </div>
+            </a>
+          ))}
         </div>
 
-        {/* Contact Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ContactCard
-            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>}
-            label="GitHub"
-            value="@HarshalPatel1972"
-            href={profile.github}
-            color="#8b5cf6"
-            delay={100}
-          />
-          <ContactCard
-            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>}
-            label="LinkedIn"
-            value="Harshal Patel"
-            href={profile.linkedin}
-            color="#3b82f6"
-            delay={200}
-          />
-          <ContactCard
-            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>}
-            label="Email"
-            value={profile.email}
-            href={`mailto:${profile.email}`}
-            color="#f43f5e"
-            delay={300}
-          />
-          <ContactCard
-            icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>}
-            label="Location"
-            value={profile.location}
-            href={`https://maps.google.com/?q=${encodeURIComponent(profile.location)}`}
-            color="#10b981"
-            delay={400}
-          />
+        {/* =========================================
+            FOREGROUND LAYER: Real Data, Masked
+            ========================================= */}
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center gap-12 z-20 pointer-events-none w-full bg-[#0a0a0f]/40 backdrop-blur-sm"
+          style={{
+            clipPath: `circle(var(--lens-r, 0px) at var(--lens-x, 50%) var(--lens-y, 50%))`,
+          }}
+        >
+          {LINKS.map((link) => (
+            <div key={link.id + "-fg"} className="text-center w-full">
+              <div className="text-xs md:text-sm font-mono text-white/80 mb-2 tracking-widest">
+                {link.label}
+              </div>
+              <div
+                className={`text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter bg-gradient-to-r ${link.color} bg-clip-text text-transparent transform md:scale-105 transition-transform duration-500`}
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {link.value}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* =========================================
+            THE LENS FRAME (Physical Glass Ring)
+            ========================================= */}
+        <div
+          className="absolute z-30 pointer-events-none rounded-full border border-white/20"
+          style={{
+            left: "calc(var(--lens-x, 50%) - var(--lens-r, 0px))",
+            top: "calc(var(--lens-y, 50%) - var(--lens-r, 0px))",
+            width: "calc(var(--lens-r, 0px) * 2)",
+            height: "calc(var(--lens-r, 0px) * 2)",
+            // The magic glass effect that distorts the background
+            backdropFilter: "blur(0px) saturate(1.5) contrast(1.2)",
+            boxShadow:
+              "inset 0 0 40px rgba(255,255,255,0.05), inset 0 4px 10px rgba(255,255,255,0.2), 0 20px 40px rgba(0,0,0,0.5)",
+          }}
+        >
+          {/* Subtle crosshair in the center of the lens */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-white/50 rounded-full" />
         </div>
       </div>
     </section>
