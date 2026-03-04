@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
@@ -8,232 +8,142 @@ import { animate as anime } from "animejs";
 const LINKS = [
   {
     id: "email",
-    label: "01 // COMMUNICATION",
+    label: "01 // DIRECT MAIL",
     value: "INITIATE EMAIL",
-    href: `mailto:${profile.email}`, // We will preventDefault on this
-    color: "from-amber-300 to-orange-500",
+    href: `mailto:${profile.email}`, 
   },
   {
     id: "github",
     label: "02 // SOURCE CODE",
     value: "ACCESS GITHUB",
     href: profile.github,
-    color: "from-violet-400 to-fuchsia-500",
   },
   {
     id: "linkedin",
-    label: "03 // PROFESSIONAL",
-    value: "VIEW NETWORK",
+    label: "03 // PROFESSIONAL NETWORK",
+    value: "VIEW LINKEDIN",
     href: profile.linkedin,
-    color: "from-blue-400 to-cyan-400",
   },
 ];
 
-/**
- * Rapidly scrambles characters to simulate encrypted data
- */
-function ScrambledData({ original, isCopied }: { original: string; isCopied?: boolean }) {
-  const [text, setText] = useState(original);
-
-  useEffect(() => {
-    // If copied, show the exact text immediately without scrambling
-    if (isCopied) {
-      setText(original);
-      return;
-    }
-
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*<>";
-    const interval = setInterval(() => {
-      setText(
-        original
-          .split("")
-          .map((c) =>
-            c === " " ? " " : chars[Math.floor(Math.random() * chars.length)]
-          )
-          .join("")
-      );
-    }, 60);
-    return () => clearInterval(interval);
-  }, [original, isCopied]);
-
-  return <span className="font-mono">{text}</span>;
-}
-
 export function Contact() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const target = useRef({ x: 500, y: 500, r: 0 });
-  const current = useRef({ x: 500, y: 500, r: 0 });
-  const requestRef = useRef<number | null>(null);
-  
   const [copied, setCopied] = useState(false);
 
-  // Smooth lerp for the lens
-  useEffect(() => {
-    const update = () => {
-      current.current.x += (target.current.x - current.current.x) * 0.15;
-      current.current.y += (target.current.y - current.current.y) * 0.15;
-      current.current.r += (target.current.r - current.current.r) * 0.12;
-
-      if (containerRef.current) {
-        containerRef.current.style.setProperty("--lens-x", `${current.current.x}px`);
-        containerRef.current.style.setProperty("--lens-y", `${current.current.y}px`);
-        containerRef.current.style.setProperty("--lens-r", `${current.current.r}px`);
-      }
-
-      requestRef.current = requestAnimationFrame(update);
-    };
-    requestRef.current = requestAnimationFrame(update);
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    };
-  }, []);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    target.current.x = e.clientX - rect.left;
-    target.current.y = e.clientY - rect.top;
-  };
-
-  const handleMouseEnter = () => {
-    if (!copied) target.current.r = 180;
-  };
-
-  const handleMouseLeave = () => {
-    if (!copied) target.current.r = 0;
-  };
-
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    // Global Impact Frame on any link click
+    document.body.style.animation = "none";
+    void document.body.offsetWidth;
+    document.body.style.animation = "impact-flash 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+
     if (id === "email") {
-      e.preventDefault(); // Stop mailto: behavior
+      e.preventDefault();
       navigator.clipboard.writeText(profile.email);
       setCopied(true);
+
+      const targetEl = e.currentTarget;
       
-      // Massive lens expansion + color flash
-      target.current.r = 800;
-      
-      if (ringRef.current) {
-        anime(ringRef.current, {
-          borderColor: ["#10b981", "rgba(255,255,255,0.2)"],
-          boxShadow: [
-            "inset 0 0 100px rgba(16,185,129,0.5), inset 0 4px 10px rgba(255,255,255,0.2), 0 20px 40px rgba(0,0,0,0.5)",
-            "inset 0 0 40px rgba(255,255,255,0.05), inset 0 4px 10px rgba(255,255,255,0.2), 0 20px 40px rgba(0,0,0,0.5)"
-          ],
-          duration: 1500,
-          easing: "outExpo"
-        });
-      }
+      // Brutalist shatter shake on copy
+      anime(targetEl, {
+        translateX: [
+           { value: 10, duration: 50 },
+           { value: -10, duration: 50 },
+           { value: 10, duration: 50 },
+           { value: 0, duration: 50 }
+        ],
+        easing: 'easeInOutSine'
+      });
 
       setTimeout(() => {
         setCopied(false);
-        target.current.r = 180; // Return to hover state size
       }, 2000);
     }
   };
 
   return (
-    <section id="contact" className="relative bg-[#050508] border-t border-white/[0.04]">
-      <ScrollReveal className="absolute top-12 left-6 md:left-12 z-40 block pointer-events-none">
-         <span className="text-sm font-mono text-violet-400 tracking-widest uppercase">
-            Data Decryption Matrix
-         </span>
-         <p className="text-white/30 text-xs font-mono mt-2 max-w-xs">
-            Hover cursor over encrypted nodes to focus resonance frequency.<br/>
-            Click to extract.
-         </p>
-      </ScrollReveal>
+    <section 
+      id="contact" 
+      ref={containerRef}
+      className="relative py-24 md:py-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center overflow-hidden"
+    >
+      {/* Halftone / Grain Texture Base */}
+      <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />
 
-      <div
-        ref={containerRef}
-        className="relative w-full h-[700px] flex items-center justify-center overflow-hidden cursor-none"
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {/* =========================================
-            BACKGROUND LAYER: Scrambled & Clickable 
-            ========================================= */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-12 z-10 w-full">
-          {LINKS.map((link) => {
+      {/* Massive Background Typography */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
+         <h2 className="text-[12rem] md:text-[25rem] font-black font-display text-[var(--bg-ink)] whitespace-nowrap leading-none tracking-tighter">
+            CONTACT
+         </h2>
+      </div>
+
+      <div className="w-full max-w-7xl relative z-10 flex flex-col pt-12">
+        
+        {/* Header Block */}
+        <ScrollReveal duration={1000}>
+           <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
+             CHAPTER 04
+           </div>
+           <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8">
+             INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span>
+           </h2>
+        </ScrollReveal>
+
+        {/* Links Container */}
+        <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
+          {LINKS.map((link, i) => {
             const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? "DATA EXTRACTED" : link.value;
+            const textValue = isEmailCopied ? "EMAIL COPIED" : link.value;
 
             return (
-              <a
-                key={link.id + "-bg"}
-                href={link.href}
-                target={link.id !== "email" ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                onClick={(e) => handleLinkClick(e, link.id)}
-                className="text-center block outline-none w-full"
-                onMouseEnter={() => !copied && (target.current.r = 280)}
-                onMouseLeave={() => !copied && (target.current.r = 180)}
-              >
-                <div className="text-xs md:text-sm font-mono text-white/20 mb-2 tracking-widest transition-colors duration-300">
-                  <ScrambledData original={link.label} isCopied={isEmailCopied} />
-                </div>
-                <div
-                  className="text-5xl md:text-7xl lg:text-8xl font-black text-white/[0.03] uppercase tracking-tighter"
-                  style={{ fontFamily: "var(--font-display)" }}
+              <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
+                <a
+                  href={link.href}
+                  target={link.id !== "email" ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  onClick={(e) => handleLinkClick(e, link.id)}
+                  className="group relative block w-full outline-none"
                 >
-                  <ScrambledData original={textValue} isCopied={isEmailCopied} />
-                </div>
-              </a>
+                  {/* Hover Slash Background */}
+                  <div className="absolute top-0 bottom-0 left-[-20px] right-[-20%] bg-[var(--accent-blood)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" />
+
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between border-b-4 border-black group-hover:border-transparent pb-4 transition-colors">
+                    
+                    <div>
+                      <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-2 group-hover:text-black/80 transition-colors">
+                        {link.label}
+                      </div>
+
+                      <div className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
+                        {textValue}
+                      </div>
+                    </div>
+
+                    {/* Brutalist Arrow/CTA */}
+                    <div className="hidden md:flex w-16 h-16 bg-black text-white items-center justify-center brutal-shadow group-hover:bg-[var(--bg-ink)] group-hover:rotate-45 transition-transform duration-300 origin-center mb-4">
+                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+                         <path d="M5 12h14M12 5l7 7-7 7"/>
+                       </svg>
+                    </div>
+
+                  </div>
+                </a>
+              </ScrollReveal>
             );
           })}
         </div>
 
-        {/* =========================================
-            FOREGROUND LAYER: Real Data, Masked
-            ========================================= */}
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center gap-12 z-20 pointer-events-none w-full bg-[#0a0a0f]/40 backdrop-blur-sm"
-          style={{
-            clipPath: `circle(var(--lens-r, 0px) at var(--lens-x, 50%) var(--lens-y, 50%))`,
-          }}
-        >
-          {LINKS.map((link) => {
-            const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? "DATA EXTRACTED" : link.value;
-            // When copied, turn the email gradient emerald green
-            const gradientColors = isEmailCopied ? "from-emerald-300 to-teal-400" : link.color;
+        {/* Footer Brutalist Block */}
+        <ScrollReveal duration={1000} delay={500} className="mt-32 border-t-8 border-black pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+           <div className="text-2xl font-black font-display uppercase tracking-widest text-[var(--bg-ink)]">
+             {profile.name} // <span className="text-[var(--accent-blood)]">2026</span>
+           </div>
+           
+           <div className="flex items-center gap-4 text-xs font-bold font-mono text-black/60 uppercase">
+              <span>All Systems Nominal</span>
+              <div className="w-3 h-3 bg-black rounded-full" />
+           </div>
+        </ScrollReveal>
 
-            return (
-              <div key={link.id + "-fg"} className="text-center w-full">
-                <div className="text-xs md:text-sm font-mono text-white/80 mb-2 tracking-widest">
-                  {link.label}
-                </div>
-                <div
-                  className={`text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter bg-gradient-to-r ${gradientColors} bg-clip-text text-transparent transform md:scale-105 transition-all duration-500 ${isEmailCopied ? 'scale-110 tracking-widest drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]' : ''}`}
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {textValue}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* =========================================
-            THE LENS FRAME (Physical Glass Ring)
-            ========================================= */}
-        <div
-          ref={ringRef}
-          className="absolute z-30 pointer-events-none rounded-full border border-white/20"
-          style={{
-            left: "calc(var(--lens-x, 50%) - var(--lens-r, 0px))",
-            top: "calc(var(--lens-y, 50%) - var(--lens-r, 0px))",
-            width: "calc(var(--lens-r, 0px) * 2)",
-            height: "calc(var(--lens-r, 0px) * 2)",
-            backdropFilter: "blur(0px) saturate(1.5) contrast(1.2)",
-            boxShadow:
-              "inset 0 0 40px rgba(255,255,255,0.05), inset 0 4px 10px rgba(255,255,255,0.2), 0 20px 40px rgba(0,0,0,0.5)",
-          }}
-        >
-          {/* Subtle crosshair in the center of the lens */}
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full transition-colors duration-300 ${copied ? 'bg-emerald-400 scale-150 shadow-[0_0_10px_#10b981]' : 'bg-white/50'}`} />
-        </div>
       </div>
     </section>
   );
