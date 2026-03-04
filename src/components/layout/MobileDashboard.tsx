@@ -16,6 +16,16 @@ const Contact = dynamic(() => import("@/components/sections/Contact").then((mod)
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
+// ⚡ PERFORMANCE: Memoize the background grid to prevent 100+ DOM nodes from
+// re-rendering every time the activeView state changes.
+const BackgroundGrid = React.memo(() => (
+  <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] pointer-events-none opacity-[0.03]">
+    {[...Array(100)].map((_, i) => (
+        <div key={i} className="border-[0.5px] border-white/20" />
+    ))}
+  </div>
+));
+
 export function MobileDashboard() {
   const { isComplete } = usePreloader();
   const [activeView, setActiveView] = useState<ViewState>('hero');
@@ -55,11 +65,7 @@ export function MobileDashboard() {
       ========================================= */}
       <div className="flex-1 relative overflow-hidden">
          {/* BACKGROUND GRID */}
-         <div className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] grid-rows-[repeat(auto-fill,minmax(40px,1fr))] pointer-events-none opacity-[0.03]">
-            {[...Array(100)].map((_, i) => (
-                <div key={i} className="border-[0.5px] border-white/20" />
-            ))}
-         </div>
+         <BackgroundGrid />
 
          <AnimatePresence mode="wait">
             
