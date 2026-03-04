@@ -9,26 +9,11 @@ jest.mock('@/lib/preloader-context', () => ({
   usePreloader: jest.fn(),
 }));
 
-// Mock framer-motion to avoid animation issues in tests
-jest.mock('framer-motion', () => {
-  const React = require('react');
-  const actual = jest.requireActual('framer-motion');
-  return {
-    ...actual,
-    motion: new Proxy(
-      {},
-      {
-        get: (_target, prop) => {
-          return ({ children, initial, animate, transition, whileHover, ...props }: any) => {
-            const Component = prop as string;
-            // Filter out motion-specific props that might cause React warnings on DOM elements
-            return React.createElement(Component, props, children);
-          };
-        },
-      }
-    ),
-  };
-});
+// Mock animejs to skip animations in tests
+jest.mock('animejs', () => ({
+  animate: jest.fn(() => ({ pause: jest.fn(), restart: jest.fn() })),
+  set: jest.fn(),
+}));
 
 describe('Navbar Component', () => {
   beforeEach(() => {

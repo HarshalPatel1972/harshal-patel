@@ -2,15 +2,10 @@ import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Contact } from './Contact'
 
-// Mock framer-motion to avoid animation issues in tests
-// Use a Proxy to mock all motion components (motion.div, motion.section, etc.)
-const MockMotionComponent = ({ children, initial, whileInView, viewport, transition, ...props }: any) => <div {...props}>{children}</div>;
-
-jest.mock('framer-motion', () => ({
-  motion: new Proxy({}, {
-    get: () => MockMotionComponent
-  }),
-  AnimatePresence: ({ children }: any) => <>{children}</>,
+// Mock animejs to skip animations in tests
+jest.mock('animejs', () => ({
+  animate: jest.fn(() => ({ pause: jest.fn(), restart: jest.fn() })),
+  set: jest.fn(),
 }));
 
 describe('Contact Component', () => {
