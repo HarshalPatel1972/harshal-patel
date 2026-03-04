@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimeIn } from "@/components/ui/AnimeIn";
 import { useState } from "react";
 import { contact } from "@/config/contact";
 
@@ -18,35 +18,33 @@ export function Contact() {
       <div className="max-w-3xl mx-auto">
         
         {/* HEADER */}
-        <motion.div 
+        <AnimeIn 
           initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, scale: 1 }}
           className="text-center mb-4 md:mb-6"
         >
           <div className="inline-block border border-white/20 px-3 py-0.5 mb-4 rounded-full bg-white/5 backdrop-blur-sm">
              <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                 <span className="font-mono text-[9px] text-white/50 tracking-widest uppercase">
-                  UPLINK_READY_
+                   UPLINK_READY_
                 </span>
              </div>
           </div>
           
           <h2 className="text-3xl md:text-5xl font-bold font-space tracking-tighter text-white mb-3">
-            INITIATE_CONTACT<span className="text-green-500">_</span>
+             INITIATE_CONTACT<span className="text-green-500">_</span>
           </h2>
           <p className="text-white/50 font-mono text-[10px] md:text-xs max-w-lg mx-auto leading-relaxed">
-            Secure channel open. Transmit project parameters or collaboration requests. 
+             Secure channel open. Transmit project parameters or collaboration requests. 
           </p>
-        </motion.div>
+        </AnimeIn>
  
         {/* TERMINAL FORM */}
-        <motion.div
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ delay: 0.2 }}
+        <AnimeIn
+           initial={{ opacity: 0, translateY: 30 }}
+           animate={{ opacity: 1, translateY: 0 }}
+           delay={200}
            className="bg-zinc-900/40 border border-white/10 p-4 md:p-6 rounded-sm backdrop-blur-md relative"
         >
           {/* Decorative HUD Elements */}
@@ -124,7 +122,7 @@ export function Contact() {
                   <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-white font-mono text-[10px] hover:text-cyan-400 transition-colors">{contact.name}</a>
               </div>
            </div>
-        </motion.div>
+        </AnimeIn>
  
         {/* FOOTER METADATA */}
         <div className="mt-6 border-t border-white/5 pt-4 flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 text-[9px] font-mono text-white/30 uppercase tracking-widest text-center md:text-left">
@@ -134,7 +132,7 @@ export function Contact() {
              <a href="#" className="hover:text-white transition-colors">LINKEDIN_REF</a>
            </div>
         </div>
-
+ 
       </div>
     </section>
   );

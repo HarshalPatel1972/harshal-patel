@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimeIn } from "@/components/ui/AnimeIn";
 
 export function About() {
   const specs = [
@@ -29,10 +29,9 @@ export function About() {
       <div className="max-w-7xl mx-auto">
         
         {/* HEADER */}
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
+        <AnimeIn 
+          initial={{ opacity: 0, translateX: -20 }}
+          animate={{ opacity: 1, translateX: 0 }}
           className="mb-4 md:mb-6 border-b border-white/10 pb-2 flex flex-col md:flex-row justify-between items-start md:items-end gap-1 md:gap-0"
         >
           <h2 className="text-3xl md:text-5xl font-bold font-space tracking-tighter text-white">
@@ -42,16 +41,15 @@ export function About() {
             ID: HARSHAL_PATEL<br/>
             ROLE: SOFTWARE_ENGINEER
           </div>
-        </motion.div>
+        </AnimeIn>
  
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
           
           {/* COLUMN 1: BIO (BIOS) */}
-          <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ delay: 0.2 }}
+          <AnimeIn
+             initial={{ opacity: 0, translateY: 20 }}
+             animate={{ opacity: 1, translateY: 0 }}
+             delay={200}
              className="space-y-6"
           >
             <div>
@@ -59,7 +57,7 @@ export function About() {
                    // PROFESSIONAL_SUMMARY
                 </h3>
                 <p className="text-sm md:text-base text-white/80 leading-relaxed font-light">
-                  Aspiring <span className="text-white font-medium">Software Engineer</span> with strong DSA fundamentals (300+ LeetCode) and hands-on experience building high-performance systems using <span className="text-cyan-400">Go</span>, <span className="text-cyan-400">WebAssembly</span>, and <span className="text-cyan-400">TypeScript</span>. 
+                   Aspiring <span className="text-white font-medium">Software Engineer</span> with strong DSA fundamentals (300+ LeetCode) and hands-on experience building high-performance systems using <span className="text-cyan-400">Go</span>, <span className="text-cyan-400">WebAssembly</span>, and <span className="text-cyan-400">TypeScript</span>. 
                 </p>
                 
                 <div className="mt-4 grid grid-cols-2 gap-y-4 gap-x-4">
@@ -90,14 +88,13 @@ export function About() {
                     ))}
                 </div>
             </div>
-          </motion.div>
+          </AnimeIn>
  
           {/* COLUMN 2: SKILLS & EDUCATION */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
+          <AnimeIn
+            initial={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            delay={400}
             className="space-y-6"
           >
             {/* EDUCATION */}
@@ -138,7 +135,7 @@ export function About() {
                   ))}
                 </div>
             </div>
-          </motion.div>
+          </AnimeIn>
         </div>
       </div>
     </section>

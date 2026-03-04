@@ -41,45 +41,38 @@ function GlassPillar({
   // Calculate icon/text scale based on pillar width AND height (to prevent overflow)
   const scale = Math.min(width * 1.5, height * 0.45); 
   
-  // 🎬 ANIMATION STATE REFS
-  const materialRef = useRef<any>(null);
-
-  useFrame((state, delta) => {
-    if (materialRef.current) {
-      // Smoothly interp values based on 'isActive' prop
-      const targetEmissive = isActive ? 3.0 : 0.0; // 🤘 FIX: Hotter Metallic Glow
-      
-      // Animate uniform/props if available
-      // Let's do a simple direct ref update for performance (avoiding re-render)
-      materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
-        materialRef.current.emissiveIntensity, 
-        targetEmissive, 
-        delta * 6 // ⚡ FASTER PULSE
-      );
-    }
-  });
-
-  const targetScale = visible ? 1 : 0;
-  const currentScale = useRef(1);
+    // 🎬 ANIMATION STATE REFS
+    const materialRef = useRef<any>(null);
   
-  useFrame((state, delta) => {
-    // Smoothly animate scale
-    currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale, delta * 5);
-    // Note: We are animating the group scale below in the render, 
-    // but ideally we would ref the group and mutate .scale directly to avoid React render
-    // However, for this structure, the group scale is static prop unless we ref it.
-    // Let's rely on the prop update for now as the heavy lift is the Shader.
-  });
-
-  // Re-implementing ref-based scale animation would require a group ref
-  // For now, keeping structure similar to avoid breaking changes during split
-  const groupRef = useRef<THREE.Group>(null);
-  useFrame((state, delta) => {
-      if(groupRef.current) {
-          const s = currentScale.current;
-          groupRef.current.scale.set(s,s,s);
+    useFrame((state, delta) => {
+      if (materialRef.current) {
+        const targetEmissive = isActive ? 3.0 : 0.0;
+        materialRef.current.emissiveIntensity = THREE.MathUtils.lerp(
+          materialRef.current.emissiveIntensity, 
+          targetEmissive, 
+          delta * 6
+        );
       }
-  });
+    });
+  
+    const targetScale = visible ? 1 : 0;
+    const currentScale = useRef(1);
+    
+    useFrame((state, delta) => {
+      // ⚡ FASTER SHRINK (15 instead of 5)
+      currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale, delta * 15);
+    });
+  
+    const groupRef = useRef<THREE.Group>(null);
+    useFrame((state, delta) => {
+        if(groupRef.current) {
+            const s = currentScale.current;
+            groupRef.current.scale.set(s,s,s);
+            // If scale is practically 0, set visible to false as optimization
+            if (s < 0.01) groupRef.current.visible = false;
+            else groupRef.current.visible = true;
+        }
+    });
 
 
   return (
@@ -241,7 +234,7 @@ export default function PreloaderScene({
           gap={gap}
           app={app}
           isActive={i === activeIndex}
-          visible={stage === 0}
+          visible={stage === 0 || i >= stage}
           isOptimized={isOptimized} 
         />
       ))}

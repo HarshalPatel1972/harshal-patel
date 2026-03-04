@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { animate as anime } from "animejs";
 import { House, Briefcase, Fingerprint, PaperPlaneTilt } from "@phosphor-icons/react";
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
 import { Spotlight } from "@/components/ui/Spotlight";
+import { AnimeIn } from "@/components/ui/AnimeIn";
+import { usePreloader } from "@/lib/preloader-context";
 
 // ⚡ PERFORMANCE: Lazy load heavy sections to reduce initial bundle size
 const Work = dynamic(() => import("@/components/sections/Work").then((mod) => mod.Work));
@@ -14,22 +16,17 @@ const Contact = dynamic(() => import("@/components/sections/Contact").then((mod)
 
 type ViewState = 'hero' | 'about' | 'work' | 'contact';
 
-
-
-
-import { usePreloader } from "@/lib/preloader-context";
-
 const BackgroundGrid = React.memo(() => (
-  <motion.div
-    className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
+  <AnimeIn
     initial={{ opacity: 0 }}
     animate={{ opacity: 0.03 }}
-    transition={{ duration: 2 }}
+    duration={2000}
+    className="absolute inset-0 grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] grid-rows-[repeat(auto-fill,minmax(100px,1fr))] pointer-events-none opacity-[0.03]"
   >
     {[...Array(200)].map((_, i) => (
         <div key={i} className="border-[0.5px] border-white/20" />
     ))}
-  </motion.div>
+  </AnimeIn>
 ));
 
 // 🎨 HEX COLORS (For calculating opacities)
@@ -82,14 +79,15 @@ export function DesktopDashboard() {
       <div className="flex-1 relative flex flex-col min-w-0">
           
           {/* 🟢 GLOBAL FOOTER (Fades in) */}
-          <motion.div 
+          <AnimeIn 
              className="absolute bottom-0 left-0 p-8 z-50 pointer-events-none mix-blend-plus-lighter flex gap-4 text-[10px] font-mono text-white/30"
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
-             transition={{ duration: 1, delay: 0.5 }}
+             duration={1000}
+             delay={500}
           >
                <span>© 2026 All right and wrongs reserved</span>
-          </motion.div>
+          </AnimeIn>
 
           {/* 🎭 CONTENT AREA (FULL FILL) */}
           <div className="flex-1 relative overflow-hidden">
@@ -97,70 +95,63 @@ export function DesktopDashboard() {
              {/* BACKGROUND GRID (Subtle Map) */}
              <BackgroundGrid />
 
-            <AnimatePresence mode="wait">
-                
-                {/* HERO VIEW - MAXIMIZED CONTENT */}
-                {/* HERO VIEW */}
-                {activeView === 'hero' && (
-                    <motion.div 
-                        key="hero"
-                        className="absolute inset-0 z-10"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >
-                        <Hero />
-                    </motion.div>
-                )}
+             {/* HERO VIEW */}
+             {activeView === 'hero' && (
+                 <AnimeIn 
+                     key="hero"
+                     className="absolute inset-0 z-10"
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     duration={500}
+                 >
+                     <Hero />
+                 </AnimeIn>
+             )}
 
-                {/* WORK VIEW */}
-                {isComplete && activeView === 'work' && (
-                    <motion.div 
-                        key="work"
-                        className="absolute inset-0 overflow-hidden z-10"
-                        initial={{ opacity: 0, filter: "blur(10px)" }}
-                        animate={{ opacity: 1, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, filter: "blur(10px)" }}
-                        transition={{ duration: 0.5 }}
-                    > 
-                       <div className="min-h-full p-4 md:p-8 pt-8">
-                           <Work />
-                       </div>
-                    </motion.div>
-                )}
- 
-                {/* ABOUT VIEW */}
-                {isComplete && activeView === 'about' && (
-                    <motion.div 
-                        key="about"
-                        className="absolute inset-0 overflow-hidden z-10"
-                        initial={{ opacity: 0, filter: "blur(10px)" }}
-                        animate={{ opacity: 1, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, filter: "blur(10px)" }}
-                        transition={{ duration: 0.5 }}
-                    > 
-                       <div className="min-h-full p-4 md:p-8 pt-8">
-                           <About />
-                       </div>
-                    </motion.div>
-                )}
- 
-                {/* CONTACT VIEW */}
-                {isComplete && activeView === 'contact' && (
-                    <motion.div 
-                        key="contact"
-                        className="absolute inset-0 overflow-hidden flex items-center justify-center z-10"
-                        initial={{ opacity: 0, filter: "blur(10px)" }}
-                        animate={{ opacity: 1, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, filter: "blur(10px)" }}
-                        transition={{ duration: 0.5 }}
-                    > 
-                       <div className="w-full h-full flex items-center justify-center p-4 pt-8">
-                           <Contact />
-                       </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+             {/* WORK VIEW */}
+             {isComplete && activeView === 'work' && (
+                 <AnimeIn 
+                     key="work"
+                     className="absolute inset-0 overflow-y-auto custom-scrollbar z-10"
+                     initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                     duration={500}
+                 > 
+                    <div className="min-h-full p-4 md:p-8 pt-8">
+                        <Work />
+                    </div>
+                 </AnimeIn>
+             )}
+
+             {/* ABOUT VIEW */}
+             {isComplete && activeView === 'about' && (
+                 <AnimeIn 
+                     key="about"
+                     className="absolute inset-0 overflow-y-auto custom-scrollbar z-10"
+                     initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                     duration={500}
+                 > 
+                    <div className="min-h-full p-4 md:p-8 pt-8">
+                        <About />
+                    </div>
+                 </AnimeIn>
+             )}
+
+             {/* CONTACT VIEW */}
+             {isComplete && activeView === 'contact' && (
+                 <AnimeIn 
+                     key="contact"
+                     className="absolute inset-0 overflow-hidden flex items-center justify-center z-10"
+                     initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                     duration={500}
+                 > 
+                    <div className="w-full h-full flex items-center justify-center p-4 pt-8">
+                        <Contact />
+                    </div>
+                 </AnimeIn>
+             )}
           </div>
       </div>
 
@@ -172,12 +163,7 @@ export function DesktopDashboard() {
         className="absolute top-1/2 -translate-y-1/2 right-6 w-[100px] md:w-[120px] lg:w-[140px] h-fit rounded-[24px] flex flex-col bg-transparent z-20 transition-opacity duration-1000 overflow-hidden"
         fill="rgba(255, 255, 255, 0.15)"
       > 
-        <motion.div
-           className="flex flex-col w-full"
-           initial={{ opacity: 1, x: 0 }}
-           animate={{ opacity: 1, x: 0 }}
-           transition={{ duration: 0 }}
-        >
+        <div className="flex flex-col w-full">
           {navItems.map((item, idx) => {
               const isActive = activeView === item.id;
               const isHovered = hoveredLink === item.id;
@@ -189,8 +175,20 @@ export function DesktopDashboard() {
                 <button
                     key={item.id}
                     onClick={() => setActiveView(item.id as ViewState)}
-                    onMouseEnter={() => setHoveredLink(item.id)}
-                    onMouseLeave={() => setHoveredLink(null)}
+                    onMouseEnter={(e) => {
+                        setHoveredLink(item.id);
+                        const icon = e.currentTarget.querySelector('.nav-icon');
+                        const text = e.currentTarget.querySelector('.nav-text');
+                        if (icon) anime(icon, { translateX: -50, opacity: 0, duration: 400, easing: 'easeOutQuart' });
+                        if (text) anime(text, { translateX: 0, opacity: 1, duration: 400, easing: 'easeOutQuart' });
+                    }}
+                    onMouseLeave={(e) => {
+                        setHoveredLink(null);
+                        const icon = e.currentTarget.querySelector('.nav-icon');
+                        const text = e.currentTarget.querySelector('.nav-text');
+                        if (icon) anime(icon, { translateX: 0, opacity: isActive ? 1 : 0.6, duration: 400, easing: 'easeOutQuart' });
+                        if (text) anime(text, { translateX: 50, opacity: 0, duration: 400, easing: 'easeOutQuart' });
+                    }}
                     className={`
                         group aspect-square w-full border-t border-b border-white/[0.03] relative flex flex-col items-center justify-center cursor-pointer transition-all duration-500
                         hover:bg-white/[0.02]
@@ -199,80 +197,61 @@ export function DesktopDashboard() {
                     `}
                     style={{ background: buttonStyle }}
                 >
-                    {/* 💠 SCI-FI GLASS SHARDS (Split Transition) */}
-                    <AnimatePresence mode="wait">
-                        {isActive && (
-                            <div className={`absolute z-0 flex flex-col rounded-[12px] overflow-visible transition-all duration-300 ${isHovered ? 'inset-x-4 inset-y-[25%]' : 'inset-[25%]'}`}>
-                                {/* Use 4 Shards for the Split Effect */}
-                                {[0, 1, 2, 3].map((i) => {
-                                    // Direction: Top/Bottom Left (-1), Middle Right (1)
-                                    const direction = (i === 0 || i === 3) ? -1 : 1;
-                                    
-                                    return (
-                                        <motion.div
-                                            key={i}
-                                            initial={{ x: direction * 40, opacity: 0 }}
-                                            animate={{ x: 0, opacity: 1 }}
-                                            exit={{ x: direction * 40, opacity: 0 }}
-                                            transition={{ 
-                                                type: "spring", 
-                                                stiffness: 350, 
-                                                damping: 25,
-                                                mass: 0.8,
-                                                delay: i * 0.02 // Subtle stagger
-                                            }}
-                                            className={`
-                                                w-full h-[25%] 
-                                                backdrop-blur-[4px] border-l border-r border-white/30
-                                                ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
-                                                ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
-                                            `}
-                                            style={{
-                                                background: GLASS_STYLE
-                                            }}
-                                        />
-                                    );
-                                })}
-                            </div> 
-                        )}
-                    </AnimatePresence>
+                    {/* 💠 SCI-FI GLASS SHARDS */}
+                    {isActive && (
+                        <div className={`absolute z-0 flex flex-col rounded-[12px] overflow-visible transition-all duration-300 ${isHovered ? 'inset-x-4 inset-y-[25%]' : 'inset-[25%]'}`}>
+                            {[0, 1, 2, 3].map((i) => {
+                                const direction = (i === 0 || i === 3) ? -1 : 1;
+                                return (
+                                    <AnimeIn
+                                        key={i}
+                                        initial={{ translateX: direction * 40, opacity: 0 }}
+                                        animate={{ translateX: 0, opacity: 1 }}
+                                        duration={500}
+                                        delay={i * 20}
+                                        className={`
+                                            w-full h-[25%] 
+                                            backdrop-blur-[4px] border-l border-r border-white/30
+                                            ${i === 0 ? 'rounded-t-[12px] border-t shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]' : ''}
+                                            ${i === 3 ? 'rounded-b-[12px] border-b shadow-[0_4px_10px_rgba(0,0,0,0.3)]' : ''}
+                                        `}
+                                        style={{ background: GLASS_STYLE }}
+                                    />
+                                );
+                            })}
+                        </div> 
+                    )}
 
                     <div className="relative z-10 w-full h-full flex items-center justify-center overflow-hidden text-white group-hover:text-white transition-colors">
-                        {/* ICON: Slides Left on Hover */}
-                        <motion.div 
-                           animate={{ 
-                               x: isHovered ? -50 : 0,
-                               opacity: isHovered ? 0 : (isActive ? 1 : 0.6),
-                               scale: isActive ? 1.1 : 1
+                        {/* ICON */}
+                        <div 
+                           className="nav-icon"
+                           style={{ 
+                               opacity: isActive ? 1 : 0.6,
+                               transform: isActive ? 'scale(1.1)' : 'scale(1)'
                            }}
-                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             <item.icon 
                                 size={28} 
                                 weight="duotone"
                                 className={isActive ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]' : 'drop-shadow-sm'}
                             />
-                        </motion.div>
+                        </div>
 
-                        {/* TEXT: Slides In from Right on Hover */}
-                        <motion.div 
-                           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                           initial={{ x: 50, opacity: 0 }}
-                           animate={{ 
-                               x: isHovered ? 0 : 50, 
-                               opacity: isHovered ? 1 : 0 
-                           }}
-                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        {/* TEXT */}
+                        <div 
+                           className="nav-text absolute inset-0 flex items-center justify-center pointer-events-none"
+                           style={{ transform: 'translateX(50px)', opacity: 0 }}
                         >
                             <span className="font-mono text-xs tracking-[0.2em] font-bold text-white/90 uppercase mr-[-0.2em]">
                                 {item.label}
                             </span>
-                        </motion.div>
+                        </div>
                     </div>
                 </button>
               );
           })}
-        </motion.div>
+        </div>
       </Spotlight>
 
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+
 
 export function HeroGrid() {
   const [dimensions, setDimensions] = useState({ cols: 16, rows: 9 });

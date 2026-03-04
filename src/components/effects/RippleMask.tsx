@@ -1,8 +1,36 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { animate as anime } from "animejs";
 import { useHandoff } from "@/lib/handoff-context";
+import { useRef } from "react";
+
+function Ripple({ ripple }: { ripple: any }) {
+  const ref = useRef<SVGCircleElement>(null);
+  
+  useEffect(() => {
+    if (ref.current) {
+      anime(ref.current, {
+        r: [0, ripple.r],
+        duration: 1000,
+        easing: 'easeOutCirc'
+      });
+    }
+  }, [ripple.r]);
+
+  return (
+    <circle
+      ref={ref}
+      cx={ripple.x}
+      cy={ripple.y}
+      r={0}
+      fill="black"
+      style={{
+          filter: "blur(30px)"
+      }}
+    />
+  );
+}
 
 export default function RippleMask() {
   const { stage } = useHandoff();
@@ -44,18 +72,12 @@ export default function RippleMask() {
       const count = 5 + Math.floor(Math.random() * 4); // 5 to 8 ripples per stage
 
       for (let i = 0; i < count; i++) {
-        // Area logic: Smaller circles since there are many
-        // Total target area per stage: (W*H)/7. 
-        // Per ripple: ((W*H)/7) / count.
         const totalArea = viewport.w * viewport.h;
         const stageArea = totalArea / 7;
         const rippleArea = stageArea / count;
         
-        // Radius + Variance
-        // 🌊 BOOST: 2.0x base multiplier to ensure better overlaps and faster clearing
-        // Stage 7: "Tsunami Mode" - Massive ripples to clear everything
         const isMobileWidth = viewport.w < 768;
-        const baseMult = isMobileWidth ? 1.5 : 2.5; // 📱 Smaller on mobile to prevent "Big Blob" look
+        const baseMult = isMobileWidth ? 1.5 : 2.5; 
         
         const multiplier = stage === 7 ? 4.0 : baseMult; 
         const baseRadius = Math.sqrt(rippleArea / Math.PI) * multiplier; 
@@ -74,33 +96,20 @@ export default function RippleMask() {
   }, [stage, viewport]);
 
   return (
-    <svg className="absolute w-full h-full pointer-events-none top-0 left-0">
-      <defs>
-        <mask id="ripple-mask">
-          {/* Base: White = Visible Preloader (Black Overlay) */}
-          <rect x="0" y="0" width="100%" height="100%" fill="white" />
-          
-          {/* Holes: Black = Transparent (Revealing Page) */}
-          {ripples.map((ripple) => (
-            <motion.circle
-              key={ripple.id}
-              cx={ripple.x}
-              cy={ripple.y}
-              r={ripple.r}
-              fill="black"
-              initial={{ r: 0 }}
-              animate={{ r: ripple.r }}
-              transition={{
-                duration: 1.0,
-                ease: "circOut"
-              }}
-              style={{
-                  filter: "blur(30px)" // 💧 Soften liquid edges even more
-              }}
-            />
-          ))}
-        </mask>
-      </defs>
-    </svg>
+    <div className="absolute inset-0 pointer-events-none z-0">
+      <svg className="absolute w-full h-full top-0 left-0">
+        <defs>
+          <mask id="ripple-mask">
+            {/* Base: White = Visible Preloader (Black Overlay) */}
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            
+            {/* Holes: Black = Transparent (Revealing Page) */}
+            {ripples.map((ripple) => (
+              <Ripple key={ripple.id} ripple={ripple} />
+            ))}
+          </mask>
+        </defs>
+      </svg>
+    </div>
   );
 }

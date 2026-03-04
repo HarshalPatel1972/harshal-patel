@@ -1,13 +1,46 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useHandoff } from "@/lib/handoff-context";
 import { BLOB_PATHS } from "@/components/effects/BlobAssets";
+import { animate as anime } from "animejs";
+
+interface BubbleProps {
+  bubble: { id: string; path: string; x: number; y: number; rotate: number };
+  stage: number;
+}
+
+function Bubble({ bubble, stage }: BubbleProps) {
+  const pathRef = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    if (pathRef.current) {
+      anime(pathRef.current, {
+        scale: stage >= 7 ? 50 : 3.0,
+        opacity: [0, 1],
+        duration: stage >= 7 ? 1500 : 2500,
+        easing: 'easeInCirc'
+      });
+    }
+  }, [stage]);
+
+  return (
+    <path
+      ref={pathRef}
+      d={bubble.path}
+      fill="black"
+      style={{
+        transformBox: 'fill-box',
+        transformOrigin: 'center',
+        transform: `translate(${bubble.x}vw, ${bubble.y}vh) rotate(${bubble.rotate}deg) scale(0)`,
+      }}
+    />
+  );
+}
 
 export default function BubbleMask() {
   const { stage } = useHandoff();
-  const [bubbles, setBubbles] = useState<{ id: string; path: string; x: number; y: number; scale: number; rotate: number }[]>([]);
+  const [bubbles, setBubbles] = useState<{ id: string; path: string; x: number; y: number; rotate: number }[]>([]);
 
   // 🛡️ PREVENT DUPLICATE SPAWNS
   const processedStages = useRef<Set<number>>(new Set());
@@ -23,7 +56,6 @@ export default function BubbleMask() {
         path: BLOB_PATHS[stage - 1],  // Pick unique shape
         x: Math.random() * 80 + 10,   // Random X (10-90%)
         y: Math.random() * 80 + 10,   // Random Y (10-90%)
-        scale: 0.1,                   // Start tiny
         rotate: Math.random() * 360,
       };
       setBubbles((prev) => [...prev, newBubble]);
@@ -39,29 +71,7 @@ export default function BubbleMask() {
           
           {/* Holes: Black = Hidden Preloader (Revealing page below) */}
           {bubbles.map((b) => (
-            <motion.path
-              key={b.id}
-              d={b.path}
-              fill="black"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{
-                scale: stage >= 7 ? 50 : 3.0,
-                opacity: 1,
-                x: `${b.x}%`,
-                y: `${b.y}%`
-              }}
-              transition={{
-                duration: stage >= 7 ? 1.5 : 2.5,
-                ease: "circIn"
-              }}
-              style={{
-                originX: "50%",
-                originY: "50%",
-                translateX: "-50%",
-                translateY: "-50%",
-              }}
-              transform={`translate(${b.x}vw, ${b.y}vh) rotate(${b.rotate}deg)`}
-            />
+            <Bubble key={b.id} bubble={b} stage={stage} />
           ))}
         </mask>
       </defs>
