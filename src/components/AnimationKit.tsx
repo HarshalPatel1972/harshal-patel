@@ -223,14 +223,22 @@ export function ScrollLine() {
   const [percent, setPercent] = React.useState(0);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const totalH = document.documentElement.scrollHeight - window.innerHeight;
-      let p = Math.round((scrollY / totalH) * 100);
-      if (isNaN(p)) p = 0;
-      if (p < 0) p = 0;
-      if (p > 100) p = 100;
-      setPercent(p);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const totalH = document.documentElement.scrollHeight - window.innerHeight;
+          let p = Math.round((scrollY / totalH) * 100);
+          if (isNaN(p)) p = 0;
+          if (p < 0) p = 0;
+          if (p > 100) p = 100;
+          setPercent(p);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
