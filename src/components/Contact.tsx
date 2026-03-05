@@ -132,18 +132,6 @@ export function Contact() {
           })}
         </div>
 
-        {/* Footer Brutalist Block */}
-        <ScrollReveal duration={1000} delay={500} className="mt-32 border-t-8 border-black pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-           <div className="text-2xl font-black font-display uppercase tracking-widest text-[var(--bg-ink)]">
-             {profile.name} // <span className="text-[var(--accent-blood)]">2026</span>
-           </div>
-           
-           <div className="flex items-center gap-4 text-xs font-bold font-mono text-black/60 uppercase">
-              <span>All Systems Nominal</span>
-              <div className="w-3 h-3 bg-black rounded-full" />
-           </div>
-        </ScrollReveal>
-
       </div>
     </section>
   );
