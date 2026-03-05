@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
-import InertiaMarquee from "./ui/InertiaMarquee";
 const LINKS = [
   {
     id: "email",
@@ -69,14 +68,11 @@ export function Contact() {
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />
 
-      {/* Massive Kinetic Hazard Tape */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] pointer-events-none z-0 opacity-[0.04] select-none rotate-[-5deg]">
-         <InertiaMarquee 
-           text="[ WARNING // CLASSIFIED INTEL // WARNING ]" 
-           baseVelocity={-1.5}
-           fillContainer={true}
-           className="text-[8rem] md:text-[16rem] font-black font-display text-[var(--bg-ink)] tracking-tighter mix-blend-multiply"
-         />
+      {/* Massive Background Typography */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
+         <h2 className="text-[12rem] md:text-[25rem] font-black font-display text-[var(--bg-ink)] whitespace-nowrap leading-none tracking-tighter">
+            CONTACT
+         </h2>
       </div>
 
       <div className="w-full max-w-7xl relative z-10 flex flex-col pt-12">
