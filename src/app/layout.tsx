@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Oswald, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Cursor from "@/components/ui/Cursor";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -36,6 +37,7 @@ export default function RootLayout({
         className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
+        <Cursor />
         {children}
       </body>
     </html>
