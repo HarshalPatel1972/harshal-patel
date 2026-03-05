@@ -59,9 +59,10 @@ export function Preloader() {
         document.body.style.overflow = ""; // reset overflow
         
         // Global Impact frame on reveal
-        document.body.style.animation = "none";
+        document.body.classList.remove("impact-flash-active");
         void document.body.offsetWidth;
-        document.body.style.animation = "impact-flash 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
+        document.body.classList.add("impact-flash-active");
+        setTimeout(() => document.body.classList.remove("impact-flash-active"), 500);
       }
     });
 
