@@ -12,6 +12,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const topBarRef = useRef<HTMLDivElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
   const slashRef = useRef<HTMLDivElement>(null);
+  const subliminalRef = useRef<HTMLDivElement>(null);
 
   const { quote, source, readTime } = useMemo(() => {
     const q = mappaQuotes[Math.floor(Math.random() * mappaQuotes.length)];
@@ -20,6 +21,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const time = Math.max(5500, 4000 + (words * 320)); 
     return { quote: q.text, source: q.source, readTime: time };
   }, []);
+
+  const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
   useEffect(() => {
     if (complete) return;
@@ -43,7 +46,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       duration: 1600,
       easing: 'easeInOutQuint'
     }, 200)
-    // Step 2: The Red Sunder (Visual Pulse)
+    // Step 2: The Red Sunder (Visual Pulse) + Subliminal Kanji
     .add({
       targets: slashRef.current,
       scaleX: [0, 1.2],
@@ -51,6 +54,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       duration: 1000,
       easing: 'easeInOutSine'
     }, 600)
+    .add({
+      targets: subliminalRef.current,
+      opacity: [0, 0.4, 0],
+      scale: [0.8, 1.2],
+      duration: 150,
+      easing: 'steps(1)'
+    }, 700)
     // Step 3: Precision character reveal
     .add({
       targets: '.p-char',
@@ -140,6 +150,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.03)_0%,transparent_85%)] opacity-60" />
       <div className="absolute inset-0 halftone-bg opacity-[0.05] mix-blend-overlay pointer-events-none" />
       
+      {/* Subliminal Kanji Flash */}
+      <div 
+        ref={subliminalRef}
+        className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none opacity-0 select-none"
+      >
+        <span className="text-[25vw] font-black text-[#d91111] opacity-20 filter blur-sm">
+          {kanjiList[Math.floor(Math.random() * kanjiList.length)]}
+        </span>
+      </div>
+
       {/* The Sunder Flash */}
       <div 
         ref={slashRef} 
