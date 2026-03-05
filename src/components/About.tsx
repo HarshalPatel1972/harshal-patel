@@ -42,9 +42,10 @@ export function About() {
       className="relative py-24 md:py-32 px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center"
       onClick={() => {
         // Global Impact frame trigger
-        document.body.style.animation = "none";
+        document.body.classList.remove("impact-flash-active");
         void document.body.offsetWidth;
-        document.body.style.animation = "impact-flash 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+        document.body.classList.add("impact-flash-active");
+        setTimeout(() => document.body.classList.remove("impact-flash-active"), 500);
       }}
     >
       {/* Background Halftone Drop */}

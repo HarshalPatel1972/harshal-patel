@@ -20,10 +20,15 @@ export function SceneTransitionTripwire({ id }: { id?: string }) {
             if (now - lastTriggerTime.current > 1000) {
               lastTriggerTime.current = now;
               
-              // Trigger Global Impact Frame
-              document.body.style.animation = "none";
+              // Trigger Global Impact Frame using CSS class
+              document.body.classList.remove("impact-flash-active");
               void document.body.offsetWidth; // force reflow
-              document.body.style.animation = "impact-flash 0.15s cubic-bezier(0.4, 0, 0.2, 1)";
+              document.body.classList.add("impact-flash-active");
+              
+              // Remove the class after the animation finishes (0.5s from globals.css)
+              setTimeout(() => {
+                document.body.classList.remove("impact-flash-active");
+              }, 500);
             }
           }
         });
