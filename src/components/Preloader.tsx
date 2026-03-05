@@ -36,7 +36,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }
 
     const tl = createTimeline({
-      easing: 'easeOutQuint'
+      defaults: {
+        ease: 'easeOutQuint'
+      }
     });
 
     // Step 1: The 'Cinematic Aperture' Opening
@@ -44,7 +46,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       targets: [topBarRef.current, bottomBarRef.current],
       translateY: (el: HTMLElement) => el.dataset.dir === 'top' ? '-100%' : '100%',
       duration: 1600,
-      easing: 'easeInOutQuint'
+      ease: 'easeInOutQuint'
     }, 200)
     // Step 2: The Red Sunder (Visual Pulse) + Subliminal Kanji
     .add({
@@ -52,14 +54,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       scaleX: [0, 1.2],
       opacity: [0, 1, 0],
       duration: 1000,
-      easing: 'easeInOutSine'
+      ease: 'easeInOutSine'
     }, 600)
     .add({
       targets: subliminalRef.current,
       opacity: [0, 0.4, 0],
       scale: [0.8, 1.2],
       duration: 150,
-      easing: 'steps(1)'
+      ease: 'steps(1)'
     }, 700)
     // Step 3: Precision character reveal
     .add({
@@ -67,9 +69,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       opacity: [0, 1],
       translateY: [40, 0],
       filter: ['blur(20px)', 'blur(0px)'],
-      duration: 1000,
+      duration: 800,
       delay: stagger(15),
-      easing: 'easeOutQuart'
+      ease: 'easeOutQuart'
     }, 1000)
     // Step 4: Elevated Source Presentation
     .add({
@@ -77,12 +79,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       opacity: [0, 1],
       translateY: [20, 0],
       duration: 1200,
-      easing: 'easeOutCubic'
+      ease: 'easeOutCubic'
     }, 1800);
 
     const exitTimeout = setTimeout(() => {
       const exitTl = createTimeline({
-        easing: 'easeInQuint',
+        defaults: {
+          ease: 'easeInQuint'
+        },
         onComplete: () => {
           setComplete(true);
           onComplete?.();
@@ -113,7 +117,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         targets: [topBarRef.current, bottomBarRef.current],
         translateY: 0,
         duration: 1500,
-        easing: 'easeInExpo'
+        ease: 'easeInExpo'
       }, 600);
     }, readTime);
 
