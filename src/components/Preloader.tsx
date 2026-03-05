@@ -19,7 +19,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const words = q.text.split(" ").length;
     // Longer read time for complete cinematic immersion
     const time = Math.max(5500, 4000 + (words * 320)); 
-    return { quote: q.text, source: q.source, readTime: time };
+    return { quote: q.text, source: q.source.split(" // ")[0], readTime: time };
   }, []);
 
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
@@ -29,10 +29,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     document.body.style.overflow = "hidden";
 
     // Surgical Character Wrapping for pinpoint animation control
-    if (quoteRef.current) {
-      quoteRef.current.innerHTML = quoteRef.current.textContent?.split("").map(char => 
-        `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char === " " ? "&nbsp;" : char}</span>`
-      ).join("") || "";
+    if (quoteRef.current && quoteRef.current.textContent) {
+      const words = quoteRef.current.textContent.trim().split(" ");
+      quoteRef.current.innerHTML = words.map(word => {
+        const chars = word.split("").map(char => 
+          `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char}</span>`
+        ).join("");
+        return `<span class="inline-block whitespace-nowrap">${chars}</span>`;
+      }).join(" <span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>&nbsp;</span> ");
     }
 
     const tl = createTimeline({
