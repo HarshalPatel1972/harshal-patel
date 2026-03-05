@@ -15,25 +15,36 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50);
 
-      // Determine active section
-      const sections = NAV_ITEMS.map((item) => ({
-        id: item.id,
-        el: document.getElementById(item.id),
-      }));
+          // Determine active section dynamically
+          // Caching DOM elements in useEffect is risky if sections mount lazily
+          const sections = NAV_ITEMS.map((item) => ({
+            id: item.id,
+            el: document.getElementById(item.id),
+          }));
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = sections[i].el;
-        if (el && el.getBoundingClientRect().top <= 200) {
-          setActive(sections[i].id);
-          break;
-        }
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const el = sections[i].el;
+            if (el && el.getBoundingClientRect().top <= 200) {
+              setActive(sections[i].id);
+              break;
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial check
+    handleScroll();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
