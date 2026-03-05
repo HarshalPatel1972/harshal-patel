@@ -5,8 +5,15 @@ import { animate as anime } from "animejs";
 
 export function Preloader() {
   const [complete, setComplete] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     // Prevent scrolling while loading
     document.body.style.overflow = "hidden";
 
@@ -61,9 +68,9 @@ export function Preloader() {
     return () => {
       document.body.style.overflow = ""; // ensure it's reset on unmount
     };
-  }, []);
+  }, [mounted]);
 
-  if (complete) return null;
+  if (!mounted || complete) return null;
 
   return (
     <div className="preloader-container fixed inset-0 z-[99999] bg-[var(--bg-ink)] flex items-center justify-center overflow-hidden pointer-events-none">
