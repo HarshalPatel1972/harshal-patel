@@ -240,9 +240,6 @@ export function ScrollLine() {
 
   return (
     <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none">
-       <span className="font-mono text-[10px] md:text-sm font-bold tracking-[0.3em] mb-[-4px] md:mb-[-8px]">
-         VOL. 1 // SCRL
-       </span>
        <div className="font-display font-black text-[5rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end">
          {String(percent).padStart(3, '0')}
        </div>
