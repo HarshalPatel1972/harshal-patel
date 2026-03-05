@@ -217,33 +217,35 @@ export function useParallax(speed: number = 0.3) {
 }
 
 /**
- *  Horizontal Scroll Line — Draws across as user scrolls  
+ * 🎞️ Manga Reading Progress — Massive fixed percentage reading with color inversion
  */
-export function ScrollLine({ color = "var(--accent-blood)" }: { color?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
+export function ScrollLine() {
+  const [percent, setPercent] = React.useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!ref.current) return;
-      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      ref.current.style.transform = `scaleX(${scrollPercent})`;
+      const scrollY = window.scrollY;
+      const totalH = document.documentElement.scrollHeight - window.innerHeight;
+      let p = Math.round((scrollY / totalH) * 100);
+      if (isNaN(p)) p = 0;
+      if (p < 0) p = 0;
+      if (p > 100) p = 100;
+      setPercent(p);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // init
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100] h-[4px]">
-      <div
-        ref={ref}
-        className="h-full w-full origin-left"
-        style={{
-          background: color,
-          transform: "scaleX(0)",
-          transition: "transform 0.1s linear",
-        }}
-      />
+    <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[100] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none">
+       <span className="font-mono text-[10px] md:text-sm font-bold tracking-[0.3em] mb-[-4px] md:mb-[-8px]">
+         VOL. 1 // SCRL
+       </span>
+       <div className="font-display font-black text-[5rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end">
+         {String(percent).padStart(3, '0')}
+       </div>
     </div>
   );
 }
