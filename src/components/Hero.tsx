@@ -90,7 +90,7 @@ export function Hero() {
            </h1>
            
            {/* Role Accent Block overlapping the typography */}
-           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[20%] right-auto md:right-[10%] bg-[var(--accent-blood)] text-white font-sans font-bold text-xs sm:text-xl md:text-2xl px-4 py-2 sm:px-6 sm:py-4 uppercase tracking-wider mt-4 md:mt-0 self-center md:self-auto max-w-[280px] md:max-w-none w-full md:w-auto text-center">
+           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[20%] right-auto md:right-[10%] bg-[var(--accent-blood)] text-white font-sans font-bold text-xs sm:text-xl md:text-2xl px-4 py-2 sm:px-6 sm:py-4 uppercase tracking-wider mt-4 md:mt-0 mx-auto md:mx-0 max-w-[280px] md:max-w-none w-full md:w-auto text-center">
              Software Engineer
            </div>
         </div>
