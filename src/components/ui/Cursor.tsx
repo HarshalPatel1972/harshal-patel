@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 export default function Cursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isTouch, setIsTouch] = useState(false);
   
   const cursorRef = useRef<HTMLDivElement>(null);
   const crosshairRef = useRef<HTMLDivElement>(null);
@@ -12,7 +13,13 @@ export default function Cursor() {
   const mouse = useRef({ x: 0, y: 0 });
   const smoothedMouse = useRef({ x: 0, y: 0 });
 
+  // Touch device detection — disable custom cursor entirely on phones/tablets
   useEffect(() => {
+    setIsTouch(window.matchMedia('(pointer: coarse)').matches);
+  }, []);
+
+  useEffect(() => {
+    if (isTouch) return;
     const handleMouseMove = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
@@ -60,7 +67,9 @@ export default function Cursor() {
       window.removeEventListener("mouseover", handleMouseOver);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isVisible]);
+  }, [isVisible, isTouch]);
+
+  if (isTouch) return null;
 
   return (
     <>
@@ -69,6 +78,7 @@ export default function Cursor() {
           cursor: none !important;
         }
       `}</style>
+
       
       {/* The Exact Center Dot - Instant Tracking */}
       <div 

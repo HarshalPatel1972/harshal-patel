@@ -201,3 +201,14 @@ body::before {
 .animate-pulse-slow {
   animation: pulse-slow 8s ease-in-out infinite;
 }
+
+/* ─── MOBILE RESPONSIVE OVERRIDES ─── */
+@media (max-width: 767px) {
+  .brutal-shadow {
+    box-shadow: 4px 4px 0px 0px var(--accent-blood);
+  }
+  .brutal-shadow:hover {
+    transform: none;
+    box-shadow: 4px 4px 0px 0px var(--accent-blood);
+  }
+}

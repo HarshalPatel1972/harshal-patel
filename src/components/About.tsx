@@ -13,7 +13,7 @@ function MangaStat({ value, label, prefix = "" }: { value: number; label: string
   return (
     <div className="flex flex-col border-b-2 border-black pb-4 hover:pl-4 transition-all duration-300 group">
       <div className="text-[10px] sm:text-xs font-mono font-bold text-black/60 uppercase tracking-[0.2em] mb-1">{label}</div>
-      <div className="text-4xl sm:text-5xl md:text-6xl font-black font-display text-[var(--accent-blood)] tracking-tighter">
+      <div className="text-3xl sm:text-5xl md:text-6xl font-black font-display text-[var(--accent-blood)] tracking-tighter">
         {prefix}<span ref={countRef as any}>0</span>{label === "CGPA" ? "" : "+"}
       </div>
     </div>
@@ -56,7 +56,7 @@ export function About() {
 
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
-         <h2 className="text-[10rem] md:text-[20rem] font-black font-display text-[var(--text-bone)] whitespace-nowrap leading-none tracking-tighter">
+         <h2 className="text-[8rem] md:text-[20rem] font-black font-display text-[var(--text-bone)] whitespace-nowrap leading-none tracking-tighter">
             ORIGIN
          </h2>
       </div>
@@ -67,7 +67,7 @@ export function About() {
             PANEL 1: Bio & Core Philosophy (Left Cut)
             ========================================= */}
         <ScrollReveal duration={1200} className="w-full">
-          <div className="manga-panel p-8 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-4 border-black relative">
+          <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className="absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black font-display px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black">
               CHAPTER 02
             </div>
@@ -97,8 +97,8 @@ export function About() {
              PANEL 2: Experience (Stacked Black Blocks)
              ========================================= */}
          <ScrollReveal duration={1200} delay={200} className="w-full">
-           <div className="flex flex-col border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
-              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-3xl md:text-5xl px-6 py-4 flex items-center justify-between">
+           <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
+              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center justify-between">
                  RECORDED <br/> EXPERIENCE
                  <span className="text-[10px] md:text-sm font-mono tracking-normal text-black bg-[var(--accent-blood)] px-2 py-1 rotate-[-5deg]">CLASSIFIED</span>
               </div>
@@ -134,10 +134,10 @@ export function About() {
                PANEL 3: Skills & Stats (Brutalist Right Cut)
                ========================================= */}
            <ScrollReveal duration={1200} delay={300} direction="left" className="w-full">
-             <div className="manga-panel p-8 md:p-12 border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] brutal-shadow manga-cut-br flex flex-col gap-12">
+             <div className="manga-panel p-5 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] brutal-shadow manga-cut-br flex flex-col gap-12">
                
                {/* Massive Stats Block inside the panel */}
-               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 bg-[var(--text-bone)] p-6 brutal-shadow border-2 border-black">
+               <div className="grid grid-cols-3 gap-4 md:gap-8 bg-[var(--text-bone)] p-6 brutal-shadow border-2 border-black">
                  <MangaStat value={300} label="Algorithms" prefix=">" />
                  <MangaStat value={8} label="CGPA" />
                  <MangaStat value={6} label="Systems Built" prefix="0" />

@@ -50,7 +50,7 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="flex items-center justify-end md:justify-center p-4">
+      <div className="flex items-center justify-between md:justify-center p-4">
         {NAV_ITEMS.map((item) => (
           <button
             key={item.id}
@@ -71,11 +71,11 @@ export function Navbar() {
                 easing: "outQuart",
               });
             }}
-            className={`relative px-4 py-2 text-xs md:text-sm font-bold font-mono uppercase tracking-widest transition-all duration-300 ${
+            className={`relative flex-1 md:flex-auto px-2 py-3.5 md:px-4 md:py-2 text-[10px] md:text-sm font-bold font-mono uppercase tracking-widest transition-all duration-300 text-center ${
               active === item.id
-                ? "text-[var(--text-bone)] bg-black"
+                ? "text-[var(--text-bone)] bg-black border-b-2 border-[var(--accent-blood)] md:border-b-0"
                 : "text-[var(--text-muted)] hover:text-black hover:bg-[var(--text-bone)]"
-            } ${scrolled ? 'border border-transparent' : 'border-2 border-transparent'}`}
+            } ${scrolled ? 'border-transparent' : 'border-transparent'}`}
           >
             <span className="relative z-10">{item.label}</span>
           </button>

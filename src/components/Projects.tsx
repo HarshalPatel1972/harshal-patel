@@ -48,11 +48,11 @@ export function Projects() {
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
              CHAPTER 01
            </div>
-           <h2 className="text-6xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
+           <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
              SELECTED <br/> WORKS
            </h2>
         </div>
-        <p className="text-black/60 font-sans font-bold max-w-xs text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
+        <p className="text-black/60 font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
            Archival records of systems constructed and curses excised.
         </p>
       </div>
@@ -69,7 +69,7 @@ export function Projects() {
                 rel="noopener noreferrer"
                 onMouseEnter={() => setActiveIndex(i)}
                 onMouseLeave={() => setActiveIndex(null)}
-                className="project-card block relative manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow min-h-[350px] md:min-h-[450px] p-8 md:p-12 group cursor-pointer overflow-hidden"
+                className="project-card block relative manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow min-h-[280px] md:min-h-[450px] p-5 md:p-12 group cursor-pointer overflow-hidden"
               >
                 {/* Background Blood Splatter on Hover */}
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
@@ -93,7 +93,7 @@ export function Projects() {
                     </div>
 
                     {/* Title */}
-                    <h3 className={`text-4xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
+                    <h3 className={`text-3xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
                       {project.title}
                     </h3>
 

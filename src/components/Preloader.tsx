@@ -159,7 +159,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-12 md:px-44"
+      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44"
     >
       {/* Cinematic Shutter System */}
       <div data-dir="top" ref={topBarRef} className="absolute top-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-b border-[#E8E8E6]/5 will-change-transform" />
@@ -189,23 +189,23 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full">
          <h1 
           ref={quoteRef} 
-          className="text-4xl md:text-7xl lg:text-[8rem] font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.75] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+          className="text-3xl md:text-7xl lg:text-[8rem] font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.75] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]"
          >
            {quote}
          </h1>
          
          <div 
           ref={sourceRef}
-          className="flex items-center gap-14 md:gap-24 opacity-0 will-change-transform"
+          className="flex items-center gap-6 md:gap-24 opacity-0 will-change-transform"
          >
-            <div className="w-24 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
-            <div className="relative group px-14 py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
-              <span className="font-mono text-xs md:text-3xl text-[#d91111] tracking-[1.1em] uppercase font-black italic">
+            <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
+            <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
+              <span className="font-mono text-xs md:text-3xl text-[#d91111] tracking-[0.3em] md:tracking-[1.1em] uppercase font-black italic">
                 {source}
               </span>
               <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
             </div>
-            <div className="w-24 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
+            <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
          </div>
       </div>
 
