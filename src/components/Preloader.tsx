@@ -45,7 +45,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const apertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
     if (apertureTargets.length > 0) {
       tl.add(apertureTargets, {
-        translateY: (el: HTMLElement) => el.dataset.dir === 'top' ? '-100%' : '100%',
+        translateY: (el: any) => (el as HTMLElement).dataset.dir === 'top' ? '-100%' : '100%',
         duration: 1600,
         ease: 'easeInOutQuint'
       }, 200);
