@@ -10,13 +10,8 @@ export function Footer() {
         <div className="text-xl md:text-3xl font-black font-display uppercase tracking-widest text-[var(--text-bone)]">
           {profile.name} <span className="text-[var(--accent-blood)]">© {new Date().getFullYear()}</span>
         </div>
-        
-        <div className="flex items-center gap-4 border-2 border-[var(--text-bone)] px-4 py-2">
-           <span className="text-[10px] md:text-xs font-mono font-bold text-[var(--text-bone)] uppercase tracking-[0.2em]">
-             End of Record
-           </span>
-           <div className="w-2 h-2 bg-[var(--accent-blood)]" />
-        </div>
+
+
       </div>
     </footer>
   );
