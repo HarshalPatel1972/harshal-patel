@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { animate as anime, utils } from "animejs";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
+import { SubliminalKanji } from "./ui/SubliminalKanji";
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +57,9 @@ export function Hero() {
     >
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
+
+      {/* Vertical Kanji Watermark */}
+      <SubliminalKanji kanji="起源" position="right" />
 
       {/* Massive Abstract Ink Stroke (MAPPA style title card background) */}
       <div className="ink-slash absolute left-[-10%] sm:left-[10%] top-[20%] w-[120%] sm:w-[80%] h-[60%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">

@@ -4,6 +4,7 @@ import { projects } from "@/data/projects";
 import { ScrollReveal } from "./ScrollReveal";
 import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
+import { SubliminalKanji } from "./ui/SubliminalKanji";
 
 export function Projects() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -36,6 +37,9 @@ export function Projects() {
     >
       {/* Background ink texture (inverted for this section since background is white) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
+
+      {/* Vertical Kanji Watermark */}
+      <SubliminalKanji kanji="作品" position="left" />
 
       {/* Massive Section Title (MAPPA Layout) */}
       <div className="w-full max-w-7xl relative z-10 flex flex-col md:flex-row justify-between items-end mb-16 md:mb-24 border-b-4 border-black pb-8">

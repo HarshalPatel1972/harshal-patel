@@ -5,6 +5,7 @@ import { ScrollReveal } from "./ScrollReveal";
 import { useCounter } from "./AnimationKit";
 import { useEffect, useRef, useState } from "react";
 import { animate as anime, utils } from "animejs";
+import { SubliminalKanji } from "./ui/SubliminalKanji";
 
 // Giant bold stats
 function MangaStat({ value, label, prefix = "" }: { value: number; label: string; prefix?: string }) {
@@ -48,6 +49,9 @@ export function About() {
     >
       {/* Background Halftone Drop */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
+
+      {/* Vertical Kanji Watermark */}
+      <SubliminalKanji kanji="経験" position="right" />
 
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
