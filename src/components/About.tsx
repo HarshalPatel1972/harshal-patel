@@ -138,9 +138,9 @@ export function About() {
                
                {/* Massive Stats Block inside the panel */}
                <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
-                 <MangaStat value={300} label="Algorithms" prefix=">" />
-                 <MangaStat value={8} label="CGPA" />
-                 <MangaStat value={6} label="Systems Built" prefix="0" />
+                 <MangaStat value={350} label="Algorithms" prefix=">" />
+                 <MangaStat value={8.9} label="CGPA" />
+                 <MangaStat value={11} label="Systems Built" prefix="" />
                </div>
 
                {/* Raw Skill Bars */}

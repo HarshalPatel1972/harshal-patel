@@ -13,7 +13,7 @@ export const profile = {
     school: "Chandigarh University",
     degree: "B.E. CSE (AIML)",
     years: "2022 – 2026",
-    gpa: "8.96",
+    gpa: "8.9",
   },
 
   experience: [
