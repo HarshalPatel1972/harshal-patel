@@ -42,45 +42,53 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     });
 
     // Step 1: The 'Cinematic Aperture' Opening
-    tl.add({
-      targets: [topBarRef.current, bottomBarRef.current],
-      translateY: (el: HTMLElement) => el.dataset.dir === 'top' ? '-100%' : '100%',
-      duration: 1600,
-      ease: 'easeInOutQuint'
-    }, 200)
+    const apertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
+    if (apertureTargets.length > 0) {
+      tl.add(apertureTargets, {
+        translateY: (el: HTMLElement) => el.dataset.dir === 'top' ? '-100%' : '100%',
+        duration: 1600,
+        ease: 'easeInOutQuint'
+      }, 200);
+    }
+
     // Step 2: The Red Sunder (Visual Pulse) + Subliminal Kanji
-    .add({
-      targets: slashRef.current,
-      scaleX: [0, 1.2],
-      opacity: [0, 1, 0],
-      duration: 1000,
-      ease: 'easeInOutSine'
-    }, 600)
-    .add({
-      targets: subliminalRef.current,
-      opacity: [0, 0.4, 0],
-      scale: [0.8, 1.2],
-      duration: 150,
-      ease: 'steps(1)'
-    }, 700)
+    if (slashRef.current) {
+      tl.add(slashRef.current, {
+        scaleX: [0, 1.2],
+        opacity: [0, 1, 0],
+        duration: 1000,
+        ease: 'easeInOutSine'
+      }, 600);
+    }
+
+    if (subliminalRef.current) {
+      tl.add(subliminalRef.current, {
+        opacity: [0, 0.4, 0],
+        scale: [0.8, 1.2],
+        duration: 150,
+        ease: 'steps(1)'
+      }, 700);
+    }
+
     // Step 3: Precision character reveal
-    .add({
-      targets: '.p-char',
+    tl.add('.p-char', {
       opacity: [0, 1],
       translateY: [40, 0],
       filter: ['blur(20px)', 'blur(0px)'],
       duration: 800,
       delay: stagger(15),
       ease: 'easeOutQuart'
-    }, 1000)
+    }, 1000);
+
     // Step 4: Elevated Source Presentation
-    .add({
-      targets: sourceRef.current,
-      opacity: [0, 1],
-      translateY: [20, 0],
-      duration: 1200,
-      ease: 'easeOutCubic'
-    }, 1800);
+    if (sourceRef.current) {
+      tl.add(sourceRef.current, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 1200,
+        ease: 'easeOutCubic'
+      }, 1800);
+    }
 
     const exitTimeout = setTimeout(() => {
       const exitTl = createTimeline({
@@ -100,25 +108,29 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }
       });
 
-      exitTl.add({
-        targets: '.p-char',
+      exitTl.add('.p-char', {
         opacity: 0,
         translateY: -60,
         filter: 'blur(30px)',
         delay: stagger(10, { from: 'center' }),
         duration: 1000
-      })
-      .add({
-        targets: sourceRef.current,
-        opacity: 0,
-        duration: 800
-      }, 200)
-      .add({
-        targets: [topBarRef.current, bottomBarRef.current],
-        translateY: 0,
-        duration: 1500,
-        ease: 'easeInExpo'
-      }, 600);
+      });
+
+      if (sourceRef.current) {
+        exitTl.add(sourceRef.current, {
+          opacity: 0,
+          duration: 800
+        }, 200);
+      }
+
+      const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
+      if (exitApertureTargets.length > 0) {
+        exitTl.add(exitApertureTargets, {
+          translateY: 0,
+          duration: 1500,
+          ease: 'easeInExpo'
+        }, 600);
+      }
     }, readTime);
 
     // Subtle Perspective Breath
