@@ -217,9 +217,9 @@ export function useParallax(speed: number = 0.3) {
 }
 
 /**
- * 🌊 Horizontal Scroll Line — Draws across as user scrolls  
+ *  Horizontal Scroll Line — Draws across as user scrolls  
  */
-export function ScrollLine({ color = "rgba(139,92,246,0.4)" }: { color?: string }) {
+export function ScrollLine({ color = "var(--accent-blood)" }: { color?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -234,12 +234,12 @@ export function ScrollLine({ color = "rgba(139,92,246,0.4)" }: { color?: string 
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100] h-[2px]">
+    <div className="fixed top-0 left-0 right-0 z-[100] h-[4px]">
       <div
         ref={ref}
         className="h-full w-full origin-left"
         style={{
-          background: `linear-gradient(90deg, ${color}, transparent)`,
+          background: color,
           transform: "scaleX(0)",
           transition: "transform 0.1s linear",
         }}
