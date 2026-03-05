@@ -133,8 +133,8 @@ export function About() {
            {/* =========================================
                PANEL 3: Skills & Stats (Brutalist Right Cut)
                ========================================= */}
-           <ScrollReveal duration={1200} delay={300} direction="left" className="w-full">
-             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] brutal-shadow manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
+           <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
+             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
                
                {/* Massive Stats Block inside the panel */}
                <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
