@@ -40,11 +40,10 @@ export function Hero() {
     // Continuous ultra-slow parallax drift for the main title (Natural Breathing)
     if (titlesRef.current) {
       anime(titlesRef.current, {
-        scale: [1, 1.05],
-        duration: 12000,
-        direction: "alternate",
+        scale: [1, 1.05, 1],
+        duration: 24000,
         loop: true,
-        easing: "easeInOutSine"
+        ease: "easeInOutSine"
       });
     }
   }, []);
