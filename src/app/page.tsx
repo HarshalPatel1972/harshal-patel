@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
@@ -5,19 +9,27 @@ import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { ScrollLine } from "@/components/AnimationKit";
-import { Preloader } from "@/components/Preloader";
+
+const Preloader = dynamic(() => import("@/components/Preloader"), {
+  ssr: true, // Allow initial black screen in SSR
+});
 
 export default function Home() {
+  const [showContent, setShowContent] = useState(false);
+
   return (
-    <main>
-      <Preloader />
-      <ScrollLine />
-      <Navbar />
-      <Hero />
-      <Projects />
-      <About />
-      <Contact />
-      <Footer />
+    <main className="relative">
+      <Preloader onComplete={() => setShowContent(true)} />
+      
+      <div className={`transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
+        <ScrollLine />
+        <Navbar />
+        <Hero />
+        <Projects />
+        <About />
+        <Contact />
+        <Footer />
+      </div>
     </main>
   );
 }
