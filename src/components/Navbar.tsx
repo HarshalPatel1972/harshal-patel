@@ -50,7 +50,7 @@ export function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="flex items-center justify-between md:justify-center p-4">
+      <div className="flex items-center justify-center p-4">
         {NAV_ITEMS.map((item) => (
           <button
             key={item.id}

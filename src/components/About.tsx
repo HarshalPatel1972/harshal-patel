@@ -39,7 +39,7 @@ export function About() {
     <section 
       id="about" 
       ref={sectionRef} 
-      className="relative py-24 md:py-32 px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center"
+      className="relative py-16 md:py-32 px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden"
       onClick={() => {
         // Global Impact frame trigger
         document.body.classList.remove("impact-flash-active");
@@ -134,10 +134,10 @@ export function About() {
                PANEL 3: Skills & Stats (Brutalist Right Cut)
                ========================================= */}
            <ScrollReveal duration={1200} delay={300} direction="left" className="w-full">
-             <div className="manga-panel p-5 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] brutal-shadow manga-cut-br flex flex-col gap-12">
+             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] brutal-shadow manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
                
                {/* Massive Stats Block inside the panel */}
-               <div className="grid grid-cols-3 gap-4 md:gap-8 bg-[var(--text-bone)] p-6 brutal-shadow border-2 border-black">
+               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
                  <MangaStat value={300} label="Algorithms" prefix=">" />
                  <MangaStat value={8} label="CGPA" />
                  <MangaStat value={6} label="Systems Built" prefix="0" />

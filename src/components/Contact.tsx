@@ -65,7 +65,7 @@ export function Contact() {
     <section 
       id="contact" 
       ref={containerRef}
-      className="relative py-24 md:py-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center overflow-hidden"
+      className="relative py-16 md:py-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center overflow-hidden"
     >
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />
@@ -80,7 +80,7 @@ export function Contact() {
          </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative z-10 flex flex-col pt-12">
+      <div className="w-full max-w-7xl relative z-10 flex flex-col pt-4 md:pt-12">
         
         {/* Header Block */}
         <ScrollReveal duration={1000}>
@@ -123,7 +123,7 @@ export function Contact() {
                     </div>
 
                     {/* Brutalist Arrow/CTA */}
-                    <div className="hidden md:flex w-16 h-16 bg-black text-white items-center justify-center brutal-shadow group-hover:bg-[var(--bg-ink)] group-hover:rotate-45 transition-transform duration-300 origin-center mb-4">
+                    <div className="flex w-10 h-10 md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow group-hover:bg-[var(--bg-ink)] group-hover:rotate-45 transition-transform duration-300 origin-center mb-4">
                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
                          <path d="M5 12h14M12 5l7 7-7 7"/>
                        </svg>
