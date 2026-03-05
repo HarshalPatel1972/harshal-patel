@@ -61,7 +61,7 @@ export function About() {
          </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative z-10 flex flex-col gap-12 lg:gap-24 mt-20 md:mt-32">
+      <div className="w-full max-w-7xl relative z-10 flex flex-col gap-12 lg:gap-24 mt-10 md:mt-32">
         
         {/* =========================================
             PANEL 1: Bio & Core Philosophy (Left Cut)
