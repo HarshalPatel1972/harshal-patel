@@ -26,16 +26,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = (lang: Language) => {
     if (lang === language) return;
     
-    // Trigger transition out (fade to 0 opacity over 800ms for smooth drift)
+    // Trigger transition out (fade to 0 opacity over 1200ms for smooth drift)
     setIsTransitioning(true);
     localStorage.setItem("mappa-lang", lang);
     
-    // Switch the text directly when opacity is exactly 0
+    // Switch the text directly after the smoke has fully covered it
     setTimeout(() => {
       setLanguageState(lang);
-      // Remove transitioning class, starting the fade back in (800ms)
+      // Remove transitioning class, starting the very slow, smooth fade back in
       setIsTransitioning(false);
-    }, 800); 
+    }, 1200); 
   };
 
   return (

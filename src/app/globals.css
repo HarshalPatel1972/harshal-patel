@@ -237,9 +237,10 @@ body::before {
 .language-transition-root span.text-smoke,
 .language-transition-root a,
 .language-transition-root button {
-  transition: color 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-              text-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-              -webkit-text-stroke-color 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  /* The "fade in" / materialization effect when switching BACK to normal */
+  transition: color 1.5s cubic-bezier(0.25, 1, 0.5, 1),
+              text-shadow 1.5s cubic-bezier(0.25, 1, 0.5, 1),
+              -webkit-text-stroke-color 1.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .language-transition-root.is-smoking h1,
@@ -254,18 +255,20 @@ body::before {
 .language-transition-root.is-smoking button {
   color: transparent !important;
   -webkit-text-stroke-color: transparent !important;
-  text-shadow: 0 0 20px rgba(232, 232, 230, 0.5);
+  /* A slightly denser, further-reaching smoke burst to completely hide the swap */
+  text-shadow: 0 0 24px rgba(232, 232, 230, 0.8);
   
-  transition: color 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
-              text-shadow 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
-              -webkit-text-stroke-color 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* The "fade out" / dissolve into smoke effect */
+  transition: color 1.0s cubic-bezier(0.25, 0.1, 0.25, 1),
+              text-shadow 1.0s cubic-bezier(0.25, 0.1, 0.25, 1),
+              -webkit-text-stroke-color 1.0s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* Pseudo-random staggering for an organic, individual smoke feeling */
 .language-transition-root.is-smoking h1 { transition-delay: 0.0s; }
 .language-transition-root.is-smoking h2, 
 .language-transition-root.is-smoking h3 { transition-delay: 0.08s; }
-.language-transition-root.is-smoking p { transition-delay: 0.12s; }
+.language-transition-root.is-smoking p { transition-delay: 0.14s; }
 .language-transition-root.is-smoking a,
-.language-transition-root.is-smoking button { transition-delay: 0.18s; }
-.language-transition-root.is-smoking span.text-smoke { transition-delay: 0.22s; }
+.language-transition-root.is-smoking button { transition-delay: 0.2s; }
+.language-transition-root.is-smoking span.text-smoke { transition-delay: 0.25s; }
