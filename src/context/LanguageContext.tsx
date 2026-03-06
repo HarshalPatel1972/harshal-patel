@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type Language = "en" | "ja";
 
@@ -41,18 +41,23 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, isTransitioning }}>
-      {/* 
-        This wrapper is responsible for the calming ink effect during transitions.
-        When isTransitioning is true, all text/layout blurs out and fades smoothly to 0 opacity.
-      */}
-      <div 
-        className={`transition-all duration-[400ms] ease-in-out w-full h-full ${
-          isTransitioning ? "blur-[12px] opacity-0 grayscale" : "blur-0 opacity-100 grayscale-0"
-        } ${language === 'ja' ? 'font-japanese' : ''}`}
-      >
-        {children}
-      </div>
+      {children}
     </LanguageContext.Provider>
+  );
+}
+
+// Transition wrapper — use this ONLY around content that should blur during transitions
+// NOT around position:fixed elements like nav or preloader
+export function LanguageTransitionWrapper({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const { isTransitioning, language } = useLanguage();
+  return (
+    <div 
+      className={`transition-all duration-[400ms] ease-in-out ${
+        isTransitioning ? "blur-[12px] opacity-0 grayscale" : "blur-0 opacity-100 grayscale-0"
+      } ${language === 'ja' ? 'font-japanese' : ''} ${className}`}
+    >
+      {children}
+    </div>
   );
 }
 

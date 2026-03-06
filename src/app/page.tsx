@@ -4,7 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SystemBanner } from "@/components/SystemBanner";
-import { LanguageProvider } from "@/context/LanguageContext";
+import { LanguageProvider, LanguageTransitionWrapper } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { About } from "@/components/About";
@@ -13,7 +13,7 @@ import { Footer } from "@/components/Footer";
 import { ScrollLine } from "@/components/AnimationKit";
 
 const Preloader = dynamic(() => import("@/components/Preloader"), {
-  ssr: true, // Allow initial black screen in SSR
+  ssr: false, // Prevent SSR to avoid hydration mismatch with random quotes
 });
 
 export default function Home() {
@@ -24,10 +24,12 @@ export default function Home() {
       <main className="relative">
         <Preloader onComplete={() => setShowContent(true)} />
         
-        <div className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
+        {/* Navbar is position:fixed — must NOT be inside any wrapper div that could affect its height */}
+        <Navbar />
+
+        <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
           <SystemBanner />
           <ScrollLine />
-          <Navbar />
           <Hero />
           
           <Projects />
@@ -36,7 +38,7 @@ export default function Home() {
 
           <Contact />
           <Footer />
-        </div>
+        </LanguageTransitionWrapper>
       </main>
     </LanguageProvider>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { createTimeline, stagger } from "animejs";
 import { mappaQuotes } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
@@ -14,6 +14,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const bottomBarRef = useRef<HTMLDivElement>(null);
   const slashRef = useRef<HTMLDivElement>(null);
   const subliminalRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<any>(null);
+  const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const breathIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { language } = useLanguage();
 
@@ -28,144 +31,163 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
+  // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
+  const wrappedChars = useMemo(() => {
+    const isJapanese = language === 'ja';
+    const charStyle = { opacity: 0, transform: 'translateY(40px)', filter: 'blur(20px)' };
+    if (isJapanese) {
+      return quote.split("").map((char, i) => (
+        <span key={i} className="p-char inline-block will-change-transform" style={charStyle}>
+          {char === ' ' || char === '　' ? '\u00A0' : char}
+        </span>
+      ));
+    } else {
+      const wordList = quote.split(" ");
+      const elements: React.ReactNode[] = [];
+      wordList.forEach((word, wi) => {
+        if (wi > 0) {
+          elements.push(
+            <span key={`sp-${wi}`} className="p-char inline-block will-change-transform" style={charStyle}>{'\u00A0'}</span>
+          );
+          elements.push(" ");
+        }
+        elements.push(
+          <span key={`w-${wi}`} className="inline-block whitespace-nowrap">
+            {word.split("").map((char, ci) => (
+              <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>{char}</span>
+            ))}
+          </span>
+        );
+      });
+      return elements;
+    }
+  }, [quote, language]);
+
   useEffect(() => {
     if (complete) return;
     document.body.style.overflow = "hidden";
 
-    // Surgical Character Wrapping for pinpoint animation control
-    if (quoteRef.current && quoteRef.current.textContent) {
-      const textContent = quoteRef.current.textContent.trim();
-      // For Japanese, split by character; for English, split by space then by char
-      const isJapanese = language === 'ja';
-      if (isJapanese) {
-        const chars = textContent.split("").map(char =>
-          char === ' ' || char === '　'
-            ? `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>&nbsp;</span>`
-            : `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char}</span>`
-        ).join("");
-        quoteRef.current.innerHTML = chars;
-      } else {
-        const wordsList = textContent.split(" ");
-        quoteRef.current.innerHTML = wordsList.map(word => {
-          const chars = word.split("").map(char =>
-            `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char}</span>`
-          ).join("");
-          return `<span class="inline-block whitespace-nowrap">${chars}</span>`;
-        }).join(" <span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>&nbsp;</span> ");
-      }
-    }
-
-    const tl = createTimeline({
-      defaults: {
-        ease: 'easeOutQuint'
-      }
-    });
-
-    // Step 1: The 'Cinematic Aperture' Opening
-    const apertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
-    if (apertureTargets.length > 0) {
-      tl.add(apertureTargets, {
-        translateY: (el: any) => (el as HTMLElement).dataset.dir === 'top' ? '-100%' : '100%',
-        duration: 1600,
-        ease: 'easeInOutQuint'
-      }, 200);
-    }
-
-    // Step 2: The Red Sunder (Visual Pulse) + Subliminal Kanji
-    if (slashRef.current) {
-      tl.add(slashRef.current, {
-        scaleX: [0, 1.2],
-        opacity: [0, 1, 0],
-        duration: 1000,
-        ease: 'easeInOutSine'
-      }, 600);
-    }
-
-    if (subliminalRef.current) {
-      tl.add(subliminalRef.current, {
-        opacity: [0, 0.4, 0],
-        scale: [0.8, 1.2],
-        duration: 150,
-        ease: 'steps(1)'
-      }, 700);
-    }
-
-    // Step 3: Precision character reveal
-    tl.add('.p-char', {
-      opacity: [0, 1],
-      translateY: [40, 0],
-      filter: ['blur(20px)', 'blur(0px)'],
-      duration: 800,
-      delay: stagger(15),
-      ease: 'easeOutQuart'
-    }, 1000);
-
-    // Step 4: Elevated Source Presentation
-    if (sourceRef.current) {
-      tl.add(sourceRef.current, {
-        opacity: [0, 1],
-        translateY: [20, 0],
-        duration: 1200,
-        ease: 'easeOutCubic'
-      }, 1800);
-    }
-
-    const exitTimeout = setTimeout(() => {
-      const exitTl = createTimeline({
+    // Small delay to ensure DOM is painted with p-char spans before anime targets them
+    const initTimeout = setTimeout(() => {
+      const tl = createTimeline({
         defaults: {
-          ease: 'easeInQuint'
-        },
-        onComplete: () => {
-          setComplete(true);
-          onComplete?.();
-          document.body.style.overflow = "";
-          
-          // Tactical Entry Flash
-          document.body.classList.remove("impact-flash-active");
-          void document.body.offsetWidth; 
-          document.body.classList.add("impact-flash-active");
-          setTimeout(() => document.body.classList.remove("impact-flash-active"), 700);
+          ease: 'easeOutQuint'
         }
       });
+      timelineRef.current = tl;
 
-      exitTl.add('.p-char', {
-        opacity: 0,
-        translateY: -60,
-        filter: 'blur(30px)',
-        delay: stagger(10, { from: 'center' }),
-        duration: 1000
-      });
-
-      if (sourceRef.current) {
-        exitTl.add(sourceRef.current, {
-          opacity: 0,
-          duration: 800
+      // Step 1: The 'Cinematic Aperture' Opening
+      const apertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
+      if (apertureTargets.length > 0) {
+        tl.add(apertureTargets, {
+          translateY: (el: any) => (el as HTMLElement).dataset.dir === 'top' ? '-100%' : '100%',
+          duration: 1600,
+          ease: 'easeInOutQuint'
         }, 200);
       }
 
-      const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
-      if (exitApertureTargets.length > 0) {
-        exitTl.add(exitApertureTargets, {
-          translateY: 0,
-          duration: 1500,
-          ease: 'easeInExpo'
+      // Step 2: The Red Sunder (Visual Pulse) + Subliminal Kanji
+      if (slashRef.current) {
+        tl.add(slashRef.current, {
+          scaleX: [0, 1.2],
+          opacity: [0, 1, 0],
+          duration: 1000,
+          ease: 'easeInOutSine'
         }, 600);
       }
-    }, readTime);
 
-    // Subtle Perspective Breath
-    let frame = 0;
-    const interval = setInterval(() => {
-      if (containerRef.current) {
-        frame++;
-        const drift = Math.sin(frame / 60) * 0.4;
-        containerRef.current.style.transform = `perspective(1200px) rotateX(${drift}deg) rotateY(${drift * 0.5}deg)`;
+      if (subliminalRef.current) {
+        tl.add(subliminalRef.current, {
+          opacity: [0, 0.4, 0],
+          scale: [0.8, 1.2],
+          duration: 150,
+          ease: 'steps(1)'
+        }, 700);
       }
-    }, 16);
+
+      // Step 3: Precision character reveal
+      const pChars = document.querySelectorAll('.p-char');
+      if (pChars.length > 0) {
+        tl.add('.p-char', {
+          opacity: [0, 1],
+          translateY: [40, 0],
+          filter: ['blur(20px)', 'blur(0px)'],
+          duration: 800,
+          delay: stagger(15),
+          ease: 'easeOutQuart'
+        }, 1000);
+      }
+
+      // Step 4: Elevated Source Presentation
+      if (sourceRef.current) {
+        tl.add(sourceRef.current, {
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 1200,
+          ease: 'easeOutCubic'
+        }, 1800);
+      }
+
+      exitTimeoutRef.current = setTimeout(() => {
+        const exitTl = createTimeline({
+          defaults: {
+            ease: 'easeInQuint'
+          },
+          onComplete: () => {
+            setComplete(true);
+            onComplete?.();
+            document.body.style.overflow = "";
+            
+            // Tactical Entry Flash
+            document.body.classList.remove("impact-flash-active");
+            void document.body.offsetWidth; 
+            document.body.classList.add("impact-flash-active");
+            setTimeout(() => document.body.classList.remove("impact-flash-active"), 700);
+          }
+        });
+
+        if (pChars.length > 0) {
+          exitTl.add('.p-char', {
+            opacity: 0,
+            translateY: -60,
+            filter: 'blur(30px)',
+            delay: stagger(10, { from: 'center' }),
+            duration: 1000
+          });
+        }
+
+        if (sourceRef.current) {
+          exitTl.add(sourceRef.current, {
+            opacity: 0,
+            duration: 800
+          }, 200);
+        }
+
+        const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
+        if (exitApertureTargets.length > 0) {
+          exitTl.add(exitApertureTargets, {
+            translateY: 0,
+            duration: 1500,
+            ease: 'easeInExpo'
+          }, 600);
+        }
+      }, readTime);
+
+      // Subtle Perspective Breath
+      let frame = 0;
+      breathIntervalRef.current = setInterval(() => {
+        if (containerRef.current) {
+          frame++;
+          const drift = Math.sin(frame / 60) * 0.4;
+          containerRef.current.style.transform = `perspective(1200px) rotateX(${drift}deg) rotateY(${drift * 0.5}deg)`;
+        }
+      }, 16);
+    }, 50); // 50ms delay ensures React has painted the p-char spans
 
     return () => {
-      clearTimeout(exitTimeout);
-      clearInterval(interval);
+      clearTimeout(initTimeout);
+      if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+      if (breathIntervalRef.current) clearInterval(breathIntervalRef.current);
       document.body.style.overflow = "";
     };
   }, [complete, onComplete, quote, readTime, language]);
@@ -207,7 +229,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ref={quoteRef} 
           className="text-3xl md:text-7xl lg:text-[8rem] font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.75] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto"
          >
-           {quote}
+           {wrappedChars}
          </h1>
          
          <div 
