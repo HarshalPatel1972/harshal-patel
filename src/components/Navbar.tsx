@@ -83,11 +83,6 @@ export function Navbar() {
           <div className="w-8 h-8 md:w-10 md:h-10 bg-[var(--accent-blood)] flex items-center justify-center shrink-0 cursor-pointer" onClick={() => handleClick("hero")}>
             <span className="text-white font-black font-display text-sm md:text-base tracking-tighter shadow-md">HP</span>
           </div>
-          
-          <div className="flex flex-col items-center gap-1 opacity-40">
-            <span className="font-mono text-[8px] md:text-[10px] tracking-widest" style={{ writingMode: "vertical-rl" }}>SYSTEM: ONLINE</span>
-            <div className="w-[1px] h-8 bg-gradient-to-b from-[var(--text-bone)] to-transparent" />
-          </div>
         </div>
 
         {/* THE TIMELINE TRACK */}
@@ -116,11 +111,6 @@ export function Navbar() {
               {/* Target square right */}
               <div className="w-[3px] h-[3px] bg-[var(--accent-blood)]" />
             </div>
-            {/* Dynamic abstract trailing line based on speed */}
-            <div 
-               className="absolute right-[3px] w-[1px] bg-[var(--accent-blood)] opacity-50 transition-all duration-100 origin-bottom" 
-               style={{ height: `${Math.min(scrollSpeed * 1.5, 80)}px`, bottom: "0" }} 
-            />
           </div>
 
           {/* CHAPTER MARKERS / NAV LINKS */}
@@ -153,9 +143,6 @@ export function Navbar() {
 
         {/* BOTTOM HUD INDICATOR */}
         <div className="flex flex-col items-center gap-2 opacity-40 z-20">
-          <span className="font-mono text-[8px] md:text-[10px] tracking-widest text-center">
-            {Math.round(scrollProgress)}%
-          </span>
           <div className="w-8 h-8 rounded-full border border-dashed border-[var(--text-bone)] flex items-center justify-center animate-[spin_10s_linear_infinite]">
             <div className="w-1.5 h-1.5 bg-[var(--text-bone)]/50" />
           </div>

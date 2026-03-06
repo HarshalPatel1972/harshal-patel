@@ -1,3 +1,4 @@
 Navbar idea 1 (Film Strip): A vertical film strip sidebar on the left edge with hover-to-expand labels + Mobile cinematic full-screen overlay.
 Navbar idea 2 (HUD Viewfinder): 4 dynamic framing brackets positioned in the corners of the viewport with mix-blend-difference text. No centralized bar, immersive targeting reticle in the center.
 Navbar idea 3 (Manga Grid): A strict top-aligned grid layout resembling manga panels.
+Animation idea 1 (Scene Cut): A quick flash animation style when navigating from one section to another.
