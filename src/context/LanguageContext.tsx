@@ -26,16 +26,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = (lang: Language) => {
     if (lang === language) return;
     
-    // Trigger transition out (fade to 0 opacity over 400ms)
+    // Trigger transition out (fade to 0 opacity over 800ms for smooth drift)
     setIsTransitioning(true);
     localStorage.setItem("mappa-lang", lang);
     
     // Switch the text directly when opacity is exactly 0
     setTimeout(() => {
       setLanguageState(lang);
-      // Remove transitioning class, starting the fade back in (400ms)
+      // Remove transitioning class, starting the fade back in (800ms)
       setIsTransitioning(false);
-    }, 400); 
+    }, 800); 
   };
 
   return (
@@ -51,8 +51,8 @@ export function LanguageTransitionWrapper({ children, className = "" }: { childr
   const { isTransitioning, language } = useLanguage();
   return (
     <div 
-      className={`transition-all duration-[400ms] ease-in-out ${
-        isTransitioning ? "blur-[12px] opacity-0 grayscale" : "blur-0 opacity-100 grayscale-0"
+      className={`transition-all duration-[800ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+        isTransitioning ? "blur-[4px] opacity-0 grayscale scale-[0.98]" : "blur-0 opacity-100 grayscale-0 scale-100"
       } ${language === 'ja' ? 'font-japanese' : ''} ${className}`}
     >
       {children}

@@ -22,12 +22,12 @@ export default function Home() {
       <main className="relative">
         <Preloader onComplete={() => setShowContent(true)} />
         
-        {/* Navbar is position:fixed — must NOT be inside any wrapper div that could affect its height */}
+        {/* Fixed HUD elements MUST remain outside LanguageTransitionWrapper */}
         <Navbar />
+        <ScrollLine isVisible={showContent} />
 
         <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
           <SystemBanner />
-          <ScrollLine />
           <Hero />
           
           <Projects />
