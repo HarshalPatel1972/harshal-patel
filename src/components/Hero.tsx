@@ -94,32 +94,58 @@ export function Hero() {
              {currentProfile.name.split(" ").slice(1).join(" ")}
            </h1>
            
-           {/* Role Accent Block overlapping the typography */}
-           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[20%] right-auto md:right-[10%] bg-[var(--accent-blood)] text-white font-black font-display text-sm sm:text-xl md:text-3xl px-6 py-3 sm:px-8 sm:py-5 uppercase tracking-[0.15em] mt-4 md:mt-0 mx-auto md:mx-0 max-w-[280px] md:max-w-none w-full md:w-auto text-center manga-cut-tr shadow-2xl">
-             {currentProfile.title}
+           {/* Brutalist Role Stamp */}
+           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[15%] right-auto md:right-[5%] flex flex-col items-end mt-8 md:mt-0 mx-auto w-fit md:w-auto">
+             <div className="bg-[var(--text-bone)] text-[var(--bg-ink)] px-6 py-3 md:px-10 md:py-4 border-r-8 border-[var(--accent-blood)] shadow-[12px_12px_0px_0px_rgba(217,17,17,0.8)] transition-transform hover:-translate-y-1 hover:-translate-x-1 duration-300">
+               <span className="font-black font-display text-base sm:text-2xl md:text-4xl uppercase tracking-[0.2em] md:tracking-[0.4em] ml-2 md:ml-4">
+                 {currentProfile.title}
+               </span>
+             </div>
+             {/* Small translated technical sub-text common in MAPPA/Evangelion UIs */}
+             <div className="text-[var(--accent-blood)] text-[10px] md:text-[12px] tracking-[0.4em] font-mono font-bold mt-4 mr-2">
+               {"// SYSTEM.ROLE.EXEC_"}
+             </div>
            </div>
         </div>
 
         {/* Clear, straightforward tagline without typewriter or terminal nonsense */}
-        <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-16 mt-8 md:mt-4">
+        <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
           {currentProfile.tagline}
         </p>
 
-        {/* Aggressive, Diagonal Brutalist CTAs */}
-        <div className="cinematic-in flex flex-col sm:flex-row gap-6 w-full sm:w-auto max-w-[280px] md:max-w-none self-center md:self-start -mt-[15px]">
+        {/* Ultra-Stylized Technical MAPPA CTAs */}
+        <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start mt-2">
+          
           <a ref={cta1Ref as any} href="#projects"
-            className="group relative flex items-center justify-center gap-4 bg-[var(--text-bone)] text-[var(--bg-ink)] px-8 py-5 md:px-12 md:py-6 text-sm md:text-lg font-black font-display uppercase tracking-widest manga-cut-br brutal-shadow hover:bg-[var(--accent-blood)] hover:text-white transition-all duration-300 transform -skew-x-3"
+            className="group relative flex items-center justify-between min-w-[260px] md:min-w-[320px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden"
           >
-            <span>{language === 'en' ? "View Work" : "実績を見る"}</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" className="group-hover:translate-x-2 transition-transform duration-300">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+            {/* The MAPPA bleeding fill block that expands */}
+            <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
+            
+            <div className="relative z-10 flex items-center px-6 py-4 md:px-8 md:py-6 w-full">
+              <span className="text-white font-black font-display text-lg md:text-2xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
+                {language === 'en' ? "View Work" : "実績を見る"}
+              </span>
+              <span className="ml-auto text-[10px] md:text-xs font-mono tracking-widest text-[var(--text-bone)]/50 group-hover:text-white transition-colors duration-500">
+                [01]
+              </span>
+            </div>
           </a>
           
           <a ref={cta2Ref as any} href="#contact"
-             className="relative flex items-center justify-center px-8 py-5 md:px-12 md:py-6 bg-[var(--bg-ink)] border-2 border-[var(--text-bone)] text-[var(--text-bone)] text-sm md:text-lg font-black font-display uppercase tracking-widest manga-cut-tr hover:bg-[var(--text-bone)] hover:text-[var(--bg-ink)] transition-colors duration-300 transform -skew-x-3"
+             className="group relative flex items-center justify-between min-w-[260px] md:min-w-[320px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden"
           >
-            {language === 'en' ? "Contact" : "連絡する"}
+            {/* The fill block that expands from the opposite side */}
+            <div className="absolute inset-0 bg-[var(--text-bone)] scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
+            
+            <div className="relative z-10 flex items-center px-6 py-4 md:px-8 md:py-6 w-full">
+              <span className="text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black font-display text-lg md:text-2xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
+                {language === 'en' ? "Contact" : "連絡する"}
+              </span>
+              <span className="ml-auto text-[10px] md:text-xs font-mono tracking-widest text-[var(--accent-blood)] group-hover:text-[var(--bg-ink)] transition-colors duration-500">
+                [02]
+              </span>
+            </div>
           </a>
         </div>
 
