@@ -12,9 +12,7 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { ScrollLine } from "@/components/AnimationKit";
 
-const Preloader = dynamic(() => import("@/components/Preloader"), {
-  ssr: false, // Prevent SSR to avoid hydration mismatch with random quotes
-});
+const Preloader = dynamic(() => import("@/components/Preloader"));
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false);

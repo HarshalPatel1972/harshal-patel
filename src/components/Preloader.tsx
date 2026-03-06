@@ -7,6 +7,8 @@ import { useLanguage } from "@/context/LanguageContext";
 
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLHeadingElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
@@ -64,7 +66,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   }, [quote, language]);
 
   useEffect(() => {
-    if (complete) return;
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (complete || !mounted) return;
     document.body.style.overflow = "hidden";
 
     // Small delay to ensure DOM is painted with p-char spans before anime targets them
@@ -214,7 +220,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none opacity-0 select-none"
       >
         <span className="text-[25vw] font-black text-[#d91111] opacity-20 filter blur-sm">
-          {kanjiList[quoteIndex.current % kanjiList.length]}
+          {mounted ? kanjiList[quoteIndex.current % kanjiList.length] : null}
         </span>
       </div>
 
@@ -229,7 +235,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ref={quoteRef} 
           className="text-3xl md:text-7xl lg:text-[8rem] font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.75] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto"
          >
-           {wrappedChars}
+           {mounted ? wrappedChars : null}
          </h1>
          
          <div 
@@ -239,7 +245,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
               <span className="font-mono text-xs md:text-3xl text-[#d91111] tracking-[0.3em] md:tracking-[1.1em] uppercase font-black italic">
-                {source}
+                {mounted ? source : null}
               </span>
               <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
             </div>
