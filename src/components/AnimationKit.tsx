@@ -220,28 +220,40 @@ export function useParallax(speed: number = 0.3) {
  * 🎞️ Manga Reading Progress — Massive fixed percentage reading with color inversion
  */
 export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
-  const [percent, setPercent] = React.useState(0);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateScrollOptions = () => {
+      if (!textRef.current) return;
       const scrollY = window.scrollY;
       const totalH = document.documentElement.scrollHeight - window.innerHeight;
       let p = Math.round((scrollY / totalH) * 100);
       if (isNaN(p)) p = 0;
       if (p < 0) p = 0;
       if (p > 100) p = 100;
-      setPercent(p);
+      
+      textRef.current.innerText = String(p).padStart(3, '0');
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollOptions);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // init
+    updateScrollOptions(); // init
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div className={`fixed bottom-4 right-[64px] md:bottom-8 md:right-[112px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-       <div className="font-display font-black text-[3rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end">
-         {String(percent).padStart(3, '0')}
+       <div ref={textRef} className="font-display font-black text-[3rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end w-[4.5rem] md:w-[15rem] justify-end">
+         000
        </div>
     </div>
   );
