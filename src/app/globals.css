@@ -134,6 +134,12 @@ body::before {
   background: var(--accent-blood);
 }
 
+/* ─── TEXT STROKE ─── */
+.text-stroke-bone {
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: var(--text-bone);
+}
+
 /* ─── SECTION DIVIDER (Manga Tape) ─── */
 .section-fade {
   position: relative;

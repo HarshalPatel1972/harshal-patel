@@ -87,9 +87,7 @@ export function Hero() {
            </h1>
            
            {/* LAST NAME (Offset, outlined, intersecting) */}
-           <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%]"
-               style={{ WebkitTextStroke: "2px var(--text-bone)" }}
-           >
+           <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone">
              {currentProfile.name.split(" ").slice(1).join(" ")}
            </h1>
            
@@ -105,7 +103,7 @@ export function Hero() {
         </p>
 
         {/* Bold, Minimalist CTAs */}
-        <div className="cinematic-in flex flex-col sm:flex-row gap-4 w-full sm:w-auto max-w-[280px] md:max-w-none self-center md:self-start">
+        <div className="cinematic-in flex flex-col sm:flex-row gap-4 w-full sm:w-auto max-w-[280px] md:max-w-none self-center md:self-start -mt-[15px]">
           <a ref={cta1Ref as any} href="#projects"
             className="flex items-center justify-center gap-4 bg-[var(--text-bone)] text-[var(--bg-ink)] px-8 py-4 md:px-10 md:py-5 text-sm md:text-base font-bold uppercase tracking-widest hover:scale-105 transition-transform duration-300 transform origin-left"
           >
