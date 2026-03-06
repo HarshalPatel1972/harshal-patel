@@ -87,7 +87,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--bg-ink)] border-l border-[var(--text-bone)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
+      <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--text-bone)] border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
         
         {/* TOP BRAND INDICATOR */}
         <div className="flex flex-col items-center gap-4 z-20">
@@ -99,13 +99,13 @@ export function Navbar() {
         {/* THE TIMELINE TRACK */}
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
           {/* Faint static track line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--text-bone)]/5" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--bg-ink)]/10" />
           
           {/* Tick marks representing the track (pointing inwards) */}
           <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-20 pointer-events-none">
              {Array.from({ length: 20 }).map((_, i) => (
                <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-start pl-2"}`}>
-                 <div className={`h-[1px] bg-[var(--text-bone)] ${i % 5 === 0 ? "w-4" : "w-1.5"}`} />
+                 <div className={`h-[1px] bg-[var(--bg-ink)] ${i % 5 === 0 ? "w-4" : "w-1.5"}`} />
                </div>
              ))}
           </div>
@@ -146,7 +146,7 @@ export function Navbar() {
                   aria-label={`Navigate to ${item.label}`}
                 >
                   <span 
-                    className={`font-display font-bold ${language === 'ja' ? 'text-sm md:text-lg' : 'text-[10px] md:text-[12px]'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/30 group-hover:text-[var(--text-bone)]/80"}`} 
+                    className={`font-display font-bold ${language === 'ja' ? 'text-sm md:text-lg' : 'text-[10px] md:text-[12px]'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--bg-ink)] drop-shadow-[0_0_8px_rgba(5,5,5,0.4)] scale-110" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} 
                     style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                   >
                     {item.label}
