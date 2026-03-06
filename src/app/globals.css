@@ -224,3 +224,54 @@ body::before {
     box-shadow: 4px 4px 0px 0px var(--accent-blood);
   }
 }
+
+/* ─── CASCADING LANGUAGE TEXT SMOKE TRANSITION ─── */
+/* Target only textual content inside the wrapper */
+.language-transition-root h1,
+.language-transition-root h2,
+.language-transition-root h3,
+.language-transition-root h4,
+.language-transition-root h5,
+.language-transition-root h6,
+.language-transition-root p,
+.language-transition-root span.text-smoke,
+.language-transition-root a,
+.language-transition-root button {
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+              filter 0.8s cubic-bezier(0.25, 1, 0.5, 1), 
+              transform 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+              color 0.8s cubic-bezier(0.25, 1, 0.5, 1),
+              text-shadow 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.language-transition-root.is-smoking h1,
+.language-transition-root.is-smoking h2,
+.language-transition-root.is-smoking h3,
+.language-transition-root.is-smoking h4,
+.language-transition-root.is-smoking h5,
+.language-transition-root.is-smoking h6,
+.language-transition-root.is-smoking p,
+.language-transition-root.is-smoking span.text-smoke,
+.language-transition-root.is-smoking a,
+.language-transition-root.is-smoking button {
+  color: transparent !important;
+  text-shadow: 0 0 16px rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(-8px);
+  
+  transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), 
+              filter 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), 
+              transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+              color 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+              text-shadow 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Pseudo-random staggering for an organic, individual smoke feeling */
+.language-transition-root.is-smoking h1 { transition-delay: 0.0s; }
+.language-transition-root.is-smoking h2, 
+.language-transition-root.is-smoking h3 { transition-delay: 0.08s; }
+.language-transition-root.is-smoking p { transition-delay: 0.12s; }
+.language-transition-root.is-smoking a,
+.language-transition-root.is-smoking button { transition-delay: 0.18s; }
+.language-transition-root.is-smoking span.text-smoke { transition-delay: 0.22s; }

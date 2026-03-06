@@ -51,9 +51,7 @@ export function LanguageTransitionWrapper({ children, className = "" }: { childr
   const { isTransitioning, language } = useLanguage();
   return (
     <div 
-      className={`transition-all duration-[800ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
-        isTransitioning ? "blur-[4px] opacity-0 grayscale scale-[0.98]" : "blur-0 opacity-100 grayscale-0 scale-100"
-      } ${language === 'ja' ? 'font-japanese' : ''} ${className}`}
+      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${className}`}
     >
       {children}
     </div>
