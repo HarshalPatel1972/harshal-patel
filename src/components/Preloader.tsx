@@ -196,7 +196,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       if (breathIntervalRef.current) clearInterval(breathIntervalRef.current);
       document.body.style.overflow = "";
     };
-  }, [complete, onComplete, quote, readTime, language]);
+  }, [complete, onComplete, quote, readTime, language, mounted]);
 
   if (complete) return null;
 
