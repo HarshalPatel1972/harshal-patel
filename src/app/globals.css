@@ -238,7 +238,8 @@ body::before {
 .language-transition-root a,
 .language-transition-root button {
   transition: color 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-              text-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+              text-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+              -webkit-text-stroke-color 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .language-transition-root.is-smoking h1,
@@ -252,10 +253,12 @@ body::before {
 .language-transition-root.is-smoking a,
 .language-transition-root.is-smoking button {
   color: transparent !important;
-  text-shadow: 0 -8px 16px rgba(232, 232, 230, 0.4);
+  -webkit-text-stroke-color: transparent !important;
+  text-shadow: 0 0 20px rgba(232, 232, 230, 0.5);
   
   transition: color 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
-              text-shadow 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+              text-shadow 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+              -webkit-text-stroke-color 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* Pseudo-random staggering for an organic, individual smoke feeling */
