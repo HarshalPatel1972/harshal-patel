@@ -125,22 +125,19 @@ export function Navbar() {
           </div>
 
           {/* CHAPTER MARKERS / NAV LINKS */}
-          <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
-            {currentNavItems.map((item, index) => {
+          <div className="flex flex-col justify-between items-center w-full h-full relative z-20 pointer-events-none py-4 md:py-8">
+            {currentNavItems.map((item) => {
               const isActive = active === item.id;
-              // Add proper spacing to match standard page height distributions
-              const topOffset = index === 0 ? "0%" : index === 1 ? "30%" : index === 2 ? "65%" : "100%";
 
               return (
                 <button
                   key={item.id}
                   onClick={() => handleClick(item.id)}
-                  className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300"
-                  style={{ top: topOffset, transform: `translateY(-50%)` }}
+                  className="pointer-events-auto group flex flex-col items-center justify-center transition-all duration-300 flex-1"
                   aria-label={`Navigate to ${item.label}`}
                 >
                   <span 
-                    className={`font-display font-bold ${language === 'ja' ? 'text-lg' : 'text-[10px] md:text-[12px]'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/30 group-hover:text-[var(--text-bone)]/80"}`} 
+                    className={`font-display font-bold ${language === 'ja' ? 'text-sm md:text-lg' : 'text-[10px] md:text-[12px]'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/30 group-hover:text-[var(--text-bone)]/80"}`} 
                     style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                   >
                     {item.label}

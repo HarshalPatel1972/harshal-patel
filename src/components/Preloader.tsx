@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import { animate, createTimeline, stagger } from "animejs";
 import { mappaQuotes } from "@/data/quotes";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
@@ -14,13 +15,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const slashRef = useRef<HTMLDivElement>(null);
   const subliminalRef = useRef<HTMLDivElement>(null);
 
+  const { language } = useLanguage();
+
   const { quote, source, readTime } = useMemo(() => {
-    const q = mappaQuotes[Math.floor(Math.random() * mappaQuotes.length)];
+    const activeQuotes = mappaQuotes[language];
+    const q = activeQuotes[Math.floor(Math.random() * activeQuotes.length)];
     const words = q.text.split(" ").length;
     // Longer read time for complete cinematic immersion
     const time = Math.max(5500, 4000 + (words * 320)); 
     return { quote: q.text, source: q.source.split(" // ")[0], readTime: time };
-  }, []);
+  }, [language]);
 
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
