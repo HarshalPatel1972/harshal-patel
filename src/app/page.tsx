@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
+import { SystemBanner } from "@/components/SystemBanner";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { About } from "@/components/About";
@@ -22,6 +23,7 @@ export default function Home() {
       <Preloader onComplete={() => setShowContent(true)} />
       
       <div className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
+        <SystemBanner />
         <ScrollLine />
         <Navbar />
         <Hero />
