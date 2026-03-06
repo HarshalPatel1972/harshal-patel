@@ -1,0 +1,1 @@
+Navbar idea 1 (Film Strip): A vertical film strip sidebar on the left edge with hover-to-expand labels + Mobile cinematic full-screen overlay.
