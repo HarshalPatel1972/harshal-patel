@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
-import { animate, createTimeline, stagger } from "animejs";
+import { useEffect, useState, useRef } from "react";
+import { createTimeline, stagger } from "animejs";
 import { mappaQuotes } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
-  const [quoteData, setQuoteData] = useState<{ quote: string; source: string; readTime: number } | null>(null);
-  const initialized = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const quoteRef = useRef<HTMLHeadingElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
@@ -19,36 +17,42 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const { language } = useLanguage();
 
+  // Pick a random quote once on mount, stable across renders
+  const quoteIndex = useRef(Math.floor(Math.random() * mappaQuotes.en.length));
+  const activeQuotes = mappaQuotes[language];
+  const q = activeQuotes[quoteIndex.current % activeQuotes.length];
+  const quote = q.text;
+  const source = q.source.split(" // ")[0];
+  const words = quote.split(/\s+/).length;
+  const readTime = Math.max(5500, 4000 + words * 320);
+
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
-  // 1. Resolve quote exclusively on client-side to avoid SSR mismatch breaking the DOM
   useEffect(() => {
-    if (quoteData) return;
-    const activeQuotes = mappaQuotes[language];
-    const q = activeQuotes[Math.floor(Math.random() * activeQuotes.length)];
-    const words = q.text.split(" ").length;
-    // Longer read time for complete cinematic immersion
-    const time = Math.max(5500, 4000 + (words * 320)); 
-    setQuoteData({ quote: q.text, source: q.source.split(" // ")[0], readTime: time });
-  }, [language, quoteData]);
-
-  // 2. Initialize AnimeJS logic only ONCE when quoteData is injected
-  useEffect(() => {
-    if (complete || !quoteData || initialized.current) return;
-    
-    // Lock initialized to prevent double-execution from StrictMode
-    initialized.current = true;
+    if (complete) return;
     document.body.style.overflow = "hidden";
 
     // Surgical Character Wrapping for pinpoint animation control
     if (quoteRef.current && quoteRef.current.textContent) {
-      const words = quoteRef.current.textContent.trim().split(" ");
-      quoteRef.current.innerHTML = words.map(word => {
-        const chars = word.split("").map(char => 
-          `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char}</span>`
+      const textContent = quoteRef.current.textContent.trim();
+      // For Japanese, split by character; for English, split by space then by char
+      const isJapanese = language === 'ja';
+      if (isJapanese) {
+        const chars = textContent.split("").map(char =>
+          char === ' ' || char === '　'
+            ? `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>&nbsp;</span>`
+            : `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char}</span>`
         ).join("");
-        return `<span class="inline-block whitespace-nowrap">${chars}</span>`;
-      }).join(" <span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>&nbsp;</span> ");
+        quoteRef.current.innerHTML = chars;
+      } else {
+        const wordsList = textContent.split(" ");
+        quoteRef.current.innerHTML = wordsList.map(word => {
+          const chars = word.split("").map(char =>
+            `<span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>${char}</span>`
+          ).join("");
+          return `<span class="inline-block whitespace-nowrap">${chars}</span>`;
+        }).join(" <span class='p-char inline-block opacity-0 translate-y-8 filter blur-lg will-change-transform'>&nbsp;</span> ");
+      }
     }
 
     const tl = createTimeline({
@@ -147,7 +151,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ease: 'easeInExpo'
         }, 600);
       }
-    }, quoteData.readTime);
+    }, readTime);
 
     // Subtle Perspective Breath
     let frame = 0;
@@ -164,10 +168,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       clearInterval(interval);
       document.body.style.overflow = "";
     };
-  }, [complete, onComplete, quoteData]);
+  }, [complete, onComplete, quote, readTime, language]);
 
   if (complete) return null;
-  if (!quoteData) return <div className="fixed inset-0 z-[999999] bg-[#050505]" />; // Block initial SSR render
 
   return (
     <div 
@@ -189,7 +192,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none opacity-0 select-none"
       >
         <span className="text-[25vw] font-black text-[#d91111] opacity-20 filter blur-sm">
-          {kanjiList[Math.floor(Math.random() * kanjiList.length)]}
+          {kanjiList[quoteIndex.current % kanjiList.length]}
         </span>
       </div>
 
@@ -204,7 +207,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ref={quoteRef} 
           className="text-3xl md:text-7xl lg:text-[8rem] font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.75] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto"
          >
-           {quoteData.quote}
+           {quote}
          </h1>
          
          <div 
@@ -214,7 +217,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
               <span className="font-mono text-xs md:text-3xl text-[#d91111] tracking-[0.3em] md:tracking-[1.1em] uppercase font-black italic">
-                {quoteData.source}
+                {source}
               </span>
               <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
             </div>
@@ -228,4 +231,3 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     </div>
   );
 }
-

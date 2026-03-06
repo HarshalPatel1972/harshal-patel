@@ -49,7 +49,7 @@ export function Projects() {
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-24 border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
-             CHAPTER 01
+             {language === 'en' ? 'CHAPTER 01' : '第一章'}
            </div>
            <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
              {language === 'en' ? <>SELECTED <br/> WORKS</> : <>選定された<br/>作品</>}

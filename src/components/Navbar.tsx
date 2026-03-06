@@ -6,16 +6,16 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const NAV_ITEMS = {
   en: [
-    { id: "hero", label: "HOME", percent: 0 },
+    { id: "hero", label: "HOME", percent: 5 },
     { id: "projects", label: "WORK", percent: 33 },
-    { id: "about", label: "ORIGIN", percent: 66 },
-    { id: "contact", label: "SIGNAL", percent: 100 },
+    { id: "about", label: "ORIGIN", percent: 65 },
+    { id: "contact", label: "SIGNAL", percent: 95 },
   ],
   ja: [
-    { id: "hero", label: "始", percent: 0 },
+    { id: "hero", label: "始", percent: 5 },
     { id: "projects", label: "作", percent: 33 },
-    { id: "about", label: "源", percent: 66 },
-    { id: "contact", label: "信", percent: 100 },
+    { id: "about", label: "源", percent: 65 },
+    { id: "contact", label: "信", percent: 95 },
   ]
 };
 

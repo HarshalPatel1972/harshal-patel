@@ -73,7 +73,7 @@ export function About() {
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className="absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black font-display px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black">
-              CHAPTER 02
+              {language === 'en' ? 'CHAPTER 02' : '第二章'}
             </div>
             
             <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
@@ -103,8 +103,8 @@ export function About() {
          <ScrollReveal duration={1200} delay={200} className="w-full">
            <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
               <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center justify-between">
-                 RECORDED <br/> EXPERIENCE
-                 <span className="text-[10px] md:text-sm font-mono tracking-normal text-black bg-[var(--accent-blood)] px-2 py-1 rotate-[-5deg]">CLASSIFIED</span>
+                 {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : <>記録された<br/>経験</>}
+                 <span className="text-[10px] md:text-sm font-mono tracking-normal text-black bg-[var(--accent-blood)] px-2 py-1 rotate-[-5deg]">{language === 'en' ? 'CLASSIFIED' : '機密'}</span>
               </div>
               
               <div className="flex flex-col bg-white">
@@ -142,9 +142,9 @@ export function About() {
                
                {/* Massive Stats Block inside the panel */}
                <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
-                 <MangaStat value={350} label="Algorithms" prefix=">" />
+                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
                  <MangaStat value={8.9} label="CGPA" />
-                 <MangaStat value={11} label="Systems Built" prefix="" />
+                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
                </div>
 
                {/* Raw Skill Bars */}

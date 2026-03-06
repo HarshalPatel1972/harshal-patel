@@ -81,7 +81,7 @@ export function Contact() {
         {/* Header Block */}
         <ScrollReveal duration={1000}>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
-             CHAPTER 03
+             {language === 'en' ? 'CHAPTER 03' : '第三章'}
            </div>
            <h2 className="text-4xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8">
              {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></>}
