@@ -43,7 +43,7 @@ export function Projects() {
       <SubliminalKanji kanji="作品" position="left" />
 
       {/* Massive Section Title (MAPPA Layout) */}
-      <div className="w-full max-w-7xl relative z-10 flex flex-col md:flex-row justify-between items-end mb-8 md:mb-24 border-b-4 border-black pb-8">
+      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-24 border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
              CHAPTER 01
@@ -52,12 +52,12 @@ export function Projects() {
              SELECTED <br/> WORKS
            </h2>
         </div>
-        <p className="text-black/60 font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
+        <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
            Archival records of systems constructed and curses excised.
         </p>
       </div>
 
-      <div className="w-full max-w-7xl relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className="w-full max-w-7xl relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         {projects.map((project, i) => {
           const isHovered = activeIndex === i;
           

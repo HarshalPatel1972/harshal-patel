@@ -61,7 +61,7 @@ export function About() {
          </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative z-10 flex flex-col gap-12 lg:gap-24 mt-10 md:mt-32">
+      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-10 md:mt-32">
         
         {/* =========================================
             PANEL 1: Bio & Core Philosophy (Left Cut)
@@ -72,7 +72,7 @@ export function About() {
               CHAPTER 02
             </div>
             
-            <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative z-10">
+            <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
                <div>
                  <h3 className="text-4xl sm:text-5xl md:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-[0.85] mb-8">
                    Software <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>Engineer</span>
