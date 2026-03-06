@@ -74,12 +74,9 @@ export function Navbar() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Generate random hex logic based on scrolling intensity for extra HUD flavor
-  const hexHash = Math.floor(scrollProgress * 100 + scrollSpeed * 13).toString(16).toUpperCase().padStart(4, "0");
-
   return (
     <>
-      <nav className="fixed left-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--bg-ink)] border-r border-[var(--text-bone)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
+      <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--bg-ink)] border-l border-[var(--text-bone)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
         
         {/* TOP BRAND INDICATOR */}
         <div className="flex flex-col items-center gap-4 z-20">
@@ -98,10 +95,10 @@ export function Navbar() {
           {/* Faint static track line */}
           <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--text-bone)]/5" />
           
-          {/* Tick marks representing the track */}
+          {/* Tick marks representing the track (pointing inwards) */}
           <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-20 pointer-events-none">
              {Array.from({ length: 20 }).map((_, i) => (
-               <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-end pr-2"}`}>
+               <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-start pl-2"}`}>
                  <div className={`h-[1px] bg-[var(--text-bone)] ${i % 5 === 0 ? "w-4" : "w-1.5"}`} />
                </div>
              ))}
@@ -115,10 +112,6 @@ export function Navbar() {
             {/* The literal thumb block */}
             <div className="w-full h-8 md:h-12 border-2 border-[var(--accent-blood)] bg-[var(--bg-ink)]/80 backdrop-blur-sm relative flex items-center justify-center">
               <div className="w-1.5 h-1.5 bg-[var(--accent-blood)]" />
-              {/* Cycling Data */}
-              <span className="absolute -right-8 font-mono text-[8px] md:text-[9px] text-[var(--accent-blood)] font-bold tracking-tighter drop-shadow-md">
-                [{hexHash}]
-              </span>
             </div>
             {/* Speed trail */}
             <div 
@@ -142,12 +135,11 @@ export function Navbar() {
                   style={{ top: topOffset, transform: `translateY(-50%)` }}
                   aria-label={`Navigate to ${item.label}`}
                 >
-                  <span className={`text-xl md:text-2xl font-black font-display leading-none transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/20 group-hover:text-[var(--text-bone)]/80"}`}>
-                    {item.kanji}
-                  </span>
-                  
-                  {/* Subtle reveal of the English label on hover/active */}
-                  <span className={`absolute left-14 whitespace-nowrap font-mono text-[9px] md:text-[10px] tracking-[0.3em] font-bold uppercase transition-all duration-300 pointer-events-none ${isActive ? "opacity-100 text-[var(--text-bone)] translate-x-0" : "opacity-0 text-[var(--text-bone)]/50 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}>
+                  {/* Vertical English labels instead of Kanji */}
+                  <span 
+                    className={`font-display font-bold text-[10px] md:text-[12px] uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/30 group-hover:text-[var(--text-bone)]/80"}`} 
+                    style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
+                  >
                     {item.label}
                   </span>
                 </button>
