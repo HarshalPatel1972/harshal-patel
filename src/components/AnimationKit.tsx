@@ -200,12 +200,21 @@ export function useParallax(speed: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
+    let ticking = false;
+
     const handleScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const viewCenter = window.innerHeight / 2;
-      const offset = (center - viewCenter) * speed;
-      el.style.transform = `translateY(${offset}px)`;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Optimize DOM reads and writes by batching inside requestAnimationFrame
+          const rect = el.getBoundingClientRect();
+          const center = rect.top + rect.height / 2;
+          const viewCenter = window.innerHeight / 2;
+          const offset = (center - viewCenter) * speed;
+          el.style.transform = `translateY(${offset}px)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -223,14 +232,23 @@ export function ScrollLine() {
   const [percent, setPercent] = React.useState(0);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const totalH = document.documentElement.scrollHeight - window.innerHeight;
-      let p = Math.round((scrollY / totalH) * 100);
-      if (isNaN(p)) p = 0;
-      if (p < 0) p = 0;
-      if (p > 100) p = 100;
-      setPercent(p);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Calculate scroll progress using requestAnimationFrame to prevent state thrashing
+          const scrollY = window.scrollY;
+          const totalH = document.documentElement.scrollHeight - window.innerHeight;
+          let p = Math.round((scrollY / totalH) * 100);
+          if (isNaN(p)) p = 0;
+          if (p < 0) p = 0;
+          if (p > 100) p = 100;
+          setPercent(p);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
