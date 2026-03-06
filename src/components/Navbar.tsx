@@ -125,7 +125,7 @@ export function Navbar() {
           </div>
 
           {/* CHAPTER MARKERS / NAV LINKS */}
-          <div className="flex flex-col justify-between items-center w-full h-full relative z-20 pointer-events-none py-4 md:py-8">
+          <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
             {currentNavItems.map((item) => {
               const isActive = active === item.id;
 
@@ -133,7 +133,8 @@ export function Navbar() {
                 <button
                   key={item.id}
                   onClick={() => handleClick(item.id)}
-                  className="pointer-events-auto group flex flex-col items-center justify-center transition-all duration-300 flex-1"
+                  className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300"
+                  style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }}
                   aria-label={`Navigate to ${item.label}`}
                 >
                   <span 
