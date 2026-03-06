@@ -1,0 +1,44 @@
+# Planning the MAPPA "Scrollbar/Navbar Hybrid" (The Timeline)
+
+## Goal Description
+The user pointed out that a navbar exists to make navigation *easy*, and our abstract viewfinder/HUD made it too difficult to discover. At the same time, returning to a standard "bar" is a step backward from innovation.
+
+The user suggested an incredible idea: **combining the scrollbar and the navbar into a single, cohesive unit on the left side of the screen.**
+
+We will replace the browser's default scrollbar with a highly styled, MAPPA-themed custom vertical timeline on the far left. This timeline acts as both a visual progress bar indicating where you are on the page, and an interactive navigation menu.
+
+## Proposed Design: "The Timeline HUD"
+
+### Structural Layout (Desktop & Mobile)
+- A prominent vertical track runs the entire height of the left edge of the viewport.
+- The standard browser scrollbar will be hidden globally.
+- The track features a bright red, glowing "thumb" (the active scroll indicator) that moves up and down as you scroll the page.
+- At exact intervals along the track (corresponding to the actual height/distance of each section), we place our chapter markers: `01 HOME`, `02 WORK`, etc.
+- **The innovation:** When you are scrolling, it feels like an Evangelion sync-ratio graph or technical sensor reading moving down a pipeline. You immediately grasp exactly how far along the page you are. You can click on the markers to snap to them, or click anywhere on the track to scroll there.
+
+### Aesthetic Elements (The MAPPA Vibe)
+- **Track Design:** Not a solid line, but heavily segmented with tick marks, resembling an audio timeline or a complex technical blueprint measurement tape.
+- **Thumb Design:** The scroll indicator is a solid, brutalist red block `[ ── ]`. When it passes over a chapter marker, that marker glows bright white and its corresponding Kanji flashes.
+- **Micro-Animations:** As the thumb slides down, numbers could rapidly cycle or tick upward (like a timer or altitude meter in anime). Heavy use of `font-mono` and `font-display`.
+
+## Implementation Strategy
+
+1. **Hide the Native Scrollbar ([app/globals.css](file:///c:/Users/Harshal%20Patel/Desktop/Por/src/app/globals.css)):**
+   - Apply `::-webkit-scrollbar { display: none; }` and `-ms-overflow-style: none; scrollbar-width: none;` to the `body` and `html`.
+
+2. **The `TimelineNavbar.tsx` Component:**
+   - A fixed `nav` running from `top-0` to `bottom-0` along the `left-0` edge.
+   - Use a React `useEffect` to listen to the window's `scrollY` and update the state to calculate the exact percentage of the scroll depth.
+   - Render the red "thumb" block dynamically positioned using `top: ${scrollPercentage}%`.
+
+3. **Page Content Offset:**
+   - The timeline will take up roughly `64px` (or `w-16`) of width on desktop and `40px` (`w-10`) on mobile.
+   - We must wrap the main content in a `div` that has a `pl-16` (desktop) and `pl-10` (mobile) to ensure nothing is hidden behind the track.
+
+## Why this solves the problem
+- **Usability:** It is fundamentally a scrollbar combined with a sticky menu. The brain instantly understands how a scrollbar works. The navigation is crystal clear and always accessible.
+- **Innovation:** It breaks the mold of standard top-aligned navbars without sacrificing functionality. Turning the entire screen's scrolling action into a tactical timeline is deeply cinematic and screams MAPPA/anime HUD.
+
+## User Review Required
+> [!IMPORTANT]
+> Please review this "Timeline HUD" concept. It merges a technical, anime-inspired vertical scrollbar on the left with our navigation markers. Does this align with your vision of combining the scroll and nav into an innovative format?

@@ -1,142 +1,172 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { animate as anime } from "animejs";
+import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { 
-    id: "hero", label: "HOME", num: "01", kanji: "始", 
-    pos: "top-4 left-4 md:top-8 md:left-8", 
-    align: "items-start text-left", 
-    flexDir: "flex-col",
-    bracket: "top-left"
-  },
-  { 
-    id: "projects", label: "WORK", num: "02", kanji: "作", 
-    pos: "top-4 right-4 md:top-8 md:right-8", 
-    align: "items-end text-right", 
-    flexDir: "flex-col",
-    bracket: "top-right"
-  },
-  { 
-    id: "about", label: "ORIGIN", num: "03", kanji: "源", 
-    pos: "bottom-4 left-4 md:bottom-8 md:left-8", 
-    align: "items-start text-left", 
-    flexDir: "flex-col-reverse",
-    bracket: "bottom-left"
-  },
-  { 
-    id: "contact", label: "SIGNAL", num: "04", kanji: "信", 
-    pos: "bottom-4 right-4 md:bottom-8 md:right-8", 
-    align: "items-end text-right", 
-    flexDir: "flex-col-reverse",
-    bracket: "bottom-right"
-  },
+  { id: "hero", label: "HOME", kanji: "始", percent: 0 },
+  { id: "projects", label: "WORK", kanji: "作", percent: 33 }, // Approximate scroll percentages
+  { id: "about", label: "ORIGIN", kanji: "源", percent: 66 },
+  { id: "contact", label: "SIGNAL", kanji: "信", percent: 100 },
 ];
-
-const Bracket = ({ type, isActive }: { type: string, isActive: boolean }) => {
-  const baseColors = isActive ? "border-[var(--accent-blood)]" : "border-[var(--text-bone)]/30 group-hover:border-[var(--text-bone)]/80";
-  const size = "w-6 h-6 md:w-10 md:h-10 border-[3px] transition-colors duration-500 absolute pointer-events-none";
-  
-  if (type === "top-left") return <div className={`${size} top-0 left-0 border-r-0 border-b-0 ${baseColors}`} />
-  if (type === "top-right") return <div className={`${size} top-0 right-0 border-l-0 border-b-0 ${baseColors}`} />
-  if (type === "bottom-left") return <div className={`${size} bottom-0 left-0 border-r-0 border-t-0 ${baseColors}`} />
-  if (type === "bottom-right") return <div className={`${size} bottom-0 right-0 border-l-0 border-t-0 ${baseColors}`} />
-  return null;
-}
 
 export function Navbar() {
   const [active, setActive] = useState("hero");
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [scrollSpeed, setScrollSpeed] = useState(0);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = NAV_ITEMS.map((item) => ({
-        id: item.id,
-        el: document.getElementById(item.id),
-      }));
+    let lastScrollY = window.scrollY;
+    let ticking = false;
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = sections[i].el;
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
-          setActive(sections[i].id);
-          break;
-        }
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
+          
+          setScrollProgress(progress);
+          
+          // Calculate scrolling speed/intensity (abstract data for HUD)
+          const speed = Math.abs(currentScrollY - lastScrollY);
+          setScrollSpeed(Math.min(speed, 99)); // Cap at 99 for aesthetic
+          lastScrollY = currentScrollY;
+
+          // Determine active section
+          const sections = NAV_ITEMS.map((item) => ({
+            id: item.id,
+            el: document.getElementById(item.id),
+          }));
+
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const el = sections[i].el;
+            if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
+              setActive(sections[i].id);
+              break;
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // Run initially to set correct state
+    
+    // Initial evaluation
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  const handleClick = (id: string, e: React.MouseEvent<HTMLButtonElement>) => {
-    // Cyberpunk/MAPPA glitch effect on click
-    const target = e.currentTarget.querySelector('.nav-label');
-    if (target) {
-      anime(target, {
-        translateX: 4,
-        duration: 150,
-        easing: 'outElastic(1, .5)'
-      });
-      setTimeout(() => {
-        anime(target, { translateX: 0, duration: 150 });
-      }, 150);
-    }
+    // Reset speed slowly when scrolling stops
+    const speedInterval = setInterval(() => {
+      setScrollSpeed(prev => (prev > 0 ? Math.floor(prev * 0.8) : 0));
+    }, 100);
 
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearInterval(speedInterval);
+    };
+  }, [pathname]);
+
+  const handleClick = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Generate random hex logic based on scrolling intensity for extra HUD flavor
+  const hexHash = Math.floor(scrollProgress * 100 + scrollSpeed * 13).toString(16).toUpperCase().padStart(4, "0");
+
   return (
     <>
-      <nav className="fixed inset-0 pointer-events-none z-50">
-        {NAV_ITEMS.map((item) => {
-          const isActive = active === item.id;
+      <nav className="fixed left-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--bg-ink)] border-r border-[var(--text-bone)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
+        
+        {/* TOP BRAND INDICATOR */}
+        <div className="flex flex-col items-center gap-4 z-20">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-[var(--accent-blood)] flex items-center justify-center shrink-0 cursor-pointer" onClick={() => handleClick("hero")}>
+            <span className="text-white font-black font-display text-sm md:text-base tracking-tighter shadow-md">HP</span>
+          </div>
           
-          return (
-            <button
-              key={item.id}
-              onClick={(e) => handleClick(item.id, e)}
-              className={`pointer-events-auto absolute ${item.pos} p-2 md:p-4 group flex ${item.flexDir} ${item.align} gap-0 md:gap-1 transition-all duration-500`}
-              aria-label={`Navigate to ${item.label}`}
-            >
-              {/* Brackets stay original color */}
-              <Bracket type={item.bracket} isActive={isActive} />
-              
-              {item.id === "hero" && (
-                 <div className="hidden md:flex absolute top-5 left-5 w-3 h-3 bg-[var(--accent-blood)] items-center justify-center z-20">
-                   <span className="text-white font-black font-display text-[6px] tracking-tighter">HP</span>
-                 </div>
-              )}
-
-              {/* Text uses mix-blend-difference to invert on light/dark backgrounds */}
-              <div className={`flex flex-col ${item.align} mix-blend-difference text-white z-10 relative px-2 py-1 mt-1 mb-1 ${item.id === 'hero' ? 'md:ml-5' : ''}`}>
-                <span className={`font-mono text-[8px] md:text-[10px] tracking-widest transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-40 group-hover:opacity-80'}`}>
-                  {item.num} // {item.kanji}
-                </span>
-                
-                <span 
-                  className={`nav-label font-display font-black text-xl md:text-3xl uppercase tracking-tighter transition-all duration-500 ${isActive ? 'opacity-100' : 'opacity-30 group-hover:opacity-90'}`}
-                >
-                  {item.label}
-                </span>
-              </div>
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Cinematic HUD Reticle in the exact center */}
-      <div className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center mix-blend-difference opacity-20 md:opacity-[0.1]">
-        <div className="relative flex items-center justify-center">
-          <div className="w-[1px] h-8 md:h-16 bg-[var(--text-bone)]" />
-          <div className="absolute h-[1px] w-8 md:w-16 bg-[var(--text-bone)]" />
-          <div className="absolute w-[200px] h-[200px] md:w-[600px] md:h-[600px] border border-[var(--text-bone)] rounded-full border-dashed opacity-50 flex items-center justify-center animate-[spin_60s_linear_infinite]">
-             <div className="absolute w-[180px] h-[180px] md:w-[560px] md:h-[560px] border border-[var(--accent-blood)] rounded-full opacity-30" />
+          <div className="flex flex-col items-center gap-1 opacity-40">
+            <span className="font-mono text-[8px] md:text-[10px] tracking-widest" style={{ writingMode: "vertical-rl" }}>SYSTEM: ONLINE</span>
+            <div className="w-[1px] h-8 bg-gradient-to-b from-[var(--text-bone)] to-transparent" />
           </div>
         </div>
-      </div>
+
+        {/* THE TIMELINE TRACK */}
+        <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
+          {/* Faint static track line */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--text-bone)]/5" />
+          
+          {/* Tick marks representing the track */}
+          <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-20 pointer-events-none">
+             {Array.from({ length: 20 }).map((_, i) => (
+               <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-end pr-2"}`}>
+                 <div className={`h-[1px] bg-[var(--text-bone)] ${i % 5 === 0 ? "w-4" : "w-1.5"}`} />
+               </div>
+             ))}
+          </div>
+
+          {/* ACTIVE SCROLL THUMB (The core of the scrollbar) */}
+          <div 
+            className="absolute left-1/2 -translate-x-1/2 w-6 md:w-8 flex flex-col items-center justify-center z-10 transition-all duration-75 ease-out shadow-[0_0_15px_rgba(217,17,17,0.3)] pointer-events-none"
+            style={{ top: `${scrollProgress}%`, transform: `translate(-50%, -50%)` }}
+          >
+            {/* The literal thumb block */}
+            <div className="w-full h-8 md:h-12 border-2 border-[var(--accent-blood)] bg-[var(--bg-ink)]/80 backdrop-blur-sm relative flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-[var(--accent-blood)]" />
+              {/* Cycling Data */}
+              <span className="absolute -right-8 font-mono text-[8px] md:text-[9px] text-[var(--accent-blood)] font-bold tracking-tighter drop-shadow-md">
+                [{hexHash}]
+              </span>
+            </div>
+            {/* Speed trail */}
+            <div 
+               className="w-[2px] bg-[var(--accent-blood)] opacity-50 transition-all duration-100" 
+               style={{ height: `${Math.min(scrollSpeed * 0.8, 40)}px`, marginTop: "2px" }} 
+            />
+          </div>
+
+          {/* CHAPTER MARKERS / NAV LINKS */}
+          <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
+            {NAV_ITEMS.map((item, index) => {
+              const isActive = active === item.id;
+              // Add proper spacing to match standard page height distributions
+              const topOffset = index === 0 ? "0%" : index === 1 ? "30%" : index === 2 ? "65%" : "100%";
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleClick(item.id)}
+                  className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300"
+                  style={{ top: topOffset, transform: `translateY(-50%)` }}
+                  aria-label={`Navigate to ${item.label}`}
+                >
+                  <span className={`text-xl md:text-2xl font-black font-display leading-none transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/20 group-hover:text-[var(--text-bone)]/80"}`}>
+                    {item.kanji}
+                  </span>
+                  
+                  {/* Subtle reveal of the English label on hover/active */}
+                  <span className={`absolute left-14 whitespace-nowrap font-mono text-[9px] md:text-[10px] tracking-[0.3em] font-bold uppercase transition-all duration-300 pointer-events-none ${isActive ? "opacity-100 text-[var(--text-bone)] translate-x-0" : "opacity-0 text-[var(--text-bone)]/50 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"}`}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* BOTTOM HUD INDICATOR */}
+        <div className="flex flex-col items-center gap-2 opacity-40 z-20">
+          <span className="font-mono text-[8px] md:text-[10px] tracking-widest text-center">
+            {Math.round(scrollProgress)}%
+          </span>
+          <div className="w-8 h-8 rounded-full border border-dashed border-[var(--text-bone)] flex items-center justify-center animate-[spin_10s_linear_infinite]">
+            <div className="w-1.5 h-1.5 bg-[var(--text-bone)]/50" />
+          </div>
+        </div>
+
+      </nav>
     </>
   );
 }

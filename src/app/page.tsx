@@ -22,7 +22,7 @@ export default function Home() {
     <main className="relative">
       <Preloader onComplete={() => setShowContent(true)} />
       
-      <div className={`transition-opacity duration-700 ${showContent ? "opacity-100" : "opacity-0"}`}>
+      <div className={`transition-opacity duration-700 ml-12 md:ml-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
         <ScrollLine />
         <Navbar />
         <Hero />
