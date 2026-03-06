@@ -74,9 +74,12 @@ export function Hero() {
 
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
         
-        {/* Professional Minimalist Status */}
-        <div className="cinematic-in block mb-8 border border-[var(--text-bone)] px-4 py-2 uppercase tracking-widest text-[10px] sm:text-xs font-bold font-sans text-[var(--text-bone)] bg-black/50 backdrop-blur-sm">
-          {language === 'en' ? "Available for Opportunities" : "仕事の依頼を受付中"}
+        {/* Professional Minimalist Status -> Brutalist Warning Tape */}
+        <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-[var(--text-bone)] text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+          <span className="w-2 h-2 rounded-full bg-[var(--accent-blood)] animate-pulse" />
+          <span className="uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black font-display">
+            {language === 'en' ? "Available for Opportunities" : "仕事の依頼を受付中"}
+          </span>
         </div>
 
         {/* Cinematic Title Scaling container */}
@@ -92,29 +95,29 @@ export function Hero() {
            </h1>
            
            {/* Role Accent Block overlapping the typography */}
-           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[20%] right-auto md:right-[10%] bg-[var(--accent-blood)] text-white font-sans font-bold text-xs sm:text-xl md:text-2xl px-4 py-2 sm:px-6 sm:py-4 uppercase tracking-wider mt-4 md:mt-0 mx-auto md:mx-0 max-w-[280px] md:max-w-none w-full md:w-auto text-center">
+           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[20%] right-auto md:right-[10%] bg-[var(--accent-blood)] text-white font-black font-display text-sm sm:text-xl md:text-3xl px-6 py-3 sm:px-8 sm:py-5 uppercase tracking-[0.15em] mt-4 md:mt-0 mx-auto md:mx-0 max-w-[280px] md:max-w-none w-full md:w-auto text-center manga-cut-tr shadow-2xl">
              {currentProfile.title}
            </div>
         </div>
 
         {/* Clear, straightforward tagline without typewriter or terminal nonsense */}
-        <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-sans leading-relaxed mb-16 mt-8 md:mt-4">
+        <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-16 mt-8 md:mt-4">
           {currentProfile.tagline}
         </p>
 
-        {/* Bold, Minimalist CTAs */}
-        <div className="cinematic-in flex flex-col sm:flex-row gap-4 w-full sm:w-auto max-w-[280px] md:max-w-none self-center md:self-start -mt-[15px]">
+        {/* Aggressive, Diagonal Brutalist CTAs */}
+        <div className="cinematic-in flex flex-col sm:flex-row gap-6 w-full sm:w-auto max-w-[280px] md:max-w-none self-center md:self-start -mt-[15px]">
           <a ref={cta1Ref as any} href="#projects"
-            className="flex items-center justify-center gap-4 bg-[var(--text-bone)] text-[var(--bg-ink)] px-8 py-4 md:px-10 md:py-5 text-sm md:text-base font-bold uppercase tracking-widest hover:scale-105 transition-transform duration-300 transform origin-left"
+            className="group relative flex items-center justify-center gap-4 bg-[var(--text-bone)] text-[var(--bg-ink)] px-8 py-5 md:px-12 md:py-6 text-sm md:text-lg font-black font-display uppercase tracking-widest manga-cut-br brutal-shadow hover:bg-[var(--accent-blood)] hover:text-white transition-all duration-300 transform -skew-x-3"
           >
-            {language === 'en' ? "View Work" : "実績を見る"}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+            <span>{language === 'en' ? "View Work" : "実績を見る"}</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" className="group-hover:translate-x-2 transition-transform duration-300">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </a>
           
           <a ref={cta2Ref as any} href="#contact"
-             className="flex items-center justify-center px-8 py-4 md:px-10 md:py-5 border-2 border-[var(--text-bone)] text-[var(--text-bone)] text-sm md:text-base font-bold uppercase tracking-widest hover:bg-[var(--text-bone)] hover:text-[var(--bg-ink)] transition-colors duration-300"
+             className="relative flex items-center justify-center px-8 py-5 md:px-12 md:py-6 bg-[var(--bg-ink)] border-2 border-[var(--text-bone)] text-[var(--text-bone)] text-sm md:text-lg font-black font-display uppercase tracking-widest manga-cut-tr hover:bg-[var(--text-bone)] hover:text-[var(--bg-ink)] transition-colors duration-300 transform -skew-x-3"
           >
             {language === 'en' ? "Contact" : "連絡する"}
           </a>
