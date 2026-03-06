@@ -239,7 +239,7 @@ export function ScrollLine() {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-6 md:bottom-8 md:right-8 z-[100] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none">
+    <div className="fixed bottom-4 right-[64px] md:bottom-8 md:right-[72px] z-[100] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none">
        <div className="font-display font-black text-[3rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end">
          {String(percent).padStart(3, '0')}
        </div>

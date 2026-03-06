@@ -141,12 +141,8 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* BOTTOM HUD INDICATOR */}
-        <div className="flex flex-col items-center gap-2 opacity-40 z-20">
-          <div className="w-8 h-8 rounded-full border border-dashed border-[var(--text-bone)] flex items-center justify-center animate-[spin_10s_linear_infinite]">
-            <div className="w-1.5 h-1.5 bg-[var(--text-bone)]/50" />
-          </div>
-        </div>
+        {/* BOTTOM SPACER */}
+        <div className="flex flex-col items-center gap-2 opacity-40 z-20 h-8" />
 
       </nav>
     </>
