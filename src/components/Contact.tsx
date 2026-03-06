@@ -5,28 +5,24 @@ import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
-const LINKS = [
-  {
-    id: "email",
-    label: "01 // DIRECT MAIL",
-    value: "INITIATE EMAIL",
-    href: `mailto:${profile.email}`, 
-  },
-  {
-    id: "github",
-    label: "02 // SOURCE CODE",
-    value: "ACCESS GITHUB",
-    href: profile.github,
-  },
-  {
-    id: "linkedin",
-    label: "03 // PROFESSIONAL NETWORK",
-    value: "VIEW LINKEDIN",
-    href: profile.linkedin,
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
+
+const LINKS = {
+  en: [
+    { id: "email", label: "01 // DIRECT MAIL", value: "INITIATE EMAIL", href: `mailto:${profile.en.email}` },
+    { id: "github", label: "02 // SOURCE CODE", value: "ACCESS GITHUB", href: profile.en.github },
+    { id: "linkedin", label: "03 // PROFESSIONAL NETWORK", value: "VIEW LINKEDIN", href: profile.en.linkedin },
+  ],
+  ja: [
+    { id: "email", label: "01 // ダイレクトメール", value: "メールを送信", href: `mailto:${profile.ja.email}` },
+    { id: "github", label: "02 // ソースコード", value: "GITHUBへ", href: profile.ja.github },
+    { id: "linkedin", label: "03 // プロフェッショナル", value: "LINKEDINを見る", href: profile.ja.linkedin },
+  ]
+};
 
 export function Contact() {
+  const { language } = useLanguage();
+  const currentLinks = LINKS[language];
   const containerRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
 
@@ -39,7 +35,7 @@ export function Contact() {
 
     if (id === "email") {
       e.preventDefault();
-      navigator.clipboard.writeText(profile.email);
+      navigator.clipboard.writeText(profile.en.email);
       setCopied(true);
 
       const targetEl = e.currentTarget;
@@ -76,7 +72,7 @@ export function Contact() {
       {/* Massive Background Typography */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
          <h2 className="text-[6rem] md:text-[25rem] font-black font-display text-[var(--bg-ink)] whitespace-nowrap leading-none tracking-tighter">
-            CONTACT
+            {language === 'en' ? "CONTACT" : "連絡先"}
          </h2>
       </div>
 
@@ -88,15 +84,15 @@ export function Contact() {
              CHAPTER 03
            </div>
            <h2 className="text-4xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8">
-             INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span>
+             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></>}
            </h2>
         </ScrollReveal>
 
         {/* Links Container */}
         <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
-          {LINKS.map((link, i) => {
+          {currentLinks.map((link, i) => {
             const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? "EMAIL COPIED" : link.value;
+            const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : "コピー完了") : link.value;
 
             return (
               <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">

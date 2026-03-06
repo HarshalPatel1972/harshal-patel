@@ -5,8 +5,11 @@ import { ScrollReveal } from "./ScrollReveal";
 import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Projects() {
+  const { language } = useLanguage();
+  const currentProjects = projects[language];
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLElement>(null);
 
@@ -49,16 +52,18 @@ export function Projects() {
              CHAPTER 01
            </div>
            <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
-             SELECTED <br/> WORKS
+             {language === 'en' ? <>SELECTED <br/> WORKS</> : <>選定された<br/>作品</>}
            </h2>
         </div>
         <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
-           Archival records of systems constructed and curses excised.
+           {language === 'en' 
+             ? "Archival records of systems constructed and curses excised."
+             : "構築されたシステムと祓われた呪いのアーカイブ記録。"}
         </p>
       </div>
 
       <div className="w-full max-w-7xl relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        {projects.map((project, i) => {
+        {currentProjects.map((project: { title: string; description: string; tags: string[]; color: string; link: string }, i: number) => {
           const isHovered = activeIndex === i;
           
           return (
@@ -111,7 +116,7 @@ export function Projects() {
                        </svg>
                      </div>
                      <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                        Execute
+                        {language === 'en' ? "Execute" : "実行する"}
                      </span>
                   </div>
                 </div>

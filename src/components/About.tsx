@@ -6,6 +6,7 @@ import { useCounter } from "./AnimationKit";
 import { useEffect, useRef, useState } from "react";
 import { animate as anime, utils } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Giant bold stats
 function MangaStat({ value, label, prefix = "" }: { value: number; label: string; prefix?: string }) {
@@ -21,6 +22,9 @@ function MangaStat({ value, label, prefix = "" }: { value: number; label: string
 }
 
 export function About() {
+  const { language } = useLanguage();
+  const currentProfile = profile[language];
+
   const sectionRef = useRef<HTMLElement>(null);
   const [skillsVisible, setSkillsVisible] = useState(false);
   const skillsRef = useRef<HTMLDivElement>(null);
@@ -57,7 +61,7 @@ export function About() {
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
          <h2 className="text-[8rem] md:text-[20rem] font-black font-display text-[var(--text-bone)] whitespace-nowrap leading-none tracking-tighter">
-            ORIGIN
+            {language === 'en' ? "ORIGIN" : "起源"}
          </h2>
       </div>
 
@@ -75,17 +79,17 @@ export function About() {
             <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
                <div>
                  <h3 className="text-4xl sm:text-5xl md:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-[0.85] mb-8">
-                   Software <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>Engineer</span>
+                   {language === 'en' ? "Software" : "ソフトウェア"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : "エンジニア"}</span>
                  </h3>
                  <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
-                   {profile.bio}
+                   {currentProfile.bio}
                  </p>
                </div>
                
                {/* Giant vertical typography */}
                <div className="hidden lg:flex justify-end items-center relative h-full">
                   <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
-                     DEVELOPER
+                     {language === 'en' ? "DEVELOPER" : "開発者"}
                   </div>
                </div>
             </div>
@@ -104,7 +108,7 @@ export function About() {
               </div>
               
               <div className="flex flex-col bg-white">
-                {profile.experience.map((job, i) => (
+                {currentProfile.experience.map((job, i) => (
                   <div key={job.company} className="relative group border-b-4 border-black last:border-b-0 p-6 md:p-8 hover:bg-black hover:text-white transition-colors duration-300">
                     
                     {/* Timestamp & Role Header */}
@@ -146,11 +150,11 @@ export function About() {
                {/* Raw Skill Bars */}
                <div ref={skillsRef} className="flex flex-col gap-6">
                   <h4 className="text-[var(--text-bone)] font-black font-display text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between">
-                     Combat Power
+                     {language === 'en' ? "Combat Power" : "戦闘力"}
                      <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
                   </h4>
                   <div className="space-y-6">
-                    {profile.skills.map((skill, i) => (
+                    {currentProfile.skills.map((skill, i) => (
                       <div key={skill.name} className="relative">
                         <div className="flex justify-between items-baseline mb-1">
                           <span className="text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase">{skill.name}</span>

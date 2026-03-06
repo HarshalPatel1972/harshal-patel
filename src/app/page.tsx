@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SystemBanner } from "@/components/SystemBanner";
+import { LanguageProvider } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { About } from "@/components/About";
@@ -19,22 +20,24 @@ export default function Home() {
   const [showContent, setShowContent] = useState(false);
 
   return (
-    <main className="relative">
-      <Preloader onComplete={() => setShowContent(true)} />
-      
-      <div className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
-        <SystemBanner />
-        <ScrollLine />
-        <Navbar />
-        <Hero />
+    <LanguageProvider>
+      <main className="relative">
+        <Preloader onComplete={() => setShowContent(true)} />
         
-        <Projects />
-        
-        <About />
+        <div className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <SystemBanner />
+          <ScrollLine />
+          <Navbar />
+          <Hero />
+          
+          <Projects />
+          
+          <About />
 
-        <Contact />
-        <Footer />
-      </div>
-    </main>
+          <Contact />
+          <Footer />
+        </div>
+      </main>
+    </LanguageProvider>
   );
 }

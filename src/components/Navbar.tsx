@@ -2,15 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 
-const NAV_ITEMS = [
-  { id: "hero", label: "HOME", kanji: "始", percent: 0 },
-  { id: "projects", label: "WORK", kanji: "作", percent: 33 }, // Approximate scroll percentages
-  { id: "about", label: "ORIGIN", kanji: "源", percent: 66 },
-  { id: "contact", label: "SIGNAL", kanji: "信", percent: 100 },
-];
+const NAV_ITEMS = {
+  en: [
+    { id: "hero", label: "HOME", percent: 0 },
+    { id: "projects", label: "WORK", percent: 33 },
+    { id: "about", label: "ORIGIN", percent: 66 },
+    { id: "contact", label: "SIGNAL", percent: 100 },
+  ],
+  ja: [
+    { id: "hero", label: "始", percent: 0 },
+    { id: "projects", label: "作", percent: 33 },
+    { id: "about", label: "源", percent: 66 },
+    { id: "contact", label: "信", percent: 100 },
+  ]
+};
 
 export function Navbar() {
+  const { language } = useLanguage();
+  const currentNavItems = NAV_ITEMS[language];
   const [active, setActive] = useState("hero");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [scrollSpeed, setScrollSpeed] = useState(0);
@@ -35,7 +46,7 @@ export function Navbar() {
           lastScrollY = currentScrollY;
 
           // Determine active section
-          const sections = NAV_ITEMS.map((item) => ({
+          const sections = currentNavItems.map((item) => ({
             id: item.id,
             el: document.getElementById(item.id),
           }));
@@ -67,7 +78,7 @@ export function Navbar() {
       window.removeEventListener("scroll", handleScroll);
       clearInterval(speedInterval);
     };
-  }, [pathname]);
+  }, [pathname, currentNavItems]);
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
@@ -115,7 +126,7 @@ export function Navbar() {
 
           {/* CHAPTER MARKERS / NAV LINKS */}
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
-            {NAV_ITEMS.map((item, index) => {
+            {currentNavItems.map((item, index) => {
               const isActive = active === item.id;
               // Add proper spacing to match standard page height distributions
               const topOffset = index === 0 ? "0%" : index === 1 ? "30%" : index === 2 ? "65%" : "100%";
@@ -128,9 +139,8 @@ export function Navbar() {
                   style={{ top: topOffset, transform: `translateY(-50%)` }}
                   aria-label={`Navigate to ${item.label}`}
                 >
-                  {/* Vertical English labels instead of Kanji */}
                   <span 
-                    className={`font-display font-bold text-[10px] md:text-[12px] uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/30 group-hover:text-[var(--text-bone)]/80"}`} 
+                    className={`font-display font-bold ${language === 'ja' ? 'text-lg' : 'text-[10px] md:text-[12px]'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--text-bone)] drop-shadow-[0_0_8px_rgba(255,255,255,0.7)] scale-110" : "text-[var(--text-bone)]/30 group-hover:text-[var(--text-bone)]/80"}`} 
                     style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                   >
                     {item.label}
