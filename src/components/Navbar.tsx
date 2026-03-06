@@ -104,19 +104,22 @@ export function Navbar() {
              ))}
           </div>
 
-          {/* ACTIVE SCROLL THUMB (The core of the scrollbar) */}
+          {/* ACTIVE SCROLL SCANNED CROSSHAIR (The sleeker thumb) */}
           <div 
-            className="absolute left-1/2 -translate-x-1/2 w-6 md:w-8 flex flex-col items-center justify-center z-10 transition-all duration-75 ease-out shadow-[0_0_15px_rgba(217,17,17,0.3)] pointer-events-none"
-            style={{ top: `${scrollProgress}%`, transform: `translate(-50%, -50%)` }}
+            className="absolute left-0 right-0 flex items-center z-10 transition-all duration-75 ease-out pointer-events-none"
+            style={{ top: `${scrollProgress}%`, transform: `translateY(-50%)` }}
           >
-            {/* The literal thumb block */}
-            <div className="w-full h-8 md:h-12 border-2 border-[var(--accent-blood)] bg-[var(--bg-ink)]/80 backdrop-blur-sm relative flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-[var(--accent-blood)]" />
+            {/* Horizontal precision line across the timeline */}
+            <div className="w-full h-[1px] bg-[var(--accent-blood)] shadow-[0_0_10px_rgba(217,17,17,0.8)] relative flex items-center justify-between px-[2px]">
+              {/* Target bracket left */}
+              <div className="w-[3px] h-[3px] border-t border-r border-[var(--accent-blood)] rotate-45" />
+              {/* Target square right */}
+              <div className="w-[3px] h-[3px] bg-[var(--accent-blood)]" />
             </div>
-            {/* Speed trail */}
+            {/* Dynamic abstract trailing line based on speed */}
             <div 
-               className="w-[2px] bg-[var(--accent-blood)] opacity-50 transition-all duration-100" 
-               style={{ height: `${Math.min(scrollSpeed * 0.8, 40)}px`, marginTop: "2px" }} 
+               className="absolute right-[3px] w-[1px] bg-[var(--accent-blood)] opacity-50 transition-all duration-100 origin-bottom" 
+               style={{ height: `${Math.min(scrollSpeed * 1.5, 80)}px`, bottom: "0" }} 
             />
           </div>
 
