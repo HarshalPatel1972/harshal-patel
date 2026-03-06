@@ -110,18 +110,26 @@ export function Navbar() {
              ))}
           </div>
 
-          {/* ACTIVE SCROLL SCANNED CROSSHAIR (The sleeker thumb) */}
+          {/* ACTIVE SCROLL SCANNED CROSSHAIR (Dynamic physics dot) */}
           <div 
-            className="absolute left-0 right-0 flex items-center z-10 transition-all duration-75 ease-out pointer-events-none"
-            style={{ top: `${scrollProgress}%`, transform: `translateY(-50%)` }}
+            className="absolute left-0 right-0 flex items-center justify-center z-10 pointer-events-none"
+            style={{ 
+              top: `${scrollProgress}%`, 
+              transform: `translateY(-50%)`,
+              // The transition gives it that smooth, springy physics feeling as top updates
+              transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
+              // Dynamically scale/stretch the height based on scroll speed. Base height is 8px.
+              height: `${8 + (scrollSpeed * 0.5)}px` 
+            }}
           >
-            {/* Horizontal precision line across the timeline */}
-            <div className="w-full h-[1px] bg-[var(--accent-blood)] shadow-[0_0_10px_rgba(217,17,17,0.8)] relative flex items-center justify-between px-[2px]">
-              {/* Target bracket left */}
-              <div className="w-[3px] h-[3px] border-t border-r border-[var(--accent-blood)] rotate-45" />
-              {/* Target square right */}
-              <div className="w-[3px] h-[3px] bg-[var(--accent-blood)]" />
-            </div>
+            {/* The actual dot/shape */}
+            <div 
+              className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-200"
+              style={{
+                width: `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`, // Compress width slightly when moving fast
+                height: '100%' // Fill the dynamically stretching parent
+              }}
+            />
           </div>
 
           {/* CHAPTER MARKERS / NAV LINKS */}
