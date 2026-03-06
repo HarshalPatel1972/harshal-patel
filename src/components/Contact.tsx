@@ -35,7 +35,7 @@ export function Contact() {
 
     if (id === "email") {
       e.preventDefault();
-      navigator.clipboard.writeText(profile.en.email);
+      navigator.clipboard.writeText(profile[language].email);
       setCopied(true);
 
       const targetEl = e.currentTarget;
