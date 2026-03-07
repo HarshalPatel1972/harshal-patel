@@ -1,0 +1,3 @@
+## 2025-02-14 - Refactoring Scroll Trackers to Refs
+**Learning:** Using React `useState` inside a `requestAnimationFrame` loop tied to window scrolling causes the entire component to re-render ~60 times per second, creating immense overhead. This is particularly problematic for UI components like navbars that only update purely visual styling.
+**Action:** When tracking high-frequency events (like scroll position or speed) purely for visual feedback or style modifications, always bypass React's render cycle. Store intermediate values using `useRef`, compute the changes inside `requestAnimationFrame`, and directly mutate the target DOM element's `.style` properties to achieve 60fps performance with zero React overhead.
