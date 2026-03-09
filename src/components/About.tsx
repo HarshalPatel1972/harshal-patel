@@ -84,6 +84,28 @@ export function About() {
                  <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
                    {currentProfile.bio}
                  </p>
+
+                 {/* Education Credentials Block */}
+                 <div className="mt-8 pt-6 border-t-2 border-black/10 flex flex-col md:flex-row gap-6">
+                   <div className="flex-1">
+                     <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// UNIVERSITY_RECORD</div>
+                     <div className="font-black font-display text-xl md:text-2xl uppercase italic">
+                       {currentProfile.education.school}
+                     </div>
+                     <div className="text-sm font-bold font-sans text-black/60 uppercase">
+                       {currentProfile.education.degree} | {currentProfile.education.years}
+                     </div>
+                   </div>
+                   <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
+                      <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">Status</div>
+                      <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
+                        {currentProfile.education.gpa} CGPA
+                      </div>
+                      <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
+                         {language === 'en' ? "Academic Topper" : "成績優秀者"}
+                      </div>
+                   </div>
+                 </div>
                </div>
                
                {/* Giant vertical typography */}
