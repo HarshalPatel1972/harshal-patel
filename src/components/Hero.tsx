@@ -73,7 +73,7 @@ export function Hero() {
       <div className="absolute inset-0 pointer-events-none z-[1] [perspective:1000px] flex items-center justify-center overflow-hidden">
         <div 
            className="w-full max-w-6xl text-center opacity-30 select-none"
-           style={{ transform: "translateZ(-200px) translateY(-5%) rotateX(5deg)" }}
+           style={{ transform: "translateZ(-200px) translateY(calc(-5% + 100px)) rotateX(5deg)" }}
         >
            <h2 className="font-serif italic text-4xl sm:text-6xl md:text-8xl text-[var(--text-bone)] tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
              {language === 'en' ? "Software Engineer" : "ソフトウェアエンジニア"}
