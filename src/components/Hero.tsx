@@ -1,9 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate as anime, utils } from "animejs";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
+
+// Identity Data (Two-word roles for the ink slash curves)
+const curvedIdentities = {
+  en: [
+    ["Systems", "Architect"],
+    ["Performance", "Engineer"],
+    ["Applied", "Scientist"],
+    ["Logic", "Vanguard"]
+  ],
+  ja: [
+    ["システム", "設計者"],
+    ["性能", "技術者"],
+    ["応用", "科学者"],
+    ["論理", "先鋒"]
+  ]
+};
 
 export function Hero() {
   const { language } = useLanguage();
@@ -12,6 +28,16 @@ export function Hero() {
   const titlesRef = useRef<HTMLDivElement>(null);
   const cta1Ref = useMagnetic(0.2);
   const cta2Ref = useMagnetic(0.2);
+  
+  const [roleIndex, setRoleIndex] = useState(0);
+
+  // Cycle roles every 5 seconds for the curves
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Cinematic opening animations (MAPPA Style: slow continuous drift + sharp impacts)
   useEffect(() => {
@@ -61,24 +87,33 @@ export function Hero() {
       {/* Vertical Kanji Watermark */}
       <SubliminalKanji kanji="起源" position="right" />
 
-      {/* Massive Abstract Ink Stroke (MAPPA style title card background) */}
-      <div className="ink-slash absolute left-[-10%] sm:left-[10%] top-[20%] w-[120%] sm:w-[80%] h-[60%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
-         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full text-[var(--accent-blood)] opacity-20 drop-shadow-2xl">
-            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="currentColor" />
-            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="currentColor" opacity="0.5" />
-         </svg>
-      </div>
+      {/* ─── MAPPA INK-PATH ROLES (Text following the curves) ─── */}
+      <div className="ink-slash absolute left-[-5%] sm:left-[5%] top-[10%] w-[110%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
+         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
+            {/* DEFINE THE HIDDEN PATHS */}
+            <defs>
+              <path id="curve-top" d="M10,80 Q30,50 60,60 T90,20" fill="transparent" />
+              <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
+            </defs>
 
-      {/* ─── 3D BACKGROUND LAYER (The Far Wall) ─── */}
-      <div className="absolute inset-0 pointer-events-none z-[1] [perspective:1000px] flex items-center justify-center overflow-hidden">
-        <div 
-           className="w-full max-w-6xl text-center opacity-30 select-none"
-           style={{ transform: "translateZ(-200px) translateY(calc(-5% + 100px)) rotateX(5deg)" }}
-        >
-           <h2 className="font-serif italic text-4xl sm:text-6xl md:text-8xl text-[var(--text-bone)] tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-             {language === 'en' ? "Software Engineer" : "ソフトウェアエンジニア"}
-           </h2>
-        </div>
+            {/* VISUAL RED SLASHES */}
+            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
+            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
+
+            {/* CURVED TEXT ON TOP PATH */}
+            <text className="font-serif italic text-[5px] tracking-[0.2em] font-light fill-[var(--text-bone)] opacity-40">
+              <textPath href="#curve-top" startOffset="15%">
+                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
+              </textPath>
+            </text>
+
+            {/* CURVED TEXT ON BOTTOM PATH */}
+            <text className="font-serif italic text-[6px] tracking-[0.5em] font-bold fill-[var(--text-bone)] opacity-20">
+              <textPath href="#curve-bottom" startOffset="25%">
+                {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
+              </textPath>
+            </text>
+         </svg>
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
