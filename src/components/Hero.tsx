@@ -38,7 +38,7 @@ export function Hero() {
     setOffsets({ top: -50, bottom: 150 });
     
     const timer = setTimeout(() => {
-      setOffsets({ top: 35, bottom: 45 }); // Final resting positions starting from right-ish
+      setOffsets({ top: 65, bottom: 70 }); // Resting on the right-half of the curves
     }, 100);
     
     return () => clearTimeout(timer);
@@ -101,7 +101,7 @@ export function Hero() {
       <SubliminalKanji kanji="起源" position="right" />
 
       {/* ─── MAPPA INK-PATH ROLES (Text following the curves) ─── */}
-      <div className="ink-slash absolute left-[20%] sm:left-[35%] top-[5%] w-[100%] sm:w-[80%] h-[80%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
+      <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
             {/* DEFINE THE HIDDEN PATHS */}
             <defs>
