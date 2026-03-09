@@ -1,97 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { animate as anime, utils } from "animejs";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
-
-function DraggableImage({ src }: { src: string }) {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [width, setWidth] = useState(450);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
-  
-  const offset = useRef({ x: 0, y: 0 });
-  const resizeStart = useRef({ x: 0, w: 0 });
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    // If we click the resize handle, engage resize mode instead
-    if ((e.target as HTMLElement).classList.contains('resize-handle')) {
-      e.stopPropagation();
-      setIsResizing(true);
-      resizeStart.current = { x: e.clientX, w: width };
-      (e.target as HTMLElement).setPointerCapture(e.pointerId);
-      return;
-    }
-    
-    setIsDragging(true);
-    offset.current = {
-      x: e.clientX - position.x,
-      y: e.clientY - position.y
-    };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (isResizing) {
-      const newWidth = Math.max(100, Math.min(2000, resizeStart.current.w + (e.clientX - resizeStart.current.x)));
-      setWidth(newWidth);
-      return;
-    }
-    if (!isDragging) return;
-    setPosition({
-      x: e.clientX - offset.current.x,
-      y: e.clientY - offset.current.y
-    });
-  };
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (isResizing) {
-      setIsResizing(false);
-    } else {
-      setIsDragging(false);
-    }
-    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-  };
-
-  return (
-    <div 
-      className={`fixed z-[9999] ${isDragging ? 'cursor-grabbing opacity-80 scale-105' : 'cursor-grab'} transition-all duration-75`}
-      style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-        touchAction: 'none',
-        left: '10%', 
-        top: '10%'
-      }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-    >
-      <div className="relative inline-block select-none">
-        <img
-          src={src}
-          alt="Draggable placement test"
-          style={{ width: `${width}px` }}
-          className="shadow-2xl drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] brutal-shadow pointer-events-none"
-          draggable="false"
-        />
-        
-        {/* Resize Handle (Red Box in Corner) */}
-        <div 
-          className="resize-handle absolute bottom-0 right-0 w-8 h-8 cursor-nwse-resize bg-[var(--accent-blood)] border-2 border-black flex items-center justify-center translate-x-[30%] translate-y-[30%] brutal-shadow z-10"
-        >
-          <span className="resize-handle pointer-events-none block w-3 h-3 bg-white" />
-        </div>
-      </div>
-      
-      {/* Small UI helper tag */}
-      <div className="absolute -bottom-10 left-0 right-0 text-center font-mono text-[10px] text-[var(--text-bone)]/50 tracking-widest uppercase pointer-events-none">
-         Drag To Move • Pull Box To Size • {Math.round(width)}px
-      </div>
-    </div>
-  );
-}
 
 export function Hero() {
   const { language } = useLanguage();
@@ -143,9 +55,6 @@ export function Hero() {
       ref={containerRef} 
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] px-4 md:px-6"
     >
-      {/* ─── DRAGGABLE COMPONENT FOR PLACEMENT TESTING ─── */}
-      <DraggableImage src="/Lying Down.png" />
-
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 

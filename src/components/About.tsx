@@ -160,13 +160,21 @@ export function About() {
                PANEL 3: Skills & Stats (Brutalist Right Cut)
                ========================================= */}
            <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
-             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
+             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-visible">
                
                {/* Massive Stats Block inside the panel */}
-               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
-                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
-                 <MangaStat value={8.9} label="CGPA" />
-                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
+               <div className="relative mt-12 md:mt-24 xl:mt-32">
+                 {/* Reclining Character Image (MAPPA 4th-Wall Break) */}
+                 <img 
+                   src="/Lying Down.png" 
+                   alt="Resting on stats" 
+                   className="absolute z-10 w-[200px] sm:w-[280px] md:w-[380px] xl:w-[450px] -top-[55px] sm:-top-[80px] md:-top-[110px] xl:-top-[130px] right-2 md:-right-6 pointer-events-none select-none drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)]"
+                 />
+                 <div className="relative z-0 grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
+                   <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
+                   <MangaStat value={8.9} label="CGPA" />
+                   <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
+                 </div>
                </div>
 
                {/* Raw Skill Bars */}
