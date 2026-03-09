@@ -31,36 +31,25 @@ export function Hero() {
   
   const [roleIndex, setRoleIndex] = useState(0);
 
-  // Character-by-character kinetic animation (MAPPA Sequence)
+  // Word-based kinetic animation (MAPPA Sequence)
   useEffect(() => {
-    // Selection of characters
-    const topChars = containerRef.current?.querySelectorAll(".char-top");
-    const bottomChars = containerRef.current?.querySelectorAll(".char-bottom");
+    const topPath = containerRef.current?.querySelector(".char-top");
+    const bottomPath = containerRef.current?.querySelector(".char-bottom");
 
-    if (!topChars || !bottomChars) return;
-
-    // Reset positions instantly (Anime v4 duration 0)
-    animate(topChars, {
-      startOffset: "100%",
-      duration: 0
-    });
-    animate(bottomChars, {
-      startOffset: "-20%",
-      duration: 0
-    });
+    if (!topPath || !bottomPath) return;
 
     // Phase 1: Upper Word (Right to Left glide)
-    animate(topChars, {
-      startOffset: (i: number) => (45 + i * 2.2) + "%",
-      duration: 1200,
-      delay: stagger(50),
+    // Starting far right (100%) and landing at 65% (right of name)
+    animate(topPath, {
+      startOffset: ["100%", "65%"],
+      duration: 1500,
       easing: "easeOutQuart"
     }).then(() => {
       // Phase 2: Lower Word (Left to Right glide)
-      animate(bottomChars, {
-        startOffset: (i: number) => (48 + i * 3.5) + "%",
-        duration: 1200,
-        delay: stagger(50),
+      // Starting far left (0%) and landing at 70% (right of name)
+      animate(bottomPath, {
+        startOffset: ["0%", "70%"],
+        duration: 1500,
         easing: "easeOutQuart"
       });
     });
@@ -135,32 +124,26 @@ export function Hero() {
             <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
             <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
 
-            {/* CURVED TEXT ON TOP PATH (Sequential Letter Glide: Right to Left) */}
-            <text className="font-serif italic text-[6px] tracking-normal font-light fill-[var(--text-bone)] opacity-40">
-              {curvedIdentities[language as 'en' | 'ja'][roleIndex][0].split("").map((char, i) => (
-                <textPath 
-                  key={i}
-                  href="#curve-top" 
-                  className="char-top"
-                  startOffset="100%"
-                >
-                  {char}
-                </textPath>
-              ))}
+            {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) */}
+            <text className="font-serif italic text-[7px] tracking-[0.1em] font-light fill-[var(--text-bone)] opacity-40">
+              <textPath 
+                href="#curve-top" 
+                className="char-top"
+                startOffset="100%"
+              >
+                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
+              </textPath>
             </text>
 
-            {/* CURVED TEXT ON BOTTOM PATH (Sequential Letter Glide: Left to Right) */}
-            <text className="font-serif italic text-[6px] tracking-normal font-bold fill-[var(--text-bone)] opacity-20">
-              {curvedIdentities[language as 'en' | 'ja'][roleIndex][1].split("").map((char, i) => (
-                <textPath 
-                  key={i}
-                  href="#curve-bottom" 
-                  className="char-bottom"
-                  startOffset="-20%"
-                >
-                  {char}
-                </textPath>
-              ))}
+            {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) */}
+            <text className="font-serif italic text-[6px] tracking-[0.1em] font-bold fill-[var(--text-bone)] opacity-20">
+              <textPath 
+                href="#curve-bottom" 
+                className="char-bottom"
+                startOffset="0%"
+              >
+                {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
+              </textPath>
             </text>
          </svg>
       </div>
