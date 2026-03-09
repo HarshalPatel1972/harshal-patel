@@ -30,12 +30,25 @@ export function Hero() {
   const cta2Ref = useMagnetic(0.2);
   
   const [roleIndex, setRoleIndex] = useState(0);
+  const [offsets, setOffsets] = useState({ top: -50, bottom: 150 });
 
-  // Cycle roles every 5 seconds for the curves
+  // Slide-in animation whenever roleIndex changes
+  useEffect(() => {
+    // Sharp reset & harsh entrance (MAPPA kinetic style)
+    setOffsets({ top: -50, bottom: 150 });
+    
+    const timer = setTimeout(() => {
+      setOffsets({ top: 35, bottom: 45 }); // Final resting positions starting from right-ish
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [roleIndex]);
+
+  // Cycle roles every 6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -88,7 +101,7 @@ export function Hero() {
       <SubliminalKanji kanji="起源" position="right" />
 
       {/* ─── MAPPA INK-PATH ROLES (Text following the curves) ─── */}
-      <div className="ink-slash absolute left-[-5%] sm:left-[5%] top-[10%] w-[110%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
+      <div className="ink-slash absolute left-[20%] sm:left-[35%] top-[5%] w-[100%] sm:w-[80%] h-[80%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
             {/* DEFINE THE HIDDEN PATHS */}
             <defs>
@@ -100,16 +113,24 @@ export function Hero() {
             <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
             <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
 
-            {/* CURVED TEXT ON TOP PATH */}
+            {/* CURVED TEXT ON TOP PATH (Left to Right Slide) */}
             <text className="font-serif italic text-[5px] tracking-[0.2em] font-light fill-[var(--text-bone)] opacity-40">
-              <textPath href="#curve-top" startOffset="15%">
+              <textPath 
+                href="#curve-top" 
+                startOffset={`${offsets.top}%`}
+                style={{ transition: 'startOffset 2s cubic-bezier(0.19, 1, 0.22, 1)' }}
+              >
                 {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
               </textPath>
             </text>
 
-            {/* CURVED TEXT ON BOTTOM PATH */}
+            {/* CURVED TEXT ON BOTTOM PATH (Right to Left Slide) */}
             <text className="font-serif italic text-[6px] tracking-[0.5em] font-bold fill-[var(--text-bone)] opacity-20">
-              <textPath href="#curve-bottom" startOffset="25%">
+              <textPath 
+                href="#curve-bottom" 
+                startOffset={`${offsets.bottom}%`}
+                style={{ transition: 'startOffset 2.5s cubic-bezier(0.19, 1, 0.22, 1)' }}
+              >
                 {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
               </textPath>
             </text>
