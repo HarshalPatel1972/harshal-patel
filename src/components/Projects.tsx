@@ -63,7 +63,7 @@ export function Projects() {
       </div>
 
       <div className="w-full max-w-7xl relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        {currentProjects.map((project: { title: string; description: string; tags: string[]; color: string; link: string }, i: number) => {
+        {currentProjects.map((project, i: number) => {
           const isHovered = activeIndex === i;
           
           return (
@@ -106,6 +106,15 @@ export function Projects() {
                     <p className={`text-[var(--text-muted)] font-sans text-sm md:text-lg leading-relaxed max-w-2xl border-l-[3px] pl-4 transition-colors duration-300 ${isHovered ? 'border-[var(--accent-blood)] text-[var(--text-bone)]' : 'border-[var(--text-muted)]'}`}>
                       {project.description}
                     </p>
+                  </div>
+
+                  {/* Technical HUD Specs */}
+                  <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
+                    {project.specs.map(spec => (
+                      <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
+                        {spec}
+                      </span>
+                    ))}
                   </div>
 
                   {/* Brutalist Arrow/CTA */}
