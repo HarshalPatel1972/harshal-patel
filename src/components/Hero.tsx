@@ -56,7 +56,7 @@ function DraggableImage({ src }: { src: string }) {
 
   return (
     <div 
-      className={`absolute z-[100] ${isDragging ? 'cursor-grabbing opacity-80 scale-105' : 'cursor-grab'} transition-all duration-75`}
+      className={`fixed z-[9999] ${isDragging ? 'cursor-grabbing opacity-80 scale-105' : 'cursor-grab'} transition-all duration-75`}
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
         touchAction: 'none',
