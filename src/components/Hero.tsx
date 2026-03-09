@@ -38,7 +38,7 @@ export function Hero() {
     setOffsets({ top: -50, bottom: 150 });
     
     const timer = setTimeout(() => {
-      setOffsets({ top: 65, bottom: 70 }); // Resting on the right-half of the curves
+      setOffsets({ top: 55, bottom: 60 }); // Nudged a bit more to the left
     }, 100);
     
     return () => clearTimeout(timer);
