@@ -38,7 +38,7 @@ export function Hero() {
     setOffsets({ top: -50, bottom: 150 });
     
     const timer = setTimeout(() => {
-      setOffsets({ top: 55, bottom: 60 }); // Nudged a bit more to the left
+      setOffsets({ top: 35, bottom: 40 }); // Shifted left: top was 55% -> 35%, bottom was 60% -> 40%
     }, 100);
     
     return () => clearTimeout(timer);
@@ -114,7 +114,7 @@ export function Hero() {
             <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
 
             {/* CURVED TEXT ON TOP PATH (Left to Right Slide) */}
-            <text className="font-serif italic text-[5px] tracking-[0.2em] font-light fill-[var(--text-bone)] opacity-40">
+            <text className="font-serif italic text-[6px] tracking-[0.2em] font-light fill-[var(--text-bone)] opacity-40">
               <textPath 
                 href="#curve-top" 
                 startOffset={`${offsets.top}%`}
