@@ -61,6 +61,7 @@ const config: Config = {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
         space: ["var(--font-space-grotesk)", "sans-serif"],
+        serif: ["var(--font-cormorant-garamond)", "serif"],
         lausanne: ['"TWK Lausanne"', "sans-serif"],
       },
       animation: {

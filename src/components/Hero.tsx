@@ -1,61 +1,17 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { animate as anime, utils } from "animejs";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 
-// Identity Data (Pro + User Friendly)
-const identities = {
-  en: ["Systems Architect", "Performance Engineer", "Data Scientist", "Front-End Developer"],
-  ja: ["システムアーキテクト", "パフォーマンスエンジニア", "データサイエンティスト", "フロントエンドデベロッパー"]
-};
-
-// Scramble Effect Component
-function ScrambledText({ text, duration = 800 }: { text: string; duration?: number }) {
-  const [display, setDisplay] = useState(text);
-  const chars = "!<>-_\\/[]{}—=+*^?#________";
-
-  useEffect(() => {
-    let frame = 0;
-    const totalFrames = 25;
-    const interval = duration / totalFrames;
-
-    const timer = setInterval(() => {
-      frame++;
-      const progress = frame / totalFrames;
-      const scrambled = text.split("").map((char, i) => {
-        if (char === " ") return " ";
-        if (progress > i / text.length) return char;
-        return chars[Math.floor(Math.random() * chars.length)];
-      }).join("");
-      setDisplay(scrambled);
-      if (frame >= totalFrames) { clearInterval(timer); setDisplay(text); }
-    }, interval);
-    return () => clearInterval(timer);
-  }, [text, duration]);
-  return <span>{display}</span>;
-}
-
 export function Hero() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
-
   const containerRef = useRef<HTMLDivElement>(null);
   const titlesRef = useRef<HTMLDivElement>(null);
   const cta1Ref = useMagnetic(0.2);
   const cta2Ref = useMagnetic(0.2);
-  const [roleIndex, setRoleIndex] = useState(0);
-
-  // Cycle roles every 4.5 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setRoleIndex((prev) => (prev + 1) % identities.en.length);
-    }, 4500);
-    return () => clearInterval(timer);
-  }, []);
 
   // Cinematic opening animations (MAPPA Style: slow continuous drift + sharp impacts)
   useEffect(() => {
@@ -113,6 +69,18 @@ export function Hero() {
          </svg>
       </div>
 
+      {/* ─── 3D BACKGROUND LAYER (The Far Wall) ─── */}
+      <div className="absolute inset-0 pointer-events-none z-[1] [perspective:1000px] flex items-center justify-center overflow-hidden">
+        <div 
+           className="w-full max-w-6xl text-center opacity-30 select-none"
+           style={{ transform: "translateZ(-200px) translateY(-5%) rotateX(5deg)" }}
+        >
+           <h2 className="font-serif italic text-4xl sm:text-6xl md:text-8xl text-[var(--text-bone)] tracking-widest drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+             {language === 'en' ? "Software Engineer" : "ソフトウェアエンジニア"}
+           </h2>
+        </div>
+      </div>
+
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
         
         {/* Professional Minimalist Status -> Brutalist Warning Tape */}
@@ -134,19 +102,6 @@ export function Hero() {
            <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone">
              {currentProfile.name.split(" ").slice(1).join(" ")}
            </h1>
-           
-           {/* Brutalist Role Stamp (Dynamic Cycler) */}
-           <div className="cinematic-in relative md:absolute bottom-auto md:bottom-[15%] right-auto md:right-[5%] flex flex-col items-end mt-8 md:mt-0 mx-auto w-fit md:w-auto">
-             <div className="bg-[var(--text-bone)] text-[var(--bg-ink)] px-6 py-3 md:px-10 md:py-4 border-r-8 border-[var(--accent-blood)] shadow-[12px_12px_0px_0px_rgba(217,17,17,0.8)] transition-transform hover:-translate-y-1 hover:-translate-x-1 duration-300">
-               <span className="font-black font-display text-base sm:text-2xl md:text-4xl uppercase tracking-[0.2em] md:tracking-[0.4em] ml-2 md:ml-4 inline-block min-w-[220px] text-right">
-                 <ScrambledText text={identities[language as 'en' | 'ja'][roleIndex]} key={language + roleIndex} />
-               </span>
-             </div>
-             {/* Technical subtext cycling with index */}
-             <div className="text-[var(--accent-blood)] text-[10px] md:text-[12px] tracking-[0.4em] font-mono font-bold mt-4 mr-2 uppercase">
-               {"// SYSTEM.IDENTITY.v_0" + (roleIndex + 1)}
-             </div>
-           </div>
         </div>
 
         {/* Clear, straightforward tagline without typewriter or terminal nonsense */}
