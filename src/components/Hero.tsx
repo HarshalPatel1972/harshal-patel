@@ -7,10 +7,23 @@ import { useLanguage } from "@/context/LanguageContext";
 
 function DraggableImage({ src }: { src: string }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [width, setWidth] = useState(450);
   const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  
   const offset = useRef({ x: 0, y: 0 });
+  const resizeStart = useRef({ x: 0, w: 0 });
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    // If we click the resize handle, engage resize mode instead
+    if ((e.target as HTMLElement).classList.contains('resize-handle')) {
+      e.stopPropagation();
+      setIsResizing(true);
+      resizeStart.current = { x: e.clientX, w: width };
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+      return;
+    }
+    
     setIsDragging(true);
     offset.current = {
       x: e.clientX - position.x,
@@ -20,6 +33,11 @@ function DraggableImage({ src }: { src: string }) {
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
+    if (isResizing) {
+      const newWidth = Math.max(100, Math.min(2000, resizeStart.current.w + (e.clientX - resizeStart.current.x)));
+      setWidth(newWidth);
+      return;
+    }
     if (!isDragging) return;
     setPosition({
       x: e.clientX - offset.current.x,
@@ -28,17 +46,21 @@ function DraggableImage({ src }: { src: string }) {
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    setIsDragging(false);
+    if (isResizing) {
+      setIsResizing(false);
+    } else {
+      setIsDragging(false);
+    }
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
   return (
     <div 
-      className={`absolute z-[100] cursor-grab ${isDragging ? 'cursor-grabbing opacity-80 scale-105' : ''} transition-all duration-75`}
+      className={`absolute z-[100] ${isDragging ? 'cursor-grabbing opacity-80 scale-105' : 'cursor-grab'} transition-all duration-75`}
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
         touchAction: 'none',
-        left: '10%', // Initial placement
+        left: '10%', 
         top: '10%'
       }}
       onPointerDown={handlePointerDown}
@@ -46,16 +68,26 @@ function DraggableImage({ src }: { src: string }) {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      <img
-        src={src}
-        alt="Draggable placement test"
-        className="w-[300px] md:w-[450px] shadow-2xl drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] brutal-shadow pointer-events-none"
-        draggable="false"
-      />
+      <div className="relative inline-block select-none">
+        <img
+          src={src}
+          alt="Draggable placement test"
+          style={{ width: `${width}px` }}
+          className="shadow-2xl drop-shadow-[0_0_30px_rgba(255,255,255,0.1)] brutal-shadow pointer-events-none"
+          draggable="false"
+        />
+        
+        {/* Resize Handle (Red Box in Corner) */}
+        <div 
+          className="resize-handle absolute bottom-0 right-0 w-8 h-8 cursor-nwse-resize bg-[var(--accent-blood)] border-2 border-black flex items-center justify-center translate-x-[30%] translate-y-[30%] brutal-shadow z-10"
+        >
+          <span className="resize-handle pointer-events-none block w-3 h-3 bg-white" />
+        </div>
+      </div>
       
       {/* Small UI helper tag */}
-      <div className="absolute -bottom-8 left-0 right-0 text-center font-mono text-[10px] text-[var(--text-bone)]/50 tracking-widest uppercase pointer-events-none select-none">
-         Drag To Position
+      <div className="absolute -bottom-10 left-0 right-0 text-center font-mono text-[10px] text-[var(--text-bone)]/50 tracking-widest uppercase pointer-events-none">
+         Drag To Move • Pull Box To Size • {Math.round(width)}px
       </div>
     </div>
   );
