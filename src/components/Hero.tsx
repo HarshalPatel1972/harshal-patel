@@ -31,50 +31,53 @@ export function Hero() {
   
   const [roleIndex, setRoleIndex] = useState(0);
 
-  // Word-based kinetic animation (MAPPA Sequence)
+  // Word-based kinetic animation (MAPPA Sequence: Glide In -> Stop -> Glide Out)
   useEffect(() => {
     const topPath = containerRef.current?.querySelector(".char-top");
     const bottomPath = containerRef.current?.querySelector(".char-bottom");
 
     if (!topPath || !bottomPath) return;
 
-    // Phase 1: BOTH Glide In Together
+    // Phase 1: BOTH Glide In (Top: Left-to-Right, Bottom: Right-to-Left)
     animate(topPath, {
-      startOffset: ["100%", "5%"], // Landing precisely on the new right-focused paths
+      startOffset: ["0%", "42%"],
+      opacity: [0, 1],
       duration: 2000,
       easing: "easeOutQuart"
     });
     animate(bottomPath, {
-      startOffset: ["-20%", "10%"], // Landing precisely on the new right-focused paths
+      startOffset: ["100%", "43%"],
+      opacity: [0, 1],
       duration: 2000,
       easing: "easeOutQuart"
     });
 
-    // Phase 2: BOTH Glide Out (Disappear) Together before the interval resets
+    // Phase 2: Stay at Markers for 5 seconds
     const exitTimer = setTimeout(() => {
+      // Phase 3: BOTH Progress to Exit smoothly
       animate(topPath, {
-        startOffset: "120%", 
+        startOffset: ["42%", "100%"],
         opacity: [1, 0],
-        duration: 1500,
+        duration: 2000,
         easing: "easeInQuart"
       });
       animate(bottomPath, {
-        startOffset: "-40%",
+        startOffset: ["43%", "-10%"],
         opacity: [1, 0],
-        duration: 1500,
+        duration: 2000,
         easing: "easeInQuart"
       });
-    }, 9000); // Now stays for 9 seconds before starting the exit glide
+    }, 7000); // 2s glide + 5s stay
 
     return () => clearTimeout(exitTimer);
 
   }, [roleIndex]);
 
-  // Cycle roles every 12 seconds (Giving plenty of time to read)
+  // Cycle roles every 10 seconds to allow the Glide-Stay-Exit sequence
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 12000);
+    }, 10000);
     return () => clearInterval(timer);
   }, []);
 
@@ -126,35 +129,35 @@ export function Hero() {
       <SubliminalKanji kanji="起源" position="right" />
 
       {/* ─── MAPPA INK-PATH ROLES (Text following the curves) ─── */}
-      <div className="ink-slash absolute left-[15%] sm:left-[35%] top-[15%] w-[80%] sm:w-[55%] h-[55%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
+      <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
-            {/* DEFINE THE HIDDEN PATHS (Focused on the User's Yellow Markers) */}
+            {/* DEFINE THE HIDDEN PATHS (Restored to Original Wide Curves) */}
             <defs>
-              <path id="curve-top" d="M30,45 Q60,40 90,45" fill="transparent" />
-              <path id="curve-bottom" d="M35,65 Q65,85 95,70" fill="transparent" />
+              <path id="curve-top" d="M10,80 Q30,50 60,60 T90,20" fill="transparent" />
+              <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
             </defs>
 
-            {/* VISUAL RED SLASHES - Redrawn for the Marker positions */}
-            <path d="M30,45 Q60,40 90,45 L90,50 Q60,45 30,50 Z" fill="var(--accent-blood)" opacity="0.15" />
-            <path d="M35,65 Q65,85 95,70 L95,76 Q65,92 35,71 Z" fill="var(--accent-blood)" opacity="0.1" />
+            {/* VISUAL RED SLASHES - Restored as requested */}
+            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
+            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
 
-            {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) - Elegant Serif */}
-            <text className="font-serif italic text-[7px] tracking-[0.05em] font-medium fill-[var(--text-bone)] opacity-90 drop-shadow-sm">
+            {/* CURVED TEXT ON TOP PATH (Glide-In: Left to Right) - Elegant Serif */}
+            <text className="font-serif italic text-[7.5px] tracking-[0.05em] font-medium fill-[var(--text-bone)] opacity-90 drop-shadow-sm">
               <textPath 
                 href="#curve-top" 
                 className="char-top"
-                startOffset="100%"
+                startOffset="0%"
               >
                 {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
               </textPath>
             </text>
 
-            {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) - Matching Serif */}
+            {/* CURVED TEXT ON BOTTOM PATH (Glide-In: Right to Left) - Matching Serif */}
             <text className="font-serif italic text-[6.5px] tracking-[0.1em] font-medium fill-[var(--text-bone)] opacity-70">
               <textPath 
                 href="#curve-bottom" 
                 className="char-bottom"
-                startOffset="-20%"
+                startOffset="100%"
               >
                 {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
               </textPath>
