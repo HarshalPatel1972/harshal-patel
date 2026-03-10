@@ -64,7 +64,7 @@ export function Contact() {
     <section 
       id="contact" 
       ref={containerRef}
-      className="relative pt-[44px] md:pt-[108px] pb-16 md:pb-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center overflow-hidden"
+      className="relative pt-[44px] md:pt-[108px] pb-16 md:pb-32 px-4 md:px-8 bg-white flex flex-col items-center overflow-hidden"
     >
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />

@@ -39,7 +39,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-[76px] md:pt-[108px] pb-24 md:pb-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center"
+      className="relative pt-[76px] md:pt-[108px] pb-24 md:pb-32 px-4 md:px-8 bg-white flex flex-col items-center"
     >
       {/* Background ink texture (inverted for this section since background is white) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
@@ -120,7 +120,7 @@ export function Projects() {
 
                   {/* Brutalist Arrow/CTA */}
                   <div className="mt-12 flex items-center gap-4">
-                     <div className="w-12 h-12 bg-[var(--text-bone)] text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
+                     <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
                          <path d="M5 12h14M12 5l7 7-7 7"/>
                        </svg>

@@ -116,7 +116,7 @@ export function About() {
              PANEL 2: Experience (Stacked Black Blocks)
              ========================================= */}
          <ScrollReveal duration={1200} delay={200} className="w-full">
-           <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
+           <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
               <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : <>記録された<br/>経験</>}
               </div>
@@ -155,7 +155,7 @@ export function About() {
              <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
                
                {/* Massive Stats Block inside the panel */}
-               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
+               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
                  <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
                  <MangaStat value={8.9} label={language === 'en' ? "Academic" : "成績"} />
                  <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
