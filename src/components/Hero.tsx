@@ -42,47 +42,47 @@ export function Hero() {
     animate(topPath, { opacity: 0, startOffset: "0%", duration: 0 });
     animate(bottomPath, { opacity: 0, startOffset: "100%", duration: 0 });
 
-    // TOP WORD: Fast In -> Slow Drift -> Fast Out
+    // TOP WORD: Fast In (2s) -> Slow Drift (2s) -> Slower Out (2.5s)
     animate(topPath, { 
       startOffset: "42%", 
       opacity: 1, 
-      duration: 2500, 
+      duration: 2000, 
       easing: "easeOutQuart" 
     }).then(() => animate(topPath, { 
-      startOffset: "52%", 
-      duration: 6000, 
+      startOffset: "47%", 
+      duration: 2000, 
       easing: "linear" 
     })).then(() => animate(topPath, { 
       startOffset: "110%", 
       opacity: 0, 
-      duration: 1500, 
+      duration: 2500, 
       easing: "easeInQuart" 
     }));
 
-    // BOTTOM WORD: Fast In -> Slow Drift -> Fast Out
+    // BOTTOM WORD: Fast In (2s) -> Slow Drift (2s) -> Slower Out (2.5s)
     animate(bottomPath, { 
       startOffset: "43%", 
       opacity: 1, 
-      duration: 2500, 
+      duration: 2000, 
       easing: "easeOutQuart" 
     }).then(() => animate(bottomPath, { 
-      startOffset: "33%", 
-      duration: 6000, 
+      startOffset: "38%", 
+      duration: 2000, 
       easing: "linear" 
     })).then(() => animate(bottomPath, { 
       startOffset: "-10%", 
       opacity: 0, 
-      duration: 1500, 
+      duration: 2500, 
       easing: "easeInQuart" 
     }));
 
   }, [roleIndex]);
 
-  // Cycle roles every 10 seconds (aligned with the continuous drift duration)
+  // Cycle roles every 7.5 seconds (6.5s animation + 1s clean delay)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 10000);
+    }, 7500);
     return () => clearInterval(timer);
   }, []);
 
