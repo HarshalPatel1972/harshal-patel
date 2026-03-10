@@ -123,16 +123,15 @@ body::before {
   animation: impact-flash 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes mappa-arrow-bounce {
-  0% { transform: translateY(0) scaleY(1); opacity: 0.8; }
-  45% { transform: translateY(20px) scaleY(1.2); opacity: 1; }
-  50% { transform: translateY(22px) scaleY(0.8); opacity: 1; }
-  55% { transform: translateY(20px) scaleY(1); opacity: 1; }
-  100% { transform: translateY(0) scaleY(1); opacity: 0.8; }
+@keyframes mappa-arrow-cascade {
+  0% { transform: translateY(-20px); opacity: 0; }
+  30% { transform: translateY(0); opacity: 1; }
+  60% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(-20px); opacity: 0; }
 }
 
-.animate-mappa-vibe {
-  animation: mappa-arrow-bounce 2s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+.animate-mappa-cascade {
+  animation: mappa-arrow-cascade 1.5s cubic-bezier(0.19, 1, 0.22, 1) infinite;
 }
 
 /* ─── SCROLLBAR ─── */
