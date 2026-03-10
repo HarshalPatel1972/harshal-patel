@@ -17,14 +17,12 @@ export function Hero() {
 
   const introStages = {
     en: [
-      "I’m your creative partner dedicated to understanding your needs",
-      "and crafting digital solutions that reflect your passion",
-      "and vision while effectively solving your problems."
+      "Searching for speed? Facing scale's need?",
+      "A fresh eye for the win? You’ve reached the source. Let the building begin."
     ],
     ja: [
-      "私は あなたの クリエイティブ・パートナーとして、 ニーズを 理解し、",
-      "情熱と ビジョンを 反映した デジタルソリューションを 創り上げ、",
-      "課題を 効果的に 解決することに 専念しています。"
+      "速さを求めるか？ 規模に挑むか？",
+      "勝利への新たな眼差し。 ならば、ここが構築の『起源』だ。"
     ]
   };
 
@@ -75,52 +73,47 @@ export function Hero() {
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
         </div>
 
-        {/* ─── THE EDITORIAL INTRO REVEAL (Manga Storytelling Overlay) ─── */}
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
           
-          {/* Vertical SIDE LABEL (Intro) */}
-          <div className="absolute left-0 bottom-1/2 translate-y-1/2 -rotate-90 origin-center hidden lg:block opacity-60">
-             <span className="font-serif italic text-4xl text-[var(--text-bone)] tracking-widest uppercase">Intro</span>
-          </div>
-
-          <div className="relative w-full max-w-7xl flex items-start gap-8 md:gap-16">
+          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
             {/* The Bullet Mark */}
-            <div className="mt-6 md:mt-12 w-6 h-6 rounded-full bg-[var(--text-bone)] flex-shrink-0 brutal-shadow hidden md:block" />
+            <div className="mt-4 md:mt-10 w-4 h-4 rounded-full bg-[var(--text-bone)] flex-shrink-0 brutal-shadow hidden md:block" />
 
-            <div className="text-justify leading-[0.9] md:leading-[1]">
+            <div className="text-justify leading-[0.95] md:leading-[1.05]">
               {allWords.map((word, i) => {
                 const start = (i / allWords.length) * 0.8;
                 const end = start + 0.2;
                 const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
                 
-                // Narrative Semantic Styling
-                const isSpecial = word.toLowerCase().replace(/[.,!]/g, '') === 'creative' || 
-                                  word.toLowerCase().replace(/[.,!]/g, '') === 'solutions' || 
-                                  word.toLowerCase().replace(/[.,!]/g, '') === 'solving' ||
-                                  word.includes('クリエイティブ') || word.includes('ソリューション') || word.includes('解決');
+                // Narrative Semantic Styling for Rhyme Version
+                const isSpecial = word.toLowerCase().includes('speed') || word.toLowerCase().includes('scale') || 
+                                  word.toLowerCase().includes('win') || word.toLowerCase().includes('source') || 
+                                  word.toLowerCase().includes('begin') ||
+                                  word.includes('速さ') || word.includes('規模') || word.includes('勝利') || 
+                                  word.includes('起源') || word.includes('構築');
                 
                 return (
                   <span 
                     key={i}
-                    className="inline-block mr-[0.2em] mb-4"
+                    className="inline-block mr-[0.2em] mb-2"
                     style={{
                       opacity: activeProgress,
-                      transform: `translateY(${(1 - activeProgress) * 30}px)`,
-                      filter: `blur(${(1 - activeProgress) * 15}px)`,
+                      transform: `translateY(${(1 - activeProgress) * 25}px)`,
+                      filter: `blur(${(1 - activeProgress) * 12}px)`,
                       willChange: 'opacity, transform, filter'
                     }}
                   >
                     <span 
-                      className={`text-4xl md:text-7xl lg:text-[7.5rem] font-black uppercase tracking-tighter select-none transition-all duration-700
+                      className={`text-2xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter select-none transition-all duration-700
                         ${isSpecial ? 
                           'font-serif italic capitalize text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]' : 
                           'font-display text-[var(--text-bone)]'}`}
                     >
                       {word}
                     </span>
-                    {/* Line breaks to force the structure */}
-                    {((language === 'en' && (i === 8 || i === 16)) || 
-                      (language === 'ja' && (i === 4 || i === 9))) && <br className="hidden md:block" />}
+                    {/* Poetic Line breaks */}
+                    {((language === 'en' && i === 5) || 
+                      (language === 'ja' && i === 1)) && <br className="hidden md:block" />}
                   </span>
                 );
               })}
