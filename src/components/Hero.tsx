@@ -39,16 +39,16 @@ export function Hero() {
     if (!topPath || !bottomPath) return;
 
     // Phase 1: Upper Word (Right to Left glide)
-    // Starting far right (100%) and landing at 35%
+    // Starting far right (100%) and landing at 39%
     animate(topPath, {
-      startOffset: ["100%", "35%"],
+      startOffset: ["100%", "39%"],
       duration: 1500,
       easing: "easeOutQuart"
     }).then(() => {
       // Phase 2: Lower Word (Left to Right glide)
-      // Starting far left (0%) and landing at 30%
+      // Starting far left (0%) and landing at 40%
       animate(bottomPath, {
-        startOffset: ["0%", "30%"],
+        startOffset: ["0%", "40%"],
         duration: 1500,
         easing: "easeOutQuart"
       });
