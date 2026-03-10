@@ -99,7 +99,7 @@ export function About() {
                    <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
                       <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">Status</div>
                       <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
-                        {currentProfile.education.gpa} CGPA
+                        {currentProfile.education.gpa}
                       </div>
                       <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
                          {language === 'en' ? "Academic Topper" : "成績優秀者"}
@@ -124,9 +124,8 @@ export function About() {
              ========================================= */}
          <ScrollReveal duration={1200} delay={200} className="w-full">
            <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
-              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center justify-between">
+              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center">
                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : <>記録された<br/>経験</>}
-                 <span className="text-[10px] md:text-sm font-mono tracking-normal text-black bg-[var(--accent-blood)] px-2 py-1 rotate-[-5deg]">{language === 'en' ? 'CLASSIFIED' : '機密'}</span>
               </div>
               
               <div className="flex flex-col bg-white">
