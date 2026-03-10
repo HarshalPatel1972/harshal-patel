@@ -17,16 +17,16 @@ export function Hero() {
 
   const introStages = {
     en: [
-      "Building systems that grow with your business.",
-      "Focusing on speed, reliability, and modern architecture.",
-      "Solving difficult technical problems with clean, efficient code.",
-      "Delivering software that powers high-performance experiences."
+      "Searching for speed?",
+      "Facing scale's need?",
+      "A fresh eye for the win?",
+      "You’ve reached the source. Let the building begin."
     ],
     ja: [
-      "ビジネスと共に成長するシステムを構築します。",
-      "速度、信頼性、そしてモダンなアーキテクチャに重点を置いています。",
-      "クリーンで効率的なコードで、困難な技術的課題を解決します。",
-      "ハイパフォーマンスな体験を支えるソフトウェアを提供します。"
+      "速さを求めるか？",
+      "規模に挑むか？",
+      "勝利への新たな眼差し。",
+      "ならば、ここが構築の『起源』だ。"
     ]
   };
 
