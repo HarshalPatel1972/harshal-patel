@@ -1,25 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { createTimeline } from "animejs";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
-
-// Identity Data (Two-word roles for the ink slash curves)
-const curvedIdentities = {
-  en: [
-    ["Front-End", "Developer"],
-    ["Software", "Engineer"],
-    ["Data", "Scientist"],
-    ["Systems", "Architect"]
-  ],
-  ja: [
-    ["フロントエンド", "開発者"],
-    ["ソフトウェア", "エンジニア"],
-    ["データ", "サイエンティスト"],
-    ["システム", "設計者"]
-  ]
-};
 
 export function Hero() {
   const { language } = useLanguage();
@@ -29,7 +12,6 @@ export function Hero() {
   const cta1Ref = useMagnetic(0.2);
   const cta2Ref = useMagnetic(0.2);
   
-  const [roleIndex, setRoleIndex] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -72,63 +54,6 @@ export function Hero() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Word-based lightning strike (Strike In -> Hard Stop -> Strike Out)
-  useEffect(() => {
-    const topPath = containerRef.current?.querySelector(".char-top");
-    const bottomPath = bottomPathRef.current || containerRef.current?.querySelector(".char-bottom");
-
-    if (!topPath || !bottomPath) return;
-
-    const entranceSpeed = 300;
-    const holdTime = 3000;
-    const exitSpeed = 300;
-
-    const tl = createTimeline();
-
-    tl.add(topPath, {
-      startOffset: "42%",
-      opacity: [0, 1],
-      duration: entranceSpeed,
-      ease: "easeOutExpo"
-    }, 0);
-    
-    tl.add(topPath, { startOffset: "42%", duration: holdTime, ease: "linear" }, entranceSpeed);
-    
-    tl.add(topPath, {
-      startOffset: "110%",
-      opacity: [1, 0],
-      duration: exitSpeed,
-      ease: "easeInExpo"
-    }, entranceSpeed + holdTime);
-
-    tl.add(bottomPath, {
-      startOffset: "43%",
-      opacity: [0, 1],
-      duration: entranceSpeed,
-      ease: "easeOutExpo"
-    }, 0);
-    
-    tl.add(bottomPath, { startOffset: "43%", duration: holdTime, ease: "linear" }, entranceSpeed);
-    
-    tl.add(bottomPath, {
-      startOffset: "-10%",
-      opacity: [1, 0],
-      duration: exitSpeed,
-      ease: "easeInExpo"
-    }, entranceSpeed + holdTime);
-
-  }, [roleIndex, language]);
-
-  const bottomPathRef = useRef<SVGTextPathElement>(null);
-
-  // Cycle roles every 3.6 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 3600);
-    return () => clearInterval(timer);
-  }, []);
-
   // Compute transform values based on scroll progress
   const heroRecedeStyle = {
     transform: `scale(${1 - scrollProgress * 0.4}) translateY(${scrollProgress * -100}px)`,
@@ -156,9 +81,6 @@ export function Hero() {
         <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center px-8 md:px-32">
           <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
             {words.map((word, i) => {
-              // Calculate threshold for each word
-              // We want the words to start appearing after scrollProgress > 0.1
-              // And finish by scrollProgress = 0.9
               const start = 0.1 + (i / words.length) * 0.7;
               const end = start + 0.1;
               const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
@@ -198,31 +120,6 @@ export function Hero() {
 
           {/* Vertical Kanji Watermark */}
           <SubliminalKanji kanji="起源" position="right" />
-
-          {/* ─── MAPPA INK-PATH ROLES ─── */}
-          <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-100 select-none flex items-center justify-center">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
-                <defs>
-                  <path id="curve-top" d="M10,80 Q30,50 60,60 T90,20" fill="transparent" />
-                  <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
-                </defs>
-
-                <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
-                <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
-
-                <text className="font-display uppercase text-[8px] tracking-[0.1em] font-black fill-[var(--text-bone)] opacity-95 drop-shadow-md">
-                  <textPath href="#curve-top" className="char-top" startOffset="0%">
-                    {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
-                  </textPath>
-                </text>
-
-                <text className="font-display uppercase text-[7px] tracking-[0.15em] font-black fill-[var(--text-bone)] opacity-80">
-                  <textPath href="#curve-bottom" ref={bottomPathRef} className="char-bottom" startOffset="100%">
-                    {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
-                  </textPath>
-                </text>
-              </svg>
-          </div>
 
           <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-[var(--text-bone)] text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
