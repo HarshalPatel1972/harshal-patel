@@ -57,8 +57,8 @@ export function Projects() {
         </div>
         <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
            {language === 'en' 
-             ? "Archival records of systems constructed and curses excised."
-             : "構築されたシステムと祓われた呪いのアーカイブ記録。"}
+             ? "A showcase of systems built and technical problems solved."
+             : "開発されたシステムと解決された技術的課題のショーケース。"}
         </p>
       </div>
 
