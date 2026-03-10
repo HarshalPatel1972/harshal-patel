@@ -109,13 +109,45 @@ export function Hero() {
             })}
           </div>
           
-          {/* SCROLL INDICATOR */}
+          {/* MAPPA LEVEL SCROLL INDICATOR */}
           <div 
-            className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-opacity duration-700"
-            style={{ opacity: scrollProgress > 0.05 ? 0 : 0.8 }}
+            className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-all duration-700"
+            style={{ 
+              opacity: scrollProgress > 0.05 ? 0 : 1,
+              transform: `translateY(${scrollProgress > 0.05 ? 20 : 0}px)`
+            }}
           >
-            <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--text-bone)] mb-4 uppercase">Scroll to Decipher</div>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--text-bone)] to-transparent" />
+            <div className="relative group animate-mappa-vibe">
+              {/* Brutalist Arrow Container */}
+              <div className="w-10 h-16 border-2 border-[var(--text-bone)] flex flex-col items-center justify-end pb-3 overflow-hidden relative">
+                {/* The "Trail" */}
+                <div className="absolute top-0 w-[2px] h-3/4 bg-gradient-to-b from-transparent via-[var(--accent-blood)] to-[var(--text-bone)] opacity-50" />
+                
+                {/* The Arrow Head (Anime Style Jagged Arrow) */}
+                <svg 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="relative z-10 text-[var(--text-bone)]"
+                >
+                  <path 
+                    d="M12 4L12 20M12 20L5 13M12 20L19 13" 
+                    stroke="currentColor" 
+                    strokeWidth="3" 
+                    strokeLinecap="square"
+                  />
+                </svg>
+
+                {/* Impact Glow */}
+                <div className="absolute inset-0 bg-[var(--accent-blood)] opacity-0 group-hover:opacity-10 transition-opacity" />
+              </div>
+
+              {/* Decorative Tech Marks */}
+              <div className="absolute -left-4 top-0 text-[8px] font-mono text-[var(--accent-blood)] rotate-90 tracking-widest opacity-40">DWN-LOAD</div>
+              <div className="absolute -right-4 top-0 text-[8px] font-mono text-[var(--accent-blood)] -rotate-90 tracking-widest opacity-40">KINETIC</div>
+            </div>
           </div>
         </div>
 
