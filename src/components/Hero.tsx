@@ -76,8 +76,6 @@ export function Hero() {
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
           
           <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
-            {/* The Bullet Mark */}
-            <div className="mt-4 md:mt-10 w-4 h-4 rounded-full bg-[var(--text-bone)] flex-shrink-0 brutal-shadow hidden md:block" />
 
             <div className="text-justify leading-[0.95] md:leading-[1.05]">
               {allWords.map((word, i) => {
@@ -104,10 +102,10 @@ export function Hero() {
                     }}
                   >
                     <span 
-                      className={`text-2xl md:text-5xl lg:text-7xl uppercase tracking-tighter select-none transition-all duration-700
+                      className={`text-[1.38rem] md:text-[2.76rem] lg:text-[4.14rem] uppercase tracking-tighter select-none transition-all duration-700
                         ${isSpecial ? 
                           'font-serif italic font-normal capitalize text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]' : 
-                          'font-display font-black text-[var(--text-bone)]'}`}
+                          'font-display font-medium text-[var(--text-bone)]'}`}
                     >
                       {word}
                     </span>
@@ -160,7 +158,6 @@ export function Hero() {
 
           <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
-              <span className="w-2 h-2 rounded-full bg-[var(--accent-blood)] animate-pulse" />
               <span className="uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black font-display">
                 {language === 'en' ? "Available for Opportunities" : "仕事の依頼を受付中"}
               </span>

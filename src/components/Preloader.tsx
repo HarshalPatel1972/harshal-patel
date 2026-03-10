@@ -31,6 +31,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const words = quote.split(/\s+/).length;
   const readTime = Math.max(5500, 4000 + words * 320);
 
+  const quoteFontSizeClass = useMemo(() => {
+    const len = quote.length;
+    if (len > 120) return "text-xl md:text-3xl lg:text-[4.5rem]";
+    if (len > 80) return "text-2xl md:text-4xl lg:text-[5.5rem]";
+    if (len > 50) return "text-2xl md:text-5xl lg:text-[6.5rem]";
+    return "text-3xl md:text-7xl lg:text-[8rem]";
+  }, [quote]);
+
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
   // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
@@ -227,7 +235,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
          <h1 
           ref={quoteRef} 
-          className="text-3xl md:text-7xl lg:text-[8rem] font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.85] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto"
+          className={`${quoteFontSizeClass} font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.85] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
          >
            {mounted ? wrappedChars : null}
          </h1>
