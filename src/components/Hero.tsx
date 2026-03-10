@@ -109,35 +109,41 @@ export function Hero() {
             })}
           </div>
           
-          {/* MAPPA LEVEL SCROLL INDICATOR (PURE VISUAL CUE) */}
+          {/* MAPPA SUPREME: CURSED ENERGY DESCENT CUE */}
           <div 
-            className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-all duration-700"
+            className="absolute bottom-16 left-0 right-0 flex flex-col items-center transition-all duration-700 pointer-events-none"
             style={{ 
               opacity: scrollProgress > 0.05 ? 0 : 1,
-              transform: `translateY(${scrollProgress > 0.05 ? 20 : 0}px)`
+              transform: `translateY(${scrollProgress > 0.05 ? 40 : 0}px)`
             }}
           >
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-6">
               {[0, 1, 2].map((i) => (
-                <svg 
+                <div 
                   key={i}
-                  width="24" 
-                  height="24" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="text-[var(--text-bone)] animate-mappa-cascade"
-                  style={{ animationDelay: `${i * 0.2}s`, opacity: 0 }}
+                  className="animate-impact-pulse"
+                  style={{ animationDelay: `${i * 0.25}s`, opacity: 0 }}
                 >
-                  <path 
-                    d="M12 4L12 20M12 20L5 13M12 20L19 13" 
-                    stroke={i === 1 ? "var(--accent-blood)" : "currentColor"} 
-                    strokeWidth="3" 
-                    strokeLinecap="square"
-                  />
-                </svg>
+                  <div className="animate-cursed-vibe relative">
+                    {/* The Heavy Arrow (Constructed with blocky bars) */}
+                    <div className="relative w-8 h-8 flex items-center justify-center">
+                      <div className="absolute w-[4px] h-[20px] bg-[var(--text-bone)] rounded-none rotate-45 translate-x-[7px] translate-y-[2px] chromatic-aberration" />
+                      <div className="absolute w-[4px] h-[20px] bg-[var(--text-bone)] rounded-none -rotate-45 -translate-x-[7px] translate-y-[2px] chromatic-aberration" />
+                      
+                      {/* Crimson Core (for the middle one) */}
+                      {i === 1 && (
+                        <>
+                          <div className="absolute w-[6px] h-[24px] bg-[var(--accent-blood)] blur-sm opacity-60 rotate-45 translate-x-[7px] translate-y-[2px]" />
+                          <div className="absolute w-[6px] h-[24px] bg-[var(--accent-blood)] blur-sm opacity-60 -rotate-45 -translate-x-[7px] translate-y-[2px]" />
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
+            {/* The "Centerline" of the void */}
+            <div className="w-[1px] h-32 bg-gradient-to-b from-[var(--text-bone)] via-[var(--accent-blood)] to-transparent opacity-20 -mt-8" />
           </div>
         </div>
 
