@@ -42,47 +42,47 @@ export function Hero() {
     animate(topPath, { opacity: 0, startOffset: "0%", duration: 0 });
     animate(bottomPath, { opacity: 0, startOffset: "100%", duration: 0 });
 
-    // TOP WORD: Super Fast In (700ms) -> Stop (2s) -> Super Fast Out (700ms)
+    // TOP WORD: Lightning Fast In (300ms) -> Stop (2.5s) -> Lightning Fast Out (300ms)
     animate(topPath, { 
       startOffset: "42%", 
       opacity: 1, 
-      duration: 700, 
+      duration: 300, 
       easing: "easeOutExpo" 
     }).then(() => animate(topPath, { 
-      startOffset: "42%", // Full stop
-      duration: 2000, 
+      startOffset: "42%", // Full absolute stop for readability
+      duration: 2500, 
       easing: "linear" 
     })).then(() => animate(topPath, { 
       startOffset: "110%", 
       opacity: 0, 
-      duration: 700, 
+      duration: 300, 
       easing: "easeInExpo" 
     }));
 
-    // BOTTOM WORD: Super Fast In (700ms) -> Stop (2s) -> Super Fast Out (700ms)
+    // BOTTOM WORD: Lightning Fast In (300ms) -> Stop (2.5s) -> Lightning Fast Out (300ms)
     animate(bottomPath, { 
       startOffset: "43%", 
       opacity: 1, 
-      duration: 700, 
+      duration: 300, 
       easing: "easeOutExpo" 
     }).then(() => animate(bottomPath, { 
-      startOffset: "43%", // Full stop
-      duration: 2000, 
+      startOffset: "43%", // Full absolute stop
+      duration: 2500, 
       easing: "linear" 
     })).then(() => animate(bottomPath, { 
       startOffset: "-10%", 
       opacity: 0, 
-      duration: 700, 
+      duration: 300, 
       easing: "easeInExpo" 
     }));
 
   }, [roleIndex]);
 
-  // Cycle roles every 3.4 seconds (Matching the new fast impact sequence)
+  // Cycle roles every 3.1 seconds (Total animation duration = 300ms + 2500ms + 300ms + 0ms gap)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 3400);
+    }, 3100);
     return () => clearInterval(timer);
   }, []);
 
