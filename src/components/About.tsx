@@ -74,7 +74,7 @@ export function About() {
                  <h3 className="text-4xl sm:text-5xl md:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-[0.85] mb-8">
                    {language === 'en' ? "Software" : "ソフトウェア"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : "エンジニア"}</span>
                  </h3>
-                 <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
+                 <p className="text-2xl sm:text-3xl md:text-4xl font-display font-black leading-tight text-black max-w-4xl border-l-8 border-black pl-8 uppercase tracking-tighter">
                    {currentProfile.bio}
                  </p>
 
