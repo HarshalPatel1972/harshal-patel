@@ -42,47 +42,47 @@ export function Hero() {
     animate(topPath, { opacity: 0, startOffset: "0%", duration: 0 });
     animate(bottomPath, { opacity: 0, startOffset: "100%", duration: 0 });
 
-    // TOP WORD: Fast In (1.5s) -> Ultra Slow Drift (4.5s) -> Slower Out (2s)
+    // TOP WORD: Super Fast In (700ms) -> Stop (2s) -> Super Fast Out (700ms)
     animate(topPath, { 
       startOffset: "42%", 
       opacity: 1, 
-      duration: 1500, 
-      easing: "easeOutQuart" 
+      duration: 700, 
+      easing: "easeOutExpo" 
     }).then(() => animate(topPath, { 
-      startOffset: "45%", 
-      duration: 4500, 
+      startOffset: "42%", // Full stop
+      duration: 2000, 
       easing: "linear" 
     })).then(() => animate(topPath, { 
       startOffset: "110%", 
       opacity: 0, 
-      duration: 2000, 
-      easing: "easeInQuart" 
+      duration: 700, 
+      easing: "easeInExpo" 
     }));
 
-    // BOTTOM WORD: Fast In (1.5s) -> Ultra Slow Drift (4.5s) -> Slower Out (2s)
+    // BOTTOM WORD: Super Fast In (700ms) -> Stop (2s) -> Super Fast Out (700ms)
     animate(bottomPath, { 
       startOffset: "43%", 
       opacity: 1, 
-      duration: 1500, 
-      easing: "easeOutQuart" 
+      duration: 700, 
+      easing: "easeOutExpo" 
     }).then(() => animate(bottomPath, { 
-      startOffset: "40%", 
-      duration: 4500, 
+      startOffset: "43%", // Full stop
+      duration: 2000, 
       easing: "linear" 
     })).then(() => animate(bottomPath, { 
       startOffset: "-10%", 
       opacity: 0, 
-      duration: 2000, 
-      easing: "easeInQuart" 
+      duration: 700, 
+      easing: "easeInExpo" 
     }));
 
   }, [roleIndex]);
 
-  // Cycle roles every 5.5 seconds (Overlap ensures ZERO perceived delay)
+  // Cycle roles every 3.4 seconds (Matching the new fast impact sequence)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 5500);
+    }, 3400);
     return () => clearInterval(timer);
   }, []);
 
