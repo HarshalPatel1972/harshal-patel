@@ -93,7 +93,7 @@ export function Hero() {
                 return (
                   <span 
                     key={i}
-                    className="inline-block mr-[0.2em] mb-2"
+                    className="inline-block mr-[0.22em] mb-2"
                     style={{
                       opacity: activeProgress,
                       transform: `translateY(${(1 - activeProgress) * 25}px)`,
