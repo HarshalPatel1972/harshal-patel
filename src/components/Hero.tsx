@@ -155,23 +155,21 @@ export function Hero() {
               {currentProfile.tagline}
             </p>
 
-            <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start mt-2">
-              <a ref={cta1Ref as any} href="#projects" className="group relative flex items-center justify-between min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
+            <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px]">
+              <a ref={cta1Ref as any} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5 w-full">
+                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className="text-white font-black font-display text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
                     {language === 'en' ? "View Work" : "実績を見る"}
                   </span>
-                  <span className="ml-auto text-[9px] md:text-[11px] font-mono tracking-widest text-[var(--text-bone)]/50 group-hover:text-white transition-colors duration-500">[01]</span>
                 </div>
               </a>
-              <a ref={cta2Ref as any} href="#contact" className="group relative flex items-center justify-between min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
+              <a ref={cta2Ref as any} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--text-bone)] scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5 w-full">
+                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className="text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black font-display text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
                     {language === 'en' ? "Contact" : "連絡する"}
                   </span>
-                  <span className="ml-auto text-[9px] md:text-[11px] font-mono tracking-widest text-[var(--accent-blood)] group-hover:text-[var(--bg-ink)] transition-colors duration-500">[02]</span>
                 </div>
               </a>
             </div>
