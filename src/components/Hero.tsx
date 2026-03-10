@@ -99,8 +99,14 @@ export function Hero() {
                   }}
                 >
                   <span 
-                    className="text-3xl md:text-6xl lg:text-8xl font-black font-display uppercase tracking-tighter leading-none text-[var(--text-bone)]"
-                    style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
+                    className={`text-3xl md:text-5xl lg:text-7xl font-black font-display uppercase tracking-tighter leading-none select-none
+                      ${word.toLowerCase().includes('speed') || word.includes('速さ') ? 'text-[var(--accent-cursed)] drop-shadow-[0_0_15px_rgba(14,224,195,0.3)]' : 
+                        word.toLowerCase().includes('scale') || word.includes('規模') ? 'text-[var(--accent-blood)] drop-shadow-[0_0_15px_rgba(217,17,17,0.3)]' : 
+                        'text-[var(--text-bone)] drop-shadow-[0_0_10px_rgba(232,232,230,0.2)]'}`}
+                    style={{ 
+                      transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
+                      textShadow: activeProgress > 0.8 ? '0 0 20px rgba(255,255,255,0.1)' : 'none'
+                    }}
                   >
                     {word}
                   </span>
