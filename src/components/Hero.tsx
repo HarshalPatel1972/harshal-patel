@@ -38,21 +38,35 @@ export function Hero() {
 
     if (!topPath || !bottomPath) return;
 
-    // Phase 1: Upper Word (Right to Left glide)
-    // Starting far right (100%) and landing at 44% (+5% right nudge)
+    // Phase 1: BOTH Glide In Together
     animate(topPath, {
-      startOffset: ["100%", "44%"],
+      startOffset: ["100%", "40%"], // Right to center-left landing
       duration: 1500,
       easing: "easeOutQuart"
-    }).then(() => {
-      // Phase 2: Lower Word (Left to Right glide)
-      // Starting far left (0%) and landing at 45% (+5% right nudge)
-      animate(bottomPath, {
-        startOffset: ["0%", "45%"],
-        duration: 1500,
-        easing: "easeOutQuart"
-      });
     });
+    animate(bottomPath, {
+      startOffset: ["-20%", "40%"], // Left to center-left landing
+      duration: 1500,
+      easing: "easeOutQuart"
+    });
+
+    // Phase 2: BOTH Glide Out (Disappear) Together before the interval resets
+    const exitTimer = setTimeout(() => {
+      animate(topPath, {
+        startOffset: "120%", 
+        opacity: [1, 0],
+        duration: 1000,
+        easing: "easeInQuart"
+      });
+      animate(bottomPath, {
+        startOffset: "-40%",
+        opacity: [1, 0],
+        duration: 1000,
+        easing: "easeInQuart"
+      });
+    }, 5500); // 5.5s marks the exit before 7s change
+
+    return () => clearTimeout(exitTimer);
 
   }, [roleIndex]);
 
@@ -120,12 +134,12 @@ export function Hero() {
               <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
             </defs>
 
-            {/* VISUAL RED SLASHES - MAPPA Level Vibrancy (Cursed Red) */}
-            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="#ff0000" opacity="0.4" />
-            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="#ff0000" opacity="0.3" />
+            {/* VISUAL RED SLASHES - Restored to original subtle style */}
+            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
+            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
 
             {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) - Elegant Serif */}
-            <text className="font-serif italic text-[7.5px] tracking-[0.05em] font-medium fill-[var(--text-bone)] opacity-90 backdrop-blur-sm">
+            <text className="font-serif italic text-[7.5px] tracking-[0.05em] font-medium fill-[var(--text-bone)] opacity-90 drop-shadow-sm">
               <textPath 
                 href="#curve-top" 
                 className="char-top"
@@ -136,11 +150,11 @@ export function Hero() {
             </text>
 
             {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) - Matching Serif */}
-            <text className="font-serif italic text-[6.5px] tracking-[0.1em] font-bold fill-[var(--text-bone)] opacity-70">
+            <text className="font-serif italic text-[6.5px] tracking-[0.1em] font-medium fill-[var(--text-bone)] opacity-70">
               <textPath 
                 href="#curve-bottom" 
                 className="char-bottom"
-                startOffset="0%"
+                startOffset="-20%"
               >
                 {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
               </textPath>
