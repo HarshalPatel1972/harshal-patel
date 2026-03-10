@@ -3,6 +3,7 @@ import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
+import { InkSunder } from "./ui/InkSunder";
 
 export function Hero() {
   const { language } = useLanguage();
@@ -30,10 +31,7 @@ export function Hero() {
     ]
   };
 
-  const currentIntro = introStages[language as 'en' | 'ja'];
-  
-  // Split the intro into individual words for the word-by-word reveal
-  const words = currentIntro.join(" ").split(" ");
+  const allWords = introStages[language as 'en' | 'ja'].join(" ").split(" ");
 
   // ─── SCROLL TRACKER ENGINE ───
   useEffect(() => {
@@ -61,7 +59,7 @@ export function Hero() {
     willChange: 'transform, filter, opacity'
   };
 
-  const allWords = currentIntro.join(" ").split(" ");
+  const isRevealingSunder = scrollProgress > 0.45;
 
   return (
     <section ref={trackRef} className="h-[250vh] relative bg-[var(--bg-ink)]">
@@ -77,46 +75,46 @@ export function Hero() {
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
         </div>
 
-        {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
-        <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
-          {/* Main Professional Statement Paragraph */}
-          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
-            {allWords.map((word, i) => {
-              // Thresholds mapped so that the last word is fully revealed at scrollProgress = 1.0
-              const start = (i / allWords.length) * 0.8;
-              const end = start + 0.2;
-              const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
-              
-              return (
-                <span 
-                  key={i}
-                  className="inline-block"
-                  style={{
-                    opacity: activeProgress,
-                    transform: `translateY(${(1 - activeProgress) * 20}px)`,
-                    filter: `blur(${(1 - activeProgress) * 10}px)`,
-                    willChange: 'opacity, transform, filter'
-                  }}
-                >
-                  <span 
-                    className="text-2xl md:text-4xl lg:text-5xl font-black font-display uppercase tracking-tight leading-tight text-[var(--text-bone)]"
-                    style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
-                  >
+        {/* ─── THE INK-SUNDER GESTURE REVEAL (MAPPA SUPREME) ─── */}
+        <div className="absolute inset-0 z-50 pointer-events-auto">
+          <InkSunder isRevealing={isRevealingSunder}>
+            <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
+              {allWords.map((word, i) => (
+                <span key={i} className="inline-block">
+                  <span className="text-2xl md:text-4xl lg:text-5xl font-black font-display uppercase tracking-tight leading-tight text-[var(--text-bone)]">
                     {word}
                   </span>
                 </span>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          </InkSunder>
           
-          {/* SCROLL INDICATOR */}
+          {/* GESTURE INDICATOR */}
           <div 
-            className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-opacity duration-700"
-            style={{ opacity: scrollProgress > 0.05 ? 0 : 0.8 }}
+            className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-all duration-700 z-[60] pointer-events-none"
+            style={{ 
+              opacity: isRevealingSunder ? 1 : 0,
+              transform: `translateY(${isRevealingSunder ? 0 : 20}px)`
+            }}
           >
-            <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--text-bone)] mb-4 uppercase">Scroll to Decipher</div>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--text-bone)] to-transparent" />
+            <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--text-bone)] mb-4 uppercase">Slash the Void to Sunder</div>
+            <div className="flex gap-4">
+               <div className="w-12 h-[1px] bg-[var(--accent-blood)]" />
+               <div className="w-2 h-2 rounded-full bg-[var(--accent-blood)] animate-ping" />
+               <div className="w-12 h-[1px] bg-[var(--accent-blood)]" />
+            </div>
           </div>
+
+          {/* INITIAL SCROLL INDICATOR */}
+          {!isRevealingSunder && (
+            <div 
+              className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-opacity duration-700"
+              style={{ opacity: scrollProgress > 0.05 ? 0 : 0.8 }}
+            >
+              <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--text-bone)] mb-4 uppercase">Scroll to Descent</div>
+              <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--text-bone)] to-transparent" />
+            </div>
+          )}
         </div>
 
         <div style={heroRecedeStyle} className="w-full h-full flex items-center justify-center">
