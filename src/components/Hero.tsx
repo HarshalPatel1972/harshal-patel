@@ -104,10 +104,10 @@ export function Hero() {
                     }}
                   >
                     <span 
-                      className={`text-2xl md:text-5xl lg:text-7xl font-black uppercase tracking-tighter select-none transition-all duration-700
+                      className={`text-2xl md:text-5xl lg:text-7xl uppercase tracking-tighter select-none transition-all duration-700
                         ${isSpecial ? 
-                          'font-serif italic capitalize text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]' : 
-                          'font-display text-[var(--text-bone)]'}`}
+                          'font-serif italic font-normal capitalize text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]' : 
+                          'font-display font-black text-[var(--text-bone)]'}`}
                     >
                       {word}
                     </span>

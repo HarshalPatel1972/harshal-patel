@@ -16,6 +16,7 @@
 }
 
 @theme inline {
+  --font-serif: var(--font-playfair);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
   --font-sans: var(--font-inter);
