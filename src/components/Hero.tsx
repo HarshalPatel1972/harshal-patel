@@ -40,12 +40,12 @@ export function Hero() {
 
     // Phase 1: BOTH Glide In Together
     animate(topPath, {
-      startOffset: ["100%", "40%"], // Right to center-left landing
+      startOffset: ["100%", "42%"], // Nudged slightly right for better framing
       duration: 1500,
       easing: "easeOutQuart"
     });
     animate(bottomPath, {
-      startOffset: ["-20%", "40%"], // Left to center-left landing
+      startOffset: ["-20%", "43%"], // Nudged slightly right for better framing
       duration: 1500,
       easing: "easeOutQuart"
     });
