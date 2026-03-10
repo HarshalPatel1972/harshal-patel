@@ -42,47 +42,47 @@ export function Hero() {
     animate(topPath, { opacity: 0, startOffset: "0%", duration: 0 });
     animate(bottomPath, { opacity: 0, startOffset: "100%", duration: 0 });
 
-    // TOP WORD: Fast In (2s) -> Slow Drift (2s) -> Slower Out (2.5s)
+    // TOP WORD: Fast In (1.5s) -> Ultra Slow Drift (4.5s) -> Slower Out (2s)
     animate(topPath, { 
       startOffset: "42%", 
       opacity: 1, 
-      duration: 2000, 
+      duration: 1500, 
       easing: "easeOutQuart" 
     }).then(() => animate(topPath, { 
-      startOffset: "47%", 
-      duration: 2000, 
+      startOffset: "45%", 
+      duration: 4500, 
       easing: "linear" 
     })).then(() => animate(topPath, { 
       startOffset: "110%", 
       opacity: 0, 
-      duration: 2500, 
+      duration: 2000, 
       easing: "easeInQuart" 
     }));
 
-    // BOTTOM WORD: Fast In (2s) -> Slow Drift (2s) -> Slower Out (2.5s)
+    // BOTTOM WORD: Fast In (1.5s) -> Ultra Slow Drift (4.5s) -> Slower Out (2s)
     animate(bottomPath, { 
       startOffset: "43%", 
       opacity: 1, 
-      duration: 2000, 
+      duration: 1500, 
       easing: "easeOutQuart" 
     }).then(() => animate(bottomPath, { 
-      startOffset: "38%", 
-      duration: 2000, 
+      startOffset: "40%", 
+      duration: 4500, 
       easing: "linear" 
     })).then(() => animate(bottomPath, { 
       startOffset: "-10%", 
       opacity: 0, 
-      duration: 2500, 
+      duration: 2000, 
       easing: "easeInQuart" 
     }));
 
   }, [roleIndex]);
 
-  // Cycle roles every 6.5 seconds (Matching the total animation chain duration for ZERO delay)
+  // Cycle roles every 5.5 seconds (Overlap ensures ZERO perceived delay)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 6500);
+    }, 5500);
     return () => clearInterval(timer);
   }, []);
 

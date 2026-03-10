@@ -91,7 +91,7 @@ export function Navbar() {
         
         {/* TOP BRAND INDICATOR - Unified Global Logo */}
         <div className="flex flex-col items-center gap-4 z-20">
-          <div className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow border border-white/5 group overflow-hidden" onClick={() => handleClick("hero")}>
+          <div className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden -translate-x-[4px]" onClick={() => handleClick("hero")}>
             <img 
               src="/icon.png" 
               alt="HP Logo" 
