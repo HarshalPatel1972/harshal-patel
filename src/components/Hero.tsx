@@ -78,11 +78,12 @@ export function Hero() {
         </div>
 
         {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
-        <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center px-8 md:px-32">
-          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
-            {words.map((word, i) => {
-              const start = 0.1 + (i / words.length) * 0.7;
-              const end = start + 0.1;
+        <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
+          {/* Main Professional Statement Paragraph */}
+          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2 mb-12">
+            {currentIntro.slice(0, 4).join(" ").split(" ").map((word, i) => {
+              const start = 0.05 + (i / 40) * 0.6; // Scale based on ~40 words total
+              const end = start + 0.08;
               const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
               
               return (
@@ -96,10 +97,40 @@ export function Hero() {
                     willChange: 'opacity, transform, filter'
                   }}
                 >
-                  <span className={`text-2xl md:text-4xl lg:text-5xl font-black font-display uppercase tracking-tight leading-tight ${(word.includes("Harshal") || word.includes("Patel")) ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
+                  <span className="text-xl md:text-3xl lg:text-4xl font-black font-display uppercase tracking-tight leading-tight text-[var(--text-bone)]">
                     {word}
                   </span>
                 </span>
+              );
+            })}
+          </div>
+
+          {/* Harshal Patel // Software Engineer Grande Finale Line */}
+          <div className="w-full max-w-5xl flex flex-col md:flex-row md:items-center justify-center md:justify-start gap-4 md:gap-8">
+            {currentIntro[4].split(" ").map((word, i) => {
+              const start = 0.75 + (i * 0.04);
+              const end = start + 0.1;
+              const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
+              const isName = word === "Harshal" || word === "Patel";
+              
+              return (
+                <div 
+                  key={i}
+                  className="inline-block overflow-hidden"
+                  style={{
+                    opacity: activeProgress,
+                    transform: `translateY(${(1 - activeProgress) * 40}px) skewX(${(1 - activeProgress) * -10}deg)`,
+                    filter: `blur(${(1 - activeProgress) * 15}px)`,
+                    willChange: 'opacity, transform, filter'
+                  }}
+                >
+                  <span className={`text-4xl md:text-6xl lg:text-8xl font-black font-display uppercase tracking-tighter leading-none ${isName ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]/40 text-xl md:text-3xl'}`}>
+                    {word}
+                  </span>
+                  {isName && i === 1 && (
+                    <div className="h-2 bg-[var(--accent-blood)] mt-2 w-full origin-left transform scale-x-100" style={{ transition: 'none', transform: `scaleX(${activeProgress})` }} />
+                  )}
+                </div>
               );
             })}
           </div>
