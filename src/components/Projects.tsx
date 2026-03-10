@@ -48,7 +48,7 @@ export function Projects() {
       <SubliminalKanji kanji="作品" position="left" />
 
       {/* Massive Section Title (MAPPA Layout) */}
-      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-[7px] md:mb-[71px] border-b-4 border-black pb-8">
+      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-[-23px] md:mb-[41px] border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
              {language === 'en' ? 'CHAPTER 01' : '第一章'}
