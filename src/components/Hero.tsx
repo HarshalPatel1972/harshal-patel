@@ -8,16 +8,16 @@ import { useLanguage } from "@/context/LanguageContext";
 // Identity Data (Two-word roles for the ink slash curves)
 const curvedIdentities = {
   en: [
-    ["Systems", "Architect"],
-    ["Performance", "Engineer"],
-    ["Applied", "Scientist"],
-    ["Logic", "Vanguard"]
+    ["Front-End", "Developer"],
+    ["Software", "Engineer"],
+    ["Data", "Scientist"],
+    ["Systems", "Architect"]
   ],
   ja: [
-    ["システム", "設計者"],
-    ["性能", "技術者"],
-    ["応用", "科学者"],
-    ["論理", "先鋒"]
+    ["フロントエンド", "開発者"],
+    ["ソフトウェア", "エンジニア"],
+    ["データ", "サイエンティスト"],
+    ["システム", "設計者"]
   ]
 };
 
@@ -120,23 +120,23 @@ export function Hero() {
               <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
             </defs>
 
-            {/* VISUAL RED SLASHES - MAPPA Level Vibrancy */}
-            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="#ff1515" opacity="0.3" />
-            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="#ff1515" opacity="0.25" />
+            {/* VISUAL RED SLASHES - MAPPA Level Vibrancy (Cursed Red) */}
+            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="#ff0000" opacity="0.4" />
+            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="#ff0000" opacity="0.3" />
 
-            {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) - Cinematic Sans */}
-            <text className="font-display font-black text-[7px] tracking-[0.1em] fill-[var(--text-bone)] opacity-80">
+            {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) - Elegant Serif */}
+            <text className="font-serif italic text-[7.5px] tracking-[0.05em] font-medium fill-[var(--text-bone)] opacity-90 backdrop-blur-sm">
               <textPath 
                 href="#curve-top" 
                 className="char-top"
                 startOffset="100%"
               >
-                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0].toUpperCase()}
+                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
               </textPath>
             </text>
 
-            {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) - Elegant Serif */}
-            <text className="font-serif italic text-[6px] tracking-[0.15em] font-bold fill-[var(--text-bone)] opacity-60">
+            {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) - Matching Serif */}
+            <text className="font-serif italic text-[6.5px] tracking-[0.1em] font-bold fill-[var(--text-bone)] opacity-70">
               <textPath 
                 href="#curve-bottom" 
                 className="char-bottom"
