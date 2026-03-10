@@ -146,8 +146,8 @@ export function Hero() {
             <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
             <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
 
-            {/* CURVED TEXT ON TOP PATH (Glide-In: Left to Right) - Elegant Serif */}
-            <text className="font-serif italic text-[7.5px] tracking-[0.05em] font-medium fill-[var(--text-bone)] opacity-90 drop-shadow-sm">
+            {/* CURVED TEXT ON TOP PATH (Glide-In: Left to Right) - Brutalist Bold */}
+            <text className="font-display uppercase text-[8px] tracking-[0.1em] font-black fill-[var(--text-bone)] opacity-95 drop-shadow-md">
               <textPath 
                 href="#curve-top" 
                 className="char-top"
@@ -157,8 +157,8 @@ export function Hero() {
               </textPath>
             </text>
 
-            {/* CURVED TEXT ON BOTTOM PATH (Glide-In: Right to Left) - Matching Serif */}
-            <text className="font-serif italic text-[6.5px] tracking-[0.1em] font-medium fill-[var(--text-bone)] opacity-70">
+            {/* CURVED TEXT ON BOTTOM PATH (Glide-In: Right to Left) - Matching Bold */}
+            <text className="font-display uppercase text-[7px] tracking-[0.15em] font-black fill-[var(--text-bone)] opacity-80">
               <textPath 
                 href="#curve-bottom" 
                 className="char-bottom"
