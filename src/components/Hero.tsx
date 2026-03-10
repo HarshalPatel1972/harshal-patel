@@ -40,13 +40,13 @@ export function Hero() {
 
     // Phase 1: BOTH Glide In Together
     animate(topPath, {
-      startOffset: ["100%", "42%"], // Nudged slightly right for better framing
-      duration: 1500,
+      startOffset: ["100%", "42%"],
+      duration: 2000, // Slower glide
       easing: "easeOutQuart"
     });
     animate(bottomPath, {
-      startOffset: ["-20%", "43%"], // Nudged slightly right for better framing
-      duration: 1500,
+      startOffset: ["-20%", "43%"],
+      duration: 2000, // Slower glide
       easing: "easeOutQuart"
     });
 
@@ -55,26 +55,26 @@ export function Hero() {
       animate(topPath, {
         startOffset: "120%", 
         opacity: [1, 0],
-        duration: 1000,
+        duration: 1500,
         easing: "easeInQuart"
       });
       animate(bottomPath, {
         startOffset: "-40%",
         opacity: [1, 0],
-        duration: 1000,
+        duration: 1500,
         easing: "easeInQuart"
       });
-    }, 5500); // 5.5s marks the exit before 7s change
+    }, 9000); // Now stays for 9 seconds before starting the exit glide
 
     return () => clearTimeout(exitTimer);
 
   }, [roleIndex]);
 
-  // Cycle roles every 7 seconds (giving time for sequence to complete)
+  // Cycle roles every 12 seconds (Giving plenty of time to read)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 7000);
+    }, 12000);
     return () => clearInterval(timer);
   }, []);
 
@@ -126,7 +126,7 @@ export function Hero() {
       <SubliminalKanji kanji="起源" position="right" />
 
       {/* ─── MAPPA INK-PATH ROLES (Text following the curves) ─── */}
-      <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
+      <div className="ink-slash absolute left-[-5%] sm:left-[10%] top-[15%] w-[110%] sm:w-[80%] h-[60%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
             {/* DEFINE THE HIDDEN PATHS */}
             <defs>
