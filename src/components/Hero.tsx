@@ -111,7 +111,7 @@ export function Hero() {
           
           {/* CLEAN ARROW FLOW INDICATOR */}
           <div 
-            className="absolute bottom-[24px] left-0 right-0 flex flex-col items-center transition-all duration-700 pointer-events-none"
+            className="absolute bottom-[14px] left-0 right-0 flex flex-col items-center transition-all duration-700 pointer-events-none"
             style={{ 
               opacity: scrollProgress > 0.05 ? 0 : 0.8,
               transform: `translateY(${scrollProgress > 0.05 ? 40 : 0}px)`
