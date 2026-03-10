@@ -80,7 +80,7 @@ export function Hero() {
         {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
         <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
           {/* Main Professional Statement Paragraph - Bigger and Centered */}
-          <div className="max-w-7xl text-center">
+          <div className="max-w-7xl text-justify">
             {allWords.map((word, i) => {
               // Thresholds mapped so that the last word is fully revealed at scrollProgress = 1.0
               const start = (i / allWords.length) * 0.8;
