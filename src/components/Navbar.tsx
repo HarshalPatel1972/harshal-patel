@@ -19,28 +19,6 @@ const NAV_ITEMS = {
   ]
 };
 
-const HPLogo = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full p-1.5 overflow-visible">
-    {/* Abstract Brutalist HP - High Speed / Cinematic Style */}
-    <g transform="translate(50,50) rotate(-5)">
-      {/* The 'H' Shadow/Base */}
-      <path 
-        d="M-35,-30 H-15 V0 H15 V-30 H35 V30 H15 V5 H-15 V30 H-35 Z" 
-        className="fill-white"
-        style={{ filter: 'drop-shadow(2px 2px 0px var(--accent-blood))' }}
-      />
-      {/* The 'P' Slashing Integration */}
-      <path 
-        d="M5,-15 H30 V10 H5 V25 H-5 V-25 H30 V-15 Z" 
-        className="fill-[var(--accent-blood)]"
-        opacity="0.9"
-      />
-      {/* Sharp Accent Line */}
-      <path d="M-40,40 L40,-40" stroke="white" strokeWidth="2" strokeDasharray="5,3" opacity="0.3" />
-    </g>
-  </svg>
-);
-
 export function Navbar() {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language];
@@ -111,12 +89,14 @@ export function Navbar() {
     <>
       <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--text-bone)] border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
         
-        {/* TOP BRAND INDICATOR - Integrated MAPPA Logo */}
+        {/* TOP BRAND INDICATOR - Unified Global Logo */}
         <div className="flex flex-col items-center gap-4 z-20">
-          <div className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow border border-white/5 group" onClick={() => handleClick("hero")}>
-            <div className="w-full h-full transition-transform duration-500 group-hover:scale-110">
-              <HPLogo />
-            </div>
+          <div className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow border border-white/5 group overflow-hidden" onClick={() => handleClick("hero")}>
+            <img 
+              src="/icon.png" 
+              alt="HP Logo" 
+              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" 
+            />
           </div>
         </div>
 
