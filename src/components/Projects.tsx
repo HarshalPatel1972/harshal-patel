@@ -39,7 +39,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-[76px] md:pt-[108px] pb-24 md:pb-32 px-4 md:px-8 bg-white flex flex-col items-center"
+      className="relative pt-[46px] md:pt-[78px] pb-[66px] md:pb-[98px] px-4 md:px-8 bg-white flex flex-col items-center"
     >
       {/* Background ink texture (inverted for this section since background is white) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
