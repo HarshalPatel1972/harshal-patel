@@ -30,7 +30,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative py-24 md:py-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center"
+      className="relative pt-[76px] md:pt-[108px] pb-24 md:pb-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center"
       onClick={() => {
         // Global Impact frame
         document.body.classList.remove("impact-flash-active");
