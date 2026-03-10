@@ -98,7 +98,10 @@ export function Hero() {
                     willChange: 'opacity, transform, filter'
                   }}
                 >
-                  <span className="text-xl md:text-3xl lg:text-4xl font-black font-display uppercase tracking-tight leading-tight text-[var(--text-bone)]">
+                  <span 
+                    className="text-2xl md:text-4xl lg:text-5xl font-black font-display uppercase tracking-tight leading-tight text-[var(--text-bone)]"
+                    style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
+                  >
                     {word}
                   </span>
                 </span>

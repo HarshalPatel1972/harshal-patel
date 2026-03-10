@@ -125,7 +125,7 @@ export function Projects() {
                        </svg>
                      </div>
                      <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                        {language === 'en' ? "Execute" : "実行する"}
+                        {language === 'en' ? "View Project" : "プロジェクトを見る"}
                      </span>
                   </div>
                 </div>

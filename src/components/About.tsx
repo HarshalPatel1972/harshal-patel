@@ -60,7 +60,7 @@ export function About() {
 
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
-         <h2 className="text-[8rem] md:text-[20rem] font-black font-display text-[var(--text-bone)] whitespace-nowrap leading-none tracking-tighter">
+         <h2 className="text-[8rem] md:text-[20rem] font-black font-display text-[var(--text-bone)] whitespace-nowrap leading-none tracking-tighter" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
             {language === 'en' ? "ORIGIN" : "起源"}
          </h2>
       </div>
@@ -124,7 +124,7 @@ export function About() {
              ========================================= */}
          <ScrollReveal duration={1200} delay={200} className="w-full">
            <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-[var(--text-bone)] brutal-shadow">
-              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center">
+              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : <>記録された<br/>経験</>}
               </div>
               
