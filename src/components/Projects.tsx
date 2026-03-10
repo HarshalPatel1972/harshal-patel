@@ -40,13 +40,6 @@ export function Projects() {
       id="projects" 
       ref={containerRef}
       className="relative pt-[76px] md:pt-[108px] pb-24 md:pb-32 px-4 md:px-8 bg-[var(--text-bone)] flex flex-col items-center"
-      onClick={() => {
-        // Global Impact frame
-        document.body.classList.remove("impact-flash-active");
-        void document.body.offsetWidth;
-        document.body.classList.add("impact-flash-active");
-        setTimeout(() => document.body.classList.remove("impact-flash-active"), 500);
-      }}
     >
       {/* Background ink texture (inverted for this section since background is white) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />

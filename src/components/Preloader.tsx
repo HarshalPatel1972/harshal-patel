@@ -143,12 +143,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             setComplete(true);
             onComplete?.();
             document.body.style.overflow = "";
-            
-            // Tactical Entry Flash
-            document.body.classList.remove("impact-flash-active");
-            void document.body.offsetWidth; 
-            document.body.classList.add("impact-flash-active");
-            setTimeout(() => document.body.classList.remove("impact-flash-active"), 700);
           }
         });
 

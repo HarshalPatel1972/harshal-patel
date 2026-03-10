@@ -44,13 +44,6 @@ export function About() {
       id="about" 
       ref={sectionRef} 
       className="relative py-16 md:py-32 px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden"
-      onClick={() => {
-        // Global Impact frame trigger
-        document.body.classList.remove("impact-flash-active");
-        void document.body.offsetWidth;
-        document.body.classList.add("impact-flash-active");
-        setTimeout(() => document.body.classList.remove("impact-flash-active"), 500);
-      }}
     >
       {/* Background Halftone Drop */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />

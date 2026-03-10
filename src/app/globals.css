@@ -109,11 +109,12 @@ body::before {
 }
 
 /* Force hover animations for KineticLink during delay */
-.kinetic-active [class*="group-hover:scale-x-100"] { transform: scaleX(1) !important; }
+.kinetic-active [class*="scale-x-0"] { transform: scaleX(1) !important; transition: none !important; }
+.kinetic-active [class*="group-hover:scale-x-100"] { transform: scaleX(1) !important; transition: none !important; }
+.kinetic-active .bg-\[var\(--accent-blood\)\] { transform: scaleX(1) !important; transition: none !important; }
 .kinetic-active [class*="group-hover:-rotate-45"] { transform: rotate(-45deg) !important; }
 .kinetic-active [class*="group-hover:text-"] { color: var(--text-bone) !important; }
 .kinetic-active .opacity-0 { opacity: 0.1 !important; } /* Specifically for the splatter SVG */
-
 
 /* ─── CHROMATIC ABERRATION TEXT ─── */
 .chromatic-aberration {
@@ -125,17 +126,6 @@ body::before {
   text-shadow: 3px 0px 0px rgba(217, 17, 17, 0.8), -3px 0px 0px rgba(14, 224, 195, 0.8);
 }
 
-/* ─── IMPACT FRAMES (Anime Hit Effect) ─── */
-@keyframes impact-flash {
-  0% { filter: invert(0); }
-  10% { filter: invert(1) contrast(150%); }
-  20% { filter: invert(0); }
-  100% { filter: invert(0); }
-}
-
-.impact-flash-active {
-  animation: impact-flash 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
 @keyframes arrow-flow {
   0% { transform: translateY(-30px); opacity: 0; color: var(--text-muted); }

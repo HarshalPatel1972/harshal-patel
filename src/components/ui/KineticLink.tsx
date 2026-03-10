@@ -45,13 +45,7 @@ export function KineticLink({
     // 2. Determine if we should handle navigation or let native mailto/etc take over
     const isSpecialLink = href.startsWith('mailto:') || href.startsWith('tel:');
     
-    // 3. Trigger Global Impact Flash
-    document.body.classList.remove("impact-flash-active");
-    void document.body.offsetWidth;
-    document.body.classList.add("impact-flash-active");
-    setTimeout(() => document.body.classList.remove("impact-flash-active"), 500);
-
-    // 4. Handle navigation delay for standard links
+    // 3. Handle navigation delay for standard links
     if (!isSpecialLink) {
       e.preventDefault();
       setIsCashed(true);
