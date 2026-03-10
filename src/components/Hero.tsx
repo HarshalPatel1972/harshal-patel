@@ -31,49 +31,51 @@ export function Hero() {
   
   const [roleIndex, setRoleIndex] = useState(0);
 
-  // Word-based kinetic animation (MAPPA Sequence: Glide In -> Stop -> Glide Out)
+  // Word-based kinetic animation (MAPPA Sequence: Continuous Deep Drift)
   useEffect(() => {
     const topPath = containerRef.current?.querySelector(".char-top");
     const bottomPath = containerRef.current?.querySelector(".char-bottom");
 
     if (!topPath || !bottomPath) return;
 
-    // Phase 1: BOTH Glide In (Top: Left-to-Right, Bottom: Right-to-Left)
+    // TOP WORD: Continuous glide with a "Deep Slow-down" at the marker (42%)
+    // Sequence: Fast in -> Ultra slow crawl through reading zone -> Fast out
     animate(topPath, {
-      startOffset: ["0%", "42%"],
-      opacity: [0, 1],
-      duration: 2000,
-      easing: "easeOutQuart"
+      startOffset: [
+        { value: "0%", duration: 0 },         // Start far left
+        { value: "42%", duration: 2500, easing: "easeOutQuart" }, // Glide into marker
+        { value: "52%", duration: 5500, easing: "linear" },      // The "Deep Drift" reading zone (almost zero speed)
+        { value: "100%", duration: 1500, easing: "easeInQuart" }  // Glide out to the right
+      ],
+      opacity: [
+        { value: 0, duration: 500 },
+        { value: 1, duration: 2000 },
+        { value: 1, duration: 6000 },
+        { value: 0, duration: 1000 }
+      ],
+      duration: 10000 // Total 10s for the whole drift sequence
     });
+
+    // BOTTOM WORD: Continuous glide with "Deep Slow-down" at marker (43%)
     animate(bottomPath, {
-      startOffset: ["100%", "43%"],
-      opacity: [0, 1],
-      duration: 2000,
-      easing: "easeOutQuart"
+      startOffset: [
+        { value: "100%", duration: 0 },        // Start far right
+        { value: "43%", duration: 2500, easing: "easeOutQuart" }, // Glide into marker
+        { value: "33%", duration: 5500, easing: "linear" },      // The "Deep Drift" reading zone
+        { value: "0%", duration: 1500, easing: "easeInQuart" }   // Glide out to the left
+      ],
+      opacity: [
+        { value: 0, duration: 500 },
+        { value: 1, duration: 2000 },
+        { value: 1, duration: 6000 },
+        { value: 0, duration: 1000 }
+      ],
+      duration: 10000 
     });
-
-    // Phase 2: Stay at Markers for 5 seconds
-    const exitTimer = setTimeout(() => {
-      // Phase 3: BOTH Progress to Exit smoothly
-      animate(topPath, {
-        startOffset: ["42%", "100%"],
-        opacity: [1, 0],
-        duration: 2000,
-        easing: "easeInQuart"
-      });
-      animate(bottomPath, {
-        startOffset: ["43%", "-10%"],
-        opacity: [1, 0],
-        duration: 2000,
-        easing: "easeInQuart"
-      });
-    }, 7000); // 2s glide + 5s stay
-
-    return () => clearTimeout(exitTimer);
 
   }, [roleIndex]);
 
-  // Cycle roles every 10 seconds to allow the Glide-Stay-Exit sequence
+  // Cycle roles every 10 seconds (aligned with the continuous drift duration)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
