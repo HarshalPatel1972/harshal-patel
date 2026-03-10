@@ -102,16 +102,19 @@ export function Hero() {
                     className={`text-3xl md:text-5xl lg:text-7xl font-black font-display uppercase tracking-tighter leading-none select-none transition-all duration-500
                       ${(() => {
                         const w = word.toLowerCase().replace(/[?.,!]/g, '');
-                        if (w.includes('speed') || w.includes('速さ')) return 'text-[var(--accent-cursed)] drop-shadow-[0_0_15px_rgba(14,224,195,0.5)]';
-                        if (w.includes('scale') || w.includes('規模')) return 'text-[var(--accent-blood)] drop-shadow-[0_0_15px_rgba(217,17,17,0.5)]';
-                        if (w.includes('win') || w.includes('勝利')) return 'text-[#FFE600] drop-shadow-[0_0_15px_rgba(255,230,0,0.5)]';
-                        if (w.includes('source') || w.includes('起源')) return 'text-[#FFFFFF] drop-shadow-[0_0_25px_rgba(255,255,255,0.7)] italic';
-                        if (w.includes('eye') || w.includes('眼差し')) return 'text-[#00A3FF] drop-shadow-[0_0_15px_rgba(0,163,255,0.5)]';
-                        if (w.includes('building') || w.includes('構築') || w.includes('begin')) return 'text-[#FF4D00] drop-shadow-[0_0_15px_rgba(255,77,0,0.5)]';
-                        return 'text-[var(--text-bone)] drop-shadow-[0_0_10px_rgba(232,232,230,0.2)]';
+                        // Cursed Teal Segment (Speed / Perception / Source)
+                        if (w.includes('speed') || w.includes('速さ') || w.includes('eye') || w.includes('眼差し') || w.includes('source') || w.includes('起源')) {
+                          return 'text-[var(--accent-cursed)] drop-shadow-[0_0_15px_rgba(14,224,195,0.4)]';
+                        }
+                        // Blood Red Segment (Scale / Outcomes / Action)
+                        if (w.includes('scale') || w.includes('規模') || w.includes('win') || w.includes('勝利') || w.includes('building') || w.includes('構築') || w.includes('begin')) {
+                          return 'text-[var(--accent-blood)] drop-shadow-[0_0_15px_rgba(217,17,17,0.4)]';
+                        }
+                        // Bone White (Narrative connecting tissue)
+                        return 'text-[var(--text-bone)]';
                       })()}`}
                     style={{ 
-                      textShadow: activeProgress > 0.8 ? '0 0 20px rgba(255,255,255,0.1)' : 'none'
+                      textShadow: activeProgress > 0.8 ? '0 0 20px rgba(255,255,255,0.05)' : 'none'
                     }}
                   >
                     {word}
