@@ -54,15 +54,17 @@ export function Hero() {
 
   // Compute transform values based on scroll progress
   const heroRecedeStyle = {
-    transform: `scale(${1 - scrollProgress * 0.4}) translateY(${scrollProgress * -100}px)`,
-    filter: `blur(${scrollProgress * 20}px)`,
-    opacity: 1 - scrollProgress * 2.5,
+    transform: `scale(${1 - scrollProgress * 0.5}) translateY(${scrollProgress * -150}px)`,
+    filter: `blur(${scrollProgress * 25}px)`,
+    opacity: 1 - scrollProgress * 3.5, // Fade branding out faster to make the void "deep"
     pointerEvents: (scrollProgress > 0.4 ? 'none' : 'auto') as any,
     willChange: 'transform, filter, opacity'
   };
 
+  const allWords = currentIntro.join(" ").split(" ");
+
   return (
-    <section ref={trackRef} className="h-[400vh] relative bg-[var(--bg-ink)]">
+    <section ref={trackRef} className="h-[250vh] relative bg-[var(--bg-ink)]">
       <div 
         id="hero" 
         ref={containerRef} 
@@ -79,9 +81,10 @@ export function Hero() {
         <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
           {/* Main Professional Statement Paragraph */}
           <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
-            {currentIntro.join(" ").split(" ").map((word, i) => {
-              const start = 0.05 + (i / 40) * 0.7; // Spread word reveal across more scroll
-              const end = start + 0.1;
+            {allWords.map((word, i) => {
+              // Thresholds mapped so that the last word is fully revealed at scrollProgress = 1.0
+              const start = (i / allWords.length) * 0.8;
+              const end = start + 0.2;
               const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
               
               return (
