@@ -23,8 +23,10 @@ export default function Home() {
         <Preloader onComplete={() => setShowContent(true)} />
         
         {/* Fixed HUD elements MUST remain outside LanguageTransitionWrapper */}
-        <Navbar />
-        <ScrollLine isVisible={showContent} />
+        <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          <Navbar />
+          <ScrollLine isVisible={showContent} />
+        </div>
 
         <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
           <SystemBanner />

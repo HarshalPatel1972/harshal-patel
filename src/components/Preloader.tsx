@@ -33,11 +33,23 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
-    if (len > 120) return "text-xl md:text-3xl lg:text-[4.5rem]";
-    if (len > 80) return "text-2xl md:text-4xl lg:text-[5.5rem]";
-    if (len > 50) return "text-2xl md:text-5xl lg:text-[6.5rem]";
-    return "text-3xl md:text-7xl lg:text-[8rem]";
-  }, [quote]);
+    const isJA = language === 'ja';
+    
+    // Japanese characters are wider/heavier, so they need slightly more aggressive scaling
+    if (isJA) {
+      if (len > 60) return "text-xl md:text-3xl lg:text-[3.5rem]";
+      if (len > 40) return "text-2xl md:text-4xl lg:text-[4.5rem]";
+      if (len > 25) return "text-2xl md:text-5xl lg:text-[5.5rem]";
+      if (len > 15) return "text-3xl md:text-6xl lg:text-[6.5rem]";
+      return "text-3xl md:text-7xl lg:text-[8rem]";
+    } else {
+      if (len > 100) return "text-lg md:text-2xl lg:text-[3.8rem]";
+      if (len > 80) return "text-xl md:text-3xl lg:text-[4.5rem]";
+      if (len > 60) return "text-2xl md:text-4xl lg:text-[5.5rem]";
+      if (len > 40) return "text-2xl md:text-5xl lg:text-[6.5rem]";
+      return "text-3xl md:text-7xl lg:text-[8rem]";
+    }
+  }, [quote, language]);
 
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
@@ -235,7 +247,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
          <h1 
           ref={quoteRef} 
-          className={`${quoteFontSizeClass} font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] leading-[0.85] text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
+          className={`${quoteFontSizeClass} font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
          >
            {mounted ? wrappedChars : null}
          </h1>
