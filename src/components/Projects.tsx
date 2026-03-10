@@ -6,6 +6,15 @@ import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
+import { KineticLink } from "./ui/KineticLink";
+
+interface Project {
+  title: string;
+  description: string;
+  link: string;
+  tags: string[];
+  specs: string[];
+}
 
 export function Projects() {
   const { language } = useLanguage();
@@ -63,15 +72,14 @@ export function Projects() {
       </div>
 
       <div className="w-full max-w-7xl relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        {currentProjects.map((project, i: number) => {
+        {currentProjects.map((project: Project, i: number) => {
           const isHovered = activeIndex === i;
           
           return (
             <ScrollReveal key={project.title} duration={1000} delay={i * 100} className={`w-full ${i === 0 ? "md:col-span-2" : ""}`}>
-              <a 
+              <KineticLink 
                 href={project.link}
                 target="_blank"
-                rel="noopener noreferrer"
                 onMouseEnter={() => setActiveIndex(i)}
                 onMouseLeave={() => setActiveIndex(null)}
                 className="project-card block relative manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow min-h-[280px] md:min-h-[450px] p-5 md:p-12 group cursor-pointer overflow-hidden"
@@ -90,7 +98,7 @@ export function Projects() {
                   <div>
                     {/* Tags / Categories */}
                     <div className="flex flex-wrap gap-2 mb-6">
-                      {project.tags.map(tag => (
+                      {project.tags.map((tag: string) => (
                         <span key={tag} className="border border-[var(--text-bone)] text-[var(--text-bone)] px-3 py-1 text-xs font-bold uppercase tracking-widest font-sans bg-black/50">
                           {tag}
                         </span>
@@ -110,7 +118,7 @@ export function Projects() {
 
                   {/* Technical HUD Specs */}
                   <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
-                    {project.specs.map(spec => (
+                    {project.specs.map((spec: string) => (
                       <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
                         {spec}
                       </span>
@@ -129,7 +137,7 @@ export function Projects() {
                      </span>
                   </div>
                 </div>
-              </a>
+              </KineticLink>
             </ScrollReveal>
           );
         })}

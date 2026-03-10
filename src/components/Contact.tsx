@@ -6,6 +6,7 @@ import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
+import { KineticLink } from "./ui/KineticLink";
 
 const LINKS = {
   en: [
@@ -20,6 +21,13 @@ const LINKS = {
   ]
 };
 
+interface LinkItem {
+  id: string;
+  label: string;
+  value: string;
+  href: string;
+}
+
 export function Contact() {
   const { language } = useLanguage();
   const currentLinks = LINKS[language];
@@ -27,13 +35,8 @@ export function Contact() {
   const [copied, setCopied] = useState(false);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    // Global Impact Frame on any link click
-    document.body.classList.remove("impact-flash-active");
-    void document.body.offsetWidth;
-    document.body.classList.add("impact-flash-active");
-    setTimeout(() => document.body.classList.remove("impact-flash-active"), 500);
-
     if (id === "email") {
+      // Still prevent default for email to handle copy
       e.preventDefault();
       navigator.clipboard.writeText(profile[language].email);
       setCopied(true);
@@ -90,16 +93,15 @@ export function Contact() {
 
         {/* Links Container */}
         <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
-          {currentLinks.map((link, i) => {
+          {currentLinks.map((link: LinkItem, i: number) => {
             const isEmailCopied = copied && link.id === "email";
             const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : "コピー完了") : link.value;
 
             return (
               <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
-                <a
+                <KineticLink
                   href={link.href}
                   target={link.id !== "email" ? "_blank" : undefined}
-                  rel="noopener noreferrer"
                   onClick={(e) => handleLinkClick(e, link.id)}
                   className="group relative block w-full outline-none"
                 >
@@ -126,7 +128,7 @@ export function Contact() {
                     </div>
 
                   </div>
-                </a>
+                </KineticLink>
               </ScrollReveal>
             );
           })}

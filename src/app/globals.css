@@ -103,10 +103,17 @@ body::before {
   }
 }
 
-.brutal-shadow:active, .brutal-shadow-sm:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0px 0px var(--accent-blood);
+.brutal-shadow:active, .brutal-shadow-sm:active, .kinetic-active {
+  transform: translate(3px, 3px) !important;
+  box-shadow: 1px 1px 0px 0px var(--accent-blood) !important;
 }
+
+/* Force hover animations for KineticLink during delay */
+.kinetic-active [class*="group-hover:scale-x-100"] { transform: scaleX(1) !important; }
+.kinetic-active [class*="group-hover:-rotate-45"] { transform: rotate(-45deg) !important; }
+.kinetic-active [class*="group-hover:text-"] { color: var(--text-bone) !important; }
+.kinetic-active .opacity-0 { opacity: 0.1 !important; } /* Specifically for the splatter SVG */
+
 
 /* ─── CHROMATIC ABERRATION TEXT ─── */
 .chromatic-aberration {
