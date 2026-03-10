@@ -91,7 +91,7 @@ export function Navbar() {
         
         {/* TOP BRAND INDICATOR - Unified Global Logo */}
         <div className="flex flex-col items-center gap-4 z-20">
-          <a href="#hero" className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden -translate-x-[4px]">
+          <a href="#" className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden -translate-x-[4px]">
             <img 
               src="/icon.png" 
               alt="HP Logo" 
@@ -143,7 +143,7 @@ export function Navbar() {
               return (
                 <a
                   key={item.id}
-                  href={`#${item.id}`}
+                  href={item.id === 'hero' ? '#' : `#${item.id}`}
                   className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300"
                   style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }}
                   aria-label={`Navigate to ${item.label}`}

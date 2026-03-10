@@ -164,7 +164,7 @@ export function About() {
                {/* Massive Stats Block inside the panel */}
                <div className="grid grid-cols-3 gap-3 md:gap-8 bg-[var(--text-bone)] p-4 md:p-6 border-2 border-black">
                  <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
-                 <MangaStat value={8.9} label="CGPA" />
+                 <MangaStat value={8.9} label={language === 'en' ? "Academic" : "成績"} />
                  <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
                </div>
 
