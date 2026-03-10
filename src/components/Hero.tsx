@@ -38,40 +38,43 @@ export function Hero() {
 
     if (!topPath || !bottomPath) return;
 
-    // TOP WORD: Continuous glide with a "Deep Slow-down" at the marker (42%)
-    // Sequence: Fast in -> Ultra slow crawl through reading zone -> Fast out
-    animate(topPath, {
-      startOffset: [
-        { value: "0%", duration: 0 },         // Start far left
-        { value: "42%", duration: 2500, easing: "easeOutQuart" }, // Glide into marker
-        { value: "52%", duration: 5500, easing: "linear" },      // The "Deep Drift" reading zone (almost zero speed)
-        { value: "100%", duration: 1500, easing: "easeInQuart" }  // Glide out to the right
-      ],
-      opacity: [
-        { value: 0, duration: 500 },
-        { value: 1, duration: 2000 },
-        { value: 1, duration: 6000 },
-        { value: 0, duration: 1000 }
-      ],
-      duration: 10000 // Total 10s for the whole drift sequence
-    });
+    // Reset initial states for reliability
+    animate(topPath, { opacity: 0, startOffset: "0%", duration: 0 });
+    animate(bottomPath, { opacity: 0, startOffset: "100%", duration: 0 });
 
-    // BOTTOM WORD: Continuous glide with "Deep Slow-down" at marker (43%)
-    animate(bottomPath, {
-      startOffset: [
-        { value: "100%", duration: 0 },        // Start far right
-        { value: "43%", duration: 2500, easing: "easeOutQuart" }, // Glide into marker
-        { value: "33%", duration: 5500, easing: "linear" },      // The "Deep Drift" reading zone
-        { value: "0%", duration: 1500, easing: "easeInQuart" }   // Glide out to the left
-      ],
-      opacity: [
-        { value: 0, duration: 500 },
-        { value: 1, duration: 2000 },
-        { value: 1, duration: 6000 },
-        { value: 0, duration: 1000 }
-      ],
-      duration: 10000 
-    });
+    // TOP WORD: Fast In -> Slow Drift -> Fast Out
+    animate(topPath, { 
+      startOffset: "42%", 
+      opacity: 1, 
+      duration: 2500, 
+      easing: "easeOutQuart" 
+    }).then(() => animate(topPath, { 
+      startOffset: "52%", 
+      duration: 6000, 
+      easing: "linear" 
+    })).then(() => animate(topPath, { 
+      startOffset: "110%", 
+      opacity: 0, 
+      duration: 1500, 
+      easing: "easeInQuart" 
+    }));
+
+    // BOTTOM WORD: Fast In -> Slow Drift -> Fast Out
+    animate(bottomPath, { 
+      startOffset: "43%", 
+      opacity: 1, 
+      duration: 2500, 
+      easing: "easeOutQuart" 
+    }).then(() => animate(bottomPath, { 
+      startOffset: "33%", 
+      duration: 6000, 
+      easing: "linear" 
+    })).then(() => animate(bottomPath, { 
+      startOffset: "-10%", 
+      opacity: 0, 
+      duration: 1500, 
+      easing: "easeInQuart" 
+    }));
 
   }, [roleIndex]);
 
