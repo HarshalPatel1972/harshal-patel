@@ -62,12 +62,16 @@ export function Hero() {
     };
 
     const handlePointerMove = (e: PointerEvent) => {
-      if (!setIsDragging) return;
       if (!isDragging) return;
+      
+      // Stop the browser from scrolling while we are dragging the void
+      if (dragProgress < 1) {
+        if (e.cancelable) e.preventDefault();
+      }
 
       const delta = e.clientY - startY.current;
-      // Viscous drag: requires more physical movement for progress
-      const friction = 600; 
+      // Heavier Liquid feel: increased friction
+      const friction = 700; 
       const newProgress = Math.max(0, Math.min(1, lastProgress.current + delta / friction));
       setDragProgress(newProgress);
     };
@@ -179,15 +183,16 @@ export function Hero() {
   const heroRecedeStyle = {
     transform: `scale(${1 - dragProgress * 0.4}) translateY(${dragProgress * -100}px)`,
     filter: `blur(${dragProgress * 20}px)`,
-    opacity: 1 - dragProgress * 2,
-    pointerEvents: dragProgress > 0.5 ? 'none' : 'auto' as any
+    opacity: 1 - dragProgress * 2.5, // Fade out faster
+    pointerEvents: dragProgress > 0.4 ? 'none' : 'auto' as any,
+    willChange: 'transform, filter, opacity'
   };
 
   return (
     <section 
       id="hero" 
       ref={containerRef} 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] px-4 md:px-6 cursor-grab active:cursor-grabbing"
+      className={`relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] px-4 md:px-6 cursor-grab active:cursor-grabbing ${dragProgress < 1 ? 'touch-none' : 'touch-pan-y'}`}
     >
       {/* ─── THE VOID INTRO REVEAL (Materializes on Drag) ─── */}
       <div className="absolute inset-0 z-50 pointer-events-none flex flex-col justify-center px-8 md:px-24">
