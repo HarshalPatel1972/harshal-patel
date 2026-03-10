@@ -26,7 +26,7 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Harshal Patel // [DECODED]",
+  title: "Portfolio by Harshal Patel",
   description: "Exorcising technical debt and Constructing High-Performance Systems. Software Engineer Portfolio.",
   keywords: ["Software Engineer", "Go", "TypeScript", "WebAssembly", "Portfolio"],
   authors: [{ name: "Harshal Patel" }],
