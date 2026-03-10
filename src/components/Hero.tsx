@@ -78,11 +78,11 @@ export function Hero() {
 
   }, [roleIndex]);
 
-  // Cycle roles every 7.5 seconds (6.5s animation + 1s clean delay)
+  // Cycle roles every 6.5 seconds (Matching the total animation chain duration for ZERO delay)
   useEffect(() => {
     const timer = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % curvedIdentities.en.length);
-    }, 7500);
+    }, 6500);
     return () => clearInterval(timer);
   }, []);
 

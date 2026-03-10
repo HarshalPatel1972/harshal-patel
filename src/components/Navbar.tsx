@@ -19,6 +19,18 @@ const NAV_ITEMS = {
   ]
 };
 
+const HPLogo = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full fill-white p-1">
+    {/* HP Integrated Monogram - Brutalist Design */}
+    <path 
+      d="M15,15 H30 V45 H50 V15 H65 V45 H85 V60 H65 V85 H50 V55 H30 V85 H15 V15 Z 
+         M65,30 H75 V45 H65 V30 Z" 
+      className="fill-white"
+    />
+    <rect x="70" y="70" width="15" height="15" className="fill-[var(--accent-blood)] shadow-xl" />
+  </svg>
+);
+
 export function Navbar() {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language];
@@ -89,10 +101,12 @@ export function Navbar() {
     <>
       <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--text-bone)] border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
         
-        {/* TOP BRAND INDICATOR */}
+        {/* TOP BRAND INDICATOR - Integrated MAPPA Logo */}
         <div className="flex flex-col items-center gap-4 z-20">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-[var(--accent-blood)] flex items-center justify-center shrink-0 cursor-pointer" onClick={() => handleClick("hero")}>
-            <span className="text-white font-black font-display text-sm md:text-base tracking-tighter shadow-md">HP</span>
+          <div className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow border border-white/5 group" onClick={() => handleClick("hero")}>
+            <div className="w-full h-full transition-transform duration-500 group-hover:scale-110">
+              <HPLogo />
+            </div>
           </div>
         </div>
 
