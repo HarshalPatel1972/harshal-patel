@@ -79,8 +79,8 @@ export function Hero() {
 
         {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
         <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
-          {/* Main Professional Statement Paragraph */}
-          <div className="max-w-5xl text-justify">
+          {/* Main Professional Statement Paragraph - Bigger and Centered */}
+          <div className="max-w-7xl text-center">
             {allWords.map((word, i) => {
               // Thresholds mapped so that the last word is fully revealed at scrollProgress = 1.0
               const start = (i / allWords.length) * 0.8;
@@ -99,11 +99,13 @@ export function Hero() {
                   }}
                 >
                   <span 
-                    className="text-2xl md:text-4xl lg:text-5xl font-black font-display uppercase tracking-tight leading-tight text-[var(--text-bone)]"
+                    className="text-3xl md:text-6xl lg:text-8xl font-black font-display uppercase tracking-tighter leading-none text-[var(--text-bone)]"
                     style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}
                   >
                     {word}
                   </span>
+                  {/* Force line break after "need?" (EN index 5) or "挑むか？" (JA index 1) */}
+                  {((language === 'en' && i === 5) || (language === 'ja' && i === 1)) && <br className="hidden md:block" />}
                 </span>
               );
             })}
