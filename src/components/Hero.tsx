@@ -13,6 +13,7 @@ export function Hero() {
   const cta2Ref = useMagnetic(0.2);
   
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [lastVisibleCount, setLastVisibleCount] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const introStages = {
@@ -30,10 +31,34 @@ export function Hero() {
     ]
   };
 
-  const currentIntro = introStages[language as 'en' | 'ja'];
-  
-  // Split the intro into individual words for the word-by-word reveal
-  const words = currentIntro.join(" ").split(" ");
+  const allWords = introStages[language as 'en' | 'ja'].join(" ").split(" ");
+
+  const triggerImpact = () => {
+    // 🩸 BLACK FLASH (Global Inversion)
+    document.body.classList.remove("impact-flash-active");
+    void document.body.offsetWidth; // Force Reflow
+    document.body.classList.add("impact-flash-active");
+
+    // ⚔️ SCREEN SHAKE (Container-Specific)
+    if (containerRef.current) {
+      containerRef.current.classList.remove("screen-shake-active");
+      void containerRef.current.offsetWidth;
+      containerRef.current.classList.add("screen-shake-active");
+    }
+    
+    // ⛩️ KANJI FLASH (Environmental)
+    const kanjiElements = document.querySelectorAll(".kanji-impact-target");
+    kanjiElements.forEach(el => {
+      el.classList.remove("kanji-flash-active");
+      void (el as HTMLElement).offsetWidth;
+      el.classList.add("kanji-flash-active");
+    });
+    
+    // Haptic feedback (if supported)
+    if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
+      window.navigator.vibrate(15);
+    }
+  };
 
   // ─── SCROLL TRACKER ENGINE ───
   useEffect(() => {
@@ -52,6 +77,17 @@ export function Hero() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ─── IMPACT TRIGGER LOGIC ───
+  useEffect(() => {
+    const thresholds = allWords.map((_, i) => (i / (allWords.length - 1)) * 0.85);
+    const visibleCount = thresholds.filter(t => scrollProgress > t).length;
+
+    if (visibleCount > lastVisibleCount) {
+      triggerImpact();
+      setLastVisibleCount(visibleCount);
+    }
+  }, [scrollProgress, allWords.length, lastVisibleCount]);
+
   // Compute transform values based on scroll progress
   const heroRecedeStyle = {
     transform: `scale(${1 - scrollProgress * 0.5}) translateY(${scrollProgress * -150}px)`,
@@ -60,8 +96,6 @@ export function Hero() {
     pointerEvents: (scrollProgress > 0.4 ? 'none' : 'auto') as any,
     willChange: 'transform, filter, opacity'
   };
-
-  const allWords = currentIntro.join(" ").split(" ");
 
   return (
     <section ref={trackRef} className="h-[250vh] relative bg-[var(--bg-ink)]">
@@ -90,7 +124,7 @@ export function Hero() {
               return (
                 <span 
                   key={i}
-                  className="inline-block"
+                  className={`inline-block ${i < lastVisibleCount ? 'word-impact-active' : ''}`}
                   style={{
                     opacity: activeProgress,
                     transform: `translateY(${(1 - activeProgress) * 20}px)`,
@@ -114,7 +148,7 @@ export function Hero() {
             className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-opacity duration-700"
             style={{ opacity: scrollProgress > 0.05 ? 0 : 0.8 }}
           >
-            <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--text-bone)] mb-4 uppercase">Scroll to Decipher</div>
+            <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--text-bone)] mb-4 uppercase">Scroll to Unleash</div>
             <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--text-bone)] to-transparent" />
           </div>
         </div>
@@ -124,7 +158,7 @@ export function Hero() {
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
           {/* Vertical Kanji Watermark */}
-          <SubliminalKanji kanji="起源" position="right" />
+          <SubliminalKanji kanji="起源" position="right" className="kanji-impact-target" />
 
           {/* ─── MAPPA INK-SLASH (Visual Element Only) ─── */}
           <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-100 select-none flex items-center justify-center">
