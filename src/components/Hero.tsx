@@ -30,6 +30,68 @@ export function Hero() {
   const cta2Ref = useMagnetic(0.2);
   
   const [roleIndex, setRoleIndex] = useState(0);
+  const [dragProgress, setDragProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startY = useRef(0);
+  const lastProgress = useRef(0);
+
+  const introStages = {
+    en: [
+      "Building systems that grow with your business.",
+      "Focusing on speed, reliability, and modern architecture.",
+      "Solving difficult technical problems with clean, efficient code.",
+      "Delivering software that powers high-performance experiences.",
+      "Harshal Patel // Software Engineer"
+    ],
+    ja: [
+      "ビジネスと共に成長するシステムを構築します。",
+      "速度、信頼性、そしてモダンなアーキテクチャに焦点を当てています。",
+      "クリーンで効率的なコードで、困難な技術的課題を解決します。",
+      "ハイパフォーマンスな体験を支えるソフトウェアを提供します。",
+      "ハルシャル・パテル // ソフトウェアエンジニア"
+    ]
+  };
+
+  const currentIntro = introStages[language as 'en' | 'ja'];
+
+  // ─── DRAG ENGINE ───
+  useEffect(() => {
+    const handlePointerDown = (e: PointerEvent) => {
+      startY.current = e.clientY;
+      setIsDragging(true);
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!setIsDragging) return;
+      if (!isDragging) return;
+
+      const delta = e.clientY - startY.current;
+      // Viscous drag: requires more physical movement for progress
+      const friction = 600; 
+      const newProgress = Math.max(0, Math.min(1, lastProgress.current + delta / friction));
+      setDragProgress(newProgress);
+    };
+
+    const handlePointerUp = () => {
+      setIsDragging(false);
+      lastProgress.current = dragProgress;
+      
+      // Snap logic: if past 95%, lock to 1. If released early, stay or snap back if < 5%
+      if (dragProgress > 0.95) setDragProgress(1);
+      if (dragProgress < 0.05) setDragProgress(0);
+      lastProgress.current = dragProgress > 0.95 ? 1 : (dragProgress < 0.05 ? 0 : dragProgress);
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [isDragging, dragProgress]);
 
   // Word-based lightning strike (Strike In -> Hard Stop -> Strike Out)
   useEffect(() => {
@@ -100,10 +162,9 @@ export function Hero() {
     return () => clearInterval(timer);
   }, []);
 
-  // Cinematic opening animations (MAPPA Style: slow continuous drift + sharp impacts)
+  // Cinematic opening animations
   useEffect(() => {
-    if (!containerRef.current) return; // Ensure containerRef.current is available for inkSlash
-
+    if (!containerRef.current) return;
     if (titlesRef.current) {
       animate(titlesRef.current, {
         translateX: [-100, 0],
@@ -112,145 +173,132 @@ export function Hero() {
         easing: "easeOutQuart"
       });
     }
-
-    const inkSlash = containerRef.current.querySelector(".ink-slash");
-    if (inkSlash) {
-      animate(inkSlash, {
-        scale: [0.8, 1.1],
-        opacity: [0, 1],
-        duration: 3000,
-        easing: "easeOutSine",
-      });
-    }
-
-    // Continuous ultra-slow parallax drift for the main title (Natural Breathing)
-    if (titlesRef.current) {
-      animate(titlesRef.current, {
-        scale: [1, 1.05],
-        duration: 12000,
-        alternate: true,
-        loop: true,
-        easing: "linear"
-      });
-    }
   }, []);
+
+  // Compute transform values based on drag progress
+  const heroRecedeStyle = {
+    transform: `scale(${1 - dragProgress * 0.4}) translateY(${dragProgress * -100}px)`,
+    filter: `blur(${dragProgress * 20}px)`,
+    opacity: 1 - dragProgress * 2,
+    pointerEvents: dragProgress > 0.5 ? 'none' : 'auto' as any
+  };
 
   return (
     <section 
       id="hero" 
       ref={containerRef} 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] px-4 md:px-6"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--bg-ink)] px-4 md:px-6 cursor-grab active:cursor-grabbing"
     >
-      {/* Halftone / Grain Texture Base */}
-      <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
-
-      {/* Vertical Kanji Watermark */}
-      <SubliminalKanji kanji="起源" position="right" />
-
-      {/* ─── MAPPA INK-PATH ROLES (Text following the curves) ─── */}
-      <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-0 select-none flex items-center justify-center">
-         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
-            {/* DEFINE THE HIDDEN PATHS (Restored to Original Wide Curves) */}
-            <defs>
-              <path id="curve-top" d="M10,80 Q30,50 60,60 T90,20" fill="transparent" />
-              <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
-            </defs>
-
-            {/* VISUAL RED SLASHES - Restored as requested */}
-            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
-            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
-
-            {/* CURVED TEXT ON TOP PATH (Glide-In: Left to Right) - Brutalist Bold */}
-            <text className="font-display uppercase text-[8px] tracking-[0.1em] font-black fill-[var(--text-bone)] opacity-95 drop-shadow-md">
-              <textPath 
-                href="#curve-top" 
-                className="char-top"
-                startOffset="0%"
-              >
-                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
-              </textPath>
-            </text>
-
-            {/* CURVED TEXT ON BOTTOM PATH (Glide-In: Right to Left) - Matching Bold */}
-            <text className="font-display uppercase text-[7px] tracking-[0.15em] font-black fill-[var(--text-bone)] opacity-80">
-              <textPath 
-                href="#curve-bottom" 
-                className="char-bottom"
-                startOffset="100%"
-              >
-                {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
-              </textPath>
-            </text>
-         </svg>
-      </div>
-
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
+      {/* ─── THE VOID INTRO REVEAL (Materializes on Drag) ─── */}
+      <div className="absolute inset-0 z-50 pointer-events-none flex flex-col justify-center px-8 md:px-24">
+        {currentIntro.map((text, i) => {
+          const threshold = (i + 1) / (currentIntro.length + 1);
+          const activeProgress = Math.max(0, Math.min(1, (dragProgress - threshold * 0.5) * 4));
+          
+          return (
+            <div 
+              key={i}
+              className="mb-6 overflow-hidden"
+              style={{
+                opacity: activeProgress,
+                transform: `translateY(${(1 - activeProgress) * 40}px)`,
+                filter: `blur(${(1 - activeProgress) * 20}px)`,
+                transition: 'none' // Controlled by dragProgress state
+              }}
+            >
+              <h2 className={`text-2xl md:text-5xl lg:text-7xl font-black font-display uppercase tracking-tight ${i === 4 ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
+                {text}
+              </h2>
+            </div>
+          );
+        })}
         
-        {/* Professional Minimalist Status -> Brutalist Warning Tape */}
-        <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-[var(--text-bone)] text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
-          <span className="w-2 h-2 rounded-full bg-[var(--accent-blood)] animate-pulse" />
-          <span className="uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black font-display">
-            {language === 'en' ? "Available for Opportunities" : "仕事の依頼を受付中"}
-          </span>
+        {/* DRAG INSTRUCTION (Only visible at start) */}
+        <div 
+          className="absolute bottom-12 left-0 right-0 flex flex-col items-center transition-opacity duration-500"
+          style={{ opacity: dragProgress > 0.1 ? 0 : 0.6 }}
+        >
+          <div className="text-[10px] font-mono tracking-[0.5em] text-[var(--accent-blood)] mb-4 uppercase animate-pulse">Drag Down to Decipher</div>
+          <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--accent-blood)] to-transparent" />
         </div>
-
-        {/* Cinematic Title Scaling container */}
-        <div ref={titlesRef} className="relative mb-8 w-full">
-           {/* FIRST NAME */}
-           <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase text-[var(--text-bone)] select-none chromatic-aberration" style={{ letterSpacing: "-0.04em" }}>
-             {currentProfile.name.split(" ")[0]}
-           </h1>
-           
-           {/* LAST NAME (Offset, outlined, intersecting) */}
-           <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone">
-             {currentProfile.name.split(" ").slice(1).join(" ")}
-           </h1>
-        </div>
-
-        {/* Clear, straightforward tagline without typewriter or terminal nonsense */}
-        <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
-          {currentProfile.tagline}
-        </p>
-
-        {/* Ultra-Stylized Technical MAPPA CTAs */}
-        <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start mt-2">
-          
-          <a ref={cta1Ref as any} href="#projects"
-            className="group relative flex items-center justify-between min-w-[260px] md:min-w-[320px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden"
-          >
-            {/* The MAPPA bleeding fill block that expands */}
-            <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
-            
-            <div className="relative z-10 flex items-center px-6 py-4 md:px-8 md:py-6 w-full">
-              <span className="text-white font-black font-display text-lg md:text-2xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
-                {language === 'en' ? "View Work" : "実績を見る"}
-              </span>
-              <span className="ml-auto text-[10px] md:text-xs font-mono tracking-widest text-[var(--text-bone)]/50 group-hover:text-white transition-colors duration-500">
-                [01]
-              </span>
-            </div>
-          </a>
-          
-          <a ref={cta2Ref as any} href="#contact"
-             className="group relative flex items-center justify-between min-w-[260px] md:min-w-[320px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden"
-          >
-            {/* The fill block that expands from the opposite side */}
-            <div className="absolute inset-0 bg-[var(--text-bone)] scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
-            
-            <div className="relative z-10 flex items-center px-6 py-4 md:px-8 md:py-6 w-full">
-              <span className="text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black font-display text-lg md:text-2xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
-                {language === 'en' ? "Contact" : "連絡する"}
-              </span>
-              <span className="ml-auto text-[10px] md:text-xs font-mono tracking-widest text-[var(--accent-blood)] group-hover:text-[var(--bg-ink)] transition-colors duration-500">
-                [02]
-              </span>
-            </div>
-          </a>
-        </div>
-
       </div>
 
-      {/* Cinematic Frame lines (Top and Bottom subtle borders) */}
+      <div style={heroRecedeStyle} className="w-full h-full flex items-center justify-center transition-all duration-100 ease-out">
+        {/* Halftone / Grain Texture Base */}
+        <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
+
+        {/* Vertical Kanji Watermark */}
+        <SubliminalKanji kanji="起源" position="right" />
+
+        {/* ─── MAPPA INK-PATH ROLES ─── */}
+        <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-100 select-none flex items-center justify-center">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl">
+              <defs>
+                <path id="curve-top" d="M10,80 Q30,50 60,60 T90,20" fill="transparent" />
+                <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
+              </defs>
+
+              <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
+              <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
+
+              <text className="font-display uppercase text-[8px] tracking-[0.1em] font-black fill-[var(--text-bone)] opacity-95 drop-shadow-md">
+                <textPath href="#curve-top" className="char-top" startOffset="0%">
+                  {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
+                </textPath>
+              </text>
+
+              <text className="font-display uppercase text-[7px] tracking-[0.15em] font-black fill-[var(--text-bone)] opacity-80">
+                <textPath href="#curve-bottom" className="char-bottom" startOffset="100%">
+                  {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
+                </textPath>
+              </text>
+            </svg>
+        </div>
+
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
+          <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-[var(--text-bone)] text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+            <span className="w-2 h-2 rounded-full bg-[var(--accent-blood)] animate-pulse" />
+            <span className="uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black font-display">
+              {language === 'en' ? "Available for Opportunities" : "仕事の依頼を受付中"}
+            </span>
+          </div>
+
+          <div ref={titlesRef} className="relative mb-8 w-full">
+            <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase text-[var(--text-bone)] select-none chromatic-aberration" style={{ letterSpacing: "-0.04em" }}>
+              {currentProfile.name.split(" ")[0]}
+            </h1>
+            <h1 className="cinematic-in text-[15vw] sm:text-[8rem] md:text-[11rem] lg:text-[14rem] leading-[0.8] font-black font-display uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone">
+              {currentProfile.name.split(" ").slice(1).join(" ")}
+            </h1>
+          </div>
+
+          <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
+            {currentProfile.tagline}
+          </p>
+
+          <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start mt-2">
+            <a ref={cta1Ref as any} href="#projects" className="group relative flex items-center justify-between min-w-[260px] md:min-w-[320px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
+              <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
+              <div className="relative z-10 flex items-center px-6 py-4 md:px-8 md:py-6 w-full">
+                <span className="text-white font-black font-display text-lg md:text-2xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
+                  {language === 'en' ? "View Work" : "実績を見る"}
+                </span>
+                <span className="ml-auto text-[10px] md:text-xs font-mono tracking-widest text-[var(--text-bone)]/50 group-hover:text-white transition-colors duration-500">[01]</span>
+              </div>
+            </a>
+            <a ref={cta2Ref as any} href="#contact" className="group relative flex items-center justify-between min-w-[260px] md:min-w-[320px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
+              <div className="absolute inset-0 bg-[var(--text-bone)] scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
+              <div className="relative z-10 flex items-center px-6 py-4 md:px-8 md:py-6 w-full">
+                <span className="text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black font-display text-lg md:text-2xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
+                  {language === 'en' ? "Contact" : "連絡する"}
+                </span>
+                <span className="ml-auto text-[10px] md:text-xs font-mono tracking-widest text-[var(--accent-blood)] group-hover:text-[var(--bg-ink)] transition-colors duration-500">[02]</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div className="absolute top-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
       <div className="absolute bottom-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
     </section>
