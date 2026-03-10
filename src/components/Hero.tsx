@@ -51,23 +51,23 @@ export function Hero() {
   };
 
   const currentIntro = introStages[language as 'en' | 'ja'];
+  
+  // Split the intro into individual words for the word-by-word reveal
+  const words = currentIntro.join(" ").split(" ");
 
   // ─── SCROLL TRACKER ENGINE ───
   useEffect(() => {
     const handleScroll = () => {
       if (!trackRef.current) return;
-      const rect = trackRef.current.getBoundingClientRect();
       const st = window.scrollY;
       const sectionOffset = trackRef.current.offsetTop;
       const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
-      // Calculate progress based on how far we have scrolled WITHIN the section
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
       setScrollProgress(progress);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // Run once at start to sync
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -75,7 +75,7 @@ export function Hero() {
   // Word-based lightning strike (Strike In -> Hard Stop -> Strike Out)
   useEffect(() => {
     const topPath = containerRef.current?.querySelector(".char-top");
-    const bottomPath = containerRef.current?.querySelector(".char-bottom");
+    const bottomPath = bottomPathRef.current || containerRef.current?.querySelector(".char-bottom");
 
     if (!topPath || !bottomPath) return;
 
@@ -119,6 +119,8 @@ export function Hero() {
 
   }, [roleIndex, language]);
 
+  const bottomPathRef = useRef<SVGTextPathElement>(null);
+
   // Cycle roles every 3.6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
@@ -150,29 +152,35 @@ export function Hero() {
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
         </div>
 
-        {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll) ─── */}
-        <div className="absolute inset-0 z-50 pointer-events-none flex flex-col justify-center px-8 md:px-24">
-          {currentIntro.map((text, i) => {
-            const threshold = (i + 1) / (currentIntro.length + 1);
-            const activeProgress = Math.max(0, Math.min(1, (scrollProgress - threshold * 0.7) * 5));
-            
-            return (
-              <div 
-                key={i}
-                className="mb-8 md:mb-12 overflow-hidden"
-                style={{
-                  opacity: activeProgress,
-                  transform: `translateY(${(1 - activeProgress) * 50}px)`,
-                  filter: `blur(${(1 - activeProgress) * 30}px)`,
-                  willChange: 'opacity, transform, filter'
-                }}
-              >
-                <h2 className={`text-2xl md:text-5xl lg:text-7xl font-black font-display uppercase tracking-tight leading-tight ${i === 4 ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
-                  {text}
-                </h2>
-              </div>
-            );
-          })}
+        {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
+        <div className="absolute inset-0 z-50 pointer-events-none flex items-center justify-center px-8 md:px-32">
+          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
+            {words.map((word, i) => {
+              // Calculate threshold for each word
+              // We want the words to start appearing after scrollProgress > 0.1
+              // And finish by scrollProgress = 0.9
+              const start = 0.1 + (i / words.length) * 0.7;
+              const end = start + 0.1;
+              const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
+              
+              return (
+                <span 
+                  key={i}
+                  className="inline-block"
+                  style={{
+                    opacity: activeProgress,
+                    transform: `translateY(${(1 - activeProgress) * 20}px)`,
+                    filter: `blur(${(1 - activeProgress) * 10}px)`,
+                    willChange: 'opacity, transform, filter'
+                  }}
+                >
+                  <span className={`text-2xl md:text-4xl lg:text-5xl font-black font-display uppercase tracking-tight leading-tight ${(word.includes("Harshal") || word.includes("Patel")) ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
+                    {word}
+                  </span>
+                </span>
+              );
+            })}
+          </div>
           
           {/* SCROLL INDICATOR */}
           <div 
@@ -209,7 +217,7 @@ export function Hero() {
                 </text>
 
                 <text className="font-display uppercase text-[7px] tracking-[0.15em] font-black fill-[var(--text-bone)] opacity-80">
-                  <textPath href="#curve-bottom" className="char-bottom" startOffset="100%">
+                  <textPath href="#curve-bottom" ref={bottomPathRef} className="char-bottom" startOffset="100%">
                     {curvedIdentities[language as 'en' | 'ja'][roleIndex][1]}
                   </textPath>
                 </text>
