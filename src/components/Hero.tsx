@@ -17,16 +17,14 @@ export function Hero() {
 
   const introStages = {
     en: [
-      "Searching for speed?",
-      "Facing scale's need?",
-      "A fresh eye for the win?",
-      "You’ve reached the source. Let the building begin."
+      "I’m your creative partner dedicated to understanding your needs",
+      "and crafting digital solutions that reflect your passion",
+      "and vision while effectively solving your problems."
     ],
     ja: [
-      "速さを求めるか？",
-      "規模に挑むか？",
-      "勝利への新たな眼差し。",
-      "ならば、ここが構築の『起源』だ。"
+      "私は あなたの クリエイティブ・パートナーとして、 ニーズを 理解し、",
+      "情熱と ビジョンを 反映した デジタルソリューションを 創り上げ、",
+      "課題を 効果的に 解決することに 専念しています。"
     ]
   };
 
@@ -77,54 +75,58 @@ export function Hero() {
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
         </div>
 
-        {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
-        <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
-          {/* Main Professional Statement Paragraph - Bigger and Centered */}
-          <div className="max-w-7xl text-justify">
-            {allWords.map((word, i) => {
-              // Thresholds mapped so that the last word is fully revealed at scrollProgress = 1.0
-              const start = (i / allWords.length) * 0.8;
-              const end = start + 0.2;
-              const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
-              
-              return (
-                <span 
-                  key={i}
-                  className="inline-block mr-[0.3em] mb-2"
-                  style={{
-                    opacity: activeProgress,
-                    transform: `translateY(${(1 - activeProgress) * 20}px)`,
-                    filter: `blur(${(1 - activeProgress) * 10}px)`,
-                    willChange: 'opacity, transform, filter'
-                  }}
-                >
+        {/* ─── THE EDITORIAL INTRO REVEAL (Manga Storytelling Overlay) ─── */}
+        <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
+          
+          {/* Vertical SIDE LABEL (Intro) */}
+          <div className="absolute left-0 bottom-1/2 translate-y-1/2 -rotate-90 origin-center hidden lg:block opacity-60">
+             <span className="font-serif italic text-4xl text-[var(--text-bone)] tracking-widest uppercase">Intro</span>
+          </div>
+
+          <div className="relative w-full max-w-7xl flex items-start gap-8 md:gap-16">
+            {/* The Bullet Mark */}
+            <div className="mt-6 md:mt-12 w-6 h-6 rounded-full bg-[var(--text-bone)] flex-shrink-0 brutal-shadow hidden md:block" />
+
+            <div className="text-justify leading-[0.9] md:leading-[1]">
+              {allWords.map((word, i) => {
+                const start = (i / allWords.length) * 0.8;
+                const end = start + 0.2;
+                const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
+                
+                // Narrative Semantic Styling
+                const isSpecial = word.toLowerCase().replace(/[.,!]/g, '') === 'creative' || 
+                                  word.toLowerCase().replace(/[.,!]/g, '') === 'solutions' || 
+                                  word.toLowerCase().replace(/[.,!]/g, '') === 'solving' ||
+                                  word.includes('クリエイティブ') || word.includes('ソリューション') || word.includes('解決');
+                
+                return (
                   <span 
-                    className={`text-3xl md:text-5xl lg:text-7xl font-black font-display uppercase tracking-tighter leading-none select-none transition-all duration-500
-                      ${(() => {
-                        const w = word.toLowerCase().replace(/[?.,!]/g, '');
-                        // Cursed Teal Segment (Speed / Perception / Source)
-                        if (w.includes('speed') || w.includes('速さ') || w.includes('eye') || w.includes('眼差し') || w.includes('source') || w.includes('起源')) {
-                          return 'text-[var(--accent-cursed)] drop-shadow-[0_0_15px_rgba(14,224,195,0.4)]';
-                        }
-                        // Blood Red Segment (Scale / Outcomes / Action)
-                        if (w.includes('scale') || w.includes('規模') || w.includes('win') || w.includes('勝利') || w.includes('building') || w.includes('構築') || w.includes('begin')) {
-                          return 'text-[var(--accent-blood)] drop-shadow-[0_0_15px_rgba(217,17,17,0.4)]';
-                        }
-                        // Bone White (Narrative connecting tissue)
-                        return 'text-[var(--text-bone)]';
-                      })()}`}
-                    style={{ 
-                      textShadow: activeProgress > 0.8 ? '0 0 20px rgba(255,255,255,0.05)' : 'none'
+                    key={i}
+                    className="inline-block mr-[0.2em] mb-4"
+                    style={{
+                      opacity: activeProgress,
+                      transform: `translateY(${(1 - activeProgress) * 30}px)`,
+                      filter: `blur(${(1 - activeProgress) * 15}px)`,
+                      willChange: 'opacity, transform, filter'
                     }}
                   >
-                    {word}
+                    <span 
+                      className={`text-4xl md:text-7xl lg:text-[7.5rem] font-black uppercase tracking-tighter select-none transition-all duration-700
+                        ${isSpecial ? 
+                          'font-serif italic capitalize text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]' : 
+                          'font-display text-[var(--text-bone)]'}`}
+                    >
+                      {word}
+                    </span>
+                    {/* Line breaks to force the structure */}
+                    {((language === 'en' && (i === 8 || i === 16)) || 
+                      (language === 'ja' && (i === 4 || i === 9))) && <br className="hidden md:block" />}
                   </span>
-                  {/* Force line break after "need?" (EN index 5) or "挑むか？" (JA index 1) */}
-                  {((language === 'en' && i === 5) || (language === 'ja' && i === 1)) && <br className="hidden md:block" />}
-                </span>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+        </div>
           
           {/* CLEAN ARROW FLOW INDICATOR */}
           <div 
@@ -147,7 +149,6 @@ export function Hero() {
               ))}
             </div>
           </div>
-        </div>
 
         <div style={heroRecedeStyle} className="w-full h-full flex items-center justify-center">
           {/* Halftone / Grain Texture Base */}
