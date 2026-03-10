@@ -9,14 +9,14 @@ import { useLanguage } from "@/context/LanguageContext";
 
 const LINKS = {
   en: [
-    { id: "email", label: "01 // DIRECT MAIL", value: "INITIATE EMAIL", href: `mailto:${profile.en.email}` },
-    { id: "github", label: "02 // SOURCE CODE", value: "ACCESS GITHUB", href: profile.en.github },
-    { id: "linkedin", label: "03 // PROFESSIONAL NETWORK", value: "VIEW LINKEDIN", href: profile.en.linkedin },
+    { id: "email", label: "01 // EMAIL", value: "SEND MESSAGE", href: `mailto:${profile.en.email}` },
+    { id: "github", label: "02 // GITHUB", value: "VIEW REPOSITORY", href: profile.en.github },
+    { id: "linkedin", label: "03 // LINKEDIN", value: "VISIT PROFILE", href: profile.en.linkedin },
   ],
   ja: [
-    { id: "email", label: "01 // ダイレクトメール", value: "メールを送信", href: `mailto:${profile.ja.email}` },
-    { id: "github", label: "02 // ソースコード", value: "GITHUBへ", href: profile.ja.github },
-    { id: "linkedin", label: "03 // プロフェッショナル", value: "LINKEDINを見る", href: profile.ja.linkedin },
+    { id: "email", label: "01 // メール", value: "メッセージを送信", href: `mailto:${profile.ja.email}` },
+    { id: "github", label: "02 // GITHUB", value: "リポジトリを見る", href: profile.ja.github },
+    { id: "linkedin", label: "03 // LINKEDIN", value: "プロフィールを見る", href: profile.ja.linkedin },
   ]
 };
 
@@ -84,7 +84,7 @@ export function Contact() {
              {language === 'en' ? 'CHAPTER 03' : '第三章'}
            </div>
            <h2 className="text-4xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8">
-             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></>}
+             {language === 'en' ? <>GET <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>IN TOUCH</span></> : <>お問い合わせ<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>はこちら</span></>}
            </h2>
         </ScrollReveal>
 

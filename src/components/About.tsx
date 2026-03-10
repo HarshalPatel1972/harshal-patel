@@ -88,7 +88,7 @@ export function About() {
                  {/* Education Credentials Block */}
                  <div className="mt-8 pt-6 border-t-2 border-black/10 flex flex-col md:flex-row gap-6">
                    <div className="flex-1">
-                     <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// UNIVERSITY_RECORD</div>
+                     <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// EDUCATION_HISTORY</div>
                      <div className="font-black font-display text-xl md:text-2xl uppercase italic">
                        {currentProfile.education.school}
                      </div>
@@ -97,7 +97,7 @@ export function About() {
                      </div>
                    </div>
                    <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
-                      <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">Status</div>
+                      <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">GPA Score</div>
                       <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
                         {currentProfile.education.gpa}
                       </div>
@@ -171,7 +171,7 @@ export function About() {
                {/* Raw Skill Bars */}
                <div ref={skillsRef} className="flex flex-col gap-6">
                   <h4 className="text-[var(--text-bone)] font-black font-display text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between">
-                     {language === 'en' ? "Combat Power" : "戦闘力"}
+                     {language === 'en' ? "Core Expertise" : "主な専門分野"}
                      <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
                   </h4>
                   <div className="space-y-6">
