@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Oswald, JetBrains_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
+import ImageGuard from "@/components/ui/ImageGuard";
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -48,6 +50,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Cursor />
+        <ImageGuard />
         {children}
       </body>
     </html>

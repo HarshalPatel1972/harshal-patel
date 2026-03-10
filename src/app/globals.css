@@ -301,3 +301,13 @@ body::before {
 .language-transition-root.is-smoking a,
 .language-transition-root.is-smoking button { transition-delay: 0.2s; }
 .language-transition-root.is-smoking span.text-smoke { transition-delay: 0.25s; }
+
+/* ─── IMAGE PROTECTION ─── */
+img, svg, picture, .ink-slash, .manga-panel {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
