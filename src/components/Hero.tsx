@@ -21,14 +21,14 @@ export function Hero() {
       "Focusing on speed, reliability, and modern architecture.",
       "Solving difficult technical problems with clean, efficient code.",
       "Delivering software that powers high-performance experiences.",
-      "Harshal Patel // Software Engineer"
+      "PROTOCOL: SYSTEM_ARCHITECT // STATUS: OPTIMIZED"
     ],
     ja: [
       "ビジネスと共に成長するシステムを構築します。",
       "速度、信頼性、そしてモダンなアーキテクチャに重点を置いています。",
       "クリーンで効率的なコードで、困難な技術的課題を解決します。",
       "ハイパフォーマンスな体験を支えるソフトウェアを提供します。",
-      "ハルシャル・パテル // ソフトウェアエンジニア"
+      "プロトコル：システム設計者 // ステータス：最適化済み"
     ]
   };
 
@@ -80,10 +80,10 @@ export function Hero() {
         {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
         <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
           {/* Main Professional Statement Paragraph */}
-          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2 mb-12">
+          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2 mb-16">
             {currentIntro.slice(0, 4).join(" ").split(" ").map((word, i) => {
-              const start = 0.05 + (i / 40) * 0.6; // Scale based on ~40 words total
-              const end = start + 0.08;
+              const start = 0.05 + (i / 40) * 0.6;
+              const end = start + 0.1;
               const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
               
               return (
@@ -105,34 +105,20 @@ export function Hero() {
             })}
           </div>
 
-          {/* Harshal Patel // Software Engineer Grande Finale Line */}
-          <div className="w-full max-w-5xl flex flex-col md:flex-row md:items-center justify-center md:justify-start gap-4 md:gap-8">
-            {currentIntro[4].split(" ").map((word, i) => {
-              const start = 0.75 + (i * 0.04);
-              const end = start + 0.1;
-              const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
-              const isName = word === "Harshal" || word === "Patel";
-              
-              return (
-                <div 
-                  key={i}
-                  className="inline-block overflow-hidden"
-                  style={{
-                    opacity: activeProgress,
-                    transform: `translateY(${(1 - activeProgress) * 40}px) skewX(${(1 - activeProgress) * -10}deg)`,
-                    filter: `blur(${(1 - activeProgress) * 15}px)`,
-                    willChange: 'opacity, transform, filter'
-                  }}
-                >
-                  <span className={`text-4xl md:text-6xl lg:text-8xl font-black font-display uppercase tracking-tighter leading-none ${isName ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]/40 text-xl md:text-3xl'}`}>
-                    {word}
-                  </span>
-                  {isName && i === 1 && (
-                    <div className="h-2 bg-[var(--accent-blood)] mt-2 w-full origin-left transform scale-x-100" style={{ transition: 'none', transform: `scaleX(${activeProgress})` }} />
-                  )}
-                </div>
-              );
-            })}
+          {/* Technical Protocol Footer - The 'Executive' Beat */}
+          <div className="w-full max-w-5xl flex justify-center md:justify-start">
+            <div 
+              className="inline-block px-6 py-2 border border-[var(--accent-blood)]/30 bg-[var(--accent-blood)]/5 overflow-hidden"
+              style={{
+                opacity: Math.max(0, Math.min(1, (scrollProgress - 0.75) * 5)),
+                transform: `translateY(${(1 - Math.max(0, Math.min(1, (scrollProgress - 0.75) * 5))) * 20}px)`,
+                willChange: 'opacity, transform'
+              }}
+            >
+              <span className="text-xs md:text-sm font-mono tracking-[0.3em] uppercase text-[var(--accent-blood)] whitespace-nowrap">
+                {currentIntro[4]}
+              </span>
+            </div>
           </div>
           
           {/* SCROLL INDICATOR */}
