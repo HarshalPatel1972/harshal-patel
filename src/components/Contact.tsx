@@ -113,14 +113,14 @@ export function Contact() {
                         {link.label}
                       </div>
 
-                      <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
+                      <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
                         {textValue}
                       </div>
                     </div>
 
                     {/* Brutalist Arrow/CTA */}
-                    <div className="flex shrink-0 w-[24px] h-[24px] md:w-12 md:h-12 bg-black text-white items-center justify-center brutal-shadow group-hover:bg-[var(--bg-ink)] group-hover:-rotate-45 transition-transform duration-300 origin-center self-end mb-0 md:mb-4 mr-[55px] md:mr-0">
-                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+                    <div className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow group-hover:bg-[var(--bg-ink)] group-hover:-rotate-45 transition-transform duration-300 origin-center self-end mb-0 md:mb-4 mr-[55px] md:mr-0">
+                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
                          <path d="M5 12h14M12 5l7 7-7 7"/>
                        </svg>
                     </div>

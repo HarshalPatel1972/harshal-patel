@@ -119,12 +119,12 @@ export function Projects() {
 
                   {/* Brutalist Arrow/CTA */}
                   <div className="mt-12 flex items-center gap-4">
-                     <div className="w-10 h-10 bg-[var(--text-bone)] text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
-                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+                     <div className="w-12 h-12 bg-[var(--text-bone)] text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
+                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
                          <path d="M5 12h14M12 5l7 7-7 7"/>
                        </svg>
                      </div>
-                     <span className={`font-black font-display text-lg uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
+                     <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
                         {language === 'en' ? "View Project" : "プロジェクトを見る"}
                      </span>
                   </div>
