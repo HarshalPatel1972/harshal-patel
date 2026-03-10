@@ -20,15 +20,13 @@ export function Hero() {
       "Building systems that grow with your business.",
       "Focusing on speed, reliability, and modern architecture.",
       "Solving difficult technical problems with clean, efficient code.",
-      "Delivering software that powers high-performance experiences.",
-      "PROTOCOL: SYSTEM_ARCHITECT // STATUS: OPTIMIZED"
+      "Delivering software that powers high-performance experiences."
     ],
     ja: [
       "ビジネスと共に成長するシステムを構築します。",
       "速度、信頼性、そしてモダンなアーキテクチャに重点を置いています。",
       "クリーンで効率的なコードで、困難な技術的課題を解決します。",
-      "ハイパフォーマンスな体験を支えるソフトウェアを提供します。",
-      "プロトコル：システム設計者 // ステータス：最適化済み"
+      "ハイパフォーマンスな体験を支えるソフトウェアを提供します。"
     ]
   };
 
@@ -80,9 +78,9 @@ export function Hero() {
         {/* ─── THE VOID INTRO REVEAL (Materializes on Scroll Word-by-Word) ─── */}
         <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center px-8 md:px-32">
           {/* Main Professional Statement Paragraph */}
-          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2 mb-16">
-            {currentIntro.slice(0, 4).join(" ").split(" ").map((word, i) => {
-              const start = 0.05 + (i / 40) * 0.6;
+          <div className="max-w-5xl text-center md:text-left flex flex-wrap justify-center md:justify-start gap-x-[0.3em] gap-y-2">
+            {currentIntro.join(" ").split(" ").map((word, i) => {
+              const start = 0.05 + (i / 40) * 0.7; // Spread word reveal across more scroll
               const end = start + 0.1;
               const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
               
@@ -103,22 +101,6 @@ export function Hero() {
                 </span>
               );
             })}
-          </div>
-
-          {/* Technical Protocol Footer - The 'Executive' Beat */}
-          <div className="w-full max-w-5xl flex justify-center md:justify-start">
-            <div 
-              className="inline-block px-6 py-2 border border-[var(--accent-blood)]/30 bg-[var(--accent-blood)]/5 overflow-hidden"
-              style={{
-                opacity: Math.max(0, Math.min(1, (scrollProgress - 0.75) * 5)),
-                transform: `translateY(${(1 - Math.max(0, Math.min(1, (scrollProgress - 0.75) * 5))) * 20}px)`,
-                willChange: 'opacity, transform'
-              }}
-            >
-              <span className="text-xs md:text-sm font-mono tracking-[0.3em] uppercase text-[var(--accent-blood)] whitespace-nowrap">
-                {currentIntro[4]}
-              </span>
-            </div>
           </div>
           
           {/* SCROLL INDICATOR */}
