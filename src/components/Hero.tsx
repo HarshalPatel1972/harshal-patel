@@ -111,7 +111,7 @@ export function Hero() {
           
           {/* CLEAN ARROW FLOW INDICATOR */}
           <div 
-            className="absolute bottom-[44px] left-0 right-0 flex flex-col items-center transition-all duration-700 pointer-events-none"
+            className="absolute bottom-[24px] left-0 right-0 flex flex-col items-center transition-all duration-700 pointer-events-none"
             style={{ 
               opacity: scrollProgress > 0.05 ? 0 : 0.8,
               transform: `translateY(${scrollProgress > 0.05 ? 40 : 0}px)`
@@ -123,7 +123,7 @@ export function Hero() {
                   key={i} 
                   className="absolute animate-arrow-flow" 
                   style={{ animationDelay: `${i * 0.4}s` }}
-                  width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square"/>
                 </svg>

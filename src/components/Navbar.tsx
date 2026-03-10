@@ -87,7 +87,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--text-bone)]/50 backdrop-blur-xl border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
+      <nav className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-[var(--text-bone)] border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden">
         
         {/* TOP BRAND INDICATOR - Unified Global Logo */}
         <div className="flex flex-col items-center gap-4 z-20">
