@@ -26,11 +26,14 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Harshal Patel — Software Engineer",
-  description:
-    "Portfolio of Harshal Patel. Building high-performance systems with Go, TypeScript & WebAssembly.",
+  title: "Harshal Patel // [DECODED]",
+  description: "Exorcising technical debt and Constructing High-Performance Systems. Software Engineer Portfolio.",
   keywords: ["Software Engineer", "Go", "TypeScript", "WebAssembly", "Portfolio"],
   authors: [{ name: "Harshal Patel" }],
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  }
 };
 
 export default function RootLayout({

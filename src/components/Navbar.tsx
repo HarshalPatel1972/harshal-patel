@@ -20,14 +20,24 @@ const NAV_ITEMS = {
 };
 
 const HPLogo = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full fill-white p-1">
-    {/* HP Integrated Monogram - Brutalist Design */}
-    <path 
-      d="M15,15 H30 V45 H50 V15 H65 V45 H85 V60 H65 V85 H50 V55 H30 V85 H15 V15 Z 
-         M65,30 H75 V45 H65 V30 Z" 
-      className="fill-white"
-    />
-    <rect x="70" y="70" width="15" height="15" className="fill-[var(--accent-blood)] shadow-xl" />
+  <svg viewBox="0 0 100 100" className="w-full h-full p-1.5 overflow-visible">
+    {/* Abstract Brutalist HP - High Speed / Cinematic Style */}
+    <g transform="translate(50,50) rotate(-5)">
+      {/* The 'H' Shadow/Base */}
+      <path 
+        d="M-35,-30 H-15 V0 H15 V-30 H35 V30 H15 V5 H-15 V30 H-35 Z" 
+        className="fill-white"
+        style={{ filter: 'drop-shadow(2px 2px 0px var(--accent-blood))' }}
+      />
+      {/* The 'P' Slashing Integration */}
+      <path 
+        d="M5,-15 H30 V10 H5 V25 H-5 V-25 H30 V-15 Z" 
+        className="fill-[var(--accent-blood)]"
+        opacity="0.9"
+      />
+      {/* Sharp Accent Line */}
+      <path d="M-40,40 L40,-40" stroke="white" strokeWidth="2" strokeDasharray="5,3" opacity="0.3" />
+    </g>
   </svg>
 );
 
