@@ -91,13 +91,13 @@ export function Navbar() {
         
         {/* TOP BRAND INDICATOR - Unified Global Logo */}
         <div className="flex flex-col items-center gap-4 z-20">
-          <div className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden -translate-x-[4px]" onClick={() => handleClick("hero")}>
+          <a href="#hero" className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden -translate-x-[4px]">
             <img 
               src="/icon.png" 
               alt="HP Logo" 
               className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" 
             />
-          </div>
+          </a>
         </div>
 
         {/* THE TIMELINE TRACK */}
@@ -136,15 +136,14 @@ export function Navbar() {
             />
           </div>
 
-          {/* CHAPTER MARKERS / NAV LINKS */}
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
             {currentNavItems.map((item) => {
               const isActive = active === item.id;
 
               return (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => handleClick(item.id)}
+                  href={`#${item.id}`}
                   className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300"
                   style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }}
                   aria-label={`Navigate to ${item.label}`}
@@ -155,7 +154,7 @@ export function Navbar() {
                   >
                     {item.label}
                   </span>
-                </button>
+                </a>
               );
             })}
           </div>
