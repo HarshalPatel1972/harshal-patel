@@ -39,16 +39,16 @@ export function Hero() {
     if (!topPath || !bottomPath) return;
 
     // Phase 1: Upper Word (Right to Left glide)
-    // Starting far right (100%) and landing at 39%
+    // Starting far right (100%) and landing at 44% (+5% right nudge)
     animate(topPath, {
-      startOffset: ["100%", "39%"],
+      startOffset: ["100%", "44%"],
       duration: 1500,
       easing: "easeOutQuart"
     }).then(() => {
       // Phase 2: Lower Word (Left to Right glide)
-      // Starting far left (0%) and landing at 40%
+      // Starting far left (0%) and landing at 45% (+5% right nudge)
       animate(bottomPath, {
-        startOffset: ["0%", "40%"],
+        startOffset: ["0%", "45%"],
         duration: 1500,
         easing: "easeOutQuart"
       });
@@ -120,23 +120,23 @@ export function Hero() {
               <path id="curve-bottom" d="M5,90 Q40,40 70,70 T95,10" fill="transparent" />
             </defs>
 
-            {/* VISUAL RED SLASHES */}
-            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.15" />
-            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.1" />
+            {/* VISUAL RED SLASHES - MAPPA Level Vibrancy */}
+            <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="#ff1515" opacity="0.3" />
+            <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="#ff1515" opacity="0.25" />
 
-            {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) */}
-            <text className="font-serif italic text-[7px] tracking-[0.1em] font-light fill-[var(--text-bone)] opacity-40">
+            {/* CURVED TEXT ON TOP PATH (Glide: Right to Left) - Cinematic Sans */}
+            <text className="font-display font-black text-[7px] tracking-[0.1em] fill-[var(--text-bone)] opacity-80">
               <textPath 
                 href="#curve-top" 
                 className="char-top"
                 startOffset="100%"
               >
-                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0]}
+                {curvedIdentities[language as 'en' | 'ja'][roleIndex][0].toUpperCase()}
               </textPath>
             </text>
 
-            {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) */}
-            <text className="font-serif italic text-[6px] tracking-[0.1em] font-bold fill-[var(--text-bone)] opacity-20">
+            {/* CURVED TEXT ON BOTTOM PATH (Glide: Left to Right) - Elegant Serif */}
+            <text className="font-serif italic text-[6px] tracking-[0.15em] font-bold fill-[var(--text-bone)] opacity-60">
               <textPath 
                 href="#curve-bottom" 
                 className="char-bottom"
