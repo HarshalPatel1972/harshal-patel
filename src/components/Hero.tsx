@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { animate, stagger, utils } from "animejs";
+import { animate, createTimeline, stagger, utils } from "animejs";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
@@ -43,47 +43,54 @@ export function Hero() {
     const holdTime = 3000;
     const exitSpeed = 300;
 
-    // Reset paths IMMEDIATELY before starting new sequence
-    topPath.setAttribute("startOffset", "0%");
-    topPath.setAttribute("opacity", "0");
-    bottomPath.setAttribute("startOffset", "100%");
-    bottomPath.setAttribute("opacity", "0");
+    const tl = createTimeline();
 
-    // TOP WORD SEQUENCE
-    animate(topPath, { 
-      startOffset: "42%", 
-      opacity: 1, 
-      duration: entranceSpeed, 
-      easing: "easeOutExpo" 
-    }).then(() => animate(topPath, { 
+    // TOP WORD: 0% -> 42% -> 42% (Hold) -> 110%
+    tl.add(topPath, {
+      startOffset: "42%",
+      opacity: [0, 1],
+      duration: entranceSpeed,
+      ease: "easeOutExpo"
+    }, 0);
+    
+    tl.add(topPath, {
       startOffset: "42%", // ABSOLUTE STOP
-      duration: holdTime, 
-      easing: "linear" 
-    })).then(() => animate(topPath, { 
-      startOffset: "110%", 
-      opacity: 0, 
-      duration: exitSpeed, 
-      easing: "easeInExpo" 
-    }));
+      duration: holdTime,
+      ease: "linear"
+    }, entranceSpeed);
+    
+    tl.add(topPath, {
+      startOffset: "110%",
+      opacity: [1, 0],
+      duration: exitSpeed,
+      ease: "easeInExpo"
+    }, entranceSpeed + holdTime);
 
-    // BOTTOM WORD SEQUENCE
-    animate(bottomPath, { 
-      startOffset: "43%", 
-      opacity: 1, 
-      duration: entranceSpeed, 
-      easing: "easeOutExpo" 
-    }).then(() => animate(bottomPath, { 
+    // BOTTOM WORD: 100% -> 43% -> 43% (Hold) -> -10%
+    tl.add(bottomPath, {
+      startOffset: "43%",
+      opacity: [0, 1],
+      duration: entranceSpeed,
+      ease: "easeOutExpo"
+    }, 0);
+    
+    tl.add(bottomPath, {
       startOffset: "43%", // ABSOLUTE STOP
-      duration: holdTime, 
-      easing: "linear" 
-    })).then(() => animate(bottomPath, { 
-      startOffset: "-10%", 
-      opacity: 0, 
-      duration: exitSpeed, 
-      easing: "easeInExpo" 
-    }));
+      duration: holdTime,
+      ease: "linear"
+    }, entranceSpeed);
+    
+    tl.add(bottomPath, {
+      startOffset: "-10%",
+      opacity: [1, 0],
+      duration: exitSpeed,
+      ease: "easeInExpo"
+    }, entranceSpeed + holdTime);
 
-  }, [roleIndex]);
+    return () => {
+      // Clean up previous timeline if any
+    };
+  }, [roleIndex, language]);
 
   // Cycle roles every 3.6 seconds (Matching 300 + 3000 + 300 exactly)
   useEffect(() => {
