@@ -15,7 +15,15 @@ export default function Cursor() {
 
   // Touch device detection — disable custom cursor entirely on phones/tablets
   useEffect(() => {
-    setIsTouch(window.matchMedia('(pointer: coarse)').matches);
+    // Avoid calling setState synchronously in an effect
+    const checkTouch = () => setIsTouch(window.matchMedia('(pointer: coarse)').matches);
+    checkTouch();
+
+    // Listen for media query changes if device orientation/capabilities change
+    const mediaQuery = window.matchMedia('(pointer: coarse)');
+    const listener = (e: MediaQueryListEvent) => setIsTouch(e.matches);
+    mediaQuery.addEventListener('change', listener);
+    return () => mediaQuery.removeEventListener('change', listener);
   }, []);
 
   useEffect(() => {
@@ -28,14 +36,21 @@ export default function Cursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Triggers "lock-on" reticle status
+
+      // ⚡ Bolt: Performance Optimization
+      // Removed `window.getComputedStyle(target).cursor === "pointer"`
+      // because getComputedStyle forces a synchronous layout calculation (layout thrashing)
+      // on every mouseover event, causing severe performance drops.
+      // Replaced with class-based and tag-based checks which are basically O(1) DOM operations.
       if (
         target.tagName.toLowerCase() === "a" ||
         target.tagName.toLowerCase() === "button" ||
         target.closest("a") ||
         target.closest("button") ||
-        target.classList.contains("interactive") || 
-        window.getComputedStyle(target).cursor === "pointer"
+        target.closest(".interactive") ||
+        target.closest(".cursor-pointer") ||
+        target.classList.contains("interactive") ||
+        target.classList.contains("cursor-pointer")
       ) {
         setIsHovering(true);
       } else {
