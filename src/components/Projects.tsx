@@ -1,7 +1,6 @@
 "use client";
 
 import { projects } from "@/data/projects";
-import { ScrollReveal } from "./ScrollReveal";
 import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
@@ -20,14 +19,15 @@ export function Projects() {
   const { language } = useLanguage();
   const currentProjects = projects[language];
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [isOverridden, setIsOverridden] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
 
-  // Entrance staggered animation
+  // Entrance staggered animation (RESTORED)
   useEffect(() => {
     if (!containerRef.current) return;
     const elements = containerRef.current.querySelectorAll(".project-card");
     anime(elements as any, {
-      opacity: [0, 1],
+      opacity: [1, 1],
       translateX: [50, 0],
       duration: 1200,
       delay: utils.stagger(150),
@@ -39,7 +39,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-[46px] md:pt-[78px] pb-[66px] md:pb-[98px] px-4 md:px-8 bg-white flex flex-col items-center"
+      className="relative pt-[46px] md:pt-[78px] pb-[10vh] px-4 md:px-8 bg-white flex flex-col items-center z-20"
     >
       {/* Background ink texture (inverted for this section since background is white) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
@@ -64,74 +64,114 @@ export function Projects() {
         </p>
       </div>
 
-      <div className="w-full max-w-7xl relative grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-full mr-8 md:mr-12'}`}>
+        {/* GLOBAL MASTER OVERRIDER (Z-Elevated to stay on top of all stacks) */}
+        {!isOverridden && (
+          <div className="absolute right-0 top-0 h-full w-8 md:w-10 pointer-events-none z-30">
+            <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto">
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsOverridden(true);
+                }}
+                className="h-44 md:h-64 w-8 md:w-10 bg-white text-black border-y-4 border-r-4 border-black border-l-0 hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)] hover:text-white flex flex-col items-center justify-center gap-4 transition-all duration-300 group/btn shadow-[4px_4px_0px_rgba(0,0,0,1)]"
+              >
+                <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] animate-pulse group-hover/btn:bg-white shrink-0" />
+                <div className="flex flex-col items-center">
+                  {"SPREAD_PROJECTS".split("_").map((word, wIdx) => (
+                    <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>
+                      {word.split("").map((char, cIdx) => (
+                        <span key={cIdx} className="font-display text-[9px] md:text-[11px] font-black uppercase leading-none mb-[2px] last:mb-0">
+                          {char}
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+
         {currentProjects.map((project: Project, i: number) => {
           const isHovered = activeIndex === i;
           
           return (
-            <ScrollReveal key={project.title} duration={1000} delay={i * 100} className={`w-full ${i === 0 ? "md:col-span-2" : ""}`}>
-              <KineticLink 
-                href={project.link}
-                target="_blank"
-                onMouseEnter={() => setActiveIndex(i)}
-                onMouseLeave={() => setActiveIndex(null)}
-                className="project-card block relative manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow min-h-[280px] md:min-h-[450px] p-5 md:p-12 group cursor-pointer overflow-hidden"
-              >
-                {/* Background Blood Splatter on Hover */}
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
-                   <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="currentColor" />
-                </svg>
+            <div 
+              key={project.title} 
+              className={`transition-all duration-700 ease-out w-full ${isOverridden ? `relative top-0 ${i === 0 ? "md:col-span-2" : ""}` : 'sticky top-[10vh] md:top-[12vh]'}`} 
+              style={{ zIndex: isOverridden ? 1 : i }}
+            >
+              <div className="flex items-start">
+                <KineticLink 
+                  href={project.link}
+                  target="_blank"
+                  onMouseEnter={() => setActiveIndex(i)}
+                  onMouseLeave={() => setActiveIndex(null)}
+                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[280px] md:min-h-[450px] p-5 md:p-12' : 'h-[400px] md:h-[550px] p-6 md:p-12'} group cursor-pointer overflow-hidden`}
+                >
+                  {/* Background Blood Splatter on Hover */}
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
+                     <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="currentColor" />
+                  </svg>
 
-                {/* Number Watermark */}
-                <div className="absolute top-4 right-4 text-[4rem] md:text-[8rem] font-black font-display text-[var(--text-bone)] opacity-5 select-none pointer-events-none leading-none z-0 transition-transform duration-500 group-hover:scale-110">
-                  {String(i + 1).padStart(2, '0')}
-                </div>
+                  {/* Number Watermark */}
+                  <div className="absolute top-4 right-4 text-[4rem] md:text-[8rem] font-black font-display text-[var(--text-bone)] opacity-25 select-none pointer-events-none leading-none z-0 transition-transform duration-500">
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
 
-                <div className="relative z-10 flex flex-col h-full justify-between">
-                  <div>
-                    {/* Tags / Categories */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.tags.map((tag: string) => (
-                        <span key={tag} className="border border-[var(--text-bone)] text-[var(--text-bone)] px-3 py-1 text-xs font-bold uppercase tracking-widest font-sans bg-black/50">
-                          {tag}
+                  <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                      {/* Tags / Categories */}
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {project.tags.map((tag: string) => (
+                          <span key={tag} className="border border-[var(--text-bone)] text-[var(--text-bone)] px-3 py-1 text-xs font-bold uppercase tracking-widest font-sans bg-black/50">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Title */}
+                      <h3 className={`text-3xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
+                        {project.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className={`text-[var(--text-muted)] font-sans text-sm md:text-lg leading-relaxed max-w-2xl border-l-[3px] pl-4 transition-colors duration-300 ${isHovered ? 'border-[var(--accent-blood)] text-[var(--text-bone)]' : 'border-[var(--text-muted)]'}`}>
+                        {project.description}
+                      </p>
+                    </div>
+
+                    {/* Technical HUD Specs */}
+                    <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
+                      {project.specs.map((spec: string) => (
+                        <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
+                          {spec}
                         </span>
                       ))}
                     </div>
 
-                    {/* Title */}
-                    <h3 className={`text-3xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
-                      {project.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className={`text-[var(--text-muted)] font-sans text-sm md:text-lg leading-relaxed max-w-2xl border-l-[3px] pl-4 transition-colors duration-300 ${isHovered ? 'border-[var(--accent-blood)] text-[var(--text-bone)]' : 'border-[var(--text-muted)]'}`}>
-                      {project.description}
-                    </p>
+                    {/* CTA */}
+                    <div className="mt-12 flex items-center gap-4">
+                       <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+                           <path d="M5 12h14M12 5l7 7-7 7"/>
+                         </svg>
+                       </div>
+                       <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
+                          {language === 'en' ? "View Project" : "プロジェクトを見る"}
+                       </span>
+                    </div>
                   </div>
+                </KineticLink>
 
-                  {/* Technical HUD Specs */}
-                  <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
-                    {project.specs.map((spec: string) => (
-                      <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Brutalist Arrow/CTA */}
-                  <div className="mt-12 flex items-center gap-4">
-                     <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
-                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
-                         <path d="M5 12h14M12 5l7 7-7 7"/>
-                       </svg>
-                     </div>
-                     <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                        {language === 'en' ? "View Project" : "プロジェクトを見る"}
-                     </span>
-                  </div>
-                </div>
-              </KineticLink>
-            </ScrollReveal>
+                {/* LAYOUT PLACEHOLDER (Maintains sizing for all cards in stack) */}
+                {!isOverridden && (
+                  <div className="w-8 md:w-10 shrink-0" />
+                )}
+              </div>
+            </div>
           );
         })}
       </div>
