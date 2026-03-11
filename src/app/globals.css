@@ -99,13 +99,11 @@ body::before {
 }
 @media (hover: hover) {
   .brutal-shadow:hover, .brutal-shadow-sm:hover {
-    transform: translate(2px, 2px);
     box-shadow: 2px 2px 0px 0px var(--accent-blood);
   }
 }
 
 .brutal-shadow:active, .brutal-shadow-sm:active, .kinetic-active {
-  transform: translate(3px, 3px) !important;
   box-shadow: 1px 1px 0px 0px var(--accent-blood) !important;
 }
 
