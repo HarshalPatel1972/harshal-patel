@@ -54,7 +54,7 @@ export const projects: { en: Project[]; ja: Project[] } = {
       description: "Rust-powered Spotlight-like search indexing 50,000+ files. Multi-strategy ranked matching returning results under 100ms.",
       tags: ["Rust", "Tauri", "Algorithms"],
       color: "#3b82f6",
-      link: "#",
+      link: "https://github.com/HarshalPatel1972/win-light",
       specs: ["// INDEX_50K_FILES", "// LATENCY_SUB_100MS", "// RUST_CONCURRENCY_"]
     },
     {
@@ -62,7 +62,7 @@ export const projects: { en: Project[]; ja: Project[] } = {
       description: "High-performance spiritual guidance platform. Achieved sub-second multi-page navigation with serverless lead-generation architecture.",
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
-      link: "#",
+      link: "https://a1-tantra.vercel.app/",
       specs: ["// SUB_SECOND_NAV", "// SERVERLESS_LEADS", "// OPTIMIZED_AESTHETIC_"]
     }
   ],
@@ -112,7 +112,7 @@ export const projects: { en: Project[]; ja: Project[] } = {
       description: "50,000以上のファイルをインデックス化する、Rust駆動のSpotlight風検索。100ms未満で結果を返すマルチ戦略のランク付けマッチング。",
       tags: ["Rust", "Tauri", "アルゴリズム"],
       color: "#3b82f6",
-      link: "#",
+      link: "https://github.com/HarshalPatel1972/win-light",
       specs: ["// 50Kファイル検索", "// 遅延_100MS未満", "// RUST並行処理_"]
     },
     {
@@ -120,7 +120,7 @@ export const projects: { en: Project[]; ja: Project[] } = {
       description: "高性能な精神的ガイダンスプラットフォーム。サーバーレスリードジェネレーションアーキテクチャにより、1秒未満のマルチページナビゲーションを実現。",
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
-      link: "#",
+      link: "https://a1-tantra.vercel.app/",
       specs: ["// 1秒未満のナビ", "// サーバーレスリード", "// 最適化された美学_"]
     }
   ]
