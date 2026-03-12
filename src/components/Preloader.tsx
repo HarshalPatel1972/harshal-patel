@@ -29,8 +29,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   
   const quote = language === 'ja' ? scene.ja.text : scene.en.text;
   const author = language === 'ja' ? scene.ja.author : scene.en.author;
-  const series = language === 'ja' ? scene.ja.series : scene.en.series;
-  const source = `${author} // ${series}`;
+  const source = author;
   const bgImage = scene.image;
 
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
