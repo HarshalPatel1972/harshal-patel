@@ -2,10 +2,8 @@
 
 import { useEffect, useState, useRef, useMemo } from "react";
 import { createTimeline, stagger } from "animejs";
-import { mappaQuotes } from "@/data/quotes";
+import mappaData from "@/data/mappa_master.json";
 import { useLanguage } from "@/context/LanguageContext";
-
-import charAssets from "@/data/character_assets.json";
 
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
@@ -25,29 +23,18 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const { language } = useLanguage();
 
-  // Pick a random quote once on mount, stable across renders
-  const quoteIndex = useRef(Math.floor(Math.random() * mappaQuotes.en.length));
-  const activeQuotes = mappaQuotes[language];
-  const q = activeQuotes[quoteIndex.current % activeQuotes.length];
-  const quote = q.text;
-  const source = q.source.split(" // ")[0].trim();
+  // Unified Data Access: Pick one scene (Quote + Image + Mapping) once
+  const sceneIndex = useRef(Math.floor(Math.random() * mappaData.length));
+  const scene = mappaData[sceneIndex.current % mappaData.length];
+  
+  const quote = language === 'ja' ? scene.ja.text : scene.en.text;
+  const author = language === 'ja' ? scene.ja.author : scene.en.author;
+  const series = language === 'ja' ? scene.ja.series : scene.en.series;
+  const source = `${author} // ${series}`;
+  const bgImage = scene.image;
+
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
-
-  // Robust Character Mapping Logic (Normalizes 'EREN YEAGER' and 'エレン・イェーガー')
-  const bgImage = useMemo(() => {
-    if (!source) return null;
-    const normalize = (str: string) => str.toUpperCase().replace(/・/g, '').replace(/\s/g, '').trim();
-    const normalizedSource = normalize(source);
-    
-    const asset = charAssets.find(a => {
-      const n = normalize(a.name);
-      const j = a.japaneseName ? normalize(a.japaneseName) : "";
-      return n === normalizedSource || j === normalizedSource;
-    });
-    
-    return asset ? asset.image : null;
-  }, [source]);
 
   const targetBgOpacity = Math.min(0.15, wordCount * 0.02);
 

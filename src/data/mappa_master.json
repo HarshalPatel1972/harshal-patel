@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "en": { "text": "IF YOU DON'T FIGHT, YOU CAN'T WIN.", "author": "EREN YEAGER", "series": "ATTACK ON TITAN" },
+    "ja": { "text": "戦わなければ勝てない。", "author": "エレン・イェーガー", "series": "進撃の巨人" },
+    "image": "/Eren Yeager.jpg"
+  },
+  {
+    "id": 2,
+    "en": { "text": "YOU HAVE NO ENEMIES. NO ONE HAS ANY ENEMIES. THERE IS NO ONE WHO IT IS OKAY TO HURT.", "author": "THORS SNORESSON", "series": "VINLAND SAGA" },
+    "ja": { "text": "お前に敵などいない。誰にも敵などいないんだ。傷つけていい者など、どこにもいない。", "author": "トールズ・スノーレソン", "series": "ヴィンランド・サガ" },
+    "image": "/THORS SNORESSON.png"
+  },
+  {
+    "id": 3,
+    "en": { "text": "STAND PROUD. YOU ARE STRONG.", "author": "RYOMEN SUKUNA", "series": "JUJUTSU KAISEN" },
+    "ja": { "text": "誇れ。お前は強い。", "author": "両面宿儺", "series": "呪術廻戦" },
+    "image": "/RYOMEN SUKUNA.jpg"
+  },
+  {
+    "id": 4,
+    "en": { "text": "THE ONLY THING WE'RE ALLOWED TO DO IS BELIEVE THAT WE WON'T REGRET THE CHOICE WE MADE.", "author": "LEVI ACKERMAN", "series": "ATTACK ON TITAN" },
+    "ja": { "text": "俺たちに許されたのは、自分の選択を後悔しないと信じることだけだ。", "author": "リヴァイ・アッカーマン", "series": "進撃の巨人" },
+    "image": "/Levi Ackerman.png"
+  },
+  {
+    "id": 5,
+    "en": { "text": "DYING TO WIN AND RISKING DEATH TO WIN ARE TWO DIFFERENT THINGS.", "author": "SATORU GOJO", "series": "JUJUTSU KAISEN" },
+    "ja": { "text": "死んで勝つと死んでも勝つは全然違うよ", "author": "五条悟", "series": "呪術廻戦" },
+    "image": "/Saturo Gojo.png"
+  },
+  {
+    "id": 6,
+    "en": { "text": "THE WORLD IS CRUEL, BUT ALSO VERY BEAUTIFUL.", "author": "MIKASA ACKERMAN", "series": "ATTACK ON TITAN" },
+    "ja": { "text": "この世界は残酷だ…そして…とても美しい。", "author": "ミカサ・アッカーマン", "series": "進撃の巨人" },
+    "image": "/612523.jpg"
+  },
+  {
+    "id": 7,
+    "en": { "text": "I WANT TO LIVE A LIFE I CAN BE PROUD OF.", "author": "YUJI ITADORI", "series": "JUJUTSU KAISEN" },
+    "ja": { "text": "自分が死ぬ時のことは分からんけど、生き様で後悔はしたくない。", "author": "虎杖悠仁", "series": "呪術廻戦" },
+    "image": "/Yuji Itadori.png"
+  },
+  {
+    "id": 8,
+    "en": { "text": "I'LL KEEP MOVING FORWARD. UNTIL MY ENEMIES ARE DESTROYED.", "author": "EREN YEAGER", "series": "ATTACK ON TITAN" },
+    "ja": { "text": "オレは進み続ける。敵を駆逐するまで。", "author": "エレン・イェーガー", "series": "進撃の巨人" },
+    "image": "/Eren Yeager.jpg"
+  },
+  {
+    "id": 9,
+    "en": { "text": "THROUGHOUT HEAVEN AND EARTH, I ALONE AM THE HONORED ONE.", "author": "SATORU GOJO", "series": "JUJUTSU KAISEN" },
+    "ja": { "text": "天上天下唯我独尊", "author": "五条悟", "series": "呪術廻戦" },
+    "image": "/Saturo Gojo.png"
+  }
+]
