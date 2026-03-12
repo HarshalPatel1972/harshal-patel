@@ -60,15 +60,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   };
 
   const onPointerUp = () => {
-    // VIOLENT KINETIC SPRING PHYSICS
-    // High stiffness (120) + Low damping (4) = Multiple aggressive oscillations past the target
+    // EXTREME UNDERDAMPED PHYSICS
+    // Stiffness 150 + Damping 2 = Violent, high-frequency oscillation with significant overshoot
     const tempObj = { val: percent };
     animRef.current = anime(tempObj, {
       val: skill.level,
-      duration: 2000,
-      easing: 'spring(1, 120, 4, 0)', // Underdamped: snaps fast, overshoots high, bounces back/forth
+      // Omit duration so spring physics control the timeline
+      easing: 'spring(1, 150, 2, 0)', 
       onUpdate: () => {
         setPercent(tempObj.val);
+      },
+      onComplete: () => {
+        setPercent(skill.level);
       }
     });
   };
