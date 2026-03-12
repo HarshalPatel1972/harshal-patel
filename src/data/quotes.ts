@@ -1,6 +1,6 @@
 export interface CharacterData {
-  en: { name: string; series: string };
-  ja: { name: string; series: string };
+  en: { name: string };
+  ja: { name: string };
   image: string;
 }
 
@@ -12,38 +12,38 @@ export interface QuoteEntry {
 
 export const characterRegistry: Record<string, CharacterData> = {
   EREN: {
-    en: { name: "EREN YEAGER", series: "ATTACK ON TITAN" },
-    ja: { name: "エレン・イェーガー", series: "進撃の巨人" },
+    en: { name: "EREN YEAGER" },
+    ja: { name: "エレン・イェーガー" },
     image: "/Eren Yeager.jpg"
   },
   THORS: {
-    en: { name: "THORS SNORESSON", series: "VINLAND SAGA" },
-    ja: { name: "トールズ・スノーレソン", series: "ヴィンランド・サガ" },
+    en: { name: "THORS SNORESSON" },
+    ja: { name: "トールズ・スノーレソン" },
     image: "/THORS SNORESSON.png"
   },
   SUKUNA: {
-    en: { name: "RYOMEN SUKUNA", series: "JUJUTSU KAISEN" },
-    ja: { name: "両面宿儺", series: "呪術廻戦" },
+    en: { name: "RYOMEN SUKUNA" },
+    ja: { name: "両面宿儺" },
     image: "/RYOMEN SUKUNA.jpg"
   },
   LEVI: {
-    en: { name: "LEVI ACKERMAN", series: "ATTACK ON TITAN" },
-    ja: { name: "リヴァイ・アッカーマン", series: "進撃の巨人" },
+    en: { name: "LEVI ACKERMAN" },
+    ja: { name: "リヴァイ・アッカーマン" },
     image: "/Levi Ackerman.png"
   },
   GOJO: {
-    en: { name: "SATORU GOJO", series: "JUJUTSU KAISEN" },
-    ja: { name: "五条悟", series: "呪術廻戦" },
+    en: { name: "SATORU GOJO" },
+    ja: { name: "五条悟" },
     image: "/Saturo Gojo.png"
   },
   MIKASA: {
-    en: { name: "MIKASA ACKERMAN", series: "ATTACK ON TITAN" },
-    ja: { name: "ミカサ・アッカーマン", series: "進撃の巨人" },
+    en: { name: "MIKASA ACKERMAN" },
+    ja: { name: "ミカサ・アッカーマン" },
     image: "/612523.jpg"
   },
   YUJI: {
-    en: { name: "YUJI ITADORI", series: "JUJUTSU KAISEN" },
-    ja: { name: "虎杖悠仁", series: "呪術廻戦" },
+    en: { name: "YUJI ITADORI" },
+    ja: { name: "虎杖悠仁" },
     image: "/Yuji Itadori.png"
   }
 };
