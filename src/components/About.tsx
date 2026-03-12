@@ -4,7 +4,7 @@ import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { useCounter } from "./AnimationKit";
 import { useEffect, useRef, useState } from "react";
-import { animate as anime, utils } from "animejs";
+import { animate as anime, utils, createTimeline } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -43,6 +43,10 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     }
   }, [isVisible, index]);
 
+  const [pressureType, setPressureType] = useState<string | null>(null);
+  const pressureRef = useRef<HTMLDivElement>(null);
+  const lastTriggered = useRef<number | null>(null);
+
   const [isDragging, setIsDragging] = useState(false);
 
   const handleInteraction = (e: React.PointerEvent | PointerEvent) => {
@@ -51,6 +55,24 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const x = e.clientX - rect.left;
     const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setPercent(newPercent);
+
+    const rounded = Math.round(newPercent);
+    
+    // PRESSURE TRIGGER LOGIC (MAPPA SCREAM SYSTEM)
+    if (isDragging) {
+      if (rounded === 0 && lastTriggered.current !== 0) {
+        setPressureType("PRESSURE PRESSURE PRESSURE");
+        lastTriggered.current = 0;
+      } else if (rounded <= 8 && rounded > 0 && lastTriggered.current !== 8 && lastTriggered.current !== 0) {
+        setPressureType("PRESSURE");
+        lastTriggered.current = 8;
+      } else if (rounded <= 10 && rounded > 8 && lastTriggered.current !== 10 && lastTriggered.current !== 8 && lastTriggered.current !== 0) {
+        setPressureType("PRESSURE");
+        lastTriggered.current = 10;
+      } else if (rounded > 15) {
+        lastTriggered.current = null;
+      }
+    }
 
     // RED for liquid, CYAN for numbers (Original Aesthetic)
     const red = 'var(--accent-blood)';
@@ -61,23 +83,49 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         fillRef.current.style.width = `${newPercent}%`;
     }
     if (labelRef.current) {
-        const rounded = Math.round(newPercent);
         labelRef.current.style.color = cyan;
-        
-        if (rounded === 0) {
-            labelRef.current.innerText = "PRESSURE PRESSURE PRESSURE";
-            labelRef.current.style.color = red;
-        } else if (rounded <= 10) {
-            labelRef.current.innerText = "PRESSURE";
-            labelRef.current.style.color = red;
-        } else {
-            labelRef.current.innerText = `${rounded}%`;
-        }
+        labelRef.current.innerText = `${rounded}%`;
     }
   };
 
+  useEffect(() => {
+    if (pressureType) {
+      const el = pressureRef.current;
+      if (!el) return;
+      
+      const tl = createTimeline({
+        onComplete: () => setPressureType(null)
+      });
+      
+      tl.add(el, {
+        opacity: [0, 1],
+        scale: [0.8, 1.3],
+        rotate: [-5, 5],
+        duration: 150,
+        ease: 'easeOutExpo'
+      });
+      
+      tl.add(el, {
+        translateX: () => utils.random(-20, 20),
+        translateY: () => utils.random(-20, 20),
+        duration: 50,
+        loop: 6,
+        direction: 'alternate',
+        ease: 'linear'
+      });
+      
+      tl.add(el, {
+        opacity: 0,
+        scale: 3,
+        duration: 300,
+        ease: 'easeInExpo'
+      }, "+=200");
+    }
+  }, [pressureType]);
+
   const onPointerDown = (e: React.PointerEvent) => {
     setIsDragging(true);
+    lastTriggered.current = null;
     if (animRef.current) animRef.current.pause();
     e.currentTarget.setPointerCapture(e.pointerId);
     handleInteraction(e);
@@ -152,6 +200,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerCancel={onPointerUp}
         className={`h-[24px] md:h-[20px] bg-black border w-full relative transition-colors duration-100 cursor-ew-resize touch-none ${isCurrentlyColliding ? "border-white bg-white/40" : "border-[var(--text-bone)]"}`}
       >
+        {/* PRESSURE BURST OVERLAY */}
+        {pressureType && (
+          <div 
+            ref={pressureRef}
+            className="fixed inset-0 z-[100000] flex items-center justify-center pointer-events-none"
+          >
+            <div className="bg-[var(--accent-blood)] text-white font-black font-display px-10 py-4 text-5xl md:text-9xl tracking-tighter italic border-8 border-black shadow-[20px_20px_0px_rgba(0,0,0,1)] rotate-[-3deg] whitespace-nowrap">
+              {pressureType}
+            </div>
+          </div>
+        )}
+
         <div
           ref={fillRef}
           className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-[width]"
