@@ -48,7 +48,7 @@ export function Projects() {
       <SubliminalKanji kanji="作品" position="left" />
 
       {/* Massive Section Title (MAPPA Layout) */}
-      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-[-23px] md:mb-[41px] border-b-4 border-black pb-8">
+      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
              {language === 'en' ? 'CHAPTER 01' : '第一章'}
@@ -112,7 +112,7 @@ export function Projects() {
                   target="_blank"
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
-                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[280px] md:min-h-[450px] p-5 md:p-12' : 'h-[400px] md:h-[550px] p-6 md:p-12'} group cursor-pointer overflow-hidden`}
+                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[420px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden`}
                 >
                   {/* Background Blood Splatter on Hover */}
                   <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
