@@ -30,9 +30,8 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
 
   // Initial entry animation
   useEffect(() => {
-    if (isVisible) {
-      anime({
-        targets: fillRef.current,
+    if (isVisible && fillRef.current) {
+      anime(fillRef.current, {
         scaleX: [0, 1],
         opacity: [0, 1],
         duration: 1400,
@@ -66,13 +65,13 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const distance = Math.abs(percent - skill.level);
     const duration = Math.min(2000, 800 + distance * 10);
     
-    animRef.current = anime({
-      targets: { val: percent },
+    const tempObj = { val: percent };
+    animRef.current = anime(tempObj, {
       val: skill.level,
       duration: duration,
       easing: 'easeOutElastic(1, 0.4)', // Spongy bounce
-      update: (anim) => {
-        setPercent(Number(anim.animations[0].currentValue));
+      onUpdate: () => {
+        setPercent(tempObj.val);
       }
     });
   };
