@@ -39,7 +39,7 @@ export const characterRegistry: Record<string, CharacterData> = {
   MIKASA: {
     en: { name: "MIKASA ACKERMAN" },
     ja: { name: "ミカサ・アッカーマン" },
-    image: "/612523.jpg"
+    image: "/Mikasa Ackerman.jpg"
   },
   YUJI: {
     en: { name: "YUJI ITADORI" },

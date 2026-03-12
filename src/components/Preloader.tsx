@@ -23,11 +23,15 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const { language } = useLanguage();
 
-  // Relational Data Access: Pick a quote once on mount, then translate it
-  const selectedQuoteRef = useRef(mappaQuotesList[Math.floor(Math.random() * mappaQuotesList.length)]);
+  // Pick a random quote ONCE - using lazy initialization
+  // We use state instead of ref to ensure it's reactive if needed, 
+  // but stable after the first mount.
+  const [selectedQuote] = useState(() => {
+    return mappaQuotesList[Math.floor(Math.random() * mappaQuotesList.length)];
+  });
   
   const quoteData = useMemo(() => {
-    const selectedQuote = selectedQuoteRef.current;
+    if (!selectedQuote) return null;
     const character = characterRegistry[selectedQuote.charId];
     
     return {
@@ -35,10 +39,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       author: language === 'ja' ? character.ja.name : character.en.name,
       image: character.image
     };
-  }, [language]);
+  }, [language, selectedQuote]);
+
+  // Handle case where quoteData is null (safety)
+  if (!quoteData) return null;
 
   const { text: quote, author: source, image: bgImage } = quoteData;
-  const author = source; // Alias for internal logic if needed
+  const author = source; 
 
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);

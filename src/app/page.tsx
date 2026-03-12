@@ -14,7 +14,7 @@ import { ScrollLine } from "@/components/AnimationKit";
 
 import { SignalProvider } from "@/context/SignalContext";
 
-const Preloader = dynamic(() => import("@/components/Preloader"));
+const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false);
