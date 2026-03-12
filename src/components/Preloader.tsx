@@ -34,8 +34,21 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   // Author to image mapping (Syncing with MAPPA assets)
   const authorImageMap: Record<string, string> = {
+    // English Keys
     "SATORU GOJO": "/Saturo Gojo.png",
-    "五条悟": "/Saturo Gojo.png"
+    "EREN YEAGER": "/Eren Yeager.jpg",
+    "THORS SNORESSON": "/THORS SNORESSON.png",
+    "RYOMEN SUKUNA": "/RYOMEN SUKUNA.jpg",
+    "LEVI ACKERMAN": "/Levi Ackerman.png",
+    "YUJI ITADORI": "/Yuji Itadori.png",
+    
+    // Japanese Keys
+    "五条悟": "/Saturo Gojo.png",
+    "エレン・イェーガー": "/Eren Yeager.jpg",
+    "トールズ・スノーレソン": "/THORS SNORESSON.png",
+    "両面宿儺": "/RYOMEN SUKUNA.jpg",
+    "リヴァイ・アッカーマン": "/Levi Ackerman.png",
+    "虎杖悠仁": "/Yuji Itadori.png"
   };
 
   const bgImage = authorImageMap[source.toUpperCase()] || authorImageMap[source] || null;
