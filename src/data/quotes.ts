@@ -2,6 +2,7 @@ export interface CharacterData {
   en: { name: string };
   ja: { name: string };
   image: string;
+  opacity?: number;
 }
 
 export interface QuoteEntry {
@@ -24,17 +25,20 @@ export const characterRegistry: Record<string, CharacterData> = {
   SUKUNA: {
     en: { name: "RYOMEN SUKUNA" },
     ja: { name: "両面宿儺" },
-    image: "/RYOMEN SUKUNA.jpg"
+    image: "/RYOMEN SUKUNA.jpg",
+    opacity: 0.25
   },
   LEVI: {
     en: { name: "LEVI ACKERMAN" },
     ja: { name: "リヴァイ・アッカーマン" },
-    image: "/Levi Ackerman.png"
+    image: "/Levi Ackerman.png",
+    opacity: 0.3
   },
   GOJO: {
     en: { name: "SATORU GOJO" },
     ja: { name: "五条悟" },
-    image: "/Saturo Gojo.png"
+    image: "/Saturo Gojo.png",
+    opacity: 0.3
   },
   MIKASA: {
     en: { name: "MIKASA ACKERMAN" },

@@ -37,20 +37,21 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     return {
       text: language === 'ja' ? selectedQuote.ja : selectedQuote.en,
       author: language === 'ja' ? character.ja.name : character.en.name,
-      image: character.image
+      image: character.image,
+      overrideOpacity: character.opacity
     };
   }, [language, selectedQuote]);
 
   // Handle case where quoteData is null (safety)
   if (!quoteData) return null;
 
-  const { text: quote, author: source, image: bgImage } = quoteData;
+  const { text: quote, author: source, image: bgImage, overrideOpacity } = quoteData;
   const author = source; 
 
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
 
-  const targetBgOpacity = Math.min(0.15, wordCount * 0.02);
+  const targetBgOpacity = overrideOpacity ?? Math.min(0.15, wordCount * 0.02);
 
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
