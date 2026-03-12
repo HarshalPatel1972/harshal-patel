@@ -148,15 +148,12 @@ export function Navbar() {
                   style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }}
                   aria-label={`Navigate to ${item.label}`}
                 >
-                  <div 
-                    className={`flex flex-col items-center leading-none transition-all duration-300 ${isActive ? "text-[var(--bg-ink)] scale-110 drop-shadow-[0_0_8px_rgba(217,17,17,0.4)]" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} 
+                  <span 
+                    className={`font-display font-bold ${language === 'ja' ? 'text-xl md:text-2xl' : 'text-sm md:text-base'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--bg-ink)] drop-shadow-[0_0_8px_rgba(5,5,5,0.4)] scale-110" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} 
+                    style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                   >
-                    {item.label.split("").map((char, idx) => (
-                      <span key={idx} className={`font-black uppercase ${language === 'ja' ? 'text-lg md:text-xl md:mb-1' : 'text-[10px] md:text-xs mb-[2px]'} last:mb-0`}>
-                        {char}
-                      </span>
-                    ))}
-                  </div>
+                    {item.label}
+                  </span>
                 </a>
               );
             })}
