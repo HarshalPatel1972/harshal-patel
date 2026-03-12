@@ -68,16 +68,19 @@ export function Projects() {
         {/* GLOBAL MASTER OVERRIDER (Z-Elevated to stay on top of all stacks) */}
         {!isOverridden && (
           <div className="absolute right-[4px] md:right-0 top-0 h-full w-9 md:w-10 pointer-events-none z-30">
-            <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto">
+            <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto flex justify-center">
               <button 
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setIsOverridden(true);
                 }}
-                className="h-44 md:h-64 w-full bg-white text-black border-4 border-black hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)] hover:text-white flex flex-col items-center justify-center gap-4 transition-all duration-300 group/btn shadow-[4px_4px_0px_rgba(0,0,0,1)]"
+                className="h-44 md:h-64 w-full bg-white text-black border-4 border-black hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)] hover:text-white flex flex-col items-center justify-center gap-4 transition-all duration-300 group/btn shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none translate-x-0"
               >
-                <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] animate-pulse group-hover/btn:bg-white shrink-0 relative z-20" />
+                <div className="relative w-2 h-2 flex items-center justify-center">
+                   <div className="absolute inset-0 bg-[var(--accent-blood)] animate-ping opacity-75 group-hover/btn:bg-white" />
+                   <div className="relative w-1.5 h-1.5 bg-[var(--accent-blood)] group-hover/btn:bg-white shrink-0" />
+                </div>
                 <div className="flex flex-col items-center">
                   {"SPREAD_PROJECTS".split("_").map((word, wIdx) => (
                     <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>

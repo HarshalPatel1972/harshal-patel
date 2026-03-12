@@ -52,15 +52,16 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setPercent(newPercent);
 
-    // ALWAYS RED
-    const color = 'var(--accent-blood)';
+    // ALWAYS RED for liquid, CYAN for numbers
+    const red = 'var(--accent-blood)';
+    const cyan = 'var(--accent-cursed)';
     
     if (fillRef.current) {
-        fillRef.current.style.backgroundColor = color;
+        fillRef.current.style.backgroundColor = red;
         fillRef.current.style.width = `${newPercent}%`;
     }
     if (labelRef.current) {
-        labelRef.current.style.color = color;
+        labelRef.current.style.color = cyan;
         labelRef.current.innerText = `${Math.round(newPercent)}%`;
     }
   };
@@ -89,9 +90,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const targetVal = skill.level;
     const compression = Math.abs(startVal - targetVal);
     
-    // RELEASE IGNITION - SNAP TO RED PERMANENTLY DURING MOTION
+    // RELEASE IGNITION - SNAP TO COLORS
     if (fillRef.current) fillRef.current.style.backgroundColor = 'var(--accent-blood)';
-    if (labelRef.current) labelRef.current.style.color = 'var(--accent-blood)';
+    if (labelRef.current) labelRef.current.style.color = 'var(--accent-cursed)';
 
     // VIOLENT SNAPBACK: Higher stiffness = Faster snap. Low damping = More overshoot.
     const stiffness = 120 + (compression * 3);
@@ -127,7 +128,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         <span 
           ref={labelRef}
           className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-110" : ""}`}
-          style={{ color: 'var(--accent-blood)' }}
+          style={{ color: 'var(--accent-cursed)' }}
         >
           {Math.round(percent)}%
         </span>

@@ -5,6 +5,8 @@ import { createTimeline, stagger } from "animejs";
 import { mappaQuotes } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
 
+import charAssets from "@/data/character_assets.json";
+
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -32,28 +34,15 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
 
-  // Character mapping logic (Case-insensitive matching)
-  const authorImageMap: Record<string, string> = {
-    // English
-    "SATORU GOJO": "/Saturo Gojo.png",
-    "EREN YEAGER": "/Eren Yeager.jpg",
-    "THORS SNORESSON": "/THORS SNORESSON.png",
-    "RYOMEN SUKUNA": "/RYOMEN SUKUNA.jpg",
-    "LEVI ACKERMAN": "/Levi Ackerman.png",
-    "YUJI ITADORI": "/Yuji Itadori.png",
-    "MIKASA ACKERMAN": "/612523.jpg",
-    
-    // Japanese
-    "五条悟": "/Saturo Gojo.png",
-    "エレン・イェーガー": "/Eren Yeager.jpg",
-    "トールズ・スノーレソン": "/THORS SNORESSON.png",
-    "両面宿儺": "/RYOMEN SUKUNA.jpg",
-    "リヴァイ・アッカーマン": "/Levi Ackerman.png",
-    "ミカサ・アッカーマン": "/612523.jpg",
-    "虎杖悠仁": "/Yuji Itadori.png"
-  };
+  // Author to image mapping (Syncing with JSON assets)
+  const bgImage = useMemo(() => {
+    const asset = charAssets.find(a => 
+      a.name.toUpperCase() === source.toUpperCase() || 
+      a.japaneseName === source
+    );
+    return asset ? asset.image : null;
+  }, [source]);
 
-  const bgImage = authorImageMap[source.toUpperCase()] || authorImageMap[source] || null;
   const targetBgOpacity = Math.min(0.15, wordCount * 0.02);
 
   const quoteFontSizeClass = useMemo(() => {
