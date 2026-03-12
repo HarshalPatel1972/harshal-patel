@@ -49,16 +49,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     if (!barRef.current) return;
     const rect = barRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const newPercent = Math.max(-10, Math.min(110, (x / rect.width) * 100)); // Allow slight over-pull for pressure
+    // STICK TO 0-100% LIMITS
+    const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setPercent(newPercent);
 
-    // DYNAMIC COLOR PRESSURE: Only turn red at the limit (0%) during drag
-    const isAtLimit = Math.round(newPercent) <= 0;
+    // COMPRESSION LOGIC: Only turns red if hit zero (Peak Pressure)
+    const isPeak = Math.round(newPercent) <= 0;
+    const color = isPeak ? 'var(--accent-blood)' : 'var(--text-bone)';
+    
+    if (fillRef.current) fillRef.current.style.backgroundColor = color;
     if (labelRef.current) {
-      labelRef.current.style.color = isAtLimit ? 'var(--accent-blood)' : 'var(--text-bone)';
-    }
-    if (fillRef.current) {
-      fillRef.current.style.backgroundColor = isAtLimit ? 'var(--accent-blood)' : 'var(--text-bone)';
+        labelRef.current.style.color = color;
+        labelRef.current.innerText = `${Math.round(newPercent)}%`;
     }
   };
 
@@ -83,50 +85,42 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   const onPointerUp = () => {
     setIsDragging(false);
     
-    // KINETIC PARAMETERS
-    const currentPos = percent;
-    const targetPos = skill.level;
-    const compressionDistance = Math.abs(currentPos - targetPos);
+    // PHYSICAL PARAMETERS
+    const current = percent;
+    const target = skill.level;
+    const compression = Math.abs(current - target);
     
-    // THE PHYSICAL CONSTANTS - Extreme stiffness for "released liquid" speed
-    const pressureStiffness = 180 + (compressionDistance * 4);
+    // SNAPS BACK TO RED (IGNITION)
+    if (fillRef.current) fillRef.current.style.backgroundColor = 'var(--accent-blood)';
+    if (labelRef.current) labelRef.current.style.color = 'var(--accent-blood)';
+
+    // KINETIC ENERGY RELEASE
+    // More compression = more violent oscillation
+    const stiffness = 80 + (compression * 2.5);
     
-    // BYPASS REACT FOR RAW KINETICS
-    const physicsProxy = { p: currentPos };
-    
-    animRef.current = anime(physicsProxy, {
-      p: targetPos,
-      // Damping = 0.8: Aggressive, multi-bounce oscillation past target
-      easing: `spring(1, ${pressureStiffness}, 0.8, 0)`, 
+    const proxy = { val: current };
+    animRef.current = anime(proxy, {
+      val: target,
+      // Damping = 1.2: Violent underdamped oscillation that OVERSHOOTS target
+      easing: `spring(1, ${stiffness}, 1.2, 0)`,
       onUpdate: () => {
-        const cur = physicsProxy.p;
+        const v = proxy.val;
+        // Direct Style Injection for High FPS Overshoot Visibility
+        if (fillRef.current) fillRef.current.style.width = `${v}%`;
+        if (labelRef.current) labelRef.current.innerText = `${Math.round(v)}%`;
         
-        // Direct DOM Injection
-        if (fillRef.current) {
-          fillRef.current.style.width = `${cur}%`;
-          // Liquid turns BLOOD RED on release
-          fillRef.current.style.backgroundColor = 'var(--accent-blood)';
-          fillRef.current.style.filter = 'grayscale(0)';
-        }
-        
-        if (labelRef.current) {
-          labelRef.current.innerText = `${Math.round(cur)}%`;
-          labelRef.current.style.color = 'var(--accent-blood)';
-        }
-        
-        // Dynamic Collision Highlight
-        const isCurrentlyColliding = cur > 100 || cur < 0;
-        setColliding(isCurrentlyColliding);
+        // Boundary Collision Logic
+        setColliding(v > 100 || v < 0);
       },
       onComplete: () => {
-        setPercent(targetPos);
+        setPercent(target);
         setColliding(false);
       }
     });
   };
 
   // Visual state for the container
-  const isCurrentlyColliding = colliding || (isDragging && (percent > 100 || percent < 0));
+  const isCurrentlyColliding = colliding;
 
   return (
     <div className="relative group/skill select-none">
@@ -146,26 +140,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        // REMOVED overflow-hidden so overshoot is VISIBLE
-        className={`h-[14px] md:h-[18px] bg-black border w-full relative transition-colors duration-100 ${isCurrentlyColliding ? "border-white bg-white/20" : "border-[var(--text-bone)]"}`}
-        style={{
-          boxShadow: isDragging ? `0 0 30px rgba(217, 17, 17, ${Math.abs(percent-skill.level)/80})` : 'none'
-        }}
+        // Container is relative and no longer hidden
+        className={`h-[14px] md:h-[18px] bg-black border w-full relative transition-colors duration-100 ${isCurrentlyColliding ? "border-white bg-white/30" : "border-[var(--text-bone)]"}`}
       >
         <div
           ref={fillRef}
-          className="absolute top-0 bottom-0 left-0 origin-left will-change-[width,filter,background-color] transition-[filter] duration-700"
+          className="absolute top-0 bottom-0 left-0 origin-left will-change-[width]"
           style={{ 
             width: `${percent}%`,
             backgroundColor: 'var(--text-bone)',
-            filter: isDragging ? 'grayscale(0.8) brightness(0.8)' : 'none',
             boxShadow: colliding ? '0 0 20px #fff' : 'none'
           }}
         />
-        {/* Pressure release particle effects (CSS simulation) */}
-        {isDragging && (
-          <div className="absolute inset-0 bg-white/5 animate-pulse pointer-events-none" />
-        )}
         <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50 pointer-events-none" />
       </div>
     </div>
