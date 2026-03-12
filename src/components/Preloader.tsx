@@ -23,14 +23,23 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const { language } = useLanguage();
 
-  // Unified Data Access: Pick one scene (Quote + Image + Mapping) once
-  const sceneIndex = useRef(Math.floor(Math.random() * mappaData.length));
-  const scene = mappaData[sceneIndex.current % mappaData.length];
+  // Relational Data Access: Pick a quote once on mount, then translate it
+  const selectedQuoteRef = useRef(mappaData.quotes[Math.floor(Math.random() * mappaData.quotes.length)]);
   
-  const quote = language === 'ja' ? scene.ja.text : scene.en.text;
-  const author = language === 'ja' ? scene.ja.author : scene.en.author;
-  const source = author;
-  const bgImage = scene.image;
+  const quoteData = useMemo(() => {
+    const registry = mappaData.registry as any;
+    const selectedQuote = selectedQuoteRef.current;
+    const character = registry[selectedQuote.charId];
+    
+    return {
+      text: language === 'ja' ? selectedQuote.ja : selectedQuote.en,
+      author: language === 'ja' ? character.ja.name : character.en.name,
+      image: character.image
+    };
+  }, [language]);
+
+  const { text: quote, author: source, image: bgImage } = quoteData;
+  const author = source; // Alias for internal logic if needed
 
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
