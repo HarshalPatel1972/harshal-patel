@@ -32,7 +32,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
 
-  // Author to image mapping (Syncing with MAPPA assets)
+  // Fixed mapping (Syncing with MAPPA assets)
   const authorImageMap: Record<string, string> = {
     // English Keys
     "SATORU GOJO": "/Saturo Gojo.png",
@@ -41,6 +41,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     "RYOMEN SUKUNA": "/RYOMEN SUKUNA.jpg",
     "LEVI ACKERMAN": "/Levi Ackerman.png",
     "YUJI ITADORI": "/Yuji Itadori.png",
+    "MIKASA ACKERMAN": "/612523.jpg",
     
     // Japanese Keys
     "五条悟": "/Saturo Gojo.png",
@@ -48,6 +49,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     "トールズ・スノーレソン": "/THORS SNORESSON.png",
     "両面宿儺": "/RYOMEN SUKUNA.jpg",
     "リヴァイ・アッカーマン": "/Levi Ackerman.png",
+    "ミカサ・アッカーマン": "/612523.jpg",
     "虎杖悠仁": "/Yuji Itadori.png"
   };
 
