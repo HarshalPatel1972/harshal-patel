@@ -15,7 +15,8 @@ export const characterRegistry: Record<string, CharacterData> = {
   EREN: {
     en: { name: "EREN YEAGER" },
     ja: { name: "エレン・イェーガー" },
-    image: "/Eren Yeager.jpg"
+    image: "/Eren Yeager.jpg",
+    opacity: 0.35
   },
   THORS: {
     en: { name: "THORS SNORESSON" },
