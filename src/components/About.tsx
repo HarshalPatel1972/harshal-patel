@@ -52,7 +52,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setPercent(newPercent);
 
-    // ALWAYS RED for liquid, CYAN for numbers
+    // RED for liquid, CYAN for numbers (Original Aesthetic)
     const red = 'var(--accent-blood)';
     const cyan = 'var(--accent-cursed)';
     
@@ -90,7 +90,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const targetVal = skill.level;
     const compression = Math.abs(startVal - targetVal);
     
-    // RELEASE IGNITION - SNAP TO COLORS
+    // RELEASE IGNITION - SNAP TO COLORS (RED LIQUID / CYAN NUMBERS)
     if (fillRef.current) fillRef.current.style.backgroundColor = 'var(--accent-blood)';
     if (labelRef.current) labelRef.current.style.color = 'var(--accent-cursed)';
 

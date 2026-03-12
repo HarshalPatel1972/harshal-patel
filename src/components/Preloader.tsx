@@ -34,12 +34,18 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
 
-  // Author to image mapping (Syncing with JSON assets)
+  // Robust Character Mapping Logic (Normalizes 'EREN YEAGER' and 'エレン・イェーガー')
   const bgImage = useMemo(() => {
-    const asset = charAssets.find(a => 
-      a.name.toUpperCase() === source.toUpperCase() || 
-      a.japaneseName === source
-    );
+    if (!source) return null;
+    const normalize = (str: string) => str.toUpperCase().replace(/・/g, '').replace(/\s/g, '').trim();
+    const normalizedSource = normalize(source);
+    
+    const asset = charAssets.find(a => {
+      const n = normalize(a.name);
+      const j = a.japaneseName ? normalize(a.japaneseName) : "";
+      return n === normalizedSource || j === normalizedSource;
+    });
+    
     return asset ? asset.image : null;
   }, [source]);
 

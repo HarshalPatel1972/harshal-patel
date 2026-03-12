@@ -67,19 +67,19 @@ export function Projects() {
       <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-[calc(100%-2.5rem)] md:w-full mr-[2.5rem] md:mr-0 pl-0 md:pl-0'}`}>
         {/* GLOBAL MASTER OVERRIDER (Z-Elevated to stay on top of all stacks) */}
         {!isOverridden && (
-          <div className="absolute right-[4px] md:right-0 top-0 h-full w-9 md:w-10 pointer-events-none z-30">
-            <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto flex justify-center">
+          <div className="absolute right-0 top-0 h-full w-10 md:w-12 pointer-events-none z-30">
+            <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto flex justify-start pl-1">
               <button 
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setIsOverridden(true);
                 }}
-                className="h-44 md:h-64 w-full bg-white text-black border-4 border-black hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)] hover:text-white flex flex-col items-center justify-center gap-4 transition-all duration-300 group/btn shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none translate-x-0"
+                className="h-44 md:h-64 w-8 md:w-10 bg-white text-black border-4 border-black hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)] hover:text-white flex flex-col items-center justify-center gap-4 transition-all duration-300 group/btn shadow-[4px_4px_0px_rgba(0,0,0,1)] active:shadow-none translate-x-0 relative"
               >
-                <div className="relative w-2 h-2 flex items-center justify-center">
-                   <div className="absolute inset-0 bg-[var(--accent-blood)] animate-ping opacity-75 group-hover/btn:bg-white" />
-                   <div className="relative w-1.5 h-1.5 bg-[var(--accent-blood)] group-hover/btn:bg-white shrink-0" />
+                <div className="relative w-3 h-3 flex items-center justify-center overflow-hidden">
+                   <div className="absolute inset-0 bg-[var(--accent-blood)] animate-ping opacity-40 group-hover/btn:bg-white" />
+                   <div className="relative w-1.5 h-1.5 bg-[var(--accent-blood)] group-hover/btn:bg-white shrink-0 z-10" />
                 </div>
                 <div className="flex flex-col items-center">
                   {"SPREAD_PROJECTS".split("_").map((word, wIdx) => (
