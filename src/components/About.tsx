@@ -60,16 +60,13 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   };
 
   const onPointerUp = () => {
-    // BOUNCY SNAPBACK PHYSICS
-    // The "sponginess" - farther it is, the more it "pulls"
-    const distance = Math.abs(percent - skill.level);
-    const duration = Math.min(2000, 800 + distance * 10);
-    
+    // KINETIC SPRING PHYSICS
+    // Simulates pressure absorption and high-speed energy dissipation
     const tempObj = { val: percent };
     animRef.current = anime(tempObj, {
       val: skill.level,
-      duration: duration,
-      easing: 'easeOutElastic(1, 0.4)', // Spongy bounce
+      duration: 1500,
+      easing: 'spring(1, 80, 10, 0)', // Violent kinetic spring with back-and-forth oscillation
       onUpdate: () => {
         setPercent(tempObj.val);
       }
@@ -77,9 +74,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   };
 
   return (
-    <div className="relative group/skill cursor-ew-resize select-none">
+    <div className="relative group/skill select-none">
       <div className="flex justify-between items-baseline mb-1">
-        <span className="text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase group-hover/skill:text-[var(--accent-blood)] transition-colors">{skill.name}</span>
+        <span className="text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase transition-colors">{skill.name}</span>
         <span className="text-xs font-mono text-[var(--accent-cursed)] font-bold">{Math.round(percent)}%</span>
       </div>
       
@@ -88,7 +85,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        className="h-[14px] md:h-[18px] bg-black border border-[var(--text-bone)] w-full relative overflow-hidden group-hover/skill:border-[var(--accent-blood)] transition-all duration-300"
+        className="h-[14px] md:h-[18px] bg-black border border-[var(--text-bone)] w-full relative overflow-hidden transition-all duration-300"
       >
         <div
           ref={fillRef}
@@ -96,7 +93,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
           style={{ width: `${percent}%` }}
         />
         {/* Scanning Glint on interaction */}
-        {percent !== skill.level && (
+        {Math.round(percent) !== Math.round(skill.level) && (
           <div className="absolute top-0 bottom-0 w-4 bg-white/20 blur-sm pointer-events-none animate-pulse" style={{ left: `${percent - 2}%` }} />
         )}
         <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50 pointer-events-none" />
