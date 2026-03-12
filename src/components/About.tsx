@@ -26,7 +26,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   const [percent, setPercent] = useState(skill.level);
   const barRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
   const animRef = useRef<any>(null);
+  const [colliding, setColliding] = useState(false);
 
   // Initial entry animation
   useEffect(() => {
@@ -64,33 +66,47 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
 
   const onPointerUp = () => {
     setIsDragging(false);
-    // LIQUID PRESSURE & COLLISION PHYSICS
-    // The further we pull, the more "pressure" (Stiffness) builds up
-    const displacement = Math.abs(percent - skill.level);
-    const pressureStiffness = 100 + (displacement * 3); // Stiffness scales with "compression"
     
-    const tempObj = { val: percent };
-    animRef.current = anime(tempObj, {
-      val: skill.level,
-      // Massive stiffness + low damping = violent release of pressure
-      easing: `spring(1, ${pressureStiffness}, 3, 0)`,
+    // THE PHYSICAL CONSTANTS
+    const displacement = Math.abs(percent - skill.level);
+    const pressureStiffness = 120 + (displacement * 2);
+    
+    // BYPASS REACT STATE FOR RAW PHYSICS
+    // Animating a plain object to prevent React render-bottlenecks during fast oscillation
+    const physicsProxy = { p: percent };
+    
+    animRef.current = anime(physicsProxy, {
+      p: skill.level,
+      // Damping = 1 is the critical threshold for violent, long-lasting oscillation
+      easing: `spring(1, ${pressureStiffness}, 1, 0)`, 
       onUpdate: () => {
-        setPercent(tempObj.val);
+        const cur = physicsProxy.p;
+        // Direct DOM Injection for 60fps+ fluidity
+        if (fillRef.current) fillRef.current.style.width = `${cur}%`;
+        if (labelRef.current) labelRef.current.innerText = `${Math.round(cur)}%`;
+        
+        // Dynamic Collision State
+        const isCurrentlyColliding = cur > 100 || cur < 0;
+        setColliding(isCurrentlyColliding);
       },
       onComplete: () => {
         setPercent(skill.level);
+        setColliding(false);
       }
     });
   };
 
-  // Collision detection for visual "thud"
-  const isColliding = percent > 100 || percent < 0;
+  // Visual state for the container
+  const isCurrentlyColliding = colliding || (isDragging && (percent > 100 || percent < 0));
 
   return (
     <div className="relative group/skill select-none">
       <div className="flex justify-between items-baseline mb-1">
         <span className={`text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase transition-colors ${isDragging ? "text-[var(--accent-blood)]" : ""}`}>{skill.name}</span>
-        <span className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-125 text-[var(--accent-blood)]" : "text-[var(--accent-cursed)]"}`}>
+        <span 
+          ref={labelRef}
+          className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-125 text-[var(--accent-blood)]" : "text-[var(--accent-cursed)]"}`}
+        >
           {Math.round(percent)}%
         </span>
       </div>
@@ -100,22 +116,24 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        className={`h-[14px] md:h-[18px] bg-black border w-full relative overflow-hidden transition-colors duration-300 ${isColliding ? "border-white bg-white/10" : "border-[var(--text-bone)]"}`}
+        // REMOVED overflow-hidden so overshoot is VISIBLE
+        className={`h-[14px] md:h-[18px] bg-black border w-full relative transition-colors duration-100 ${isCurrentlyColliding ? "border-white bg-white/20" : "border-[var(--text-bone)]"}`}
         style={{
-          boxShadow: isDragging ? `0 0 20px rgba(217, 17, 17, ${Math.abs(percent-skill.level)/100})` : 'none'
+          boxShadow: isDragging ? `0 0 30px rgba(217, 17, 17, ${Math.abs(percent-skill.level)/80})` : 'none'
         }}
       >
         <div
           ref={fillRef}
-          className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-transform"
+          className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-[width,filter] transition-[filter] duration-300"
           style={{ 
             width: `${percent}%`,
-            filter: isDragging ? `brightness(${1 + Math.abs(percent-skill.level)/50})` : 'none'
+            filter: isDragging ? `brightness(${1 + Math.max(0, percent-skill.level)/20})` : 'none',
+            boxShadow: colliding ? '0 0 15px #fff' : 'none'
           }}
         />
-        {/* Pressure release glint */}
+        {/* Pressure release particle effects (CSS simulation) */}
         {isDragging && (
-          <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
+          <div className="absolute inset-0 bg-white/5 animate-pulse pointer-events-none" />
         )}
         <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50 pointer-events-none" />
       </div>
