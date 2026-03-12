@@ -16,6 +16,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const bottomBarRef = useRef<HTMLDivElement>(null);
   const slashRef = useRef<HTMLDivElement>(null);
   const subliminalRef = useRef<HTMLDivElement>(null);
+  const bgImageRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<any>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const breathIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -28,8 +29,17 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const q = activeQuotes[quoteIndex.current % activeQuotes.length];
   const quote = q.text;
   const source = q.source.split(" // ")[0];
-  const words = quote.split(/\s+/).length;
-  const readTime = Math.max(5500, 4000 + words * 320);
+  const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
+  const readTime = Math.max(5500, 4000 + wordCount * 320);
+
+  // Author to image mapping (Syncing with MAPPA assets)
+  const authorImageMap: Record<string, string> = {
+    "SATORU GOJO": "/Saturo Gojo.png",
+    "五条悟": "/Saturo Gojo.png"
+  };
+
+  const bgImage = authorImageMap[source.toUpperCase()] || authorImageMap[source] || null;
+  const targetBgOpacity = Math.min(0.15, wordCount * 0.02);
 
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
@@ -122,14 +132,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }, 600);
       }
 
-      if (subliminalRef.current) {
-        tl.add(subliminalRef.current, {
-          opacity: [0, 0.4, 0],
-          scale: [0.8, 1.2],
-          duration: 150,
-          ease: 'steps(1)'
-        }, 700);
-      }
 
       // Step 3: Precision character reveal
       const pChars = document.querySelectorAll('.p-char');
@@ -142,6 +144,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           delay: stagger(15),
           ease: 'easeOutQuart'
         }, 1000);
+
+        if (bgImageRef.current) {
+          tl.add(bgImageRef.current, {
+            opacity: [0, targetBgOpacity],
+            duration: (pChars.length * 15) + 800,
+            ease: 'linear'
+          }, 1000);
+        }
       }
 
       // Step 4: Elevated Source Presentation
@@ -191,6 +201,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             ease: 'easeInExpo'
           }, 600);
         }
+
+        if (bgImageRef.current) {
+          exitTl.add(bgImageRef.current, {
+            opacity: 0,
+            duration: 800,
+            ease: 'easeOutSine'
+          }, 0);
+        }
       }, readTime);
 
       // Subtle Perspective Breath
@@ -225,18 +243,24 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
       {/* Atmospheric Layers */}
       <div className="absolute inset-0 bg-[#050505]" />
+      
+      {/* AUTHOR MAPPED BACKGROUND (Cinematic Materialization) */}
+      {bgImage && (
+        <div 
+          ref={bgImageRef}
+          className="absolute inset-0 z-0 opacity-0 pointer-events-none"
+          style={{ 
+            backgroundImage: `url('${bgImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'grayscale(1) brightness(0.8)' // MAPPA aesthetic: high-contrast monochrome base
+          }}
+        />
+      )}
+
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.03)_0%,transparent_85%)] opacity-60" />
       <div className="absolute inset-0 halftone-bg opacity-[0.05] mix-blend-overlay pointer-events-none" />
       
-      {/* Subliminal Kanji Flash */}
-      <div 
-        ref={subliminalRef}
-        className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none opacity-0 select-none"
-      >
-        <span className="text-[25vw] font-black text-[#d91111] opacity-20 filter blur-sm">
-          {mounted ? kanjiList[quoteIndex.current % kanjiList.length] : null}
-        </span>
-      </div>
 
       {/* The Sunder Flash */}
       <div 
