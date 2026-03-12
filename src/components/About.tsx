@@ -101,15 +101,15 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         opacity: [0, 1],
         scale: [0.8, 1.3],
         rotate: [-5, 5],
-        duration: 150,
+        duration: 300,
         ease: 'easeOutExpo'
       });
       
       tl.add(el, {
         translateX: () => utils.random(-20, 20),
         translateY: () => utils.random(-20, 20),
-        duration: 50,
-        loop: 6,
+        duration: 80,
+        loop: 8,
         direction: 'alternate',
         ease: 'linear'
       });
@@ -117,9 +117,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
       tl.add(el, {
         opacity: 0,
         scale: 3,
-        duration: 300,
+        duration: 500,
         ease: 'easeInExpo'
-      }, "+=200");
+      }, "+=800");
     }
   }, [pressureType]);
 
