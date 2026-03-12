@@ -41,15 +41,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     }
   }, [isVisible, index]);
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const handleInteraction = (e: React.PointerEvent | PointerEvent) => {
     if (!barRef.current) return;
     const rect = barRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    const newPercent = Math.max(-10, Math.min(110, (x / rect.width) * 100)); // Allow slight over-pull for pressure
     setPercent(newPercent);
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
+    setIsDragging(true);
     if (animRef.current) animRef.current.pause();
     e.currentTarget.setPointerCapture(e.pointerId);
     handleInteraction(e);
@@ -60,13 +63,17 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   };
 
   const onPointerUp = () => {
-    // EXTREME UNDERDAMPED PHYSICS
-    // Stiffness 150 + Damping 2 = Violent, high-frequency oscillation with significant overshoot
+    setIsDragging(false);
+    // LIQUID PRESSURE & COLLISION PHYSICS
+    // The further we pull, the more "pressure" (Stiffness) builds up
+    const displacement = Math.abs(percent - skill.level);
+    const pressureStiffness = 100 + (displacement * 3); // Stiffness scales with "compression"
+    
     const tempObj = { val: percent };
     animRef.current = anime(tempObj, {
       val: skill.level,
-      // Omit duration so spring physics control the timeline
-      easing: 'spring(1, 150, 2, 0)', 
+      // Massive stiffness + low damping = violent release of pressure
+      easing: `spring(1, ${pressureStiffness}, 3, 0)`,
       onUpdate: () => {
         setPercent(tempObj.val);
       },
@@ -76,11 +83,16 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     });
   };
 
+  // Collision detection for visual "thud"
+  const isColliding = percent > 100 || percent < 0;
+
   return (
     <div className="relative group/skill select-none">
       <div className="flex justify-between items-baseline mb-1">
-        <span className="text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase transition-colors">{skill.name}</span>
-        <span className="text-xs font-mono text-[var(--accent-cursed)] font-bold">{Math.round(percent)}%</span>
+        <span className={`text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase transition-colors ${isDragging ? "text-[var(--accent-blood)]" : ""}`}>{skill.name}</span>
+        <span className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-125 text-[var(--accent-blood)]" : "text-[var(--accent-cursed)]"}`}>
+          {Math.round(percent)}%
+        </span>
       </div>
       
       <div 
@@ -88,16 +100,22 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        className="h-[14px] md:h-[18px] bg-black border border-[var(--text-bone)] w-full relative overflow-hidden transition-all duration-300"
+        className={`h-[14px] md:h-[18px] bg-black border w-full relative overflow-hidden transition-colors duration-300 ${isColliding ? "border-white bg-white/10" : "border-[var(--text-bone)]"}`}
+        style={{
+          boxShadow: isDragging ? `0 0 20px rgba(217, 17, 17, ${Math.abs(percent-skill.level)/100})` : 'none'
+        }}
       >
         <div
           ref={fillRef}
           className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-transform"
-          style={{ width: `${percent}%` }}
+          style={{ 
+            width: `${percent}%`,
+            filter: isDragging ? `brightness(${1 + Math.abs(percent-skill.level)/50})` : 'none'
+          }}
         />
-        {/* Scanning Glint on interaction */}
-        {Math.round(percent) !== Math.round(skill.level) && (
-          <div className="absolute top-0 bottom-0 w-4 bg-white/20 blur-sm pointer-events-none animate-pulse" style={{ left: `${percent - 2}%` }} />
+        {/* Pressure release glint */}
+        {isDragging && (
+          <div className="absolute inset-0 bg-white/10 animate-pulse pointer-events-none" />
         )}
         <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50 pointer-events-none" />
       </div>
