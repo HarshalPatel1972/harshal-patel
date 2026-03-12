@@ -49,17 +49,20 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     if (!barRef.current) return;
     const rect = barRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    // STICK TO 0-100% LIMITS
+    // CLAMP STRICTLY 0-100
     const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setPercent(newPercent);
 
-    // COMPRESSION LOGIC: Only turns red if hit zero (Peak Pressure)
-    const isPeak = Math.round(newPercent) <= 0;
-    const color = isPeak ? 'var(--accent-blood)' : 'var(--text-bone)';
+    // PRESSURE COLOR LOGIC: Bone during compression, Blood at 0 or Release
+    const isAtZero = Math.round(newPercent) <= 0;
+    const activeColor = isAtZero ? 'var(--accent-blood)' : 'var(--text-bone)';
     
-    if (fillRef.current) fillRef.current.style.backgroundColor = color;
+    if (fillRef.current) {
+        fillRef.current.style.backgroundColor = activeColor;
+        fillRef.current.style.width = `${newPercent}%`;
+    }
     if (labelRef.current) {
-        labelRef.current.style.color = color;
+        labelRef.current.style.color = activeColor;
         labelRef.current.innerText = `${Math.round(newPercent)}%`;
     }
   };
@@ -85,35 +88,33 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   const onPointerUp = () => {
     setIsDragging(false);
     
-    // PHYSICAL PARAMETERS
-    const current = percent;
-    const target = skill.level;
-    const compression = Math.abs(current - target);
+    const startVal = percent;
+    const targetVal = skill.level;
+    const compression = Math.abs(startVal - targetVal);
     
-    // SNAPS BACK TO RED (IGNITION)
+    // RELEASE IGNITION - SNAP TO RED PERMANENTLY DURING MOTION
     if (fillRef.current) fillRef.current.style.backgroundColor = 'var(--accent-blood)';
     if (labelRef.current) labelRef.current.style.color = 'var(--accent-blood)';
 
-    // KINETIC ENERGY RELEASE
-    // More compression = more violent oscillation
-    const stiffness = 80 + (compression * 2.5);
+    // VIOLENT SNAPBACK: Higher stiffness = Faster snap. Low damping = More overshoot.
+    const stiffness = 120 + (compression * 3);
+    const proxy = { val: startVal };
     
-    const proxy = { val: current };
     animRef.current = anime(proxy, {
-      val: target,
-      // Damping = 1.2: Violent underdamped oscillation that OVERSHOOTS target
-      easing: `spring(1, ${stiffness}, 1.2, 0)`,
+      val: targetVal,
+      // Damping = 1.0 ensures aggressive oscillation past target (OVERSHOOT)
+      easing: `spring(1, ${stiffness}, 1, 0)`,
       onUpdate: () => {
         const v = proxy.val;
-        // Direct Style Injection for High FPS Overshoot Visibility
+        // DIRECT DOM INJECTION FOR HIGH-SPEED VISIBILITY
         if (fillRef.current) fillRef.current.style.width = `${v}%`;
         if (labelRef.current) labelRef.current.innerText = `${Math.round(v)}%`;
         
-        // Boundary Collision Logic
-        setColliding(v > 100 || v < 0);
+        // COLLISION FLASH
+        setColliding(v >= 100 || v <= 0);
       },
       onComplete: () => {
-        setPercent(target);
+        setPercent(targetVal);
         setColliding(false);
       }
     });
@@ -140,16 +141,15 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        // Container is relative and no longer hidden
-        className={`h-[14px] md:h-[18px] bg-black border w-full relative transition-colors duration-100 ${isCurrentlyColliding ? "border-white bg-white/30" : "border-[var(--text-bone)]"}`}
+        // overflow-hidden REMOVED to allow over-100% visual pulses
+        className={`h-[16px] md:h-[20px] bg-black border w-full relative transition-colors duration-100 ${isCurrentlyColliding ? "border-white bg-white/40" : "border-[var(--text-bone)]"}`}
       >
         <div
           ref={fillRef}
-          className="absolute top-0 bottom-0 left-0 origin-left will-change-[width]"
+          className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-[width]"
           style={{ 
             width: `${percent}%`,
-            backgroundColor: 'var(--text-bone)',
-            boxShadow: colliding ? '0 0 20px #fff' : 'none'
+            boxShadow: colliding ? '0 0 25px #fff' : 'none'
           }}
         />
         <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50 pointer-events-none" />
