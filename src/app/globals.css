@@ -98,13 +98,24 @@ body::before {
   transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0, 0, 0.2, 1);
 }
 @media (hover: hover) {
-  .brutal-shadow:hover, .brutal-shadow-sm:hover {
+  .brutal-shadow:hover {
     box-shadow: 2px 2px 0px 0px var(--accent-blood);
+    transform: translate(6px, 6px);
+  }
+  .brutal-shadow-sm:hover {
+    box-shadow: 2px 2px 0px 0px var(--accent-blood);
+    transform: translate(2px, 2px);
   }
 }
 
-.brutal-shadow:active, .brutal-shadow-sm:active, .kinetic-active {
-  box-shadow: 1px 1px 0px 0px var(--accent-blood) !important;
+.brutal-shadow:active, .kinetic-active.brutal-shadow {
+  box-shadow: 0px 0px 0px 0px var(--accent-blood) !important;
+  transform: translate(8px, 8px) !important;
+}
+
+.brutal-shadow-sm:active, .kinetic-active.brutal-shadow-sm {
+  box-shadow: 0px 0px 0px 0px var(--accent-blood) !important;
+  transform: translate(4px, 4px) !important;
 }
 
 /* Force hover animations for KineticLink during delay */
