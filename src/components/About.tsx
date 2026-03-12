@@ -60,13 +60,13 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   };
 
   const onPointerUp = () => {
-    // KINETIC SPRING PHYSICS
-    // Simulates pressure absorption and high-speed energy dissipation
+    // VIOLENT KINETIC SPRING PHYSICS
+    // High stiffness (120) + Low damping (4) = Multiple aggressive oscillations past the target
     const tempObj = { val: percent };
     animRef.current = anime(tempObj, {
       val: skill.level,
-      duration: 1500,
-      easing: 'spring(1, 80, 10, 0)', // Violent kinetic spring with back-and-forth oscillation
+      duration: 2000,
+      easing: 'spring(1, 120, 4, 0)', // Underdamped: snaps fast, overshoots high, bounces back/forth
       onUpdate: () => {
         setPercent(tempObj.val);
       }
