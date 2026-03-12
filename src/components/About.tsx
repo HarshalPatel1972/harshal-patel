@@ -206,8 +206,17 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
             ref={pressureRef}
             className="fixed inset-0 z-[100000] flex items-center justify-center pointer-events-none"
           >
-            <div className="bg-[var(--accent-blood)] text-white font-black font-display px-10 py-4 text-5xl md:text-9xl tracking-tighter italic border-8 border-black shadow-[20px_20px_0px_rgba(0,0,0,1)] rotate-[-3deg] whitespace-nowrap">
-              {pressureType}
+            <div className="bg-[var(--accent-blood)] text-white font-black font-display px-6 py-4 md:px-10 md:py-8 text-4xl md:text-9xl tracking-tighter italic border-4 md:border-8 border-black shadow-[10px_10px_0px_rgba(0,0,0,1)] md:shadow-[20px_20px_0px_rgba(0,0,0,1)] rotate-[-3deg] text-center flex flex-col items-center leading-[0.8]">
+              {pressureType === "PRESSURE PRESSURE PRESSURE" ? (
+                <>
+                  <span className="block md:hidden">PRESSURE!</span>
+                  <span className="block md:hidden">PRESSURE!</span>
+                  <span className="block md:hidden text-5xl">PRESSURE!!</span>
+                  <span className="hidden md:block">PRESSURE PRESSURE PRESSURE</span>
+                </>
+              ) : (
+                <span>{pressureType}!</span>
+              )}
             </div>
           </div>
         )}
