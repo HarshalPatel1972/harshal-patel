@@ -46,7 +46,7 @@ export const projects: { en: Project[]; ja: Project[] } = {
       description: "Windows system tray optimizer reducing WhatsApp RAM from 370MB to 90MB. Implements EcoQoS CPU governor and automated memory trimming.",
       tags: ["C++", "Win32", "Optimization"],
       color: "#f43f5e",
-      link: "#",
+      link: "https://github.com/HarshalPatel1972/velocity",
       specs: ["// RAM_SAVINGS_75%", "// ECO_QOS_PRIORITY", "// MEMORY_TRIM_ENGINE_"]
     },
     {
@@ -104,7 +104,7 @@ export const projects: { en: Project[]; ja: Project[] } = {
       description: "WhatsAppのデスクトップRAMを370MBから90MBに削減するWindowsシステムトレイ最適化ツール。EcoQoS CPUガバナーと自動メモリトリミングを実装。",
       tags: ["C++", "Win32", "最適化"],
       color: "#f43f5e",
-      link: "#",
+      link: "https://github.com/HarshalPatel1972/velocity",
       specs: ["// RAM削減率_75%", "// ECO_QOS優先度", "// メモリトリミングエンジン_"]
     },
     {
