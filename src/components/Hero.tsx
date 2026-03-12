@@ -33,19 +33,38 @@ export function Hero() {
 
   // ─── SCROLL TRACKER ENGINE ───
   useEffect(() => {
+    let ticking = false;
+    let rafId: number;
+
     const handleScroll = () => {
-      if (!trackRef.current) return;
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      setScrollProgress(progress);
+      // ⚡ Bolt Optimization: Batch DOM reads (offsetTop, offsetHeight) and state updates
+      // inside requestAnimationFrame using a ticking flag.
+      // Impact: Eliminates layout thrashing and limits React re-renders on high-frequency
+      // scroll events to maximum 60fps, significantly improving scroll performance.
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          if (!trackRef.current) {
+            ticking = false;
+            return;
+          }
+          const st = window.scrollY;
+          const sectionOffset = trackRef.current.offsetTop;
+          const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+
+          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+          setScrollProgress(progress);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Compute transform values based on scroll progress

@@ -13,20 +13,41 @@ export function useMagnetic(strength: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+    let ticking = false;
+    let rafId: number;
+    let currentX = 0;
+    let currentY = 0;
 
-      anime(el, {
-        translateX: x * strength,
-        translateY: y * strength,
-        duration: 600,
-        easing: "outQuart",
-      });
+    const handleMove = (e: MouseEvent) => {
+      // Always capture the latest coordinates
+      currentX = e.clientX;
+      currentY = e.clientY;
+
+      // ⚡ Bolt Optimization: Batch DOM reads (getBoundingClientRect) and style writes
+      // via animejs inside requestAnimationFrame using a ticking flag.
+      // Impact: Reduces synchronous reflows and layout thrashing on high-frequency
+      // mousemove events, keeping main thread free.
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          const rect = el.getBoundingClientRect();
+          const x = currentX - rect.left - rect.width / 2;
+          const y = currentY - rect.top - rect.height / 2;
+
+          anime(el, {
+            translateX: x * strength,
+            translateY: y * strength,
+            duration: 600,
+            easing: "outQuart",
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      ticking = false;
       anime(el, {
         translateX: 0,
         translateY: 0,
@@ -40,6 +61,7 @@ export function useMagnetic(strength: number = 0.3) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [strength]);
 
@@ -163,18 +185,38 @@ export function useTilt(intensity: number = 10) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const rotateX = (0.5 - y) * intensity;
-      const rotateY = (x - 0.5) * intensity;
+    let ticking = false;
+    let rafId: number;
+    let currentX = 0;
+    let currentY = 0;
 
-      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      el.style.transition = "transform 0.1s ease-out";
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+
+      // ⚡ Bolt Optimization: Batch DOM reads (getBoundingClientRect) and style writes
+      // inside requestAnimationFrame using a ticking flag.
+      // Impact: Eliminates layout thrashing during high-frequency mouse movements
+      // and guarantees frame-perfect synchronous style applications.
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          const rect = el.getBoundingClientRect();
+          const x = (currentX - rect.left) / rect.width;
+          const y = (currentY - rect.top) / rect.height;
+          const rotateX = (0.5 - y) * intensity;
+          const rotateY = (x - 0.5) * intensity;
+
+          el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+          el.style.transition = "transform 0.1s ease-out";
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      ticking = false;
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -184,6 +226,7 @@ export function useTilt(intensity: number = 10) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, [intensity]);
 
@@ -200,17 +243,33 @@ export function useParallax(speed: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
+    let ticking = false;
+    let rafId: number;
+
     const handleScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const viewCenter = window.innerHeight / 2;
-      const offset = (center - viewCenter) * speed;
-      el.style.transform = `translateY(${offset}px)`;
+      // ⚡ Bolt Optimization: Batch synchronous layout calculations (getBoundingClientRect)
+      // and inline transform updates within the frame cycle using requestAnimationFrame.
+      // Impact: Ensures smooth parallax scrolling by avoiding layout recalculation thrashing
+      // and jitter caused by synchronous style writing on the main thread during high-volume scroll events.
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          const rect = el.getBoundingClientRect();
+          const center = rect.top + rect.height / 2;
+          const viewCenter = window.innerHeight / 2;
+          const offset = (center - viewCenter) * speed;
+          el.style.transform = `translateY(${offset}px)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, [speed]);
 
   return ref;
