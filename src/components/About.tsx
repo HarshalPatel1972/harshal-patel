@@ -51,6 +51,15 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     const x = e.clientX - rect.left;
     const newPercent = Math.max(-10, Math.min(110, (x / rect.width) * 100)); // Allow slight over-pull for pressure
     setPercent(newPercent);
+
+    // DYNAMIC COLOR PRESSURE: Only turn red at the limit (0%) during drag
+    const isAtLimit = Math.round(newPercent) <= 0;
+    if (labelRef.current) {
+      labelRef.current.style.color = isAtLimit ? 'var(--accent-blood)' : 'var(--text-bone)';
+    }
+    if (fillRef.current) {
+      fillRef.current.style.backgroundColor = isAtLimit ? 'var(--accent-blood)' : 'var(--text-bone)';
+    }
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
@@ -58,6 +67,13 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     if (animRef.current) animRef.current.pause();
     e.currentTarget.setPointerCapture(e.pointerId);
     handleInteraction(e);
+    
+    // Reset visual state on new interaction
+    if (fillRef.current) {
+      fillRef.current.style.backgroundColor = 'var(--text-bone)';
+      fillRef.current.style.filter = 'grayscale(1)';
+    }
+    if (labelRef.current) labelRef.current.style.color = 'var(--text-bone)';
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -67,30 +83,43 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   const onPointerUp = () => {
     setIsDragging(false);
     
-    // THE PHYSICAL CONSTANTS
-    const displacement = Math.abs(percent - skill.level);
-    const pressureStiffness = 120 + (displacement * 2);
+    // KINETIC PARAMETERS
+    const currentPos = percent;
+    const targetPos = skill.level;
+    const compressionDistance = Math.abs(currentPos - targetPos);
     
-    // BYPASS REACT STATE FOR RAW PHYSICS
-    // Animating a plain object to prevent React render-bottlenecks during fast oscillation
-    const physicsProxy = { p: percent };
+    // THE PHYSICAL CONSTANTS - Extreme stiffness for "released liquid" speed
+    const pressureStiffness = 180 + (compressionDistance * 4);
+    
+    // BYPASS REACT FOR RAW KINETICS
+    const physicsProxy = { p: currentPos };
     
     animRef.current = anime(physicsProxy, {
-      p: skill.level,
-      // Damping = 1 is the critical threshold for violent, long-lasting oscillation
-      easing: `spring(1, ${pressureStiffness}, 1, 0)`, 
+      p: targetPos,
+      // Damping = 0.8: Aggressive, multi-bounce oscillation past target
+      easing: `spring(1, ${pressureStiffness}, 0.8, 0)`, 
       onUpdate: () => {
         const cur = physicsProxy.p;
-        // Direct DOM Injection for 60fps+ fluidity
-        if (fillRef.current) fillRef.current.style.width = `${cur}%`;
-        if (labelRef.current) labelRef.current.innerText = `${Math.round(cur)}%`;
         
-        // Dynamic Collision State
+        // Direct DOM Injection
+        if (fillRef.current) {
+          fillRef.current.style.width = `${cur}%`;
+          // Liquid turns BLOOD RED on release
+          fillRef.current.style.backgroundColor = 'var(--accent-blood)';
+          fillRef.current.style.filter = 'grayscale(0)';
+        }
+        
+        if (labelRef.current) {
+          labelRef.current.innerText = `${Math.round(cur)}%`;
+          labelRef.current.style.color = 'var(--accent-blood)';
+        }
+        
+        // Dynamic Collision Highlight
         const isCurrentlyColliding = cur > 100 || cur < 0;
         setColliding(isCurrentlyColliding);
       },
       onComplete: () => {
-        setPercent(skill.level);
+        setPercent(targetPos);
         setColliding(false);
       }
     });
@@ -102,10 +131,11 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   return (
     <div className="relative group/skill select-none">
       <div className="flex justify-between items-baseline mb-1">
-        <span className={`text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase transition-colors ${isDragging ? "text-[var(--accent-blood)]" : ""}`}>{skill.name}</span>
+        <span className={`text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase transition-colors ${isDragging ? "opacity-50" : ""}`}>{skill.name}</span>
         <span 
           ref={labelRef}
-          className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-125 text-[var(--accent-blood)]" : "text-[var(--accent-cursed)]"}`}
+          className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-110" : ""}`}
+          style={{ color: 'var(--text-bone)' }}
         >
           {Math.round(percent)}%
         </span>
@@ -124,11 +154,12 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
       >
         <div
           ref={fillRef}
-          className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-[width,filter] transition-[filter] duration-300"
+          className="absolute top-0 bottom-0 left-0 origin-left will-change-[width,filter,background-color] transition-[filter] duration-700"
           style={{ 
             width: `${percent}%`,
-            filter: isDragging ? `brightness(${1 + Math.max(0, percent-skill.level)/20})` : 'none',
-            boxShadow: colliding ? '0 0 15px #fff' : 'none'
+            backgroundColor: 'var(--text-bone)',
+            filter: isDragging ? 'grayscale(0.8) brightness(0.8)' : 'none',
+            boxShadow: colliding ? '0 0 20px #fff' : 'none'
           }}
         />
         {/* Pressure release particle effects (CSS simulation) */}
