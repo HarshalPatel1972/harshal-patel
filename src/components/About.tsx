@@ -21,6 +21,91 @@ function MangaStat({ value, label, prefix = "" }: { value: number; label: string
   );
 }
 
+// INTERACTIVE BOUNCY SKILL BARS
+function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: string; level: number }; isVisible: boolean; index: number }) {
+  const [percent, setPercent] = useState(skill.level);
+  const barRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const animRef = useRef<any>(null);
+
+  // Initial entry animation
+  useEffect(() => {
+    if (isVisible) {
+      anime({
+        targets: fillRef.current,
+        scaleX: [0, 1],
+        opacity: [0, 1],
+        duration: 1400,
+        delay: index * 120,
+        easing: 'easeOutElastic(1, .6)'
+      });
+    }
+  }, [isVisible, index]);
+
+  const handleInteraction = (e: React.PointerEvent | PointerEvent) => {
+    if (!barRef.current) return;
+    const rect = barRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setPercent(newPercent);
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (animRef.current) animRef.current.pause();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    handleInteraction(e);
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (e.buttons > 0) handleInteraction(e);
+  };
+
+  const onPointerUp = () => {
+    // BOUNCY SNAPBACK PHYSICS
+    // The "sponginess" - farther it is, the more it "pulls"
+    const distance = Math.abs(percent - skill.level);
+    const duration = Math.min(2000, 800 + distance * 10);
+    
+    animRef.current = anime({
+      targets: { val: percent },
+      val: skill.level,
+      duration: duration,
+      easing: 'easeOutElastic(1, 0.4)', // Spongy bounce
+      update: (anim) => {
+        setPercent(Number(anim.animations[0].currentValue));
+      }
+    });
+  };
+
+  return (
+    <div className="relative group/skill cursor-ew-resize select-none">
+      <div className="flex justify-between items-baseline mb-1">
+        <span className="text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase group-hover/skill:text-[var(--accent-blood)] transition-colors">{skill.name}</span>
+        <span className="text-xs font-mono text-[var(--accent-cursed)] font-bold">{Math.round(percent)}%</span>
+      </div>
+      
+      <div 
+        ref={barRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        className="h-[14px] md:h-[18px] bg-black border border-[var(--text-bone)] w-full relative overflow-hidden group-hover/skill:border-[var(--accent-blood)] transition-all duration-300"
+      >
+        <div
+          ref={fillRef}
+          className="absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] origin-left will-change-transform"
+          style={{ width: `${percent}%` }}
+        />
+        {/* Scanning Glint on interaction */}
+        {percent !== skill.level && (
+          <div className="absolute top-0 bottom-0 w-4 bg-white/20 blur-sm pointer-events-none animate-pulse" style={{ left: `${percent - 2}%` }} />
+        )}
+        <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50 pointer-events-none" />
+      </div>
+    </div>
+  );
+}
+
 export function About() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
@@ -60,9 +145,6 @@ export function About() {
 
       <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-10 md:mt-32">
         
-        {/* =========================================
-            PANEL 1: Bio & Core Philosophy (Left Cut)
-            ========================================= */}
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className="absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black font-display px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black">
@@ -78,30 +160,28 @@ export function About() {
                    {currentProfile.bio}
                  </p>
 
-                 {/* Education Credentials Block */}
                  <div className="mt-8 pt-6 border-t-2 border-black/10 flex flex-col md:flex-row gap-6">
-                   <div className="flex-1">
-                     <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// EDUCATION_HISTORY</div>
-                     <div className="font-black font-display text-xl md:text-2xl uppercase italic">
-                       {currentProfile.education.school}
-                     </div>
-                     <div className="text-sm font-bold font-sans text-black/60 uppercase">
-                       {currentProfile.education.degree} | {currentProfile.education.years}
-                     </div>
-                   </div>
-                   <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
-                      <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">GPA Score</div>
-                      <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
-                        {currentProfile.education.gpa}
+                    <div className="flex-1">
+                      <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// EDUCATION_HISTORY</div>
+                      <div className="font-black font-display text-xl md:text-2xl uppercase italic">
+                        {currentProfile.education.school}
                       </div>
-                      <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
-                         {language === 'en' ? "Academic Topper" : "成績優秀者"}
+                      <div className="text-sm font-bold font-sans text-black/60 uppercase">
+                        {currentProfile.education.degree} | {currentProfile.education.years}
                       </div>
-                   </div>
+                    </div>
+                    <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
+                       <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">GPA Score</div>
+                       <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
+                         {currentProfile.education.gpa}
+                       </div>
+                       <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
+                          {language === 'en' ? "Academic Topper" : "成績優秀者"}
+                       </div>
+                    </div>
                  </div>
                </div>
                
-               {/* Giant vertical typography */}
                <div className="hidden lg:flex justify-end items-center relative h-full">
                   <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
                      {language === 'en' ? "DEVELOPER" : "開発者"}
@@ -112,88 +192,65 @@ export function About() {
         </ScrollReveal>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 w-full">
-         {/* =========================================
-             PANEL 2: Experience (Stacked Black Blocks)
-             ========================================= */}
-         <ScrollReveal duration={1200} delay={200} className="w-full">
-           <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
-              <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-                 {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : <>記録された<br/>経験</>}
-              </div>
-              
-              <div className="flex flex-col bg-white">
-                {currentProfile.experience.map((job, i) => (
-                  <div key={job.company} className="relative group border-b-4 border-black last:border-b-0 p-6 md:p-8 hover:bg-black hover:text-white transition-colors duration-300">
-                    
-                    {/* Timestamp & Role Header */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-4 mb-4">
-                       <h4 className="text-3xl md:text-4xl lg:text-5xl font-black font-display uppercase leading-none text-black group-hover:text-white transition-colors">
-                         {job.company}
-                       </h4>
-                       <span className="text-[10px] sm:text-xs font-mono font-bold bg-black text-white group-hover:bg-[var(--accent-blood)] px-3 py-1 uppercase tracking-widest self-start md:self-auto border-2 border-black group-hover:border-[var(--accent-blood)] transition-colors">
-                         {job.period}
-                       </span>
-                    </div>
-
-                    <div className="text-lg md:text-2xl font-bold font-sans uppercase tracking-tighter mb-4 text-[var(--accent-blood)] group-hover:text-[var(--text-bone)] transition-colors">
-                       {job.role}
-                    </div>
-
-                    <p className="text-black/80 group-hover:text-white/80 text-sm md:text-base leading-relaxed font-sans border-l-4 border-black group-hover:border-[var(--accent-blood)] pl-4 transition-colors">
-                      {job.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-           </div>
-         </ScrollReveal>
-
-           {/* =========================================
-               PANEL 3: Skills & Stats (Brutalist Right Cut)
-               ========================================= */}
-           <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
-             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
+          <ScrollReveal duration={1200} delay={200} className="w-full">
+            <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
+               <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
+                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : <>記録された<br/>経験</>}
+               </div>
                
-               {/* Massive Stats Block inside the panel */}
-               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
-                 <MangaStat value={8.9} label={language === 'en' ? "Academic" : "成績"} />
-                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
-               </div>
+               <div className="flex flex-col bg-white">
+                 {currentProfile.experience.map((job, i) => (
+                   <div key={job.company} className="relative group border-b-4 border-black last:border-b-0 p-6 md:p-8 hover:bg-black hover:text-white transition-colors duration-300">
+                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-2 md:gap-4 mb-4">
+                        <h4 className="text-3xl md:text-4xl lg:text-5xl font-black font-display uppercase leading-none text-black group-hover:text-white transition-colors">
+                          {job.company}
+                        </h4>
+                        <span className="text-[10px] sm:text-xs font-mono font-bold bg-black text-white group-hover:bg-[var(--accent-blood)] px-3 py-1 uppercase tracking-widest self-start md:self-auto border-2 border-black group-hover:border-[var(--accent-blood)] transition-colors">
+                          {job.period}
+                        </span>
+                     </div>
 
-               {/* Raw Skill Bars */}
-               <div ref={skillsRef} className="flex flex-col gap-6">
-                  <h4 className="text-[var(--text-bone)] font-black font-display text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between">
-                     {language === 'en' ? "Core Expertise" : "主な専門分野"}
-                     <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
-                  </h4>
-                  <div className="space-y-6">
+                     <div className="text-lg md:text-2xl font-bold font-sans uppercase tracking-tighter mb-4 text-[var(--accent-blood)] group-hover:text-[var(--text-bone)] transition-colors">
+                        {job.role}
+                     </div>
+
+                     <p className="text-black/80 group-hover:text-white/80 text-sm md:text-base leading-relaxed font-sans border-l-4 border-black group-hover:border-[var(--accent-blood)] pl-4 transition-colors">
+                       {job.description}
+                     </p>
+                   </div>
+                 ))}
+               </div>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
+            <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
+              
+              <div className="grid grid-cols-3 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
+                <MangaStat value={350} label={language === 'en' ? "Algorithms" : "アルゴリズム"} prefix=">" />
+                <MangaStat value={8.9} label={language === 'en' ? "Academic" : "成績"} />
+                <MangaStat value={11} label={language === 'en' ? "Systems Built" : "構築済システム"} prefix="" />
+              </div>
+
+              <div ref={skillsRef} className="flex flex-col gap-6">
+                 <h4 className="text-[var(--text-bone)] font-black font-display text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between">
+                    {language === 'en' ? "Core Expertise" : "主な専門分野"}
+                    <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
+                 </h4>
+                 <div className="space-y-6">
                     {currentProfile.skills.map((skill, i) => (
-                      <div key={skill.name} className="relative">
-                        <div className="flex justify-between items-baseline mb-1">
-                          <span className="text-sm md:text-base font-bold font-sans text-[var(--text-bone)] uppercase">{skill.name}</span>
-                          <span className="text-xs font-mono text-[var(--accent-cursed)] font-bold">{skill.level}%</span>
-                        </div>
-                        {/* MAPPA Brutalist Skill Bar */}
-                        <div className="h-[8px] bg-black border border-[var(--text-bone)] w-full relative overflow-hidden">
-                           <div
-                             className={`absolute top-0 bottom-0 left-0 bg-[var(--accent-blood)] ${skillsVisible ? "scale-x-100" : "scale-x-0"} transition-transform duration-1000 origin-left`}
-                             style={{
-                               width: `${skill.level}%`,
-                               transitionDelay: `${i * 150}ms`,
-                               transitionTimingFunction: "cubic-bezier(0.86, 0, 0.07, 1)"
-                             }}
-                           />
-                           {/* Halftone texture overlay on the fill */}
-                           <div className="absolute inset-0 halftone-bg mix-blend-multiply opacity-50" />
-                        </div>
-                      </div>
+                      <InteractiveSkillBar 
+                        key={skill.name} 
+                        skill={skill} 
+                        isVisible={skillsVisible} 
+                        index={i} 
+                      />
                     ))}
-                  </div>
-               </div>
+                 </div>
+              </div>
 
-             </div>
-           </ScrollReveal>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
