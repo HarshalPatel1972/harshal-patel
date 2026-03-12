@@ -49,20 +49,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     if (!barRef.current) return;
     const rect = barRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    // CLAMP STRICTLY 0-100
     const newPercent = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setPercent(newPercent);
 
-    // PRESSURE COLOR LOGIC: Bone during compression, Blood at 0 or Release
-    const isAtZero = Math.round(newPercent) <= 0;
-    const activeColor = isAtZero ? 'var(--accent-blood)' : 'var(--text-bone)';
+    // ALWAYS RED
+    const color = 'var(--accent-blood)';
     
     if (fillRef.current) {
-        fillRef.current.style.backgroundColor = activeColor;
+        fillRef.current.style.backgroundColor = color;
         fillRef.current.style.width = `${newPercent}%`;
     }
     if (labelRef.current) {
-        labelRef.current.style.color = activeColor;
+        labelRef.current.style.color = color;
         labelRef.current.innerText = `${Math.round(newPercent)}%`;
     }
   };
@@ -75,10 +73,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     
     // Reset visual state on new interaction
     if (fillRef.current) {
-      fillRef.current.style.backgroundColor = 'var(--text-bone)';
-      fillRef.current.style.filter = 'grayscale(1)';
+      fillRef.current.style.backgroundColor = 'var(--accent-blood)';
     }
-    if (labelRef.current) labelRef.current.style.color = 'var(--text-bone)';
+    if (labelRef.current) labelRef.current.style.color = 'var(--accent-blood)';
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -130,7 +127,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         <span 
           ref={labelRef}
           className={`text-xs font-mono font-bold transition-transform ${isDragging ? "scale-110" : ""}`}
-          style={{ color: 'var(--text-bone)' }}
+          style={{ color: 'var(--accent-blood)' }}
         >
           {Math.round(percent)}%
         </span>

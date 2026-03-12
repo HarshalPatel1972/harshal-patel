@@ -28,13 +28,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const activeQuotes = mappaQuotes[language];
   const q = activeQuotes[quoteIndex.current % activeQuotes.length];
   const quote = q.text;
-  const source = q.source.split(" // ")[0];
+  const source = q.source.split(" // ")[0].trim();
   const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
 
-  // Fixed mapping (Syncing with MAPPA assets)
+  // Character mapping logic (Case-insensitive matching)
   const authorImageMap: Record<string, string> = {
-    // English Keys
+    // English
     "SATORU GOJO": "/Saturo Gojo.png",
     "EREN YEAGER": "/Eren Yeager.jpg",
     "THORS SNORESSON": "/THORS SNORESSON.png",
@@ -43,7 +43,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     "YUJI ITADORI": "/Yuji Itadori.png",
     "MIKASA ACKERMAN": "/612523.jpg",
     
-    // Japanese Keys
+    // Japanese
     "五条悟": "/Saturo Gojo.png",
     "エレン・イェーガー": "/Eren Yeager.jpg",
     "トールズ・スノーレソン": "/THORS SNORESSON.png",

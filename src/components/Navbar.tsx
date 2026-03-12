@@ -149,8 +149,8 @@ export function Navbar() {
                   aria-label={`Navigate to ${item.label}`}
                 >
                   <span 
-                    className={`font-display font-black ${language === 'ja' ? 'text-xl md:text-2xl' : 'text-[10px] md:text-sm'} uppercase tracking-[0.2em] transition-all duration-300 ${isActive ? "text-[accent-blood] scale-110" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} 
-                    style={{ whiteSpace: 'nowrap' }}
+                    className={`font-display font-bold ${language === 'ja' ? 'text-xl md:text-2xl' : 'text-sm md:text-base'} uppercase tracking-widest transition-all duration-300 ${isActive ? "text-[var(--bg-ink)] drop-shadow-[0_0_8px_rgba(5,5,5,0.4)] scale-110" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} 
+                    style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                   >
                     {item.label}
                   </span>
