@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useMemo } from "react";
 import { createTimeline, stagger } from "animejs";
-import mappaData from "@/data/mappa_master.json";
+import { mappaQuotesList, characterRegistry } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
@@ -24,12 +24,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const { language } = useLanguage();
 
   // Relational Data Access: Pick a quote once on mount, then translate it
-  const selectedQuoteRef = useRef(mappaData.quotes[Math.floor(Math.random() * mappaData.quotes.length)]);
+  const selectedQuoteRef = useRef(mappaQuotesList[Math.floor(Math.random() * mappaQuotesList.length)]);
   
   const quoteData = useMemo(() => {
-    const registry = mappaData.registry as any;
     const selectedQuote = selectedQuoteRef.current;
-    const character = registry[selectedQuote.charId];
+    const character = characterRegistry[selectedQuote.charId];
     
     return {
       text: language === 'ja' ? selectedQuote.ja : selectedQuote.en,
