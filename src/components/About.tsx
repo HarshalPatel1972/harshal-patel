@@ -61,8 +61,18 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         fillRef.current.style.width = `${newPercent}%`;
     }
     if (labelRef.current) {
+        const rounded = Math.round(newPercent);
         labelRef.current.style.color = cyan;
-        labelRef.current.innerText = `${Math.round(newPercent)}%`;
+        
+        if (rounded === 0) {
+            labelRef.current.innerText = "PRESSURE PRESSURE PRESSURE";
+            labelRef.current.style.color = red;
+        } else if (rounded <= 10) {
+            labelRef.current.innerText = "PRESSURE";
+            labelRef.current.style.color = red;
+        } else {
+            labelRef.current.innerText = `${rounded}%`;
+        }
     }
   };
 
