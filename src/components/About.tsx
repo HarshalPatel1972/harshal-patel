@@ -80,7 +80,7 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (e.buttons > 0) handleInteraction(e);
+    if (isDragging) handleInteraction(e);
   };
 
   const onPointerUp = () => {
@@ -139,8 +139,8 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        // overflow-hidden REMOVED to allow over-100% visual pulses
-        className={`h-[16px] md:h-[20px] bg-black border w-full relative transition-colors duration-100 ${isCurrentlyColliding ? "border-white bg-white/40" : "border-[var(--text-bone)]"}`}
+        onPointerCancel={onPointerUp}
+        className={`h-[24px] md:h-[20px] bg-black border w-full relative transition-colors duration-100 cursor-ew-resize touch-none ${isCurrentlyColliding ? "border-white bg-white/40" : "border-[var(--text-bone)]"}`}
       >
         <div
           ref={fillRef}
