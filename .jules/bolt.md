@@ -1,0 +1,4 @@
+
+## 2024-05-20 - High-Frequency Event Throttling with rAF and Outer Variables
+**Learning:** When batching high-frequency React events (like `mousemove` or `scroll`) using `requestAnimationFrame` and a `ticking` boolean, closing over the React event object directly inside the rAF callback can lead to stale data or visual desync because React recycles event objects or closure captures old states. The `getBoundingClientRect` calls were happening synchronously on every mousemove.
+**Action:** Store the latest event coordinates (e.g., `e.clientX`) in mutable outer variables (`let currentX = 0;`) within the `useEffect` scope. The rAF callback should read from these variables. Also, ensure `cancelAnimationFrame` is called during cleanup and `mouseleave` handlers to prevent delayed frames from overwriting reset animations.
