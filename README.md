@@ -2,16 +2,16 @@
 
 > **Digital Experience // Software Engineer // Systems Architect**
 >
-> A high-performance, cinematic digital portfolio built with a focus on **Cinematic Brutalism** and **Kinetic Motion**. Designed to showcase technical mastery through a raw, unpolished, yet premium visual language inspired by modern editorial design and high-end animation aesthetics.
+> A high-performance, cinematic digital portfolio built with a focus on **Cinematic Brutalism** and **Kinetic Motion**. Designed to showcase technical mastery through a raw, unpolished, yet premium visual language inspired by modern editorial design and high-end geometric patterns.
 
 ---
 
 ## 🌪️ The Aesthetic: Cinematic Brutalism
 
-This project serves as a visual manifesto, merging the raw energy of **MAPPA-inspired layouts** with the structural integrity of brutalist design.
+This project serves as a visual manifesto, prioritizing high-energy layouts and the structural integrity of brutalist design.
 
 - **Monochromatic Depth**: A high-contrast "Ink & Bone" palette (`#050505` // `#E8E8E6`) with subtle blood-red and cursed-cyan accents.
-- **Manga Panel Architecture**: Dynamic grid layouts using aggressive diagonal cuts (`manga-cut-tr`, `manga-cut-br`) and thick brutalist shadows.
+- **Dynamic Panel Architecture**: Fluid grid layouts using aggressive diagonal cuts (`manga-cut-tr`, `manga-cut-br`) and thick brutalist shadows.
 - **Analog Textures**: Fixed film grain overlays and halftone dot patterns for a physical, tactile feel.
 - **Kinetic Typography**: A tailored high-contrast stack featuring **Sentient**, **Monument Extended**, and **Satoshi**.
 - **Intentional Friction**: High-performance motion that feels heavy and purposeful, driven by complex **Anime.js** sequences.
