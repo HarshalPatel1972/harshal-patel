@@ -1,0 +1,3 @@
+## 2024-05-18 - Avoid window.getComputedStyle in high-frequency events
+**Learning:** Calling `window.getComputedStyle` inside high-frequency event handlers like `mouseover` or `mousemove` forces the browser to synchronously recalculate layout styles, which leads to significant layout thrashing and performance degradation, especially in a heavily animated app.
+**Action:** Replace `window.getComputedStyle` checks with fast DOM query checks, such as `target.closest(".cursor-pointer") !== null`, to determine visual states without triggering layout reflows.

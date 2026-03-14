@@ -35,7 +35,8 @@ export default function Cursor() {
         target.closest("a") ||
         target.closest("button") ||
         target.classList.contains("interactive") || 
-        window.getComputedStyle(target).cursor === "pointer"
+        // ⚡ Bolt: Avoid synchronous style recalculations in high-frequency events to prevent layout thrashing
+        target.closest(".cursor-pointer") !== null
       ) {
         setIsHovering(true);
       } else {
