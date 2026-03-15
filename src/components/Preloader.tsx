@@ -26,8 +26,24 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   // Pick a random quote ONCE - using lazy initialization
   // We use state instead of ref to ensure it's reactive if needed, 
   // but stable after the first mount.
+  // Enhanced Randomization: Avoid picking the same quote twice in a row
   const [selectedQuote] = useState(() => {
-    return mappaQuotesList[Math.floor(Math.random() * mappaQuotesList.length)];
+    const lastQuoteId = typeof window !== 'undefined' ? sessionStorage.getItem('last_quote_id') : null;
+    let filtered = mappaQuotesList;
+    
+    // If we have more than 1 quote, try to pick one that isn't the last one shown
+    if (mappaQuotesList.length > 1 && lastQuoteId) {
+      filtered = mappaQuotesList.filter(q => `${q.charId}-${q.en.slice(0, 10)}` !== lastQuoteId);
+    }
+    
+    const picked = filtered[Math.floor(Math.random() * filtered.length)];
+    
+    // Store this one as the last seen
+    if (typeof window !== 'undefined' && picked) {
+      sessionStorage.setItem('last_quote_id', `${picked.charId}-${picked.en.slice(0, 10)}`);
+    }
+    
+    return picked;
   });
   
   const quoteData = useMemo(() => {
