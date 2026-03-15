@@ -27,7 +27,7 @@ export default function Cursor() {
   const tipX = 4 * GAP;
   const tipY = -4 * GAP;
   
-  const BONE = "#E8E8E6";
+  const BONE = "#FFFFFF";
   const CYAN = "#0ee0c3";
   const BLOOD = "#d91111";
 
@@ -178,14 +178,14 @@ export default function Cursor() {
               vy.current[i] = 0;
               locked.current[i] = 1;
             } else {
-              const grav = Math.min(60000 / (dist + 1), 400);
+              const grav = Math.min(100000 / (dist + 1), 600);
               vx.current[i] += (dx / dist) * grav * 0.016;
               vy.current[i] += (dy / dist) * grav * 0.016;
 
-              let drag = 0.60;
-              if (dist < 8) drag = 0.25;
-              else if (dist < 20) drag = 0.40;
-              else if (dist < 50) drag = 0.52;
+              let drag = 0.72;
+              if (dist < 8) drag = 0.35;
+              else if (dist < 20) drag = 0.52;
+              else if (dist < 50) drag = 0.62;
 
               vx.current[i] *= drag;
               vy.current[i] *= drag;
@@ -198,7 +198,7 @@ export default function Cursor() {
           const dx = px.current[0] - px.current[i];
           const dy = py.current[0] - py.current[i];
           const dist = Math.sqrt(dx * dx + dy * dy) + 0.1;
-          const grav = Math.min(8000 / (dist + 10), 120);
+          const grav = Math.min(9600 / (dist + 10), 144); // 8000 * 1.2 = 9600, 120 * 1.2 = 144
 
           vx.current[i] += (dx / dist) * grav * 0.016;
           vy.current[i] += (dy / dist) * grav * 0.016;
