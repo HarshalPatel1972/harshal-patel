@@ -51,8 +51,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const character = characterRegistry[selectedQuote.charId];
     
     return {
-      text: language === 'ja' ? selectedQuote.ja : selectedQuote.en,
-      author: language === 'ja' ? character.ja.name : character.en.name,
+      text: language === 'ja' ? selectedQuote.ja : language === 'ko' ? selectedQuote.ko : language === 'zh-tw' ? selectedQuote["zh-tw"] : selectedQuote.en,
+      author: language === 'ja' ? character.ja.name : language === 'ko' ? character.ko.name : language === 'zh-tw' ? character["zh-tw"].name : character.en.name,
       image: character.image,
       overrideOpacity: character.opacity
     };
@@ -71,10 +71,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
-    const isJA = language === 'ja';
+    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     
-    // Japanese characters are wider/heavier, so they need slightly more aggressive scaling
-    if (isJA) {
+    // CJK characters are wider/heavier, so they need slightly more aggressive scaling
+    if (isCJK) {
       if (len > 60) return "text-xl md:text-3xl lg:text-[3.5rem]";
       if (len > 40) return "text-2xl md:text-4xl lg:text-[4.5rem]";
       if (len > 25) return "text-2xl md:text-5xl lg:text-[5.5rem]";
@@ -93,9 +93,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
   const wrappedChars = useMemo(() => {
-    const isJapanese = language === 'ja';
+    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const charStyle = { opacity: 0, transform: 'translateY(40px)', filter: 'blur(20px)' };
-    if (isJapanese) {
+    if (isCJK) {
       return quote.split("").map((char, i) => (
         <span key={i} className="p-char inline-block will-change-transform" style={charStyle}>
           {char === ' ' || char === '　' ? '\u00A0' : char}
