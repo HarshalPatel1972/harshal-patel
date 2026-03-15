@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 
 export default function Cursor() {
   const [isTouch, setIsTouch] = useState(false);
@@ -254,25 +255,49 @@ export default function Cursor() {
 
   if (isTouch) return null;
 
-  return (
+  // Use Portal to ensure the cursor is a direct child of <body>
+  // This prevents any parent transforms or perspectives from disrupting the fixed positioning
+  return createPortal(
     <>
       <style>{`
         body, a, button, input, textarea, select, * {
           cursor: none !important;
         }
+        .gravity-parent-fixed {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 0;
+          height: 0;
+          z-index: 10000;
+          pointer-events: none;
+          mix-blend-mode: difference;
+          will-change: transform;
+        }
+        .particle-swatch {
+          position: absolute;
+          width: 4.4px;
+          height: 4.4px;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+        }
       `}</style>
+
       <canvas
         ref={canvasRef}
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
+          width: '100vw',
+          height: '100vh',
           zIndex: 9999,
           pointerEvents: 'none',
-          mixBlendMode: 'difference'
+          mixBlendMode: 'difference',
+          willChange: 'transform'
         }}
-        className="pointer-events-none"
       />
-    </>
+    </>,
+    document.body
   );
 }
