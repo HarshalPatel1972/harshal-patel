@@ -13,6 +13,7 @@ export default function Cursor() {
   const pulseScale = useRef(1);
   const pulseTimer = useRef(0);
   const isHovering = useRef(false);
+  const wasHovering = useRef(false);
   const clickScale = useRef(0);
   const lastTime = useRef(Date.now());
   const lastMoveTime = useRef(Date.now());
@@ -20,7 +21,12 @@ export default function Cursor() {
   // Waveform state
   const history = useRef<number[]>(new Array(80).fill(0));
   const clickFlatlineStartTime = useRef<number | null>(null);
-  const hoverTransition = useRef(0); // 0 (velocity) to 1 (ECG lock)
+  const hoverTransition = useRef(0); // 0 (idle/bone) to 1 (cursed cyan)
+  const scanLineProgress = useRef(-1); // -1 to 1 (sweep)
+
+  const BONE = { r: 232, g: 232, b: 230 };
+  const CYAN = { r: 14, g: 224, b: 195 };
+  const BLOOD = { r: 217, g: 17, b: 17 };
 
   useEffect(() => {
     const touchDevice = window.matchMedia("(pointer: coarse)").matches;
@@ -41,17 +47,20 @@ export default function Cursor() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const getECGValue = (t: number) => {
+  // Change 2: Brutal Angular EKG Shape
+  const getBrutalECGValue = (t: number) => {
     const cycle = t % 1;
-    // P-wave
-    if (cycle < 0.1) return Math.sin((cycle / 0.1) * Math.PI) * 4;
-    // QRS complex
-    if (cycle > 0.15 && cycle < 0.18) return (cycle - 0.15) * -50; 
-    if (cycle >= 0.18 && cycle < 0.22) return -1.5 + ((cycle - 0.18) / 0.04) * 35; // R-spike
-    if (cycle >= 0.22 && cycle < 0.25) return 33.5 - ((cycle - 0.22) / 0.03) * 38; // S-dip
-    if (cycle >= 0.25 && cycle < 0.28) return -4.5 + ((cycle - 0.25) / 0.03) * 4.5;
-    // T-wave
-    if (cycle > 0.4 && cycle < 0.6) return Math.sin(((cycle - 0.4) / 0.2) * Math.PI) * 7;
+    // P-wave (angular bump)
+    if (cycle < 0.1) return (cycle / 0.1) * 8;
+    if (cycle < 0.2) return 8 - ((cycle - 0.1) / 0.1) * 8;
+    // QRS complex (hard angles)
+    if (cycle >= 0.25 && cycle < 0.28) return (cycle - 0.25) * -150; // Q-dip
+    if (cycle >= 0.28 && cycle < 0.32) return -4.5 + ((cycle - 0.28) / 0.04) * 80; // R-spike
+    if (cycle >= 0.32 && cycle < 0.36) return 35.5 - ((cycle - 0.32) / 0.04) * 90; // S-dip
+    if (cycle >= 0.36 && cycle < 0.4) return -14.5 + ((cycle - 0.36) / 0.04) * 14.5; // return
+    // T-wave (angular bump)
+    if (cycle >= 0.5 && cycle < 0.65) return (cycle - 0.5) * 12;
+    if (cycle >= 0.65 && cycle < 0.8) return 1.8 - ((cycle - 0.65) / 0.15) * 1.8;
     return 0;
   };
 
@@ -65,21 +74,26 @@ export default function Cursor() {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const interactive =
+      const interactive = !!(
         target.tagName.toLowerCase() === "a" ||
         target.tagName.toLowerCase() === "button" ||
         target.closest("a") ||
         target.closest("button") ||
         target.classList.contains("interactive") ||
-        window.getComputedStyle(target).cursor === "pointer";
+        window.getComputedStyle(target).cursor === "pointer"
+      );
 
-      isHovering.current = !!interactive;
+      if (interactive && !wasHovering.current) {
+        // Change 3: Trigger scan line sweep on hover entry
+        scanLineProgress.current = 0;
+      }
+      isHovering.current = interactive;
+      wasHovering.current = interactive;
     };
 
     const handleMouseDown = () => {
       clickScale.current = 1.0;
       clickFlatlineStartTime.current = Date.now();
-      // Drop waveform to flatline instantly
       history.current.fill(0);
     };
 
@@ -94,30 +108,46 @@ export default function Cursor() {
       const dt = now - lastTime.current;
       lastTime.current = now;
 
-      // 1. Physics & Calculations
+      // 1. Calculations
       const dx = mouse.current.x - prevMouse.current.x;
       const dy = mouse.current.y - prevMouse.current.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       velocity.current += (dist - velocity.current) * 0.1;
       prevMouse.current = { ...mouse.current };
 
+      const isClickFlatlining = clickFlatlineStartTime.current && (now - clickFlatlineStartTime.current < 200);
+
       let targetInterval = 1200;
       if (isHovering.current) {
         targetInterval = 800;
-        hoverTransition.current = Math.min(1, hoverTransition.current + dt / 200);
+        hoverTransition.current = Math.min(1, hoverTransition.current + dt / 150);
       } else {
         const vRatio = Math.min(velocity.current / 50, 1);
         targetInterval = 1200 - (vRatio * 900);
-        hoverTransition.current = Math.max(0, hoverTransition.current - dt / 200);
+        hoverTransition.current = Math.max(0, hoverTransition.current - dt / 150);
       }
       pulseTimer.current += dt / targetInterval;
 
-      // Handle Click Flatline (200ms)
-      const isClickFlatlining = clickFlatlineStartTime.current && (now - clickFlatlineStartTime.current < 200);
       if (clickFlatlineStartTime.current && !isClickFlatlining) {
         clickFlatlineStartTime.current = null;
-        // Waveform restart spike
-        history.current[0] = -40; 
+        history.current[0] = -50; // Violent restart spike
+      }
+
+      // Handle Scan Line Progress
+      if (scanLineProgress.current >= 0 && scanLineProgress.current <= 1) {
+        scanLineProgress.current += dt / 300;
+      }
+
+      // Color Interpolation (Idle Bone to Hover Cyan)
+      const r = Math.round(BONE.r + (CYAN.r - BONE.r) * hoverTransition.current);
+      const g = Math.round(BONE.g + (CYAN.g - BONE.g) * hoverTransition.current);
+      const b = Math.round(BONE.b + (CYAN.b - BONE.b) * hoverTransition.current);
+      let currentColor = `rgb(${r}, ${g}, ${b})`;
+      let currentWaveColor = { r, g, b };
+
+      if (isClickFlatlining) {
+        currentColor = `rgb(${BLOOD.r}, ${BLOOD.g}, ${BLOOD.b})`;
+        currentWaveColor = BLOOD;
       }
 
       // Pulse scaling
@@ -126,30 +156,29 @@ export default function Cursor() {
       pulseScale.current = baseScale + (pulseEase * 0.6);
 
       if (clickScale.current > 0) {
-        // Dot spike effect (after flatline)
         if (!isClickFlatlining) {
           pulseScale.current += clickScale.current * 1.2;
           clickScale.current -= dt / 400;
         } else {
-          pulseScale.current = baseScale; // Keep dot calm during flatline crash
+          pulseScale.current = baseScale;
         }
       }
 
-      // Waveform update
+      // Waveform update (Robotic Angular)
       let nextY = 0;
       const timeSinceMove = now - lastMoveTime.current;
 
       if (isClickFlatlining) {
         nextY = 0;
-      } else if (hoverTransition.current > 0) {
-        const ecgVal = -getECGValue(pulseTimer.current);
-        const velVal = -(velocity.current * (Math.random() > 0.8 ? 1.5 : 0.4));
-        nextY = velVal * (1 - hoverTransition.current) + ecgVal * hoverTransition.current;
+      } else if (hoverTransition.current > 0.5) {
+        // High amplitude lock-on ECG
+        nextY = -getBrutalECGValue(pulseTimer.current) * (1.5 + hoverTransition.current);
       } else if (timeSinceMove > 300) {
         nextY = 0;
       } else {
-        // Spiky velocity wave
-        nextY = -(velocity.current * (Math.random() > 0.8 ? 2.5 : 0.6));
+        // Angular velocity spikes
+        const amp = velocity.current * (Math.random() > 0.7 ? 3.0 : 0.5);
+        nextY = -amp;
       }
 
       history.current.unshift(nextY);
@@ -158,9 +187,17 @@ export default function Cursor() {
       // 2. DOM Updates (Dot)
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0) scale(${pulseScale.current})`;
-        const glowOpacity = pulseEase * (isClickFlatlining ? 0 : 0.5);
-        cursorRef.current.style.boxShadow = `0 0 ${10 * pulseEase}px rgba(255,255,255,${glowOpacity})`;
-        cursorRef.current.style.opacity = isClickFlatlining ? "0.4" : "1";
+        cursorRef.current.style.backgroundColor = currentColor;
+        
+        // Change 4: Brutal shadow on click (200ms)
+        if (isClickFlatlining) {
+          cursorRef.current.style.boxShadow = `8px 8px 0px ${currentColor}`;
+          cursorRef.current.style.opacity = "1";
+        } else {
+          const glowOpacity = pulseEase * 0.4;
+          cursorRef.current.style.boxShadow = `0 0 ${10 * pulseEase}px rgba(${r},${g},${b},${glowOpacity})`;
+          cursorRef.current.style.opacity = "1";
+        }
       }
 
       // 3. Canvas Drawing (Waveform)
@@ -169,32 +206,46 @@ export default function Cursor() {
       if (canvas && ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        let canvasOpacity = 1;
-        if (timeSinceMove > 1300) {
-           canvasOpacity = Math.max(0, 1 - (timeSinceMove - 1300) / 500);
-        }
-
-        if (canvasOpacity > 0) {
+        const timeSinceMove = now - lastMoveTime.current;
+        if (timeSinceMove < 1500) {
           ctx.beginPath();
           ctx.lineWidth = 1.2;
-          ctx.lineJoin = "round";
+          ctx.lineJoin = "miter"; // Sharp corners for Change 2
+          
+          let lastX = mouse.current.x;
+          let lastY = mouse.current.y;
           
           for (let i = 0; i < history.current.length; i++) {
-            const x = mouse.current.x - i * 1.2;
+            const x = mouse.current.x - i * 1.5;
             const y = mouse.current.y + history.current[i];
             
-            // Fade opacity towards the tail
-            const alpha = (0.6 * (1 - i / 80)) * canvasOpacity;
-            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-            
-            if (i === 0) ctx.moveTo(x, y);
-            else {
-               ctx.lineTo(x, y);
-               ctx.stroke();
-               ctx.beginPath();
-               ctx.moveTo(x, y);
+            // Change 2: Hard Opacity Bands
+            let alpha = 0.1;
+            if (i < 27) alpha = 0.6;
+            else if (i < 54) alpha = 0.3;
+            if (isHovering.current) alpha *= 1.2;
+
+            ctx.strokeStyle = `rgba(${currentWaveColor.r}, ${currentWaveColor.g}, ${currentWaveColor.b}, ${alpha})`;
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(x, y);
             }
           }
+        }
+
+        // Change 3: Scan Line Sweep on Hover
+        if (scanLineProgress.current >= 0 && scanLineProgress.current <= 1) {
+          const sweepY = mouse.current.y - 20 + (scanLineProgress.current * 40);
+          ctx.beginPath();
+          ctx.lineWidth = 1.0;
+          ctx.strokeStyle = `rgba(${CYAN.r}, ${CYAN.g}, ${CYAN.b}, 0.4)`;
+          ctx.moveTo(mouse.current.x - 20, sweepY);
+          ctx.lineTo(mouse.current.x + 20, sweepY);
+          ctx.stroke();
         }
       }
 
@@ -223,13 +274,13 @@ export default function Cursor() {
 
       <canvas 
         ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-[9998] mix-blend-difference"
+        className="fixed inset-0 pointer-events-none z-[9998]"
       />
 
       <div 
         ref={cursorRef}
-        className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-[1000000] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
-        style={{ willChange: 'transform, box-shadow, opacity' }}
+        className="fixed top-0 left-0 w-2 h-2 rounded-full pointer-events-none z-[1000000] -translate-x-1/2 -translate-y-1/2"
+        style={{ willChange: 'transform, box-shadow, background-color' }}
       />
     </>
   );
