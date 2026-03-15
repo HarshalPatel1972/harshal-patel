@@ -2,292 +2,243 @@
 
 import { useEffect, useState, useRef } from "react";
 
-interface Particle {
+interface ChildParticle {
   x: number;
   y: number;
   vx: number;
   vy: number;
-  life: number; // 1.0 to 0.0
-  decay: number;
   size: number;
-  type: "tendril" | "core" | "burst";
-  color: string;
-  borderColor?: string;
 }
 
 export default function Cursor() {
   const [isTouch, setIsTouch] = useState(false);
-  const anchorRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Constants
   const BONE = "#E8E8E6";
   const CYAN = "#0ee0c3";
   const BLOOD = "#d91111";
-  const INK = "#050505";
+  const S = 2.6;
+  const BASE_GRAV = 3200;
+  const HOVER_GRAV = BASE_GRAV * 10;
+  const DRAG_IDLE = 0.89;
+  const DRAG_HOVER = 0.65;
+  const TANGENTIAL_NUDGE = 0.32;
 
-  // Mouse & Physics
+  // Refs for physics
   const mouse = useRef({ x: 0, y: 0 });
-  const prevMouse = useRef({ x: 0, y: 0 });
-  const velocityBuffer = useRef<number[]>([]);
-  const currentVelocity = useRef(0);
-
-  // States
-  const particles = useRef<Particle[]>([]);
+  const parentPos = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+  const children = useRef<ChildParticle[]>([]);
+  const arrowPositions = useRef<{ x: number; y: number }[]>([]);
+  
+  // State refs
   const isHovering = useRef(false);
-  const isClicking = useRef(false);
-  const clickStartTime = useRef(0);
+  const totalClicks = useRef(0);
+  const lastClickTime = useRef(0);
+  const burstFlashFrames = useRef(0);
 
   useEffect(() => {
-    const checkTouch = () => {
-      const isTd = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      setIsTouch(isTd);
-      return isTd;
-    };
+    const isTd = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    setIsTouch(isTd);
+    if (isTd) return;
 
-    if (!checkTouch()) {
-      const handleResize = () => {
-        if (canvasRef.current) {
-          canvasRef.current.width = window.innerWidth;
-          canvasRef.current.height = window.innerHeight;
-        }
-      };
-      handleResize();
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
+    // Initialize Particles
+    const tempChildren: ChildParticle[] = [];
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    for (let i = 0; i < 29; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 100 + Math.random() * 50;
+      tempChildren.push({
+        x: centerX + Math.cos(angle) * dist,
+        y: centerY + Math.sin(angle) * dist,
+        vx: -Math.sin(angle) * 2, // tangential start
+        vy: Math.cos(angle) * 2,
+        size: 1.6 + Math.random() * 2,
+      });
     }
-  }, []);
+    children.current = tempChildren;
 
-  useEffect(() => {
-    if (isTouch) return;
+    // Pre-calculate Arrow Slots (↗)
+    const slots: { x: number; y: number }[] = [];
+    // Diagonal shaft (0-12)
+    for (let i = 0; i <= 12; i++) {
+      slots.push({
+        x: (-6 + (i / 12) * 12) * S,
+        y: (6 - (i / 12) * 12) * S,
+      });
+    }
+    // Horizontal arm (13-20)
+    for (let i = 1; i <= 8; i++) {
+      slots.push({
+        x: (6 - (i / 8) * 8) * S,
+        y: -6 * S,
+      });
+    }
+    // Vertical arm (21-28)
+    for (let i = 1; i <= 8; i++) {
+      slots.push({
+        x: 6 * S,
+        y: (-6 + (i / 8) * 8) * S,
+      });
+    }
+    arrowPositions.current = slots;
+
+    const handleResize = () => {
+      if (canvasRef.current) {
+        canvasRef.current.width = window.innerWidth;
+        canvasRef.current.height = window.innerHeight;
+      }
+    };
+    handleResize();
 
     const onMouseMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
     };
 
-    const onMouseOver = (e: MouseEvent) => {
+    const delegateHover = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const interactive = !!(
         target.tagName.toLowerCase() === "a" ||
         target.tagName.toLowerCase() === "button" ||
         target.closest("a") ||
         target.closest("button") ||
-        target.classList.contains("interactive") ||
-        window.getComputedStyle(target).cursor === "pointer"
+        target.getAttribute("role") === "button"
       );
       isHovering.current = interactive;
     };
 
     const onMouseDown = () => {
-      isClicking.current = true;
-      clickStartTime.current = Date.now();
-      
-      // Spawn 28 burst particles
-      for (let i = 0; i < 28; i++) {
-        const angle = (Math.PI * 2 * i) / 28 + (Math.random() - 0.5) * 0.3;
-        const speed = 2 + Math.random() * 4;
-        particles.current.push({
-          x: mouse.current.x,
-          y: mouse.current.y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          life: 1.0,
-          decay: 0.04 + Math.random() * 0.02,
-          size: 2 + Math.random() * 2,
-          type: "burst",
-          color: BLOOD
-        });
+      const now = Date.now();
+      if (now - lastClickTime.current > 4000) { // 240 frames @ 60fps ~4s
+        totalClicks.current = 0;
       }
+      totalClicks.current++;
+      lastClickTime.current = now;
+      burstFlashFrames.current = 16;
 
-      // Turn all existing particles to Blood Red for 150ms
-      particles.current.forEach(p => {
-        if (p.type !== "burst") {
-          p.color = BLOOD;
-          if (p.borderColor) p.borderColor = BLOOD;
-        }
+      const force = 5 + totalClicks.current * 4;
+      children.current.forEach(p => {
+        const angle = Math.random() * Math.PI * 2;
+        p.vx += Math.cos(angle) * force;
+        p.vy += Math.sin(angle) * force;
       });
     };
 
     window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseover", onMouseOver);
+    document.addEventListener("mouseover", delegateHover);
     window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("resize", handleResize);
 
-    let animationFrameId: number;
+    let frameId: number;
+    const loop = () => {
+      const cvs = canvasRef.current;
+      const ctx = cvs?.getContext("2d");
+      if (!cvs || !ctx) return;
 
-    const render = () => {
-      const now = Date.now();
-      const canvas = canvasRef.current;
-      const ctx = canvas?.getContext("2d");
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
 
-      // 1. Physics: Velocity Calculation
-      const dx = mouse.current.x - prevMouse.current.x;
-      const dy = mouse.current.y - prevMouse.current.y;
-      const velocity = Math.hypot(dx, dy);
-      velocityBuffer.current.push(velocity);
-      if (velocityBuffer.current.length > 8) velocityBuffer.current.shift();
-      currentVelocity.current = velocityBuffer.current.reduce((a, b) => a + b) / velocityBuffer.current.length;
-      const intensity = Math.min(currentVelocity.current / 12, 1);
-      prevMouse.current = { ...mouse.current };
+      // 1. Parent Dot Physics (Spring + Damping)
+      parentPos.current.vx += (mouse.current.x - parentPos.current.x) * 0.18;
+      parentPos.current.vy += (mouse.current.y - parentPos.current.y) * 0.18;
+      parentPos.current.vx *= 0.68;
+      parentPos.current.vy *= 0.68;
+      parentPos.current.x += parentPos.current.vx;
+      parentPos.current.y += parentPos.current.vy;
 
-      const clickElapsed = now - clickStartTime.current;
-      if (isClicking.current && clickElapsed > 150) {
-        // Return colors back to normal after click flash
-        isClicking.current = false; // Note: simplified logic, anchor uses clickStartTime directly
-      }
+      // Current visual states
+      const isBursting = burstFlashFrames.current > 0;
+      if (isBursting) burstFlashFrames.current--;
+      const currentColor = isBursting ? BLOOD : (isHovering.current ? CYAN : BONE);
 
-      // 2. Spawning Logic
-      const cap = isHovering.current ? 80 : 120;
-      
-      let coreCount = 0;
-      let tendrilCount = 0;
-      let coreSpawnChance = 0;
-      let tendrilSpawnChance = 0;
-
-      if (isHovering.current) {
-        coreCount = Math.floor(6 + Math.random() * 3);
-        tendrilCount = Math.floor(4 + Math.random() * 2);
-        coreSpawnChance = 1;
-        tendrilSpawnChance = 1;
-      } else if (currentVelocity.current > 0.5) {
-        const isFast = currentVelocity.current > 8;
-        coreCount = isFast ? Math.floor(4 + Math.random() * 3) : Math.floor(1 + Math.random() * 2);
-        tendrilCount = isFast ? Math.floor(2 + Math.random() * 2) : 1;
-        coreSpawnChance = 1;
-        tendrilSpawnChance = isFast ? 1 : 0.55;
-      }
-
-      // Spawn Core
-      if (Math.random() < coreSpawnChance) {
-        for (let i = 0; i < coreCount; i++) {
-          const spread = isHovering.current ? 10 : (5 + intensity * 5);
-          const hue = Math.floor(170 + Math.random() * 20 + (isHovering.current ? -5 : 0));
-          const brightness = Math.floor(55 + Math.random() * 20 + (isHovering.current ? 5 : 0));
-          const sizeBase = isHovering.current ? (2.5 + Math.random() * 3.5) : (1.2 + Math.random() * 2.8 * (1 + intensity));
-          const vyBase = isHovering.current ? -(1.5 + Math.random() * 2.5) : -(0.8 + Math.random() * 1.8 * (1 + intensity));
-
-          particles.current.push({
-            x: mouse.current.x + (Math.random() - 0.5) * spread * 2,
-            y: mouse.current.y,
-            vx: (Math.random() - 0.5) * 1.2,
-            vy: vyBase,
-            life: 1.0,
-            decay: 0.028 + Math.random() * 0.025,
-            size: sizeBase,
-            type: "core",
-            color: `hsl(${hue}, 90%, ${brightness}%)`
-          });
-        }
-      }
-
-      // Spawn Tendrils
-      if (Math.random() < tendrilSpawnChance) {
-        for (let i = 0; i < tendrilCount; i++) {
-          const spread = isHovering.current ? 32 : (18 + intensity * 10);
-          const sizeBase = isHovering.current ? (4 + Math.random() * 5) : (2 + Math.random() * 3.5);
-          const borderAlpha = isHovering.current ? (0.25 + Math.random() * 0.3) : (0.15 + Math.random() * 0.2);
-
-          particles.current.push({
-            x: mouse.current.x + (Math.random() - 0.5) * spread * 2,
-            y: mouse.current.y,
-            vx: (Math.random() - 0.5) * 2.4,
-            vy: -(0.3 + Math.random() * 0.8),
-            life: 1.0,
-            decay: 0.018 + Math.random() * 0.02,
-            size: sizeBase,
-            type: "tendril",
-            color: INK,
-            borderColor: `rgba(14, 224, 195, ${borderAlpha})`
-          });
-        }
-      }
-
-      if (particles.current.length > cap) {
-        particles.current = particles.current.slice(particles.current.length - cap);
-      }
-
-      // 3. Render Anchor (Diamond)
-      if (anchorRef.current) {
-        const isClickWindow = (now - clickStartTime.current) < 200;
-        const color = isClickWindow ? BLOOD : (isHovering.current ? CYAN : BONE);
-        const scale = isClickWindow ? (0.5 + Math.min((now - clickStartTime.current) / 200, 1) * 0.5) : (isHovering.current ? 1.4 : 1);
+      // 2. Parent Dot DOM Render
+      if (parentRef.current) {
+        const p = parentRef.current;
+        p.style.transform = `translate3d(${parentPos.current.x}px, ${parentPos.current.y}px, 0) translate(-50%, -50%)`;
+        p.style.backgroundColor = currentColor;
+        p.style.scale = isBursting ? "0.5" : "1";
+        p.style.transition = isBursting ? "none" : "scale 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
         
-        anchorRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0) translate(-50%, -50%) rotate(45deg) scale(${scale})`;
-        anchorRef.current.style.backgroundColor = color;
+        // Specular dot
+        const spec = p.firstChild as HTMLElement;
+        if (spec) spec.style.display = isBursting ? "none" : "block";
       }
 
-      // 4. Render Canvas
-      if (canvas && ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // 3. Child Particle Physics & Canvas Render
+      children.current.forEach((p, i) => {
+        let dx, dy;
+        if (isHovering.current) {
+          const slot = arrowPositions.current[i];
+          const tx = parentPos.current.x + slot.x;
+          const ty = parentPos.current.y + slot.y;
+          dx = tx - p.x;
+          dy = ty - p.y;
+        } else {
+          dx = parentPos.current.x - p.x;
+          dy = parentPos.current.y - p.y;
+        }
 
-        // Filter and update particles
-        particles.current = particles.current.filter(p => {
-          p.life -= p.decay;
-          if (p.life <= 0) return false;
+        const dist = Math.hypot(dx, dy) + 0.1;
 
-          p.x += p.vx;
-          p.y += p.vy;
+        if (isHovering.current) {
+          const grav = Math.min(HOVER_GRAV / (dist + 10), 200);
+          p.vx += (dx / dist) * grav * 0.016;
+          p.vy += (dy / dist) * grav * 0.016;
+          p.vx *= DRAG_HOVER;
+          p.vy *= DRAG_HOVER;
+        } else {
+          const grav = Math.min(BASE_GRAV / (dist + 10), 55);
+          p.vx += (dx / dist) * grav * 0.016;
+          p.vy += (dy / dist) * grav * 0.016;
+          // Tangential nudge
+          p.vx += (-dy / dist) * TANGENTIAL_NUDGE;
+          p.vy += (dx / dist) * TANGENTIAL_NUDGE;
+          p.vx *= DRAG_IDLE;
+          p.vy *= DRAG_IDLE;
+        }
 
-          if (p.type === "core") {
-            p.vy -= 0.015; // Upward acceleration
-            p.vx += (Math.random() - 0.5) * 0.1; // Drift
-          } else if (p.type === "tendril") {
-            p.vx += (Math.random() - 0.5) * 0.16; // Drift
-          }
+        p.x += p.vx;
+        p.y += p.vy;
 
-          return true;
-        });
-
-        const isActualClickFlash = (now - clickStartTime.current) < 150;
-
-        // Render Tendrils
-        particles.current.filter(p => p.type === "tendril").forEach(p => {
-          ctx.globalAlpha = p.life * 0.55;
-          ctx.fillStyle = isActualClickFlash ? BLOOD : p.color;
-          ctx.strokeStyle = isActualClickFlash ? BLOOD : (p.borderColor || p.color);
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+        // Draw Particle
+        ctx.beginPath();
+        if (isBursting) {
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = BLOOD;
           ctx.fill();
+        } else {
+          // Rim
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size + 1.3, 0, Math.PI * 2);
+          ctx.lineWidth = 0.6;
+          ctx.strokeStyle = isHovering.current ? "rgba(14, 224, 195, 0.3)" : "rgba(232, 232, 230, 0.1)";
           ctx.stroke();
-        });
 
-        // Render Cores
-        particles.current.filter(p => p.type === "core").forEach(p => {
-          ctx.globalAlpha = p.life * 0.85;
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 1.8);
-          const color = isActualClickFlash ? BLOOD : p.color;
-          grad.addColorStop(0, color);
-          grad.addColorStop(0.5, isActualClickFlash ? `rgba(217, 17, 17, 0.6)` : `rgba(14, 224, 195, 0.6)`);
-          grad.addColorStop(1, "transparent");
-          
-          ctx.fillStyle = grad;
+          // Main body
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 1.8, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = currentColor;
           ctx.fill();
-        });
 
-        // Render Bursts
-        particles.current.filter(p => p.type === "burst").forEach(p => {
-          ctx.globalAlpha = p.life * 0.9;
-          ctx.fillStyle = p.color;
+          // Specular
           ctx.beginPath();
-          ctx.rect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+          ctx.arc(p.x - p.size * 0.32, p.y - p.size * 0.32, p.size * 0.4, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255, 255, 255, 0.68)";
           ctx.fill();
-        });
+        }
+      });
 
-        ctx.globalAlpha = 1.0;
-      }
-
-      animationFrameId = requestAnimationFrame(render);
+      frameId = requestAnimationFrame(loop);
     };
-
-    render();
+    frameId = requestAnimationFrame(loop);
 
     return () => {
+      cancelAnimationFrame(frameId);
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseover", onMouseOver);
+      document.removeEventListener("mouseover", delegateHover);
       window.removeEventListener("mousedown", onMouseDown);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
     };
   }, [isTouch]);
 
@@ -299,31 +250,40 @@ export default function Cursor() {
         body, a, button, input, textarea, select, * {
           cursor: none !important;
         }
-        .flame-canvas {
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          z-index: 9999;
-          mix-blend-mode: difference;
-          will-change: transform;
-        }
-        .flame-anchor {
+        .gravity-parent {
           position: fixed;
           top: 0;
           left: 0;
-          width: 7px;
-          height: 7px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
           z-index: 10000;
           pointer-events: none;
           mix-blend-mode: difference;
-          will-change: transform, background-color;
+          will-change: transform, background-color, scale;
+        }
+        .parent-specular {
+          position: absolute;
+          top: 15%;
+          left: 15%;
+          width: 40%;
+          height: 40%;
+          background: rgba(255,255,255,0.85);
+          border-radius: 50%;
         }
       `}</style>
-      <div ref={anchorRef} className="flame-anchor" />
+
+      {/* 29 Children Canvas */}
       <canvas
         ref={canvasRef}
-        className="flame-canvas"
+        className="fixed inset-0 pointer-events-none z-[9999]"
+        style={{ mixBlendMode: 'difference' }}
       />
+
+      {/* Parent Dot */}
+      <div ref={parentRef} className="gravity-parent">
+        <div className="parent-specular" />
+      </div>
     </>
   );
 }
