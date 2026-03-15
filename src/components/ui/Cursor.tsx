@@ -13,6 +13,7 @@ export default function Cursor() {
   const vx = useRef(new Float32Array(20));
   const vy = useRef(new Float32Array(20));
   const locked = useRef(new Uint8Array(20));
+  const pt = useRef(new Float32Array(20));
   
   // Mouse and Meta State
   const mouse = useRef({ x: 0, y: 0 });
@@ -77,6 +78,8 @@ export default function Cursor() {
       py.current[i] = centerY + Math.sin(angle) * dist;
       vx.current[i] = -Math.sin(angle) * 2;
       vy.current[i] = Math.cos(angle) * 2;
+      // Orbit Phase
+      pt.current[i] = (Math.PI * 2 / 19) * (i - 1);
     }
 
     // Canvas Resize
@@ -217,25 +220,37 @@ export default function Cursor() {
             }
           }
         } else {
-          // IDLE/MOVE STATE
-          const dx = px.current[0] - px.current[i];
-          const dy = py.current[0] - py.current[i];
-          const dist = Math.sqrt(dx * dx + dy * dy) + 0.1;
-          const grav = Math.min(9600 / (dist + 10), 144); // 8000 * 1.2 = 9600, 120 * 1.2 = 144
+          // IDLE/MOVE STATE — Circle Orbit
+          pt.current[i] += 0.020;
+          const tx = px.current[0] + Math.cos(pt.current[i]) * 28;
+          const ty = py.current[0] + Math.sin(pt.current[i]) * 28;
 
-          vx.current[i] += (dx / dist) * grav * 0.016;
-          vy.current[i] += (dy / dist) * grav * 0.016;
-          vx.current[i] += (-dy / dist) * 0.30;
-          vy.current[i] += (dx / dist) * 0.30;
+          const dx = tx - px.current[i];
+          const dy = ty - py.current[i];
+          const distToTarget = Math.sqrt(dx * dx + dy * dy);
           
-          vx.current[i] *= 0.84;
-          vy.current[i] *= 0.84;
+          const lerpStrength = distToTarget > 40 ? 0.08 : distToTarget > 15 ? 0.14 : 0.22;
+          
+          vx.current[i] += dx * lerpStrength;
+          vy.current[i] += dy * lerpStrength;
+          vx.current[i] *= 0.60;
+          vy.current[i] *= 0.60;
           px.current[i] += vx.current[i];
           py.current[i] += vy.current[i];
         }
       }
 
       // 4. Rendering
+      if (!isHover.current) {
+        // Faint Orbit Ring Guide
+        ctx.beginPath();
+        ctx.arc(px.current[0], py.current[0], 28, 0, Math.PI * 2);
+        ctx.strokeStyle = "#E8E8E6";
+        ctx.globalAlpha = 0.04;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
+      }
       for (let i = 0; i < 20; i++) {
         const x = px.current[i];
         const y = py.current[i];
