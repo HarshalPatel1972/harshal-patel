@@ -49,7 +49,6 @@ export default function RootLayout({
         className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
-        <Cursor />
         <ImageGuard />
         {children}
       </body>

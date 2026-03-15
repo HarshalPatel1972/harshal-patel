@@ -11,6 +11,7 @@ import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { ScrollLine } from "@/components/AnimationKit";
+import Cursor from "@/components/ui/Cursor";
 
 import { SignalProvider } from "@/context/SignalContext";
 
@@ -24,6 +25,7 @@ export default function Home() {
       <SignalProvider>
         <main className="relative">
           <Preloader onComplete={() => setShowContent(true)} />
+          {showContent && <Cursor />}
           
           {/* Fixed HUD elements MUST remain outside LanguageTransitionWrapper */}
           <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>

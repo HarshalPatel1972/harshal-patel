@@ -247,7 +247,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44"
+      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none"
     >
       {/* Cinematic Shutter System */}
       <div data-dir="top" ref={topBarRef} className="absolute top-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-b border-[#E8E8E6]/5 will-change-transform" />
