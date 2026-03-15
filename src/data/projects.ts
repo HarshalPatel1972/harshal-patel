@@ -7,7 +7,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[] } = {
   en: [
     {
       title: "Aero",
@@ -180,6 +180,64 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[] } = {
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
       specs: ["// 1초미만_탐색", "// 서버리스_리드", "// 최적화된_미학_"]
+    }
+  ],
+  "zh-tw": [
+    {
+      title: "Aero (飛航)",
+      description: "下一代本地文件傳輸系統，在 LAN 環境下可達 100MB/s+。功能豐富的桌面應用程，具備 E2EE (AES-256-CTR) 與零信任光學握手。",
+      tags: ["Go", "Wails", "React", "加密"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      specs: ["// 速度_100MBPS+", "// E2EE_AES_256", "// 無雲端協議_"]
+    },
+    {
+      title: "RIFT (裂痕)",
+      description: "零摩擦空氣輸入橋接器。無需安裝應用程即可通過 WebSockets 和 Win32 API 將任何智慧型手機轉化為高性能 PC 輸入設備。",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      specs: ["// 延遲_50MS以下", "// 零摩擦驗證", "// 無頭包裝器_"]
+    },
+    {
+      title: "Momentum (動量)",
+      description: "AI 代理與您囊中之物的橋樑。通過 Telegram 為 Cursor/Windsurf 構建遠端審核系統，確保高風險執行的安全性。",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      specs: ["// MCP_已就緒", "// 電報橋接", "// 安全遠端執行_"]
+    },
+    {
+      title: "GoSync (同步代碼)",
+      description: "離線優先的同步引擎，使用默克爾樹進行增量同步。通過 IndexedDB 冷儲存將數據傳輸效率提升高達 70%。",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      specs: ["// 增量同步_70%", "// 默克爾樹驗證", "// 離線優先_"]
+    },
+    {
+      title: "Velocity (速度)",
+      description: "Windows 系統託盤優化工具，將 WhatsApp 的 RAM 佔用從 370MB 降至 90MB。實現了 EcoQoS CPU 調度器和自動化內存修剪。",
+      tags: ["C++", "Win32", "優化"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      specs: ["// 內存節省_75%", "// ECO_QOS_優先級", "// 內存修剪引擎_"]
+    },
+    {
+      title: "WinLight (窗光)",
+      description: "Rust 驅動的 Spotlight 風格搜索，索引超過 50,000 個文件。多策略排名匹配，可在 100ms 內返回結果。",
+      tags: ["Rust", "Tauri", "算法"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      specs: ["// 索引5萬文件", "// 延遲100MS以下", "// RUST併發處理_"]
+    },
+    {
+      title: "A1 Tantra (A1 密乘)",
+      description: "高性能精神導航平台。通過無伺服器潛在客戶生成架構，實現了秒級以下的多頁面導航。",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      specs: ["// 秒級以下導航", "// 無伺服器線索", "// 優化美學_"]
     }
   ]
 };

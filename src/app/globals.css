@@ -327,3 +327,7 @@ img, svg, picture, .ink-slash, .manga-panel {
 .font-korean {
   font-family: var(--font-noto-sans-kr), sans-serif;
 }
+
+.font-chinese {
+  font-family: var(--font-noto-sans-tc), sans-serif;
+}

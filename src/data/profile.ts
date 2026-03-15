@@ -124,5 +124,47 @@ export const profile = {
       { name: "Python / AI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  "zh-tw": {
+    name: "Harshal Patel",
+    title: "軟體工程師",
+    tagline: "利用 Go、TypeScript 和 WebAssembly 打造高性能系統",
+    bio: "初級軟體工程實踐者，具備跨 Go、WebAssembly 和 TypeScript 技術棧開發軟體系統的經驗。已解決超過 300 個算法挑戰，擅長在 200 毫秒以內的約束下進行運行時和內存優化。",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    location: "印度，瓦拉納西",
+    
+    education: {
+      school: "昌迪加爾大學",
+      degree: "工程學士（人工智慧與機器學習）",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "前端開發實習生",
+        period: "2025年5月 – 2025年10月",
+        description: "開發了超過 15 個可重用的 React 組件；整合了 Shazam API；設計了具有 5 個以上階段的看板工作流；使用 Syncfusion 實現了 10 個以上的互動功能。",
+      },
+      {
+        company: "Internshala",
+        role: "資料科學實習生",
+        period: "2024年6月 – 2024年8月",
+        description: "通過 Tableau 處理了 5,000 多條銷售記錄；構建了準確率為 85% 的邏輯回歸模型；通過移動平均預測將庫存規劃提高了 20%；優化培訓效率達 25%。",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / 系統", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / AI", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

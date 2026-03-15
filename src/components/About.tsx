@@ -214,7 +214,7 @@ export function About() {
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
          <h2 className="text-[8rem] md:text-[20rem] font-black font-display text-[var(--text-bone)] whitespace-nowrap leading-none tracking-tighter" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-            {language === 'en' ? "ORIGIN" : language === 'ja' ? "起源" : "기원"}
+            {language === 'en' ? "ORIGIN" : language === 'ja' ? "起源" : language === 'ko' ? "기원" : "起源"}
          </h2>
       </div>
 
@@ -223,13 +223,13 @@ export function About() {
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className="absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black font-display px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black">
-              {language === 'en' ? 'CHAPTER 02' : language === 'ja' ? '第二章' : '제 2 장'}
+              {language === 'en' ? 'CHAPTER 02' : language === 'ja' ? '第二章' : language === 'ko' ? '제 2 장' : '第二章'}
             </div>
             
             <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
                <div>
                  <h3 className="text-4xl sm:text-5xl md:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-[0.85] mb-8">
-                   {language === 'en' ? "Software" : language === 'ja' ? "ソフトウェア" : "소프트웨어"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : language === 'ja' ? "エンジニア" : "엔지니어"}</span>
+                   {language === 'en' ? "Software" : language === 'ja' ? "ソフトウェア" : language === 'ko' ? "소프트웨어" : "軟體"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : language === 'ja' ? "エンジニア" : language === 'ko' ? "엔지니어" : "工程師"}</span>
                  </h3>
                  <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
                    {currentProfile.bio}
@@ -251,7 +251,7 @@ export function About() {
                          {currentProfile.education.gpa}
                        </div>
                        <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
-                          {language === 'en' ? "Academic Topper" : language === 'ja' ? "成績優秀者" : "성적 우수자"}
+                          {language === 'en' ? "Academic Topper" : language === 'ja' ? "成績優秀者" : language === 'ko' ? "성적 우수자" : "成績優秀者"}
                        </div>
                     </div>
                  </div>
@@ -259,7 +259,7 @@ export function About() {
                
                <div className="hidden lg:flex justify-end items-center relative h-full">
                   <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
-                     {language === 'en' ? "DEVELOPER" : language === 'ja' ? "開発者" : "개발자"}
+                     {language === 'en' ? "DEVELOPER" : language === 'ja' ? "開発者" : language === 'ko' ? "개발자" : "開發者"}
                   </div>
                </div>
             </div>
@@ -270,7 +270,7 @@ export function About() {
           <ScrollReveal duration={1200} delay={200} className="w-full">
             <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
                <div className="bg-black text-[var(--text-bone)] font-black font-display uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center" style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : <>기록된<br/>경험</>}
+                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : language === 'ko' ? <>기록된<br/>경험</> : <>已記錄的<br/>工作經驗</>}
                </div>
                
                <div className="flex flex-col bg-white">
@@ -302,14 +302,14 @@ export function About() {
             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
               
               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                <MangaStat value={350} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : "알고리즘"} prefix=">" />
-                <MangaStat value={8.9} label={language === 'en' ? "Academic" : language === 'ja' ? "成績" : "성적"} />
-                <MangaStat value={11} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : "구축된 시스템"} prefix="" />
+                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : "演算法"} prefix=">" />
+                 <MangaStat value={8.9} label={language === 'en' ? "Academic" : language === 'ja' ? "成績" : language === 'ko' ? "성적" : "成績"} />
+                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : "已構建系統"} prefix="" />
               </div>
 
               <div ref={skillsRef} className="flex flex-col gap-6">
                  <h4 className="text-[var(--text-bone)] font-black font-display text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between">
-                    {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : "핵심 전문 분야"}
+                    {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : "核心專業領域"}
                     <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
                  </h4>
                  <div className="space-y-6">

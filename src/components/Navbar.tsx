@@ -22,6 +22,12 @@ const NAV_ITEMS = {
     { id: "projects", label: "작업", percent: 33 },
     { id: "about", label: "기원", percent: 65 },
     { id: "contact", label: "연락", percent: 95 },
+  ],
+  "zh-tw": [
+    { id: "hero", label: "首頁", percent: 5 },
+    { id: "projects", label: "作品", percent: 33 },
+    { id: "about", label: "關於", percent: 65 },
+    { id: "contact", label: "聯繫", percent: 95 },
   ]
 };
 
