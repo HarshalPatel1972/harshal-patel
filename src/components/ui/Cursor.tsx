@@ -20,6 +20,8 @@ export default function Cursor() {
   const totalClicks = useRef(0);
   const clickIdleTimer = useRef(0);
   const burstFlash = useRef(0);
+  const isScrolling = useRef(false);
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // Constants
   const PSIZE = 2.2;
@@ -124,8 +126,6 @@ export default function Cursor() {
       }
     };
 
-    const isScrolling = useRef(false);
-    const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const handleScroll = () => {
       if (!isScrolling.current) {
