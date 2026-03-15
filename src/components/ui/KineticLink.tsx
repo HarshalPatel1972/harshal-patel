@@ -42,6 +42,9 @@ export function KineticLink({
     // 1. Fire custom click logic if provided
     if (onClick) onClick(e);
 
+    // If default was prevented in the custom onClick, don't proceed with internal navigation
+    if (e.defaultPrevented) return;
+
     // 2. Determine if we should handle navigation or let native mailto/etc take over
     const isSpecialLink = href.startsWith('mailto:') || href.startsWith('tel:');
     
