@@ -126,7 +126,7 @@ export const profile = {
     ],
   },
   "zh-tw": {
-    name: "Harshal Patel",
+    name: "哈沙爾 帕特爾",
     title: "軟體工程師",
     tagline: "利用 Go、TypeScript 和 WebAssembly 打造高性能系統",
     bio: "初級軟體工程實踐者，具備跨 Go、WebAssembly 和 TypeScript 技術棧開發軟體系統的經驗。已解決超過 300 個算法挑戰，擅長在 200 毫秒以內的約束下進行運行時和內存優化。",
