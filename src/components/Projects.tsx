@@ -86,7 +86,14 @@ export function Projects() {
                    <div className="relative w-1.5 h-1.5 bg-[var(--accent-blood)] group-hover/btn:bg-white shrink-0 z-10" />
                 </div>
                 <div className="flex flex-col items-center">
-                  {"SPREAD_PROJECTS".split("_").map((word, wIdx) => (
+                  {(language === 'en' 
+                    ? "SPREAD_PROJECTS" 
+                    : language === 'ja' 
+                    ? "作品_展開" 
+                    : language === 'ko' 
+                    ? "작품_전개" 
+                    : "展開_作品"
+                  ).split("_").map((word, wIdx) => (
                     <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>
                       {word.split("").map((char, cIdx) => (
                         <span key={cIdx} className="font-display text-[9px] md:text-[11px] font-black uppercase leading-none mb-[2px] last:mb-0">
