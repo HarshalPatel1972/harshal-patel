@@ -74,6 +74,14 @@ body::before {
   opacity: 0.05;
 }
 
+/* ─── GRID UTILITIES ─── */
+.grid-cols-16 {
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+}
+.grid-rows-9 {
+  grid-template-rows: repeat(9, minmax(0, 1fr));
+}
+
 /* ─── MANGA PANEL SYSTEM ─── */
 .manga-panel {
   position: relative;

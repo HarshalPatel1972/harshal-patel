@@ -4,6 +4,7 @@ export interface Project {
   tags: string[];
   color: string;
   link: string;
+  slug: string;
   specs: string[];
 }
 
@@ -15,6 +16,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "Wails", "React", "Crypto"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
       specs: ["// SPEED_100MBPS+", "// E2EE_AES_256", "// NO_CLOUD_PROTOCOL_"]
     },
     {
@@ -23,6 +25,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WebSocket", "Win32 API"],
       color: "#8b5cf6",
       link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
       specs: ["// LATENCY_SUB_50MS", "// ZERO_FRICTION_AUTH", "// HEADLESS_WRAPPER_"]
     },
     {
@@ -31,6 +34,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["MCP", "Node.js", "Telegram", "Go"],
       color: "#f97316",
       link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
       specs: ["// MCP_READY", "// TELEGRAM_BRIDGE", "// SECURE_REMOTE_EXEC_"]
     },
     {
@@ -39,6 +43,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WASM", "Next.js", "IndexedDB"],
       color: "#10b981",
       link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
       specs: ["// DELTA_SYNC_70%", "// MERKLE_TREE_VALIDATION", "// OFFLINE_FIRST_"]
     },
     {
@@ -47,6 +52,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["C++", "Win32", "Optimization"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
       specs: ["// RAM_SAVINGS_75%", "// ECO_QOS_PRIORITY", "// MEMORY_TRIM_ENGINE_"]
     },
     {
@@ -55,6 +61,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Rust", "Tauri", "Algorithms"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
       specs: ["// INDEX_50K_FILES", "// LATENCY_SUB_100MS", "// RUST_CONCURRENCY_"]
     },
     {
@@ -63,6 +70,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
       specs: ["// SUB_SECOND_NAV", "// SERVERLESS_LEADS", "// OPTIMIZED_AESTHETIC_"]
     }
   ],
@@ -73,6 +81,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "Wails", "React", "暗号"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
       specs: ["// 速度_100MBPS+", "// E2EE_AES_256", "// クライドレスプロトコル_"]
     },
     {
@@ -81,6 +90,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WebSocket", "Win32 API"],
       color: "#8b5cf6",
       link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
       specs: ["// 遅延_50MS未満", "// 摩擦ゼロ認証", "// ヘッドレスラッパー_"]
     },
     {
@@ -89,6 +99,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["MCP", "Node.js", "Telegram", "Go"],
       color: "#f97316",
       link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
       specs: ["// MCP対応済", "// テレグラムブリッジ", "// 安全なリモート実行_"]
     },
     {
@@ -97,6 +108,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WASM", "Next.js", "IndexedDB"],
       color: "#10b981",
       link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
       specs: ["// デルタ同期_70%", "// マークルツリー検証", "// オフラインファースト_"]
     },
     {
@@ -105,6 +117,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["C++", "Win32", "最適化"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
       specs: ["// RAM削減率_75%", "// ECO_QOS優先度", "// メモリトリミングエンジン_"]
     },
     {
@@ -113,6 +126,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Rust", "Tauri", "アルゴリズム"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
       specs: ["// 50Kファイル検索", "// 遅延_100MS未満", "// RUST並行処理_"]
     },
     {
@@ -121,6 +135,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
       specs: ["// 1秒未満のナビ", "// サーバーレスリード", "// 最適化された美学_"]
     }
   ],
@@ -131,6 +146,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "Wails", "React", "암호화"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
       specs: ["// 속도_100MBPS+", "// E2EE_AES_256", "// 노_클라우드_프로토콜_"]
     },
     {
@@ -139,6 +155,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WebSocket", "Win32 API"],
       color: "#8b5cf6",
       link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
       specs: ["// 지연_50MS미만", "// 제로_마찰_인증", "// 헤드리스_래퍼_"]
     },
     {
@@ -147,6 +164,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["MCP", "Node.js", "Telegram", "Go"],
       color: "#f97316",
       link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
       specs: ["// MCP_준비완료", "// 텔레그램_브리지", "// 보안_원격_실행_"]
     },
     {
@@ -155,6 +173,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WASM", "Next.js", "IndexedDB"],
       color: "#10b981",
       link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
       specs: ["// 델타_동기화_70%", "// 머클_트리_검증", "// 오프라인_우선_"]
     },
     {
@@ -163,6 +182,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["C++", "Win32", "최적화"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
       specs: ["// RAM_절감_75%", "// ECO_QOS_우선순위", "// 메모리_트리밍_엔진_"]
     },
     {
@@ -171,6 +191,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Rust", "Tauri", "알고리즘"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
       specs: ["// 50K_파일_인덱싱", "// 지연_100MS미만", "// RUST_병행성_"]
     },
     {
@@ -179,6 +200,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
       specs: ["// 1초미만_탐색", "// 서버리스_리드", "// 최적화된_미학_"]
     }
   ],
@@ -189,6 +211,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "Wails", "React", "加密"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
       specs: ["// 速度_100MBPS+", "// E2EE_AES_256", "// 無雲端協議_"]
     },
     {
@@ -197,6 +220,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WebSocket", "Win32 API"],
       color: "#8b5cf6",
       link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
       specs: ["// 延遲_50MS以下", "// 零摩擦驗證", "// 無頭包裝器_"]
     },
     {
@@ -205,6 +229,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["MCP", "Node.js", "Telegram", "Go"],
       color: "#f97316",
       link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
       specs: ["// MCP_已就緒", "// 電報橋接", "// 安全遠端執行_"]
     },
     {
@@ -213,6 +238,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Go", "WASM", "Next.js", "IndexedDB"],
       color: "#10b981",
       link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
       specs: ["// 增量同步_70%", "// 默克爾樹驗證", "// 離線優先_"]
     },
     {
@@ -221,6 +247,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["C++", "Win32", "優化"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
       specs: ["// 內存節省_75%", "// ECO_QOS_優先級", "// 內存修剪引擎_"]
     },
     {
@@ -229,6 +256,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Rust", "Tauri", "算法"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
       specs: ["// 索引5萬文件", "// 延遲100MS以下", "// RUST併發處理_"]
     },
     {
@@ -237,6 +265,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
       specs: ["// 秒級以下導航", "// 無伺服器線索", "// 優化美學_"]
     }
   ]

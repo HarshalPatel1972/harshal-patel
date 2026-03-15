@@ -6,17 +6,20 @@ import { animate as anime, utils } from "animejs";
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 import { KineticLink } from "./ui/KineticLink";
+import { useFlipTransition } from "@/context/FlipContext";
 
 interface Project {
   title: string;
   description: string;
   link: string;
+  slug: string;
   tags: string[];
   specs: string[];
 }
 
 export function Projects() {
   const { language } = useLanguage();
+  const { triggerTransition } = useFlipTransition();
   const currentProjects = projects[language];
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isOverridden, setIsOverridden] = useState(false);
@@ -121,6 +124,10 @@ export function Projects() {
                 <KineticLink 
                   href={project.link}
                   target="_blank"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    triggerTransition(`/screenshots/${project.slug}.webp`, project.link);
+                  }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
                   className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[420px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden`}
