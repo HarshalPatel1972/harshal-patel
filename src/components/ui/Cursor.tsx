@@ -124,6 +124,21 @@ export default function Cursor() {
       }
     };
 
+    const isScrolling = useRef(false);
+    const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const handleScroll = () => {
+      if (!isScrolling.current) {
+        isScrolling.current = true;
+      }
+      
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      scrollTimeout.current = setTimeout(() => {
+        isScrolling.current = false;
+      }, 150); // Threshold to detect scroll end
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseover", onMouseOver);
     document.addEventListener("mouseout", onMouseOut);
@@ -135,6 +150,14 @@ export default function Cursor() {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (!canvas || !ctx) return;
+
+      if (isScrolling.current) {
+        canvas.style.opacity = '0';
+        animationFrameId = requestAnimationFrame(loop);
+        return;
+      } else {
+        canvas.style.opacity = '1';
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -246,6 +269,8 @@ export default function Cursor() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
