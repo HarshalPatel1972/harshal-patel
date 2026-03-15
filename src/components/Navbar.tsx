@@ -4,7 +4,17 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 
-const NAV_ITEMS = {
+type NavItem = {
+  id: string;
+  label: string;
+  percent: number;
+};
+
+type NavItems = {
+  [key in "en" | "ja" | "ko" | "zh-tw"]: NavItem[];
+};
+
+const NAV_ITEMS: NavItems = {
   en: [
     { id: "hero", label: "HOME", percent: 5 },
     { id: "projects", label: "WORK", percent: 33 },
