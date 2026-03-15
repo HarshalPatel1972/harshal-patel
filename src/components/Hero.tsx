@@ -23,10 +23,14 @@ export function Hero() {
     ja: [
       "速さを求めるか？ 規模に挑むか？",
       "勝利への新たな眼差し。 ならば、ここが構築の『起源』だ。"
+    ],
+    ko: [
+      "속도를 찾고 계신가요? 규모의 필요성에 직면해 계신가요?",
+      "승리를 위한 새로운 시각? 당신은 그 기원에 도달했습니다. 이제 구축을 시작합시다。"
     ]
   };
 
-  const currentIntro = introStages[language as 'en' | 'ja'];
+  const currentIntro = introStages[language as 'en' | 'ja' | 'ko'];
   
   // Split the intro into individual words for the word-by-word reveal
   const words = currentIntro.join(" ").split(" ");
@@ -88,7 +92,9 @@ export function Hero() {
                                   word.toLowerCase().includes('win') || word.toLowerCase().includes('source') || 
                                   word.toLowerCase().includes('begin') ||
                                   word.includes('速さ') || word.includes('規模') || word.includes('勝利') || 
-                                  word.includes('起源') || word.includes('構築');
+                                  word.includes('起源') || word.includes('構築') ||
+                                  word.includes('속도') || word.includes('규모') || word.includes('승리') || 
+                                  word.includes('기원') || word.includes('구축');
                 
                 return (
                   <span 
@@ -159,7 +165,7 @@ export function Hero() {
           <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className="uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black font-display">
-                {language === 'en' ? "Available for Opportunities" : "仕事の依頼を受付中"}
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : "업무 의뢰 가능"}
               </span>
             </div>
 
@@ -181,7 +187,7 @@ export function Hero() {
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className="text-white font-black font-display text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
-                    {language === 'en' ? "View Work" : "実績を見る"}
+                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : "실적 보기"}
                   </span>
                 </div>
               </a>
@@ -189,7 +195,7 @@ export function Hero() {
                 <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className="text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black font-display text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
-                    {language === 'en' ? "Contact" : "連絡する"}
+                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : "연락하기"}
                   </span>
                 </div>
               </a>

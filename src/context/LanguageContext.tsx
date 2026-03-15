@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type Language = "en" | "ja";
+type Language = "en" | "ja" | "ko";
 
 interface LanguageContextType {
   language: Language;
@@ -18,7 +18,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("mappa-lang") as Language;
-    if (saved === "ja" || saved === "en") {
+    if (saved === "ja" || saved === "en" || saved === "ko") {
       setLanguageState(saved);
     }
   }, []);
@@ -51,7 +51,7 @@ export function LanguageTransitionWrapper({ children, className = "" }: { childr
   const { isTransitioning, language } = useLanguage();
   return (
     <div 
-      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${className}`}
+      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${language === 'ko' ? 'font-korean' : ''} ${className}`}
     >
       {children}
     </div>

@@ -51,16 +51,18 @@ export function Projects() {
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
-             {language === 'en' ? 'CHAPTER 01' : '第一章'}
+             {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : '제 1 장'}
            </div>
            <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
-             {language === 'en' ? <>SELECTED <br/> WORKS</> : <>選定された<br/>作品</>}
+             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : <>선정된<br/>작품</>}
            </h2>
         </div>
         <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
            {language === 'en' 
              ? "A showcase of systems built and technical problems solved."
-             : "開発されたシステムと解決された技術的課題のショーケース。"}
+             : language === 'ja' 
+             ? "開発されたシステムと解決された技術的課題のショーケース。"
+             : "개발된 시스템과 해결된 기술적 과제의 쇼케이스입니다."}
         </p>
       </div>
 
@@ -163,7 +165,7 @@ export function Projects() {
                          </svg>
                        </div>
                        <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                          {language === 'en' ? "View Project" : "プロジェクトを見る"}
+                          {language === 'en' ? "View Project" : language === 'ja' ? "プロジェクトを見る" : "프로젝트 보기"}
                        </span>
                     </div>
                   </div>

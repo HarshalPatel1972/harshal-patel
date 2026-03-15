@@ -82,5 +82,47 @@ export const profile = {
       { name: "Python / AI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  ko: {
+    name: "하르샬 파텔",
+    title: "소프트웨어 엔지니어",
+    tagline: "Go, TypeScript, WebAssembly를 활용한 고성능 시스템 구축",
+    bio: "Go, WebAssembly, TypeScript의 세 가지 기술 스택에 걸쳐 소프트웨어 시스템을 구현하고 300개 이상의 알고리즘 문제를 해결한 경험이 있는 초기 경력 소프트웨어 공학도입니다. 200ms 미만의 제약 조건 하에서 런타임 및 메모리 최적화를 전문으로 합니다.",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    location: "인도, 바라나시",
+    
+    education: {
+      school: "찬디가르 대학교",
+      degree: "정보공학 학사 (AI/ML)",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "프론트엔드 개발 인턴",
+        period: "2025년 5월 – 2025年 10월",
+        description: "15개 이상의 재사용 가능한 React 컴포넌트 개발; Shazam API 통합; 5단계 이상의 칸반 워크플로우 설계; Syncfusion을 사용하여 10개 이상의 대화형 기능 구현.",
+      },
+      {
+        company: "Internshala",
+        role: "데이터 과학 인턴",
+        period: "2024년 6월 – 2024년 8월",
+        description: "Tableau를 통해 5,000개 이상의 판매 기록 처리; 85% 정확도의 로지스틱 회귀 모델 구축; 이동 평균 예측을 통해 재고 계획 20% 개선; 교육 효율성 25% 최적화.",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / 시스템", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / AI", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

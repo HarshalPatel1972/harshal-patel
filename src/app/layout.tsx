@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Oswald, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { Inter, Oswald, JetBrains_Mono, Playfair_Display, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
@@ -27,6 +27,12 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700", "800", "900"]
 });
 
+const notoSansKR = Noto_Sans_KR({
+  variable: "--font-noto-sans-kr",
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+});
+
 export const metadata: Metadata = {
   title: "Portfolio by Harshal Patel",
   description: "Exorcising technical debt and Constructing High-Performance Systems. Software Engineer Portfolio.",
@@ -46,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />

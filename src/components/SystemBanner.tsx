@@ -15,14 +15,16 @@ export function SystemBanner() {
          {/* Brutalist Warning Label */}
          <div className="bg-white text-[var(--accent-blood)] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5">
            <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] animate-pulse" />
-           {language === 'en' ? "NOTICE" : "お知らせ"}
+           {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : "공지사항"}
          </div>
          
          {/* Technical Context - High Visibility White */}
          <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase truncate drop-shadow-sm">
            {language === 'en' 
              ? "This portfolio is currently undergoing a live redesign. Some features may be temporarily unavailable. Thank you for your patience."
-             : "このポートフォリオは現在再設計中です。一部の機能が利用できない場合があります。ご不便をおかけしますが、ご了承ください。"}
+             : language === 'ja'
+             ? "このポートフォリオは現在再設計中です。一部の機能が利用できない場合があります。ご不便をおかけしますが、ご了承ください。"
+             : "이 포트폴리오는 현재 실시간 재설계 중입니다. 일부 기능을 일시적으로 사용할 수 없을 수 있습니다. 양해해 주셔서 감사합니다."}
          </span>
       </div>
 
@@ -41,6 +43,13 @@ export function SystemBanner() {
             className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'ja' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
           >
             [JA]
+          </button>
+          <span className="text-white/30 text-[10px]">/</span>
+          <button 
+            onClick={() => setLanguage('ko')}
+            className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'ko' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
+          >
+            [KO]
           </button>
         </div>
 

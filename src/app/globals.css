@@ -318,3 +318,12 @@ img, svg, picture, .ink-slash, .manga-panel {
   -webkit-touch-callout: none !important;
 }
 
+
+/* ─── LANGUAGE SPECIFIC FONTS ─── */
+.font-japanese {
+  font-family: "Hiragino Sans", "Meiryo", "MS PGothic", sans-serif;
+}
+
+.font-korean {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+}

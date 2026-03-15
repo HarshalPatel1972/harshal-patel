@@ -7,7 +7,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[] } = {
   en: [
     {
       title: "Aero",
@@ -122,6 +122,64 @@ export const projects: { en: Project[]; ja: Project[] } = {
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
       specs: ["// 1秒未満のナビ", "// サーバーレスリード", "// 最適化された美学_"]
+    }
+  ],
+  ko: [
+    {
+      title: "Aero (에어로)",
+      description: "LAN을 통해 100MB/s 이상의 속도에 도달하는 차세대 로컬 파일 전송 시스템입니다. E2EE(AES-256-CTR)와 제로 트러스트 광학 핸드쉐이크 기능을 갖춘 풍부한 기능의 데스크톱 앱입니다.",
+      tags: ["Go", "Wails", "React", "암호화"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      specs: ["// 속도_100MBPS+", "// E2EE_AES_256", "// 노_클라우드_프로토콜_"]
+    },
+    {
+      title: "RIFT (리프트)",
+      description: "마찰 없는 에어 타이핑 브리지입니다. 앱 설치 없이 WebSockets와 Win32 API를 통해 모든 스마트폰을 고성능 PC 입력 장치로 변환합니다.",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      specs: ["// 지연_50MS미만", "// 제로_마찰_인증", "// 헤드리스_래퍼_"]
+    },
+    {
+      title: "Momentum (모멘텀)",
+      description: "AI 에이전트와 모바일을 연결하는 가교입니다. Telegram을 통해 Cursor/Windsurf의 원격 승인 시스템을 구현하여 고위험 실행을 안전하게 유지합니다.",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      specs: ["// MCP_준비완료", "// 텔레그램_브리지", "// 보안_원격_실행_"]
+    },
+    {
+      title: "GoSync (고싱크)",
+      description: "델타 동기화를 위해 머클 트리를 사용하는 오프라인 우선 동기화 엔진입니다. IndexedDB 콜드 스토리지를 통해 데이터 전송을 최대 70% 절감합니다.",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      specs: ["// 델타_동기화_70%", "// 머클_트리_검증", "// 오프라인_우선_"]
+    },
+    {
+      title: "Velocity (벨로시티)",
+      description: "WhatsApp의 RAM 사용량을 370MB에서 90MB로 줄이는 Windows 시스템 트레이 최적화 도구입니다. EcoQoS CPU 거버너 및 자동 메모리 트리밍을 구현합니다.",
+      tags: ["C++", "Win32", "최적화"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      specs: ["// RAM_절감_75%", "// ECO_QOS_우선순위", "// 메모리_트리밍_엔진_"]
+    },
+    {
+      title: "WinLight (윈라이트)",
+      description: "50,000개 이상의 파일을 인덱싱하는 Rust 기반의 Spotlight 유사 검색 엔진입니다. 100ms 미만의 결과 반환을 위한 다중 전략 랭킹 매칭을 사용합니다.",
+      tags: ["Rust", "Tauri", "알고리즘"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      specs: ["// 50K_파일_인덱싱", "// 지연_100MS미만", "// RUST_병행성_"]
+    },
+    {
+      title: "A1 Tantra (A1 탄트라)",
+      description: "고성능 영적 가이드 플랫폼입니다. 서버리스 리드 생성 아키텍처를 통해 1초 미만의 다중 페이지 탐색을 실현했습니다.",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      specs: ["// 1초미만_탐색", "// 서버리스_리드", "// 최적화된_미학_"]
     }
   ]
 };

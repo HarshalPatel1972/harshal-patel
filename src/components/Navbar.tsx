@@ -16,6 +16,12 @@ const NAV_ITEMS = {
     { id: "projects", label: "作", percent: 33 },
     { id: "about", label: "源", percent: 65 },
     { id: "contact", label: "連絡", percent: 95 },
+  ],
+  ko: [
+    { id: "hero", label: "시작", percent: 5 },
+    { id: "projects", label: "작업", percent: 33 },
+    { id: "about", label: "기원", percent: 65 },
+    { id: "contact", label: "연락", percent: 95 },
   ]
 };
 
