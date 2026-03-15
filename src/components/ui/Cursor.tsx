@@ -20,10 +20,10 @@ export default function Cursor() {
   const CYAN = "#0ee0c3";
   const BLOOD = "#d91111";
   const S = 2.6;
-  const BASE_GRAV = 3200;
-  const HOVER_GRAV = BASE_GRAV * 10;
-  const DRAG_IDLE = 0.89;
-  const DRAG_HOVER = 0.65;
+  const BASE_GRAV = 8000;
+  const HOVER_GRAV = BASE_GRAV * 40;
+  const DRAG_IDLE = 0.84;
+  const DRAG_HOVER = 0.45;
   const TANGENTIAL_NUDGE = 0.32;
 
   // Refs for physics
@@ -182,13 +182,25 @@ export default function Cursor() {
         const dist = Math.hypot(dx, dy) + 0.1;
 
         if (isHovering.current) {
-          const grav = Math.min(HOVER_GRAV / (dist + 10), 200);
-          p.vx += (dx / dist) * grav * 0.016;
-          p.vy += (dy / dist) * grav * 0.016;
-          p.vx *= DRAG_HOVER;
-          p.vy *= DRAG_HOVER;
+          // Fix 3: Hard lock for arrow stability
+          const vel = Math.hypot(p.vx, p.vy);
+          if (dist < 1.5 && vel < 0.4) {
+            const slot = arrowPositions.current[i];
+            p.x = parentPos.current.x + slot.x;
+            p.y = parentPos.current.y + slot.y;
+            p.vx = 0;
+            p.vy = 0;
+          } else {
+            const grav = Math.min(HOVER_GRAV / (dist + 10), 999);
+            p.vx += (dx / dist) * grav * 0.016;
+            p.vy += (dy / dist) * grav * 0.016;
+            p.vx *= DRAG_HOVER;
+            p.vy *= DRAG_HOVER;
+            p.x += p.vx;
+            p.y += p.vy;
+          }
         } else {
-          const grav = Math.min(BASE_GRAV / (dist + 10), 55);
+          const grav = Math.min(BASE_GRAV / (dist + 10), 120);
           p.vx += (dx / dist) * grav * 0.016;
           p.vy += (dy / dist) * grav * 0.016;
           // Tangential nudge
@@ -196,10 +208,9 @@ export default function Cursor() {
           p.vy += (dx / dist) * TANGENTIAL_NUDGE;
           p.vx *= DRAG_IDLE;
           p.vy *= DRAG_IDLE;
+          p.x += p.vx;
+          p.y += p.vy;
         }
-
-        p.x += p.vx;
-        p.y += p.vy;
 
         // Draw Particle
         ctx.beginPath();
