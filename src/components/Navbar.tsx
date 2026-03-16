@@ -42,7 +42,7 @@ const NAV_ITEMS: NavItems = {
   ]
 };
 
-type DotMode = 'LOCKED' | 'CHARGING' | 'RELEASED';
+type DotMode = 'LOCKED' | 'CHARGING' | 'RELEASED' | 'CHARGING_RETURN';
 
 export function Navbar() {
   const { language } = useLanguage();
@@ -184,55 +184,80 @@ export function Navbar() {
   // --- MASTER LOGO CONTROLLER ---
   const handleLogoTouchStart = () => {
     if (window.innerWidth >= 768) return;
-    if (dotMode !== 'LOCKED') return;
 
-    chargingLogoRef.current = true;
-    longPressActiveRef.current = false;
-    setDotMode('CHARGING');
-    setDotScale(1);
-    
-    const duration = 2000;
-    
-    chargeTimerRef.current = setTimeout(() => {
-      if (!chargingLogoRef.current) return;
+    if (dotMode === 'LOCKED') {
+      chargingLogoRef.current = true;
+      longPressActiveRef.current = false;
+      setDotMode('CHARGING');
+      setDotScale(1);
       
-      longPressActiveRef.current = true; // Guard to block immediate navigation click
+      const duration = 2000;
       
-      if (dotRef.current) {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2 - 155;
+      chargeTimerRef.current = setTimeout(() => {
+        if (!chargingLogoRef.current) return;
         
-        // SPAWN EXACTLY IN THE MIDDLE OF THE VIEWPORT
-        physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1, squish: 1 };
-        setDotPos({ x: centerX, y: centerY });
-        setDotScale(1); 
-        setDotMode('RELEASED');
+        longPressActiveRef.current = true; 
         
-        // TRIGGER SPLASH AT THE MIDDLE SPAWN POINT
-        setSplashPos({ x: centerX, y: centerY });
-        setShowSplash(true);
-        setTimeout(() => setShowSplash(false), 1000);
-      }
-    }, duration);
+        if (dotRef.current) {
+          const centerX = window.innerWidth / 2;
+          const centerY = window.innerHeight / 2 - 155;
+          
+          physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1, squish: 1 };
+          setDotPos({ x: centerX, y: centerY });
+          setDotScale(1); 
+          setDotMode('RELEASED');
+          
+          setSplashPos({ x: centerX, y: centerY });
+          setShowSplash(true);
+          setTimeout(() => setShowSplash(false), 1000);
+        }
+      }, duration);
 
-    const scaleObj = { s: 1 };
-    chargeAnimRef.current = anime(scaleObj, {
-      s: 3,
-      duration: duration,
-      easing: 'linear',
-      update: () => {
-        if (chargingLogoRef.current) setDotScale(scaleObj.s);
-      }
-    });
+      const scaleObj = { s: 1 };
+      chargeAnimRef.current = anime(scaleObj, {
+        s: 3,
+        duration: duration,
+        easing: 'linear',
+        update: () => {
+          if (chargingLogoRef.current) setDotScale(scaleObj.s);
+        }
+      });
+    } else if (dotMode === 'RELEASED') {
+      // START 2s HOLD TO REDOCK
+      chargingLogoRef.current = true;
+      longPressActiveRef.current = false;
+      
+      const duration = 2000;
+      chargeTimerRef.current = setTimeout(() => {
+        if (!chargingLogoRef.current) return;
+        longPressActiveRef.current = true; 
+        returnToNav();
+      }, duration);
+
+      // Visual feedback for redock hold: scale down slightly
+      const scaleObj = { s: physicsRef.current.scale };
+      chargeAnimRef.current = anime(scaleObj, {
+        s: 0.5,
+        duration: duration,
+        easing: 'linear',
+        update: () => {
+          if (chargingLogoRef.current) setDotScale(scaleObj.s);
+        }
+      });
+    }
   };
 
   const handleLogoTouchEnd = () => {
     chargingLogoRef.current = false;
+    if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
+    if (chargeAnimRef.current) chargeAnimRef.current.pause();
+
     if (dotMode === 'CHARGING') {
-      if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
-      if (chargeAnimRef.current) chargeAnimRef.current.pause();
       setDotScale(1);
       setDotMode('LOCKED');
+    } else if (dotMode === 'RELEASED') {
+      // Restore previous scale on lift if not fully charged
+      setDotScale(physicsRef.current.scale);
     }
   };
 
@@ -251,6 +276,7 @@ export function Navbar() {
     switch (dotMode) {
       case 'RELEASED':
         // Logo Clicked while ball is OUT = Size Increase
+        // CYCLE: 1x -> 2x -> 4x -> 1x (Infinite Loop, Redock is Longpress only)
         const s = physicsRef.current.scale;
         
         if (s < 1.5) { 
@@ -258,7 +284,7 @@ export function Navbar() {
         } else if (s < 3.5) { 
           growBall(4);
         } else { 
-          returnToNav();
+          growBall(1); // Return to small size
         }
         break;
 
