@@ -70,6 +70,7 @@ export function Navbar() {
     setDotMode('LOCKED');
     setDotScale(1);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
 
   useEffect(() => {
@@ -214,21 +215,25 @@ export function Navbar() {
       const dist = Math.hypot(touch.clientX - dotPos.x, touch.clientY - dotPos.y);
       
       // Grab radius slightly larger for convenience
-      if (dist < 50) { 
+      if (dist < 60) { 
         setIsDragging(true);
         lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
         
-        // GROWTH LOGIC: Long press (2s) while outside increases size by 2x (cap at 4x)
+        // GROWTH LOGIC: Hold ball while released to grow it
         chargeTimerRef.current = setTimeout(() => {
-          const newScale = Math.min(dotScale * 2, 4);
-          if (newScale !== dotScale) {
-            anime({ s: dotScale }, {
-              s: newScale,
-              duration: 500,
-              easing: 'easeOutElastic(1, .8)',
+          setDotScale(prev => {
+            const next = Math.min(prev * 2, 4);
+            
+            // Kinetic feedback animation for growth
+            anime({ s: prev }, {
+              s: next,
+              duration: 800,
+              easing: 'easeOutElastic(1, .5)',
               update: (anim: any) => setDotScale(Number(anim.animations[0].currentValue))
             });
-          }
+            
+            return prev; // Let anime handle update to prevent double-scaling
+          });
         }, 2000);
       }
     }
@@ -280,6 +285,10 @@ export function Navbar() {
                  e.preventDefault();
                  if (dotMode === 'RELEASED') {
                    returnToNav();
+                 } else {
+                   // Navigate to Hero Title
+                   const el = document.getElementById('hero-title');
+                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                  }
                }}
                className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden"
@@ -344,7 +353,7 @@ export function Navbar() {
                   style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleClick(item.id);
+                    handleClick(item.id === 'hero' ? 'hero-title' : item.id);
                   }}
                 >
                   <span 
