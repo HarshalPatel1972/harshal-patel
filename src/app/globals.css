@@ -22,6 +22,7 @@
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
   --font-display: var(--font-oswald);
+  --font-hindi: var(--font-teko);
 }
 
 /* ─── BASE ─── */
@@ -340,4 +341,8 @@ img, svg, picture, .ink-slash, .manga-panel {
 
 .font-chinese {
   font-family: var(--font-noto-sans-tc), sans-serif;
+}
+
+.font-hindi {
+  font-family: var(--font-teko), sans-serif;
 }

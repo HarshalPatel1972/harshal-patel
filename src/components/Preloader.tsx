@@ -81,21 +81,23 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const len = quote.length;
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
+    const fontClass = isHindi ? "font-hindi" : "font-display";
     
-    // CJK characters are wider/heavier, so they need slightly more aggressive scaling
+    // CJK and Hindi characters need specific scaling
     if (isCJK || isHindi) {
-      if (len > 80) return "text-xl md:text-2xl lg:text-[3rem]";
-      if (len > 60) return "text-xl md:text-3xl lg:text-[3.5rem]";
-      if (len > 40) return "text-2xl md:text-4xl lg:text-[4.5rem]";
-      if (len > 25) return "text-2xl md:text-5xl lg:text-[5.5rem]";
-      if (len > 15) return "text-3xl md:text-6xl lg:text-[6.5rem]";
-      return "text-3xl md:text-7xl lg:text-[8rem]";
+      const base = isHindi ? "text-3xl md:text-7xl lg:text-[9rem]" : "text-3xl md:text-7xl lg:text-[8rem]";
+      if (len > 80) return `text-xl md:text-2xl lg:text-[3.5rem] ${fontClass}`;
+      if (len > 60) return `text-xl md:text-3xl lg:text-[4.5rem] ${fontClass}`;
+      if (len > 40) return `text-2xl md:text-4xl lg:text-[5.5rem] ${fontClass}`;
+      if (len > 25) return `text-2xl md:text-5xl lg:text-[6.5rem] ${fontClass}`;
+      if (len > 15) return `text-3xl md:text-6xl lg:text-[7.5rem] ${fontClass}`;
+      return `${base} ${fontClass}`;
     } else {
-      if (len > 100) return "text-lg md:text-2xl lg:text-[3.8rem]";
-      if (len > 80) return "text-xl md:text-3xl lg:text-[4.5rem]";
-      if (len > 60) return "text-2xl md:text-4xl lg:text-[5.5rem]";
-      if (len > 40) return "text-2xl md:text-5xl lg:text-[6.5rem]";
-      return "text-3xl md:text-7xl lg:text-[8rem]";
+      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[3.8rem]";
+      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[4.5rem]";
+      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[5.5rem]";
+      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[6.5rem]";
+      return "font-display text-3xl md:text-7xl lg:text-[8rem]";
     }
   }, [quote, language]);
 
@@ -309,7 +311,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
          <h1 
           ref={quoteRef} 
-          className={`${quoteFontSizeClass} font-black font-display text-[#E8E8E6] uppercase tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
+          className={`${quoteFontSizeClass} font-black text-[#E8E8E6] uppercase tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 italic will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
          >
            {mounted ? wrappedChars : null}
          </h1>
@@ -320,7 +322,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
          >
             <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
-              <span className="font-mono text-xs md:text-3xl text-[#d91111] tracking-[0.3em] md:tracking-[1.1em] uppercase font-black italic">
+              <span className={`text-xs md:text-3xl text-[#d91111] tracking-[0.3em] md:tracking-[1.1em] uppercase font-black italic ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
                 {mounted ? source : null}
               </span>
               <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />

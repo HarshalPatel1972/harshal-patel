@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Oswald, JetBrains_Mono, Playfair_Display, Noto_Sans_KR, Noto_Sans_TC } from "next/font/google";
+import { Inter, Oswald, JetBrains_Mono, Playfair_Display, Noto_Sans_KR, Noto_Sans_TC, Teko } from "next/font/google";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
@@ -39,6 +39,12 @@ const notoSansTC = Noto_Sans_TC({
   weight: ["400", "500", "700", "900"],
 });
 
+const teko = Teko({
+  variable: "--font-teko",
+  subsets: ["latin", "devanagari"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Portfolio by Harshal Patel",
   description: "Exorcising technical debt and Constructing High-Performance Systems. Software Engineer Portfolio.",
@@ -58,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} ${teko.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />
