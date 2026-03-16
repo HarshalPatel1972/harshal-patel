@@ -2,141 +2,106 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
+import { animate as anime } from "animejs";
 
 export function FlipTransition() {
   const { isActive, screenshotSrc, gridConfig, redirectUrl, setPreloading } = useFlipTransition();
   const { cols, rows } = gridConfig;
+  
+  // High-performance state tracking
   const [flippedIndices, setFlippedIndices] = useState<Set<number>>(new Set());
-  const [shouldAnimate, setShouldAnimate] = useState(false);
-
-  const shuffleRef = useRef<number[]>([]);
+  const [smokedIndices, setSmokedIndices] = useState<Set<number>>(new Set());
+  
+  const flippedRef = useRef<Set<number>>(new Set());
+  const smokedRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
-    let timers: NodeJS.Timeout[] = [];
-    let redirectTimeout: NodeJS.Timeout;
-
     if (isActive) {
-      // 1. Preload Image
-      setShouldAnimate(false);
+      // 1. Reset
+      flippedRef.current = new Set();
+      smokedRef.current = new Set();
       setFlippedIndices(new Set());
-      setPreloading(true, null); // Signal we are loading (slug is handled by Projects.tsx)
+      setSmokedIndices(new Set());
+      
+      const totalSquares = cols * rows;
+      const indices = Array.from({ length: totalSquares }, (_, i) => i);
+      
+      // Randomize reveal order
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
 
+      // 2. Parallel Preload (Doesn't block animation)
       const img = new Image();
       img.src = screenshotSrc;
+      img.onload = () => setPreloading(false, null);
+      img.onerror = () => setPreloading(false, null);
 
-      img.onload = () => {
-        setPreloading(false, null);
-        setShouldAnimate(true);
-        
-        // 2. Generate Shuffle
-        const totalSquares = cols * rows;
-        const indices = Array.from({ length: totalSquares }, (_, i) => i);
-        for (let i = indices.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [indices[i], indices[j]] = [indices[j], indices[i]];
+      // 3. Animation Phase Control
+      const animationState = { flipProgress: 0, smokeProgress: 0 };
+      
+      // FLIP TRACK
+      anime({
+        targets: animationState,
+        flipProgress: totalSquares,
+        duration: 2000,
+        easing: 'linear',
+        update: () => {
+          const count = Math.floor(animationState.flipProgress);
+          let changed = false;
+          for (let i = 0; i < count; i++) {
+            const idx = indices[i];
+            if (!flippedRef.current.has(idx)) {
+              flippedRef.current.add(idx);
+              changed = true;
+            }
+          }
+          if (changed) setFlippedIndices(new Set(flippedRef.current));
         }
-        shuffleRef.current = indices;
+      });
 
-        // 3. Start Animation Stagger
-        const staggerInterval = 1800 / totalSquares;
-        shuffleRef.current.forEach((idx: number, i: number) => {
-          const t = setTimeout(() => {
-            setFlippedIndices(prev => {
-              const next = new Set(prev);
-              next.add(idx);
-              return next;
-            });
-          }, i * staggerInterval);
-          timers.push(t);
-        });
-
-        // 4. Handle Redirect (CALCULATED SYNC)
-        const lastSquareStart = (totalSquares - 1) * staggerInterval;
-        const totalAnimationTime = lastSquareStart + 450 + 200;
-        
-        redirectTimeout = setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, totalAnimationTime);
-      };
-
-      img.onerror = () => {
-        console.error("Failed to load screenshot:", screenshotSrc);
-        setPreloading(false, null);
-        window.location.href = redirectUrl;
-      };
+      // SMOKE TRACK (Starts after flips are well underway)
+      anime({
+        targets: animationState,
+        smokeProgress: totalSquares,
+        duration: 1500,
+        delay: 2400,
+        easing: 'linear',
+        update: () => {
+          const count = Math.floor(animationState.smokeProgress);
+          let changed = false;
+          for (let i = 0; i < count; i++) {
+            const idx = indices[i];
+            if (!smokedRef.current.has(idx)) {
+              smokedRef.current.add(idx);
+              changed = true;
+            }
+          }
+          if (changed) setSmokedIndices(new Set(smokedRef.current));
+        },
+        complete: () => {
+          // Final Sync'd Redirect
+          setTimeout(() => {
+            window.location.href = redirectUrl;
+          }, 600);
+        }
+      });
 
       return () => {
-        timers.forEach(t => clearTimeout(t));
-        clearTimeout(redirectTimeout);
+        // Anime instances are automatically cleaned up if scope is lost, 
+        // but we ensure the redirect doesn't fire if unmounted during transition
       };
-    } else {
-      setShouldAnimate(false);
-      setFlippedIndices(new Set());
     }
-  }, [isActive, screenshotSrc, redirectUrl, cols, rows, setPreloading]);
+  }, [isActive, cols, rows, screenshotSrc, redirectUrl, setPreloading]);
 
-  if (!isActive || !shouldAnimate) return null;
-
-  const renderSquare = (i: number, currentCols: number, currentRows: number, currentSrc: string) => {
-    const colIndex = i % currentCols;
-    const rowIndex = Math.floor(i / currentCols);
-    const isFlipped = flippedIndices.has(i);
-
-    return (
-      <div 
-        key={i} 
-        className="relative w-full h-full" 
-        style={{ 
-          perspective: '2000px',
-          WebkitPerspective: '2000px',
-          overflow: 'visible'
-        }}
-      >
-        <div 
-          className="w-full h-full transition-transform duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-          style={{
-            transformStyle: 'preserve-3d',
-            WebkitTransformStyle: 'preserve-3d',
-            transform: isFlipped ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)',
-            WebkitTransform: isFlipped ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)'
-          }}
-        >
-          <div 
-            className="absolute inset-0"
-            style={{ 
-              background: 'transparent',
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-              position: 'absolute',
-              inset: '0',
-              transform: 'translateZ(0)',
-              WebkitTransform: 'translateZ(0)'
-            }}
-          />
-          <div 
-            className="absolute inset-0 bg-[#111]"
-            style={{ 
-              backgroundImage: `url('${currentSrc}')`,
-              backgroundSize: `${currentCols * 100}% ${currentRows * 100}%`,
-              backgroundPosition: `${colIndex === 0 ? 0 : (colIndex / (currentCols - 1)) * 100}% ${rowIndex === 0 ? 0 : (rowIndex / (currentRows - 1)) * 100}%`,
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-              position: 'absolute',
-              inset: '0',
-              transform: 'rotateY(180deg) translateZ(1px)',
-              WebkitTransform: 'rotateY(180deg) translateZ(1px)',
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
-        </div>
-      </div>
-    );
-  };
+  if (!isActive) return null;
 
   return (
     <div 
-      className="fixed inset-0 z-[10000] pointer-events-none"
+      className="fixed inset-0 pointer-events-auto"
       style={{
+        zIndex: 9999999, // Absolute top
         display: 'grid',
         gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
         gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
@@ -145,7 +110,56 @@ export function FlipTransition() {
         backgroundColor: 'transparent'
       }}
     >
-      {Array.from({ length: cols * rows }).map((_, i) => renderSquare(i, cols, rows, screenshotSrc))}
+      {Array.from({ length: cols * rows }).map((_, i) => {
+        const colIndex = i % cols;
+        const rowIndex = Math.floor(i / cols);
+        const isFlipped = flippedIndices.has(i);
+        const isSmoking = smokedIndices.has(i);
+
+        return (
+          <div 
+            key={i} 
+            className="relative w-full h-full overflow-visible" 
+            style={{ perspective: '1200px' }}
+          >
+            <div 
+              className="w-full h-full"
+              style={{
+                transformStyle: 'preserve-3d',
+                transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                opacity: isSmoking ? 0 : 1,
+                filter: isSmoking ? 'blur(24px)' : 'none',
+                // We use CSS transition for the rotation and smoke so it's GPU accelerated
+                transition: 'transform 600ms cubic-bezier(0.23, 1, 0.32, 1), opacity 1000ms ease, filter 1000ms ease'
+              }}
+            >
+              {/* Front Face (Transparent) */}
+              <div 
+                className="absolute inset-0 z-10"
+                style={{ 
+                  backgroundColor: 'transparent',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
+              />
+              
+              {/* Back Face (Screenshot Slice) */}
+              <div 
+                className="absolute inset-0 bg-[#0a0a0a]"
+                style={{ 
+                  backgroundImage: `url('${screenshotSrc}')`,
+                  backgroundSize: `${cols * 100}% ${rows * 100}%`,
+                  backgroundPosition: `${cols > 1 ? (colIndex / (cols - 1)) * 100 : 0}% ${rows > 1 ? (rowIndex / (rows - 1)) * 100 : 0}%`,
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  transform: 'rotateY(180deg)',
+                  backgroundRepeat: 'no-repeat'
+                }}
+              />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
