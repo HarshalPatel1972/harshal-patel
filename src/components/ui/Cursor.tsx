@@ -26,7 +26,7 @@ export default function Cursor() {
   
   // Constants
   const PSIZE = 2.2;
-  const GAP = PSIZE * 2 + 3.0; // 7.4px
+  const GAP = PSIZE * 2 + 1.2; // Reduced gap for tighter formation
   const tipX = 4 * GAP;
   const tipY = -4 * GAP;
   
@@ -222,8 +222,8 @@ export default function Cursor() {
         } else {
           // IDLE/MOVE STATE — Circle Orbit
           pt.current[i] += 0.020;
-          const tx = px.current[0] + Math.cos(pt.current[i]) * 28;
-          const ty = py.current[0] + Math.sin(pt.current[i]) * 28;
+          const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
+          const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
 
           const dx = tx - px.current[i];
           const dy = ty - py.current[i];
@@ -244,7 +244,7 @@ export default function Cursor() {
       if (!isHover.current) {
         // Faint Orbit Ring Guide
         ctx.beginPath();
-        ctx.arc(px.current[0], py.current[0], 28, 0, Math.PI * 2);
+        ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
         ctx.strokeStyle = "#E8E8E6";
         ctx.globalAlpha = 0.04;
         ctx.lineWidth = 0.5;
