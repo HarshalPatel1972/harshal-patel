@@ -358,7 +358,7 @@ export function Navbar() {
             onTouchEnd={handleDotTouchEnd}
           >
             <div 
-              className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-200"
+              className="bg-[var(--text-bone)] shadow-[0_0_20px_rgba(255,255,255,0.4)] rounded-full transition-all duration-200 mix-blend-difference"
               style={{
                 width: dotMode === 'RELEASED' ? '100%' : `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`,
                 height: '100%',
