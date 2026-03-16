@@ -59,6 +59,7 @@ export function Navbar() {
   const [isDragging, setIsDragging] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
+  const [docHeight, setDocHeight] = useState(0);
   
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
@@ -131,6 +132,20 @@ export function Navbar() {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const updateHeight = () => setDocHeight(document.documentElement.scrollHeight);
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    // Observe mutations for dynamic content changes
+    const observer = new MutationObserver(updateHeight);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      observer.disconnect();
+    };
+  }, []);
 
   // --- PHYSICS ENGINE ---
   const runPhysics = useCallback(() => {
@@ -345,7 +360,7 @@ export function Navbar() {
   return (
     <>
       {/* DOCUMENT-LEVEL PHYSICS LAYER */}
-      <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: 'document' in typeof window ? document.documentElement.scrollHeight : '1000vh', zIndex: 999 }}>
+      <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: docHeight || '100%', zIndex: 999 }}>
         
         {/* SPLASH EFFECT */}
         {showSplash && (
