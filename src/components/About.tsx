@@ -302,9 +302,9 @@ export function About() {
             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
               
               <div className="grid grid-cols-3 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : "演算法"} prefix=">" />
-                 <MangaStat value={8.9} label={language === 'en' ? "Academic" : language === 'ja' ? "成績" : language === 'ko' ? "성적" : "成績"} />
-                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : "已構建系統"} prefix="" />
+                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : "एल्गोरिदम"} prefix=">" />
+                 <MangaStat value={8.9} label={language === 'en' ? "Academic" : language === 'ja' ? "成績" : language === 'ko' ? "성적" : language === 'zh-tw' ? "成績" : "अकादमिक"} />
+                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : "सिस्टम बनाए"} prefix="" />
               </div>
 
               <div ref={skillsRef} className="flex flex-col gap-6">

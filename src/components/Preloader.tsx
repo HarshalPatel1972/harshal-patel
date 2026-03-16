@@ -51,8 +51,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const character = characterRegistry[selectedQuote.charId];
     
     return {
-      text: language === 'ja' ? selectedQuote.ja : language === 'ko' ? selectedQuote.ko : language === 'zh-tw' ? selectedQuote["zh-tw"] : selectedQuote.en,
-      author: language === 'ja' ? character.ja.name : language === 'ko' ? character.ko.name : language === 'zh-tw' ? character["zh-tw"].name : character.en.name,
+      text: language === 'ja' ? selectedQuote.ja : 
+            language === 'ko' ? selectedQuote.ko : 
+            language === 'zh-tw' ? selectedQuote["zh-tw"] : 
+            language === 'hi' ? (selectedQuote.hi || selectedQuote.en) :
+            selectedQuote.en,
+      author: language === 'ja' ? character.ja.name : 
+              language === 'ko' ? character.ko.name : 
+              language === 'zh-tw' ? character["zh-tw"].name : 
+              language === 'hi' ? (character.hi?.name || character.en.name) :
+              character.en.name,
       image: character.image,
       overrideOpacity: character.opacity
     };
@@ -72,9 +80,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
+    const isHindi = language === 'hi';
     
     // CJK characters are wider/heavier, so they need slightly more aggressive scaling
-    if (isCJK) {
+    if (isCJK || isHindi) {
+      if (len > 80) return "text-xl md:text-2xl lg:text-[3rem]";
       if (len > 60) return "text-xl md:text-3xl lg:text-[3.5rem]";
       if (len > 40) return "text-2xl md:text-4xl lg:text-[4.5rem]";
       if (len > 25) return "text-2xl md:text-5xl lg:text-[5.5rem]";
@@ -93,7 +103,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
   const wrappedChars = useMemo(() => {
-    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
+    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw' || language === 'hi';
     const charStyle = { opacity: 0, transform: 'translateY(40px)', filter: 'blur(20px)' };
     if (isCJK) {
       return quote.split("").map((char, i) => (
