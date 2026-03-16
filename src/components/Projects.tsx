@@ -114,10 +114,6 @@ export function Projects() {
         {currentProjects.map((project: Project, i: number) => {
           const isHovered = activeIndex === i;
           const isLoading = isPreloading && loadingSlug === project.slug;
-
-          // MAPPA ALTERNATING AESTHETIC: Red (Blood) vs Cyan (Cursed)
-          const accentVar = i % 2 === 0 ? 'var(--accent-blood)' : 'var(--accent-cursed)';
-          const accentColor = i % 2 === 0 ? '#d91111' : '#0ee0c3';
           
           return (
             <div 
@@ -137,19 +133,13 @@ export function Projects() {
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
-                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[420px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
-                  style={{ 
-                    boxShadow: isHovered 
-                      ? `2px 2px 0px 0px ${accentColor}` 
-                      : `8px 8px 0px 0px ${accentColor}`,
-                    transform: isHovered ? 'translate(6px, 6px)' : 'none'
-                  }}
+                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[420px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
                 >
-                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`} style={{ color: accentVar }}>
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
                      <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="currentColor" />
                   </svg>
 
-                  <div className="absolute top-4 right-4 text-[4rem] md:text-[8rem] font-black font-display text-[var(--text-bone)] opacity-10 select-none pointer-events-none leading-none z-0 transition-transform duration-500" style={{ color: isHovered ? accentVar : 'var(--text-bone)' }}>
+                  <div className="absolute top-4 right-4 text-[4rem] md:text-[8rem] font-black font-display text-[var(--text-bone)] opacity-25 select-none pointer-events-none leading-none z-0 transition-transform duration-500">
                     {String(i + 1).padStart(2, '0')}
                   </div>
 
@@ -163,11 +153,11 @@ export function Projects() {
                         ))}
                       </div>
 
-                      <h3 className={`text-3xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300`} style={{ color: isHovered ? accentVar : 'var(--text-bone)' }}>
+                      <h3 className={`text-3xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
                         {project.title}
                       </h3>
 
-                      <p className={`text-[var(--text-muted)] font-sans text-sm md:text-lg leading-relaxed max-w-2xl border-l-[3px] pl-4 transition-all duration-300`} style={{ borderLeftColor: isHovered ? accentVar : 'var(--text-muted)', color: isHovered ? 'var(--text-bone)' : 'var(--text-muted)' }}>
+                      <p className={`text-[var(--text-muted)] font-sans text-sm md:text-lg leading-relaxed max-w-2xl border-l-[3px] pl-4 transition-colors duration-300 ${isHovered ? 'border-[var(--accent-blood)] text-[var(--text-bone)]' : 'border-[var(--text-muted)]'}`}>
                         {project.description}
                       </p>
                     </div>
@@ -186,7 +176,7 @@ export function Projects() {
                            <path d="M5 12h14M12 5l7 7-7 7"/>
                          </svg>
                        </div>
-                       <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300`} style={{ color: isHovered ? accentVar : 'var(--text-bone)', opacity: isHovered ? 1 : 0, transform: isHovered ? 'translateX(8px)' : 'translateX(-16px)' }}>
+                       <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
                           {language === 'en' ? (isLoading ? "Loading..." : "View Project") : language === 'ja' ? (isLoading ? "読み込み中..." : "プロジェクトを見る") : language === 'ko' ? (isLoading ? "로딩 중..." : "프로젝트 보기") : language === 'zh-tw' ? (isLoading ? "載入中..." : "查看項目") : (isLoading ? "लोड हो रहा है..." : "परियोजना देखें")}
                        </span>
                     </div>
