@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -45,9 +45,15 @@ export function Navbar() {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language];
   const [active, setActive] = useState("hero");
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [scrollSpeed, setScrollSpeed] = useState(0);
   const pathname = usePathname();
+
+  // ⚡ Bolt: Removed scrollProgress and scrollSpeed from useState
+  // 💡 What: Replaced state variables with refs for high-frequency scroll updates
+  // 🎯 Why: Using useState in a scroll handler causes ~60 React re-renders per second while scrolling, destroying performance.
+  // 📊 Impact: Eliminates ~60 unnecessary render cycles per second during scroll for the entire Navbar.
+  const crosshairContainerRef = useRef<HTMLDivElement>(null);
+  const crosshairDotRef = useRef<HTMLDivElement>(null);
+  const currentScrollSpeed = useRef(0);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -60,12 +66,20 @@ export function Navbar() {
           const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
           const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
           
-          setScrollProgress(progress);
-          
           // Calculate scrolling speed/intensity (abstract data for HUD)
           const speed = Math.abs(currentScrollY - lastScrollY);
-          setScrollSpeed(Math.min(speed, 99)); // Cap at 99 for aesthetic
+          currentScrollSpeed.current = Math.min(speed, 99); // Cap at 99 for aesthetic
           lastScrollY = currentScrollY;
+
+          // ⚡ Bolt: Direct DOM manipulation for high-frequency style updates
+          if (crosshairContainerRef.current) {
+            crosshairContainerRef.current.style.top = `${progress}%`;
+            crosshairContainerRef.current.style.height = `${8 + (currentScrollSpeed.current * 0.5)}px`;
+          }
+
+          if (crosshairDotRef.current) {
+            crosshairDotRef.current.style.width = `${Math.max(4, 8 - (currentScrollSpeed.current * 0.05))}px`;
+          }
 
           // Determine active section
           const sections = currentNavItems.map((item) => ({
@@ -93,7 +107,17 @@ export function Navbar() {
 
     // Reset speed slowly when scrolling stops
     const speedInterval = setInterval(() => {
-      setScrollSpeed(prev => (prev > 0 ? Math.floor(prev * 0.8) : 0));
+      if (currentScrollSpeed.current > 0) {
+        currentScrollSpeed.current = Math.floor(currentScrollSpeed.current * 0.8);
+
+        // Update DOM for the settling speed
+        if (crosshairContainerRef.current) {
+          crosshairContainerRef.current.style.height = `${8 + (currentScrollSpeed.current * 0.5)}px`;
+        }
+        if (crosshairDotRef.current) {
+          crosshairDotRef.current.style.width = `${Math.max(4, 8 - (currentScrollSpeed.current * 0.05))}px`;
+        }
+      }
     }, 100);
 
     return () => {
@@ -140,21 +164,23 @@ export function Navbar() {
 
           {/* ACTIVE SCROLL SCANNED CROSSHAIR (Dynamic physics dot) */}
           <div 
+            ref={crosshairContainerRef}
             className="absolute left-0 right-0 flex items-center justify-center z-10 pointer-events-none"
             style={{ 
-              top: `${scrollProgress}%`, 
+              top: `0%`,
               transform: `translateY(-50%)`,
               // The transition gives it that smooth, springy physics feeling as top updates
               transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
               // Dynamically scale/stretch the height based on scroll speed. Base height is 8px.
-              height: `${8 + (scrollSpeed * 0.5)}px` 
+              height: `8px`
             }}
           >
             {/* The actual dot/shape */}
             <div 
+              ref={crosshairDotRef}
               className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-200"
               style={{
-                width: `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`, // Compress width slightly when moving fast
+                width: `8px`, // Compress width slightly when moving fast
                 height: '100%' // Fill the dynamically stretching parent
               }}
             />
