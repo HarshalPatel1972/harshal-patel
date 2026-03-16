@@ -88,14 +88,14 @@ export function Projects() {
                 </div>
                 <div className="flex flex-col items-center">
                   {(language === 'en' 
-                    ? "SPREAD_PROJECTS" 
+                    ? "EXPAND" 
                     : language === 'ja' 
-                    ? "作品_展開" 
+                    ? "展開" 
                     : language === 'ko' 
-                    ? "작품_전개" 
+                    ? "전개" 
                     : language === 'zh-tw'
-                    ? "展開_作品"
-                    : "विस्तार_परियोजनाएं"
+                    ? "展開"
+                    : "विस्तार"
                   ).split("_").map((word, wIdx) => (
                     <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>
                       {word.split("").map((char, cIdx) => (
