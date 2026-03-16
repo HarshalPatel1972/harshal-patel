@@ -166,5 +166,47 @@ export const profile = {
       { name: "Python / AI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  hi: {
+    name: "हर्षल पटेल",
+    title: "सॉफ्टवेयर इंजीनियर",
+    tagline: "Go, TypeScript और WebAssembly के साथ उच्च-प्रदर्शन सिस्टम का निर्माण",
+    bio: "प्रारंभिक करियर सॉफ्टवेयर इंजीनियरिंग छात्र, जिनके पास तीन तकनीकी स्टैक (Go, WebAssembly, TypeScript) में सॉफ्टवेयर सिस्टम को लागू करने और 300+ एल्गोरिथम समस्याओं को हल करने का व्यावहारिक अनुभव है। 200ms से कम की बाधाओं के तहत रनटाइम और मेमोरी ऑप्टिमाइज़ेशन में विशेषज्ञता।",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    location: "वाराणसी, भारत",
+    
+    education: {
+      school: "चंडीगढ़ विश्वविद्यालय",
+      degree: "B.E. CSE (AIML)",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "फ्रंट-एंड डेवलपर इंटर्न",
+        period: "मई 2025 – अक्टूबर 2025",
+        description: "डैशबोर्ड के लिए 15+ पुन: प्रयोज्य React घटकों का विकास किया; संगीत रिकॉर्ड के लिए Shazam API को एकीकृत किया; 5+ स्टेज के Kanban वर्कफ़्लो ट्रैकिंग का डिज़ाइन किया; Syncfusion का उपयोग करके 10+ इंटरैक्टिव सुविधाएँ लागू कीं।",
+      },
+      {
+        company: "Internshala",
+        role: "डेटा साइंस इंटर्न",
+        period: "जून 2024 – अगस्त 2024",
+        description: "Tableau के माध्यम से 5000+ बिक्री रिकॉर्ड को प्रोसेस किया; 85% सटीकता वाला लॉजिस्टिक रिग्रेशन मॉडल बनाया; मूविंग एवरेज फोरकास्टिंग का उपयोग करके इन्वेंट्री प्लानिंग में 20% सुधार किया; प्रशिक्षण दक्षता को 25% तक अनुकूलित किया।",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / सिस्टम", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / AI", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

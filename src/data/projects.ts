@@ -9,7 +9,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[] } = {
   en: [
     {
       title: "Aero",
@@ -296,6 +296,78 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
       specs: ["// 秒級以下導航", "// 無伺服器線索", "// 優化美學_"]
+    }
+  ],
+  hi: [
+    {
+      title: "Aero",
+      description: "LAN के माध्यम से 100MB/s+ तक पहुँचने वाला अगली पीढ़ी का स्थानीय फ़ाइल स्थानांतरण। E2EE (AES-256-CTR) और ज़ीरो-ट्रस्ट ऑप्टिकल हैंडशेक के साथ फीचर-समृद्ध डेस्कटॉप ऐप।",
+      tags: ["Go", "Wails", "React", "Crypto"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
+      mobileScreenshot: "/screenshots_phone/Aero.jpg",
+      specs: ["// गति_100MBPS+", "// E2EE_AES_256", "// नो_क्लाउड_प्रोटोकॉल_"]
+    },
+    {
+      title: "RIFT",
+      description: "ज़ीरो-फ्रिक्शन एयर टाइपिंग ब्रिज। बिना ऐप इंस्टॉल किए WebSockets और Win32 API के माध्यम से किसी भी स्मार्टफोन को उच्च-प्रदर्शन वाले PC इनपुट डिवाइस में बदल देता है।",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
+      mobileScreenshot: "/screenshots_phone/Rift.jpg",
+      specs: ["// सुस्ती_50MS_से_कम", "// ज़ीरो_फ्रिक्शन_प्रमाणीकरण", "// हेडलेस_रैपर_"]
+    },
+    {
+      title: "Momentum",
+      description: "AI एजेंट्स और आपकी जेब के बीच का सेतु। Telegram के माध्यम से Cursor/Windsurf के लिए रिमोट अप्रूवल सिस्टम, उच्च जोखिम वाले निष्पादन को सुरक्षित रखता है।",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
+      mobileScreenshot: "/screenshots_phone/Momentum.jpg",
+      specs: ["// MCP_तैयार", "// टेलीग्राम_ब्रिज", "// सुरक्षित_रिमोट_एग्जीक्यूशन_"]
+    },
+    {
+      title: "GoSync",
+      description: "डेल्टा सिंक्रोनाइज़ेशन के लिए मर्कल ट्री का उपयोग करने वाला ऑफ़लाइन-फ़र्स्ट सिंक इंजन। IndexedDB कोल्ड स्टोरेज के साथ डेटा ट्रांसफर को 70% तक कम करता है।" ,
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
+      mobileScreenshot: "/screenshots_phone/GoSync.jpg",
+      specs: ["// डेल्टा_सिंक_70%", "// मर्कल_ट्री_सत्यापन", "// ऑफ़लाइन_फ़र्स्ट_"]
+    },
+    {
+      title: "Velocity",
+      description: "WhatsApp RAM को 370MB से घटाकर 90MB करने वाला Windows सिस्टम ट्रे ऑप्टिमाइज़र। EcoQoS CPU गवर्नर और स्वचालित मेमोरी ट्रिमिंग लागू करता है।",
+      tags: ["C++", "Win32", "Optimization"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
+      mobileScreenshot: "/screenshots_phone/Velocity.jpg",
+      specs: ["// RAM_बचत_75%", "// ECO_QOS_प्राथमिकता", "// मेमोरी_ट्रिम_इंजन_"]
+    },
+    {
+      title: "WinLight",
+      description: "50,000+ फ़ाइलों को अनुक्रमित करने वाला Rust-पावर्ड स्पॉटलाइट जैसा सर्च। 100ms के भीतर परिणाम देने वाला मल्टी-स्ट्रैटेजी रैंक वाला मैचिंग।",
+      tags: ["Rust", "Tauri", "Algorithms"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
+      mobileScreenshot: "/screenshots_phone/Win-light.jpg",
+      specs: ["// 50K_फ़ाइल_अनुक्रमण", "// सुस्ती_100MS_से_कम", "// RUST_कॉन्करेंसी_"]
+    },
+    {
+      title: "A1 Tantra",
+      description: "उच्च-प्रदर्शन आध्यात्मिक मार्गदर्शन मंच। सर्वरलेस लीड-जेनरेशन आर्किटेक्चर के साथ उप-सेकंड मल्टी-पेज नेविगेशन प्राप्त किया।",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
+      mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
+      specs: ["// उप_सेकंड_नेविगेशन", "// सर्वरलेस_लीड्स", "// अनुकूलित_सौंदर्यशास्त्र_"]
     }
   ]
 };

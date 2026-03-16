@@ -31,6 +31,10 @@ export function Hero() {
     "zh-tw": [
       "正在追求速度？需要擴展規模？",
       "為勝利尋找新眼光？你已到達起源。現在，開始構築吧。"
+    ],
+    hi: [
+      "गति की तलाश है? स्केल की ज़रूरत है?",
+      "जीत के लिए एक नई नज़र? आप स्रोत तक पहुँच गए हैं। निर्माण शुरू करें।"
     ]
   };
 
@@ -100,7 +104,9 @@ export function Hero() {
                                   word.includes('속도') || word.includes('규모') || word.includes('승리') || 
                                   word.includes('기원') || word.includes('구축') ||
                                   word.includes('速度') || word.includes('規模') || word.includes('勝利') || 
-                                  word.includes('起源') || word.includes('構築');
+                                  word.includes('起源') || word.includes('構築') ||
+                                  word.includes('गति') || word.includes('स्केल') || word.includes('जीत') ||
+                                  word.includes('स्रोत') || word.includes('निर्माण');
                 
                 return (
                   <span 
@@ -171,7 +177,7 @@ export function Hero() {
           <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className="uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black font-display">
-                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : "開放合作機會"}
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : "अवसरों के लिए उपलब्ध"}
               </span>
             </div>
 
@@ -193,7 +199,7 @@ export function Hero() {
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className="text-white font-black font-display text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
-                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : "查看作品"}
+                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : "कार्य देखें"}
                   </span>
                 </div>
               </a>
@@ -201,7 +207,7 @@ export function Hero() {
                 <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className="text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black font-display text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em]">
-                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : "聯繫方式"}
+                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : "संपर्क करें"}
                   </span>
                 </div>
               </a>
