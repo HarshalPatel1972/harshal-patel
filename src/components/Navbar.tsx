@@ -64,6 +64,7 @@ export function Navbar() {
   const longPressActiveRef = useRef<boolean>(false);
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const chargeAnimRef = useRef<any>(null);
+  const growthAnimRef = useRef<any>(null);
   const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number }>({ vx: 0, vy: 0, x: 0, y: 0 });
   const lastTouchRef = useRef<{ x: number, y: number, time: number }>({ x: 0, y: 0, time: 0 });
   const rafRef = useRef<number | null>(null);
@@ -258,11 +259,13 @@ export function Navbar() {
   };
 
   const growBall = (target: number) => {
+    if (growthAnimRef.current) growthAnimRef.current.pause();
+    
     const growthObj = { s: dotScale };
-    anime(growthObj, {
+    growthAnimRef.current = anime(growthObj, {
       s: target,
-      duration: 800,
-      easing: 'easeOutElastic(1, .5)',
+      duration: 600,
+      easing: 'easeOutElastic(1, .6)',
       update: () => setDotScale(growthObj.s)
     });
   };
@@ -373,7 +376,7 @@ export function Navbar() {
               transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
               height: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : `${8 + (scrollSpeed * 0.5)}px`,
               width: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : '100%',
-              zIndex: dotMode === 'RELEASED' ? 1000 : 10,
+              zIndex: 10,
               pointerEvents: 'auto',
               touchAction: 'none'
             }}
