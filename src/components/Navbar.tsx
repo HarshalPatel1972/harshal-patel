@@ -137,10 +137,10 @@ export function Navbar() {
     if (dotMode !== 'RELEASED' || isDragging) return;
 
     const currentScale = physicsRef.current.scale;
-    // SPONGIER PHYSICS: Higher bounce and lower friction for big ball
-    const friction = 0.985 + ((currentScale - 1) / 3) * 0.014;
-    const bounce = -0.9 - ((currentScale - 1) / 3) * 0.2; 
-    const radius = (8 * currentScale) / 2;
+    // SPONGIER PHYSICS: High bounce and low friction for big ball
+    const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
+    const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
+    const radius = (25 * currentScale) / 2;
     
     let { x, y, vx, vy, squish } = physicsRef.current;
     
@@ -159,11 +159,11 @@ export function Navbar() {
     if (y + radius > height) { y = height - radius; vy *= bounce; hit = true; }
     if (y - radius < 0) { y = radius; vy *= bounce; hit = true; }
 
-    // SQUISH LOGIC (SPONGINESS)
+    // SQUISH LOGIC: 20% max compression as requested
     if (hit) {
-      squish = 0.4 + (Math.random() * 0.2); // Intense squish on impact
+      squish = 0.8 + (Math.random() * 0.1); 
     } else {
-      squish += (1 - squish) * 0.08; // Slower, more jiggly return to normal
+      squish += (1 - squish) * 0.12; 
     }
 
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
@@ -252,12 +252,12 @@ export function Navbar() {
       case 'RELEASED':
         // Logo Clicked while ball is OUT = Size Increase
         const s = physicsRef.current.scale;
-        if (s < 1.9) { 
+        
+        if (s < 1.5) { 
           growBall(2);
-        } else if (s < 3.8) { 
+        } else if (s < 3.5) { 
           growBall(4);
         } else { 
-          // Max size reached -> Re-dock
           returnToNav();
         }
         break;
@@ -387,8 +387,9 @@ export function Navbar() {
                 ? `translate(-50%, -50%) scale(${physicsRef.current.squish})` 
                 : `translateY(-50%)`,
               transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
-              height: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : `${8 + (scrollSpeed * 0.5)}px`,
-              width: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : '100%',
+              // INCREASED BASE SIZE: 25px base so 4x = 100px LARGE BALL
+              height: dotMode === 'RELEASED' ? `${25 * dotScale}px` : `${8 + (scrollSpeed * 0.5)}px`,
+              width: dotMode === 'RELEASED' ? `${25 * dotScale}px` : '100%',
               zIndex: 10,
               pointerEvents: 'auto',
               touchAction: 'none'
