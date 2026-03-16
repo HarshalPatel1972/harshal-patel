@@ -35,7 +35,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
 
     // Resolve paths and grid dimensions
     const resolvedSrc = isMobile 
-      ? `/screenshots_phone/${normalizedSlug}.jpg` 
+      ? `/screenshots/${normalizedSlug}.jpg` 
       : `/screenshots/${normalizedSlug}.webp`;
     
     const resolvedCols = isMobile ? 6 : 16;
