@@ -4,10 +4,10 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 
 interface FlipContextType {
   isActive: boolean;
-  desktopScreenshotSrc: string;
-  mobileScreenshotSrc: string;
+  screenshotSrc: string;
+  gridConfig: { cols: number; rows: number };
   redirectUrl: string;
-  triggerTransition: (desktopSrc: string, mobileSrc: string, redirectUrl: string) => void;
+  triggerTransition: (slug: string, redirectUrl: string) => void;
   resetTransition: () => void;
 }
 
@@ -15,20 +15,31 @@ const FlipContext = createContext<FlipContextType | undefined>(undefined);
 
 export function FlipProvider({ children }: { children: React.ReactNode }) {
   const [isActive, setIsActive] = useState(false);
-  const [desktopScreenshotSrc, setDesktopScreenshotSrc] = useState("");
-  const [mobileScreenshotSrc, setMobileScreenshotSrc] = useState("");
+  const [screenshotSrc, setScreenshotSrc] = useState("");
+  const [gridConfig, setGridConfig] = useState({ cols: 16, rows: 9 });
   const [redirectUrl, setRedirectUrl] = useState("");
 
   const resetTransition = useCallback(() => {
     setIsActive(false);
-    setDesktopScreenshotSrc("");
-    setMobileScreenshotSrc("");
+    setScreenshotSrc("");
+    setGridConfig({ cols: 16, rows: 9 });
     setRedirectUrl("");
   }, []);
 
-  const triggerTransition = useCallback((desktopSrc: string, mobileSrc: string, url: string) => {
-    setDesktopScreenshotSrc(desktopSrc);
-    setMobileScreenshotSrc(mobileSrc);
+  const triggerTransition = useCallback((slug: string, url: string) => {
+    // Detect screen size at the moment of click
+    const isMobile = window.innerWidth < 768;
+    
+    // Resolve paths and grid dimensions
+    const resolvedSrc = isMobile 
+      ? `/screenshots_phone/${slug}.jpg` 
+      : `/screenshots/${slug}.webp`;
+    
+    const resolvedCols = isMobile ? 20 : 16;
+    const resolvedRows = isMobile ? 12 : 9;
+
+    setScreenshotSrc(resolvedSrc);
+    setGridConfig({ cols: resolvedCols, rows: resolvedRows });
     setRedirectUrl(url);
     setIsActive(true);
   }, []);
@@ -46,7 +57,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
   }, [resetTransition]);
 
   return (
-    <FlipContext.Provider value={{ isActive, desktopScreenshotSrc, mobileScreenshotSrc, redirectUrl, triggerTransition, resetTransition }}>
+    <FlipContext.Provider value={{ isActive, screenshotSrc, gridConfig, redirectUrl, triggerTransition, resetTransition }}>
       {children}
     </FlipContext.Provider>
   );
