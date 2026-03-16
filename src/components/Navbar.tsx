@@ -341,7 +341,7 @@ export function Navbar() {
 
           <div 
             ref={dotRef}
-            className={`flex items-center justify-center z-[100] cursor-grab active:cursor-grabbing ${dotMode !== 'LOCKED' ? 'fixed' : 'absolute left-0 right-0'}`}
+            className={`flex items-center justify-center z-10 cursor-grab active:cursor-grabbing ${dotMode !== 'LOCKED' ? 'fixed' : 'absolute left-0 right-0'}`}
             style={{ 
               top: dotMode === 'RELEASED' ? dotPos.y : `${scrollProgress}%`,
               left: dotMode === 'RELEASED' ? dotPos.x : '0',
@@ -358,7 +358,7 @@ export function Navbar() {
             onTouchEnd={handleDotTouchEnd}
           >
             <div 
-              className={`rounded-full transition-all duration-300 ${dotMode === 'RELEASED' ? 'bg-[var(--text-bone)] mix-blend-difference shadow-[0_0_20px_rgba(255,255,255,0.4)]' : 'bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)]'}`}
+              className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300"
               style={{
                 width: dotMode === 'RELEASED' ? '100%' : `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`,
                 height: '100%',
