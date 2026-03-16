@@ -303,7 +303,7 @@ export function Navbar() {
     <>
       <nav 
         ref={navbarRef}
-        className="fixed right-0 top-0 bottom-0 z-50 w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 overflow-hidden touch-none"
+        className="fixed right-0 top-0 bottom-0 z-[100] w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 touch-none"
         style={{ userSelect: 'none' }}
       >
         
@@ -341,7 +341,7 @@ export function Navbar() {
 
           <div 
             ref={dotRef}
-            className={`flex items-center justify-center z-10 cursor-grab active:cursor-grabbing ${dotMode !== 'LOCKED' ? 'fixed' : 'absolute left-0 right-0'}`}
+            className={`flex items-center justify-center cursor-grab active:cursor-grabbing ${dotMode !== 'LOCKED' ? 'fixed' : 'absolute left-0 right-0'}`}
             style={{ 
               top: dotMode === 'RELEASED' ? dotPos.y : `${scrollProgress}%`,
               left: dotMode === 'RELEASED' ? dotPos.x : '0',
@@ -350,6 +350,7 @@ export function Navbar() {
               transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
               height: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : `${8 + (scrollSpeed * 0.5)}px`,
               width: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : '100%',
+              zIndex: dotMode === 'RELEASED' ? 1000 : 10,
               pointerEvents: 'auto',
               touchAction: 'none'
             }}
