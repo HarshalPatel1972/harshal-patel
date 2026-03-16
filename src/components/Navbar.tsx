@@ -59,6 +59,7 @@ export function Navbar() {
   const [isDragging, setIsDragging] = useState(false);
   
   const chargingLogoRef = useRef<boolean>(false);
+  const longPressActiveRef = useRef<boolean>(false);
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const chargeAnimRef = useRef<any>(null);
   const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number }>({ vx: 0, vy: 0, x: 0, y: 0 });
@@ -182,6 +183,8 @@ export function Navbar() {
     chargeTimerRef.current = setTimeout(() => {
       if (!chargingLogoRef.current) return;
       
+      longPressActiveRef.current = true; // Block the subsequent click event
+      
       // EJECT
       if (dotRef.current) {
         const rect = dotRef.current.getBoundingClientRect();
@@ -191,6 +194,7 @@ export function Navbar() {
         physicsRef.current = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, vx: 0, vy: 0 };
         setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
         setDotMode('RELEASED');
+        setDotScale(1); // Ensure ball comes out at normal size
         
         anime(physicsRef.current, {
           x: centerX,
@@ -207,42 +211,54 @@ export function Navbar() {
       s: 3,
       duration: duration,
       easing: 'linear',
-      update: () => setDotScale(scaleObj.s)
+      update: () => {
+        if (chargingLogoRef.current) setDotScale(scaleObj.s);
+      }
     });
   };
 
   const handleLogoTouchEnd = () => {
     chargingLogoRef.current = false;
-    if (dotMode === 'LOCKED' || dotMode === 'CHARGING') {
+    if (dotMode === 'CHARGING') {
       if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
       if (chargeAnimRef.current) chargeAnimRef.current.pause();
       setDotScale(1);
-      // Wait a frame to ensure we don't snap back improperly
-      requestAnimationFrame(() => setDotMode('LOCKED')); 
+      setDotMode('LOCKED');
     }
   };
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     
+    // If this click is the tail-end of a long-press release, ignore it
+    if (longPressActiveRef.current) {
+      longPressActiveRef.current = false;
+      return;
+    }
+    
     if (dotMode === 'RELEASED') {
-      if (dotScale < 4) {
-        // Double size logic: 1 -> 2 -> 4
-        const newScale = dotScale * 2;
-        const growthObj = { s: dotScale };
-        anime(growthObj, {
-          s: newScale,
-          duration: 600,
-          easing: 'easeOutElastic(1, .6)',
-          update: () => setDotScale(growthObj.s)
-        });
-      } else {
-        // At 4x, click re-docks
+      // Discrete growth steps: 1 -> 2 -> 4 -> Redock
+      if (dotScale < 1.5) { // At 1x
+        growBall(2);
+      } else if (dotScale < 3) { // At 2x
+        growBall(4);
+      } else { // At 4x
         returnToNav();
       }
-    } else if (dotMode === 'LOCKED') {
+    } else {
+      // Locked: Scroll to Home
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  };
+
+  const growBall = (target: number) => {
+    const growthObj = { s: dotScale };
+    anime(growthObj, {
+      s: target,
+      duration: 600,
+      easing: 'easeOutElastic(1, .6)',
+      update: () => setDotScale(growthObj.s)
+    });
   };
 
   // --- DOT DRAG HANDLERS ---
