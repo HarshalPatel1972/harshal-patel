@@ -4,36 +4,44 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 
 interface FlipContextType {
   isActive: boolean;
+  isPreloading: boolean;
+  loadingSlug: string | null;
   screenshotSrc: string;
   gridConfig: { cols: number; rows: number };
   redirectUrl: string;
   triggerTransition: (slug: string, redirectUrl: string) => void;
   resetTransition: () => void;
+  setPreloading: (loading: boolean, slug: string | null) => void;
 }
 
 const FlipContext = createContext<FlipContextType | undefined>(undefined);
 
 export function FlipProvider({ children }: { children: React.ReactNode }) {
   const [isActive, setIsActive] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(false);
+  const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
   const [screenshotSrc, setScreenshotSrc] = useState("");
   const [gridConfig, setGridConfig] = useState({ cols: 16, rows: 9 });
   const [redirectUrl, setRedirectUrl] = useState("");
 
   const resetTransition = useCallback(() => {
     setIsActive(false);
+    setIsPreloading(false);
+    setLoadingSlug(null);
     setScreenshotSrc("");
     setGridConfig({ cols: 16, rows: 9 });
     setRedirectUrl("");
   }, []);
 
+  const setPreloading = useCallback((loading: boolean, slug: string | null) => {
+    setIsPreloading(loading);
+    setLoadingSlug(slug);
+  }, []);
+
   const triggerTransition = useCallback((slug: string, url: string) => {
-    // Detect screen size at the moment of click
     const isMobile = window.innerWidth < 768;
-    
-    // Normalize slug to lowercase just in case
     const normalizedSlug = slug.toLowerCase();
 
-    // Resolve paths and grid dimensions
     const resolvedSrc = isMobile 
       ? `/screenshots/${normalizedSlug}.jpg` 
       : `/screenshots/${normalizedSlug}.webp`;
@@ -47,20 +55,29 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
     setIsActive(true);
   }, []);
 
-  // Listen for back-navigation (pageshow event) to reset the transition
+  // Listen for back-navigation
   React.useEffect(() => {
     const handlePageShow = (event: any) => {
       if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
         resetTransition();
       }
     };
-
     window.addEventListener("pageshow", handlePageShow);
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, [resetTransition]);
 
   return (
-    <FlipContext.Provider value={{ isActive, screenshotSrc, gridConfig, redirectUrl, triggerTransition, resetTransition }}>
+    <FlipContext.Provider value={{ 
+      isActive, 
+      isPreloading, 
+      loadingSlug, 
+      screenshotSrc, 
+      gridConfig, 
+      redirectUrl, 
+      triggerTransition, 
+      resetTransition,
+      setPreloading 
+    }}>
       {children}
     </FlipContext.Provider>
   );

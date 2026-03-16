@@ -20,13 +20,13 @@ interface Project {
 
 export function Projects() {
   const { language } = useLanguage();
-  const { triggerTransition } = useFlipTransition();
+  const { triggerTransition, isPreloading, loadingSlug, setPreloading } = useFlipTransition();
   const currentProjects = projects[language];
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isOverridden, setIsOverridden] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
 
-  // Entrance staggered animation (RESTORED)
+  // Entrance staggered animation
   useEffect(() => {
     if (!containerRef.current) return;
     const elements = containerRef.current.querySelectorAll(".project-card");
@@ -45,13 +45,9 @@ export function Projects() {
       ref={containerRef}
       className="relative pt-[46px] md:pt-[78px] pb-[10vh] px-6 md:px-8 bg-white flex flex-col items-center z-20"
     >
-      {/* Background ink texture (inverted for this section since background is white) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
-
-      {/* Vertical Kanji Watermark */}
       <SubliminalKanji kanji="作品" position="left" />
 
-      {/* Massive Section Title (MAPPA Layout) */}
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
@@ -73,7 +69,6 @@ export function Projects() {
       </div>
 
       <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-[calc(100%-2.5rem)] md:w-full mr-[2.5rem] md:mr-0 pl-0 md:pl-0'}`}>
-        {/* GLOBAL MASTER OVERRIDER (Z-Elevated to stay on top of all stacks) */}
         {!isOverridden && (
           <div className="absolute right-0 top-0 h-full w-10 md:w-12 pointer-events-none z-30">
             <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto flex justify-start pl-1">
@@ -114,6 +109,7 @@ export function Projects() {
 
         {currentProjects.map((project: Project, i: number) => {
           const isHovered = activeIndex === i;
+          const isLoading = isPreloading && loadingSlug === project.slug;
           
           return (
             <div 
@@ -128,25 +124,23 @@ export function Projects() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    setPreloading(true, project.slug);
                     triggerTransition(project.slug, project.link);
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
-                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[420px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden`}
+                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[420px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
                 >
-                  {/* Background Blood Splatter on Hover */}
                   <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
                      <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="currentColor" />
                   </svg>
 
-                  {/* Number Watermark */}
                   <div className="absolute top-4 right-4 text-[4rem] md:text-[8rem] font-black font-display text-[var(--text-bone)] opacity-25 select-none pointer-events-none leading-none z-0 transition-transform duration-500">
                     {String(i + 1).padStart(2, '0')}
                   </div>
 
                   <div className="relative z-10 flex flex-col h-full justify-between">
                     <div>
-                      {/* Tags / Categories */}
                       <div className="flex flex-wrap gap-2 mb-6">
                         {project.tags.map((tag: string) => (
                           <span key={tag} className="border border-[var(--text-bone)] text-[var(--text-bone)] px-3 py-1 text-xs font-bold uppercase tracking-widest font-sans bg-black/50">
@@ -155,18 +149,15 @@ export function Projects() {
                         ))}
                       </div>
 
-                      {/* Title */}
                       <h3 className={`text-3xl md:text-6xl lg:text-7xl font-black font-display uppercase tracking-[-0.02em] leading-none mb-6 transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-bone)]'}`}>
                         {project.title}
                       </h3>
 
-                      {/* Description */}
                       <p className={`text-[var(--text-muted)] font-sans text-sm md:text-lg leading-relaxed max-w-2xl border-l-[3px] pl-4 transition-colors duration-300 ${isHovered ? 'border-[var(--accent-blood)] text-[var(--text-bone)]' : 'border-[var(--text-muted)]'}`}>
                         {project.description}
                       </p>
                     </div>
 
-                    {/* Technical HUD Specs */}
                     <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
                       {project.specs.map((spec: string) => (
                         <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
@@ -175,7 +166,6 @@ export function Projects() {
                       ))}
                     </div>
 
-                    {/* CTA */}
                     <div className="mt-12 flex items-center gap-4">
                        <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
@@ -183,13 +173,12 @@ export function Projects() {
                          </svg>
                        </div>
                        <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                          {language === 'en' ? "View Project" : language === 'ja' ? "プロジェクトを見る" : language === 'ko' ? "프로젝트 보기" : "查看項目"}
+                          {language === 'en' ? (isLoading ? "Loading..." : "View Project") : language === 'ja' ? (isLoading ? "読み込み中..." : "プロジェクトを見る") : language === 'ko' ? (isLoading ? "로딩 중..." : "프로젝트 보기") : (isLoading ? "載入中..." : "查看項目")}
                        </span>
                     </div>
                   </div>
                 </KineticLink>
 
-                {/* LAYOUT PLACEHOLDER (Maintains sizing for all cards in stack) */}
                 {!isOverridden && (
                   <div className="w-8 md:w-10 shrink-0" />
                 )}
