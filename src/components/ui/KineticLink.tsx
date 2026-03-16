@@ -12,6 +12,7 @@ interface KineticLinkProps {
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   onMouseEnter?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   onMouseLeave?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  style?: React.CSSProperties;
   // This allows passing additional group states if needed
   isExternal?: boolean;
 }
@@ -33,6 +34,7 @@ export function KineticLink({
   onClick,
   onMouseEnter,
   onMouseLeave,
+  style,
   isExternal = false
 }: KineticLinkProps) {
   const router = useRouter();
@@ -74,6 +76,7 @@ export function KineticLink({
       target={target}
       rel={target === "_blank" ? "noopener noreferrer" : undefined}
       className={`${className} ${isCashed ? 'kinetic-active' : ''}`}
+      style={style}
     >
       {children}
     </a>
