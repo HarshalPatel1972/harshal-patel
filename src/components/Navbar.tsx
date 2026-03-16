@@ -151,7 +151,7 @@ export function Navbar() {
     vy *= friction;
 
     const width = window.innerWidth;
-    const height = window.innerHeight;
+    const height = document.documentElement.scrollHeight;
 
     let hit = false;
     if (x + radius > width) { x = width - radius; vx *= bounce; hit = true; }
@@ -200,7 +200,7 @@ export function Navbar() {
         
         if (dotRef.current) {
           const centerX = window.innerWidth / 2;
-          const centerY = window.innerHeight / 2 - 155;
+          const centerY = window.scrollY + window.innerHeight / 2 - 155;
           
           physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1, squish: 1 };
           setDotPos({ x: centerX, y: centerY });
@@ -311,10 +311,12 @@ export function Navbar() {
   const handleDotTouchStart = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
-      const dist = Math.hypot(touch.clientX - dotPos.x, touch.clientY - dotPos.y);
+      const pageX = touch.clientX;
+      const pageY = touch.clientY + window.scrollY;
+      const dist = Math.hypot(pageX - dotPos.x, pageY - dotPos.y);
       if (dist < 60) {
         setIsDragging(true);
-        lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+        lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() };
       }
     }
   };
@@ -322,15 +324,17 @@ export function Navbar() {
   const handleDotTouchMove = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED' && isDragging) {
       const touch = e.touches[0];
+      const pageX = touch.clientX;
+      const pageY = touch.clientY + window.scrollY;
       const now = Date.now();
       const dt = now - lastTouchRef.current.time;
       if (dt > 0) {
-        const vx = (touch.clientX - lastTouchRef.current.x) / (dt / 16);
-        const vy = (touch.clientY - lastTouchRef.current.y) / (dt / 16);
-        physicsRef.current = { ...physicsRef.current, x: touch.clientX, y: touch.clientY, vx, vy };
+        const vx = (pageX - lastTouchRef.current.x) / (dt / 16);
+        const vy = (pageY - lastTouchRef.current.y) / (dt / 16);
+        physicsRef.current = { ...physicsRef.current, x: pageX, y: pageY, vx, vy };
       }
-      setDotPos({ x: touch.clientX, y: touch.clientY });
-      lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: now };
+      setDotPos({ x: pageX, y: pageY });
+      lastTouchRef.current = { x: pageX, y: pageY, time: now };
     }
   };
 
@@ -340,11 +344,13 @@ export function Navbar() {
 
   return (
     <>
-      {/* SPLASH EFFECT LAYER */}
-      {showSplash && (
-        <div key="splash-layer" className="fixed inset-0 pointer-events-none z-[999]">
+      {/* DOCUMENT-LEVEL PHYSICS LAYER */}
+      <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: 'document' in typeof window ? document.documentElement.scrollHeight : '1000vh', zIndex: 999 }}>
+        
+        {/* SPLASH EFFECT */}
+        {showSplash && (
           <div 
-            className="absolute -translate-x-1/2 -translate-y-1/2"
+            className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             style={{ left: splashPos.x, top: splashPos.y }}
           >
             {[0, 1, 2].map((i) => (
@@ -361,8 +367,30 @@ export function Navbar() {
               />
             ))}
           </div>
-        </div>
-      )}
+        )}
+
+        {/* RELEASED BALL */}
+        {dotMode === 'RELEASED' && (
+          <div 
+            className="absolute cursor-grab active:cursor-grabbing pointer-events-auto"
+            style={{ 
+              top: dotPos.y,
+              left: dotPos.x,
+              transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`,
+              height: `${25 * dotScale}px`,
+              width: `${25 * dotScale}px`,
+              touchAction: 'none'
+            }}
+            onTouchStart={handleDotTouchStart}
+            onTouchMove={handleDotTouchMove}
+            onTouchEnd={handleDotTouchEnd}
+          >
+            <div 
+              className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300"
+            />
+          </div>
+        )}
+      </div>
 
       <nav 
         ref={navbarRef}
@@ -402,36 +430,28 @@ export function Navbar() {
              ))}
           </div>
 
-          <div 
-            ref={dotRef}
-            className={`flex items-center justify-center cursor-grab active:cursor-grabbing ${dotMode === 'RELEASED' ? 'fixed' : 'absolute left-0 right-0'}`}
-            style={{ 
-              top: dotMode === 'RELEASED' ? dotPos.y : `${scrollProgress}%`,
-              left: dotMode === 'RELEASED' ? dotPos.x : '0',
-              right: dotMode === 'RELEASED' ? 'auto' : '0',
-              transform: dotMode === 'RELEASED' 
-                ? `translate(-50%, -50%) scale(${physicsRef.current.squish})` 
-                : `translateY(-50%)`,
-              transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
-              // INCREASED BASE SIZE: 25px base so 4x = 100px LARGE BALL
-              height: dotMode === 'RELEASED' ? `${25 * dotScale}px` : `${8 + (scrollSpeed * 0.5)}px`,
-              width: dotMode === 'RELEASED' ? `${25 * dotScale}px` : '100%',
-              zIndex: 10,
-              pointerEvents: 'auto',
-              touchAction: 'none'
-            }}
-            onTouchStart={handleDotTouchStart}
-            onTouchMove={handleDotTouchMove}
-            onTouchEnd={handleDotTouchEnd}
-          >
+          {dotMode !== 'RELEASED' && (
             <div 
-              className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300"
-              style={{
-                width: dotMode === 'RELEASED' ? '100%' : `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`,
-                height: '100%',
+              ref={dotRef}
+              className="absolute left-0 right-0 flex items-center justify-center pointer-events-none"
+              style={{ 
+                top: `${scrollProgress}%`,
+                transform: `translateY(-50%)`,
+                transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
+                height: `${8 + (scrollSpeed * 0.5)}px`,
+                width: '100%',
+                zIndex: 10,
               }}
-            />
-          </div>
+            >
+              <div 
+                className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300"
+                style={{
+                  width: `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`,
+                  height: '100%',
+                }}
+              />
+            </div>
+          )}
 
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
             {currentNavItems.map((item) => {
