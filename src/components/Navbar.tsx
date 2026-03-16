@@ -158,11 +158,11 @@ export function Navbar() {
     if (y + radius > height) { y = height - radius; vy *= bounce; }
     if (y - radius < 0) { y = radius; vy *= bounce; }
 
-    physicsRef.current = { x, y, vx, vy };
+    physicsRef.current = { ...physicsRef.current, x, y, vx, vy };
     setDotPos({ x, y });
 
     rafRef.current = requestAnimationFrame(runPhysics);
-  }, [dotMode, isDragging, dotScale]);
+  }, [dotMode, isDragging, dotScale, physicsRef]);
 
   useEffect(() => {
     if (dotMode === 'RELEASED' && !isDragging) {
@@ -195,7 +195,7 @@ export function Navbar() {
         const centerY = window.innerHeight / 2 - 155;
         
         // SPAWN EXACTLY IN THE MIDDLE OF THE VIEWPORT
-        physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0 };
+        physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1 };
         setDotPos({ x: centerX, y: centerY });
         setDotScale(1); 
         setDotMode('RELEASED');
