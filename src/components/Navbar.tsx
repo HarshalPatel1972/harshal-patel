@@ -133,9 +133,7 @@ export function Navbar() {
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
 
-    // friction ranges from 0.985 (1x) to 0.997 (4x)
     const friction = 0.985 + ((dotScale - 1) / 3) * 0.012;
-    // bounce ranges from -0.8 (1x) to -1.0 (4x)
     const bounce = -0.8 - ((dotScale - 1) / 3) * 0.2;
     const radius = (8 * dotScale) / 2;
     
@@ -170,12 +168,14 @@ export function Navbar() {
     };
   }, [dotMode, isDragging, runPhysics]);
 
-  // --- LOGO LOGIC HANDLERS ---
+  // --- MASTER LOGO CONTROLLER ---
   const handleLogoTouchStart = () => {
     if (window.innerWidth >= 768) return;
     if (dotMode !== 'LOCKED') return;
 
     chargingLogoRef.current = true;
+    longPressActiveRef.current = false;
+    setDotMode('CHARGING');
     setDotScale(1);
     
     const duration = 2000;
@@ -183,9 +183,8 @@ export function Navbar() {
     chargeTimerRef.current = setTimeout(() => {
       if (!chargingLogoRef.current) return;
       
-      longPressActiveRef.current = true; // Block the subsequent click event
+      longPressActiveRef.current = true; // Guard to block immediate navigation click
       
-      // EJECT
       if (dotRef.current) {
         const rect = dotRef.current.getBoundingClientRect();
         const centerX = window.innerWidth / 2;
@@ -193,14 +192,14 @@ export function Navbar() {
         
         physicsRef.current = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, vx: 0, vy: 0 };
         setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
+        setDotScale(1); 
         setDotMode('RELEASED');
-        setDotScale(1); // Ensure ball comes out at normal size
         
         anime(physicsRef.current, {
           x: centerX,
           y: centerY,
-          duration: 1000,
-          easing: 'easeOutElastic(1, .6)',
+          duration: 1200,
+          easing: 'easeOutElastic(1, .5)',
           update: () => setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y })
         });
       }
@@ -230,24 +229,32 @@ export function Navbar() {
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    // If this click is the tail-end of a long-press release, ignore it
+    // Debug Log
+    console.log("[Logo Control] Current Mode:", dotMode, "| Scale:", dotScale);
+
+    // Guard: Block click if we just finished a long-press ejection
     if (longPressActiveRef.current) {
       longPressActiveRef.current = false;
       return;
     }
     
-    if (dotMode === 'RELEASED') {
-      // Discrete growth steps: 1 -> 2 -> 4 -> Redock
-      if (dotScale < 1.5) { // At 1x
-        growBall(2);
-      } else if (dotScale < 3) { // At 2x
-        growBall(4);
-      } else { // At 4x
-        returnToNav();
-      }
-    } else {
-      // Locked: Scroll to Home
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    switch (dotMode) {
+      case 'RELEASED':
+        // CYCLE: 1x -> 2x -> 4x -> Re-dock
+        if (dotScale < 1.5) { // Roughly 1x
+          growBall(2);
+        } else if (dotScale < 3) { // Roughly 2x
+          growBall(4);
+        } else { // 4x or beyond
+          returnToNav();
+        }
+        break;
+
+      case 'LOCKED':
+      default:
+        // Standard Home navigation
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        break;
     }
   };
 
@@ -255,8 +262,8 @@ export function Navbar() {
     const growthObj = { s: dotScale };
     anime(growthObj, {
       s: target,
-      duration: 600,
-      easing: 'easeOutElastic(1, .6)',
+      duration: 800,
+      easing: 'easeOutElastic(1, .5)',
       update: () => setDotScale(growthObj.s)
     });
   };
@@ -300,11 +307,11 @@ export function Navbar() {
         style={{ userSelect: 'none' }}
       >
         
-        {/* LOGO BUTTON - Primary Controller */}
+        {/* MASTER LOGO CONTROLLER */}
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
             <button 
-               onMouseDown={(e) => { e.preventDefault(); handleLogoTouchStart(); }}
+               onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }}
                onMouseUp={handleLogoTouchEnd}
                onMouseLeave={handleLogoTouchEnd}
                onTouchStart={handleLogoTouchStart}
@@ -332,7 +339,6 @@ export function Navbar() {
              ))}
           </div>
 
-          {/* DYNAMIC PHYSICS DOT */}
           <div 
             ref={dotRef}
             className={`flex items-center justify-center z-[100] cursor-grab active:cursor-grabbing ${dotMode !== 'LOCKED' ? 'fixed' : 'absolute left-0 right-0'}`}
@@ -342,8 +348,8 @@ export function Navbar() {
               right: dotMode === 'RELEASED' ? 'auto' : '0',
               transform: dotMode === 'RELEASED' ? `translate(-50%, -50%)` : `translateY(-50%)`,
               transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
-              height: dotMode === 'RELEASED' ? `${8 * dotScale}px` : `${8 + (scrollSpeed * 0.5)}px`,
-              width: dotMode === 'RELEASED' ? `${8 * dotScale}px` : '100%',
+              height: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : `${8 + (scrollSpeed * 0.5)}px`,
+              width: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : '100%',
               pointerEvents: 'auto',
               touchAction: 'none'
             }}
