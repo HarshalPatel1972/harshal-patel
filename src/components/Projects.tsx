@@ -127,6 +127,8 @@ export function Projects() {
                   target="_blank"
                   onClick={(e) => {
                     e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Triggering transition for', project.slug);
                     triggerTransition(`/screenshots/${project.slug}.webp`, project.mobileScreenshot, project.link);
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
