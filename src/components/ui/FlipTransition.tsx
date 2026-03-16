@@ -62,8 +62,9 @@ export function FlipTransition() {
         className="fixed inset-0 z-[9998] bg-[#050505]"
         style={{
           backgroundImage: `url('${screenshotSrc}')`,
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
         }}
       />
 
