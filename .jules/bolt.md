@@ -1,0 +1,4 @@
+
+## 2024-03-09 - Avoid React State in High-Frequency Scroll Listeners
+**Learning:** `src/components/Navbar.tsx` was tracking scroll progress and speed using React `useState` hooks inside a `requestAnimationFrame` block attached to a `scroll` event. This was triggering unnecessary full component re-renders up to 60 times per second while scrolling, causing layout thrashing and degrading scroll performance. This is an anti-pattern for performance-critical components.
+**Action:** When tracking high-frequency events like scroll position or speed to animate UI elements (like the scroll progress dot), use `useRef` to track the values and directly mutate the DOM styles (`element.style.top`, `element.style.height`) via refs instead of using `setState`. This bypasses React's render cycle completely.
