@@ -65,7 +65,7 @@ export function Navbar() {
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const chargeAnimRef = useRef<any>(null);
   const growthAnimRef = useRef<any>(null);
-  const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number }>({ vx: 0, vy: 0, x: 0, y: 0 });
+  const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number, scale: number }>({ vx: 0, vy: 0, x: 0, y: 0, scale: 1 });
   const lastTouchRef = useRef<{ x: number, y: number, time: number }>({ x: 0, y: 0, time: 0 });
   const rafRef = useRef<number | null>(null);
   const dotRef = useRef<HTMLDivElement>(null);
@@ -136,9 +136,11 @@ export function Navbar() {
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
 
-    const friction = 0.985 + ((dotScale - 1) / 3) * 0.012;
-    const bounce = -0.8 - ((dotScale - 1) / 3) * 0.2;
-    const radius = (8 * dotScale) / 2;
+    const currentScale = physicsRef.current.scale;
+    // SPONGIER PHYSICS: Higher bounce and lower friction for big ball
+    const friction = 0.985 + ((currentScale - 1) / 3) * 0.014;
+    const bounce = -0.9 - ((currentScale - 1) / 3) * 0.2; // Max bounce -1.1 (Super spongy)
+    const radius = (8 * currentScale) / 2;
     
     let { x, y, vx, vy } = physicsRef.current;
     
@@ -241,11 +243,14 @@ export function Navbar() {
     switch (dotMode) {
       case 'RELEASED':
         // CYCLE: 1x -> 2x -> 4x -> Re-dock
-        if (dotScale < 1.5) { // Roughly 1x
+        const currentS = physicsRef.current.scale;
+        console.log("[Size Check] Current Scale Ref:", currentS);
+        
+        if (currentS < 1.8) { 
           growBall(2);
-        } else if (dotScale < 3) { // Roughly 2x
+        } else if (currentS < 3.5) { 
           growBall(4);
-        } else { // 4x or beyond
+        } else { 
           returnToNav();
         }
         break;
@@ -261,12 +266,11 @@ export function Navbar() {
   const growBall = (target: number) => {
     if (growthAnimRef.current) growthAnimRef.current.pause();
     
-    const growthObj = { s: dotScale };
-    growthAnimRef.current = anime(growthObj, {
-      s: target,
-      duration: 600,
-      easing: 'easeOutElastic(1, .6)',
-      update: () => setDotScale(growthObj.s)
+    growthAnimRef.current = anime(physicsRef.current, {
+      scale: target,
+      duration: 800,
+      easing: 'easeOutElastic(1, .5)', // EXTRA SPONGY GROWTH
+      update: () => setDotScale(physicsRef.current.scale)
     });
   };
 
@@ -372,7 +376,9 @@ export function Navbar() {
               top: dotMode === 'RELEASED' ? dotPos.y : `${scrollProgress}%`,
               left: dotMode === 'RELEASED' ? dotPos.x : '0',
               right: dotMode === 'RELEASED' ? 'auto' : '0',
-              transform: dotMode === 'RELEASED' ? `translate(-50%, -50%)` : `translateY(-50%)`,
+              transform: dotMode === 'RELEASED' 
+                ? `translate(-50%, -50%) scale(${1 + Math.abs(physicsRef.current.vx + physicsRef.current.vy) * 0.01})` 
+                : `translateY(-50%)`,
               transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
               height: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : `${8 + (scrollSpeed * 0.5)}px`,
               width: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : '100%',
