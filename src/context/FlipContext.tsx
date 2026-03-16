@@ -38,8 +38,8 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
       ? `/screenshots_phone/${normalizedSlug}.jpg` 
       : `/screenshots/${normalizedSlug}.webp`;
     
-    const resolvedCols = isMobile ? 20 : 16;
-    const resolvedRows = isMobile ? 12 : 9;
+    const resolvedCols = isMobile ? 6 : 16;
+    const resolvedRows = isMobile ? 10 : 9;
 
     setScreenshotSrc(resolvedSrc);
     setGridConfig({ cols: resolvedCols, rows: resolvedRows });

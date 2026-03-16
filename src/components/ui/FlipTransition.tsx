@@ -59,71 +59,93 @@ export function FlipTransition() {
 
   if (!shouldRender || !isActive) return null;
 
-  return (
-    <>
-      {/* Grid Overlay Layer */}
+  const isMobile = cols === 6; // Based on the context setting
+
+  // Helper to render a square
+  const renderSquare = (i: number, currentCols: number, currentRows: number, currentSrc: string) => {
+    const colIndex = i % currentCols;
+    const rowIndex = Math.floor(i / currentCols);
+    const isFlipped = flippedIndices.has(i);
+
+    return (
       <div 
-        className="fixed inset-0 z-[10000] pointer-events-none"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-          gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
-          width: '100vw',
-          height: '100vh',
+        key={i} 
+        className="relative w-full h-full" 
+        style={{ 
+          perspective: '2000px',
+          WebkitPerspective: '2000px'
         }}
       >
-        {Array.from({ length: cols * rows }).map((_, i) => {
-          const col = i % cols;
-          const row = Math.floor(i / cols);
-          
-          return (
-            <div 
-              key={i} 
-              className="relative w-full h-full" 
-              style={{ 
-                perspective: '2000px',
-                WebkitPerspective: '2000px'
-              }}
-            >
-              <div 
-                className="w-full h-full transition-transform duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-                style={{
-                  transformStyle: 'preserve-3d',
-                  WebkitTransformStyle: 'preserve-3d',
-                  transform: flippedIndices.has(i) ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)',
-                  WebkitTransform: flippedIndices.has(i) ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)'
-                }}
-              >
-                {/* Front Face (FORCE TRANSPARENT) */}
-                <div 
-                  className="absolute inset-0"
-                  style={{ 
-                    backgroundColor: 'transparent',
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden',
-                    transform: 'translateZ(0)',
-                    WebkitTransform: 'translateZ(0)'
-                  }}
-                />
-                {/* Back Face (SLICED SCREENSHOT) */}
-                <div 
-                  className="absolute inset-0 bg-[#111]"
-                  style={{ 
-                    backfaceVisibility: 'hidden',
-                    WebkitBackfaceVisibility: 'hidden',
-                    transform: 'rotateY(180deg) translateZ(1px)',
-                    WebkitTransform: 'rotateY(180deg) translateZ(1px)',
-                    backgroundImage: `url('${screenshotSrc}')`,
-                    backgroundSize: `${cols * 100}% ${rows * 100}%`,
-                    backgroundPosition: `${(col / (cols - 1)) * 100}% ${(row / (rows - 1)) * 100}%`,
-                    backgroundRepeat: 'no-repeat'
-                  }}
-                />
-              </div>
-            </div>
-          );
-        })}
+        <div 
+          className="w-full h-full transition-transform duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+          style={{
+            transformStyle: 'preserve-3d',
+            WebkitTransformStyle: 'preserve-3d',
+            transform: isFlipped ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)',
+            WebkitTransform: isFlipped ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)'
+          }}
+        >
+          {/* Front Face - EXPLICITLY TRANSPARENT */}
+          <div 
+            className="absolute inset-0"
+            style={{ 
+              backgroundColor: 'transparent',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              WebkitTransform: 'translateZ(0)'
+            }}
+          />
+          {/* Back Face - DYNAMIC SLICE */}
+          <div 
+            className="absolute inset-0 bg-[#111]"
+            style={{ 
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              transform: 'rotateY(180deg) translateZ(1px)',
+              WebkitTransform: 'rotateY(180deg) translateZ(1px)',
+              backgroundImage: `url('${currentSrc}')`,
+              backgroundSize: `${currentCols * 100}% ${currentRows * 100}%`,
+              backgroundPosition: `${(colIndex / (currentCols - 1)) * 100}% ${(rowIndex / (currentRows - 1)) * 100}%`,
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+        </div>
       </div>
+    );
+  };
+
+  return (
+    <>
+      {isMobile ? (
+        /* MOBILE PATH: 6x10 Portrait Grid */
+        <div 
+          className="fixed inset-0 z-[10000] pointer-events-none"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(6, minmax(0, 1fr))`,
+            gridTemplateRows: `repeat(10, minmax(0, 1fr))`,
+            width: '100vw',
+            height: '100vh',
+          }}
+        >
+          {Array.from({ length: 6 * 10 }).map((_, i) => renderSquare(i, 6, 10, screenshotSrc))}
+        </div>
+      ) : (
+        /* DESKTOP PATH: 16x9 Landscape Grid */
+        <div 
+          className="fixed inset-0 z-[10000] pointer-events-none"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(16, minmax(0, 1fr))`,
+            gridTemplateRows: `repeat(9, minmax(0, 1fr))`,
+            width: '100vw',
+            height: '100vh',
+          }}
+        >
+          {Array.from({ length: 16 * 9 }).map((_, i) => renderSquare(i, 16, 9, screenshotSrc))}
+        </div>
+      )}
     </>
   );
 }
