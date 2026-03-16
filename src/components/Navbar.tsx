@@ -58,6 +58,7 @@ export function Navbar() {
   const [dotScale, setDotScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   
+  const chargingLogoRef = useRef<boolean>(false);
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const chargeAnimRef = useRef<any>(null);
   const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number }>({ vx: 0, vy: 0, x: 0, y: 0 });
@@ -69,6 +70,7 @@ export function Navbar() {
   const returnToNav = useCallback(() => {
     setDotMode('LOCKED');
     setDotScale(1);
+    setIsDragging(false);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
@@ -130,7 +132,6 @@ export function Navbar() {
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
 
-    // PHYSICS SCALING LOGIC: Bigger ball = less loss, more jump
     // friction ranges from 0.985 (1x) to 0.997 (4x)
     const friction = 0.985 + ((dotScale - 1) / 3) * 0.012;
     // bounce ranges from -0.8 (1x) to -1.0 (4x)
@@ -139,15 +140,12 @@ export function Navbar() {
     
     let { x, y, vx, vy } = physicsRef.current;
     
-    // Apply velocity
     x += vx;
     y += vy;
     
-    // Apply friction
     vx *= friction;
     vy *= friction;
 
-    // Boundary checks
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -156,7 +154,6 @@ export function Navbar() {
     if (y + radius > height) { y = height - radius; vy *= bounce; }
     if (y - radius < 0) { y = radius; vy *= bounce; }
 
-    // Update refs and state
     physicsRef.current = { x, y, vx, vy };
     setDotPos({ x, y });
 
@@ -172,99 +169,111 @@ export function Navbar() {
     };
   }, [dotMode, isDragging, runPhysics]);
 
-  // --- TOUCH HANDLERS ---
-  const handleTouchStart = (e: React.TouchEvent) => {
+  // --- LOGO LOGIC HANDLERS ---
+  const handleLogoTouchStart = () => {
     if (window.innerWidth >= 768) return;
+    if (dotMode !== 'LOCKED') return;
 
-    if (dotMode === 'LOCKED') {
-      setDotMode('CHARGING');
+    chargingLogoRef.current = true;
+    setDotScale(1);
+    
+    const duration = 2000;
+    
+    chargeTimerRef.current = setTimeout(() => {
+      if (!chargingLogoRef.current) return;
+      
+      // EJECT
+      if (dotRef.current) {
+        const rect = dotRef.current.getBoundingClientRect();
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        
+        physicsRef.current = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, vx: 0, vy: 0 };
+        setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
+        setDotMode('RELEASED');
+        
+        anime(physicsRef.current, {
+          x: centerX,
+          y: centerY,
+          duration: 1000,
+          easing: 'easeOutElastic(1, .6)',
+          update: () => setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y })
+        });
+      }
+    }, duration);
+
+    const scaleObj = { s: 1 };
+    chargeAnimRef.current = anime(scaleObj, {
+      s: 3,
+      duration: duration,
+      easing: 'linear',
+      update: () => setDotScale(scaleObj.s)
+    });
+  };
+
+  const handleLogoTouchEnd = () => {
+    chargingLogoRef.current = false;
+    if (dotMode === 'LOCKED' || dotMode === 'CHARGING') {
+      if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
+      if (chargeAnimRef.current) chargeAnimRef.current.pause();
       setDotScale(1);
-      
-      const duration = 2000; // Hold time to eject
-      
-      chargeTimerRef.current = setTimeout(() => {
-        // EJECT
-        if (dotRef.current) {
-          const rect = dotRef.current.getBoundingClientRect();
-          const centerX = window.innerWidth / 2;
-          const centerY = window.innerHeight / 2;
-          
-          physicsRef.current = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, vx: 0, vy: 0 };
-          setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
-          setDotMode('RELEASED');
-          
-          anime(physicsRef.current, {
-            x: centerX,
-            y: centerY,
-            duration: 1000,
-            easing: 'easeOutElastic(1, .6)',
-            update: () => setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y })
-          });
-        }
-      }, duration);
+      // Wait a frame to ensure we don't snap back improperly
+      requestAnimationFrame(() => setDotMode('LOCKED')); 
+    }
+  };
 
-      // Visual scale animation
-      const scaleObj = { s: 1 };
-      chargeAnimRef.current = anime(scaleObj, {
-        s: 3,
-        duration: duration,
-        easing: 'linear',
-        update: () => setDotScale(scaleObj.s)
-      });
-    } else if (dotMode === 'RELEASED') {
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (dotMode === 'RELEASED') {
+      if (dotScale < 4) {
+        // Double size logic: 1 -> 2 -> 4
+        const newScale = dotScale * 2;
+        const growthObj = { s: dotScale };
+        anime(growthObj, {
+          s: newScale,
+          duration: 600,
+          easing: 'easeOutElastic(1, .6)',
+          update: () => setDotScale(growthObj.s)
+        });
+      } else {
+        // At 4x, click re-docks
+        returnToNav();
+      }
+    } else if (dotMode === 'LOCKED') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // --- DOT DRAG HANDLERS ---
+  const handleDotTouchStart = (e: React.TouchEvent) => {
+    if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
       const dist = Math.hypot(touch.clientX - dotPos.x, touch.clientY - dotPos.y);
-      
-      // Grab radius slightly larger for convenience
-      if (dist < 60) { 
+      if (dist < 60) {
         setIsDragging(true);
         lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
-        
-        // GROWTH LOGIC: Hold ball while released to grow it
-        chargeTimerRef.current = setTimeout(() => {
-          const targetScale = Math.min(dotScale * 2, 4);
-          if (targetScale !== dotScale) {
-            const growthObj = { s: dotScale };
-            anime(growthObj, {
-              s: targetScale,
-              duration: 800,
-              easing: 'easeOutElastic(1, .5)',
-              update: () => setDotScale(growthObj.s)
-            });
-          }
-        }, 2000);
       }
     }
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleDotTouchMove = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED' && isDragging) {
       const touch = e.touches[0];
       const now = Date.now();
       const dt = now - lastTouchRef.current.time;
-      
       if (dt > 0) {
-        // High-precision velocity calculation
         const vx = (touch.clientX - lastTouchRef.current.x) / (dt / 16);
         const vy = (touch.clientY - lastTouchRef.current.y) / (dt / 16);
         physicsRef.current = { ...physicsRef.current, x: touch.clientX, y: touch.clientY, vx, vy };
       }
-      
       setDotPos({ x: touch.clientX, y: touch.clientY });
       lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: now };
     }
   };
 
-  const handleTouchEnd = () => {
-    if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
-    
-    if (dotMode === 'CHARGING') {
-      setDotMode('LOCKED');
-      setDotScale(1);
-      if (chargeAnimRef.current) chargeAnimRef.current.pause();
-    } else if (dotMode === 'RELEASED') {
-      setIsDragging(false);
-    }
+  const handleDotTouchEnd = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -275,20 +284,17 @@ export function Navbar() {
         style={{ userSelect: 'none' }}
       >
         
-        {/* TOP BRAND INDICATOR - Now serves as RE-DOCK trigger */}
+        {/* LOGO BUTTON - Primary Controller */}
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
             <button 
-               onClick={(e) => {
-                 e.preventDefault();
-                 if (dotMode === 'RELEASED') {
-                   returnToNav();
-                 } else {
-                   // Navigate to absolute top (Landing Page view)
-                   window.scrollTo({ top: 0, behavior: 'smooth' });
-                 }
-               }}
-               className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden"
+               onMouseDown={(e) => { e.preventDefault(); handleLogoTouchStart(); }}
+               onMouseUp={handleLogoTouchEnd}
+               onMouseLeave={handleLogoTouchEnd}
+               onTouchStart={handleLogoTouchStart}
+               onTouchEnd={handleLogoTouchEnd}
+               onClick={handleLogoClick}
+               className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation"
             >
               <img 
                 src="/icon.png" 
@@ -325,9 +331,9 @@ export function Navbar() {
               pointerEvents: 'auto',
               touchAction: 'none'
             }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            onTouchStart={handleDotTouchStart}
+            onTouchMove={handleDotTouchMove}
+            onTouchEnd={handleDotTouchEnd}
           >
             <div 
               className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-200"
@@ -341,7 +347,6 @@ export function Navbar() {
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
             {currentNavItems.map((item) => {
               const isActive = active === item.id;
-
               return (
                 <a
                   key={item.id}
