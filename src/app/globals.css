@@ -76,10 +76,12 @@ body::before {
 
 /* ─── GRID UTILITIES ─── */
 .grid-cols-16 {
-  grid-template-columns: repeat(16, minmax(0, 1fr));
+  display: grid !important;
+  grid-template-columns: repeat(16, minmax(0, 1fr)) !important;
 }
 .grid-rows-9 {
-  grid-template-rows: repeat(9, minmax(0, 1fr));
+  display: grid !important;
+  grid-template-rows: repeat(9, minmax(0, 1fr)) !important;
 }
 
 /* ─── MANGA PANEL SYSTEM ─── */
