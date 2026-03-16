@@ -94,17 +94,18 @@ export function FlipTransition() {
                   WebkitTransform: flippedIndices.has(i) ? 'rotateY(180deg) translateZ(0)' : 'rotateY(0deg) translateZ(0)'
                 }}
               >
-                {/* Front Face */}
+                {/* Front Face (FORCE TRANSPARENT) */}
                 <div 
-                  className="absolute inset-0 bg-transparent"
+                  className="absolute inset-0"
                   style={{ 
+                    backgroundColor: 'transparent',
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
                     transform: 'translateZ(0)',
                     WebkitTransform: 'translateZ(0)'
                   }}
                 />
-                {/* Back Face */}
+                {/* Back Face (SLICED SCREENSHOT) */}
                 <div 
                   className="absolute inset-0 bg-[#111]"
                   style={{ 

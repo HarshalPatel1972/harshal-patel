@@ -30,10 +30,13 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
     // Detect screen size at the moment of click
     const isMobile = window.innerWidth < 768;
     
+    // Normalize slug to lowercase just in case
+    const normalizedSlug = slug.toLowerCase();
+
     // Resolve paths and grid dimensions
     const resolvedSrc = isMobile 
-      ? `/screenshots_phone/${slug}.jpg` 
-      : `/screenshots/${slug}.webp`;
+      ? `/screenshots_phone/${normalizedSlug}.jpg` 
+      : `/screenshots/${normalizedSlug}.webp`;
     
     const resolvedCols = isMobile ? 20 : 16;
     const resolvedRows = isMobile ? 12 : 9;
