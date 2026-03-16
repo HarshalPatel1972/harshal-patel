@@ -27,12 +27,14 @@ export function FlipTransition() {
       setFlippedIndices(new Set());
 
       const staggerInterval = 1800 / (COLS * ROWS);
+      const timers: NodeJS.Timeout[] = [];
       
       // Start flipping one by one
       shuffledIndices.forEach((idx, i) => {
-        setTimeout(() => {
+        const t = setTimeout(() => {
           setFlippedIndices(prev => new Set(prev).add(idx));
         }, i * staggerInterval);
+        timers.push(t);
       });
 
       // Handle redirect
@@ -41,7 +43,10 @@ export function FlipTransition() {
         window.location.href = redirectUrl;
       }, totalAnimationTime);
 
-      return () => clearTimeout(redirectTimeout);
+      return () => {
+        timers.forEach(t => clearTimeout(t));
+        clearTimeout(redirectTimeout);
+      };
     } else {
       setShouldRender(false);
       setFlippedIndices(new Set());
