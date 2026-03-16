@@ -161,9 +161,9 @@ export function Navbar() {
 
     // SQUISH LOGIC (SPONGINESS)
     if (hit) {
-      squish = 0.6 + (Math.random() * 0.2); // Squish down on impact
+      squish = 0.4 + (Math.random() * 0.2); // Intense squish on impact
     } else {
-      squish += (1 - squish) * 0.15; // Smoothly return to normal
+      squish += (1 - squish) * 0.08; // Slower, more jiggly return to normal
     }
 
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
@@ -250,15 +250,14 @@ export function Navbar() {
     
     switch (dotMode) {
       case 'RELEASED':
-        // CYCLE: 1x -> 2x -> 4x -> Re-dock
-        const currentS = physicsRef.current.scale;
-        console.log("[Size Check] Current Scale Ref:", currentS);
-        
-        if (currentS < 1.8) { 
+        // Logo Clicked while ball is OUT = Size Increase
+        const s = physicsRef.current.scale;
+        if (s < 1.9) { 
           growBall(2);
-        } else if (currentS < 3.5) { 
+        } else if (s < 3.8) { 
           growBall(4);
         } else { 
+          // Max size reached -> Re-dock
           returnToNav();
         }
         break;
@@ -276,8 +275,8 @@ export function Navbar() {
     
     growthAnimRef.current = anime(physicsRef.current, {
       scale: target,
-      duration: 800,
-      easing: 'easeOutElastic(1, .5)', // EXTRA SPONGY GROWTH
+      duration: 600, // Faster, snappier growth
+      easing: 'easeOutElastic(1.2, .4)', // Much more physical/jiggly grow
       update: () => setDotScale(physicsRef.current.scale)
     });
   };
