@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
+import { ScrollReveal } from './ScrollReveal';
+import SystemExorcismSeal from './ui/SystemExorcismSeal';
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -166,13 +168,8 @@ export function Hero() {
           {/* Vertical Kanji Watermark */}
           <SubliminalKanji kanji="起源" position="right" />
 
-          {/* ─── MAPPA INK-SLASH (Visual Element Only) ─── */}
-          <div className="ink-slash absolute left-[-10%] sm:left-[5%] top-[10%] w-[120%] sm:w-[90%] h-[70%] z-0 pointer-events-none opacity-100 select-none flex items-center justify-center">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full drop-shadow-2xl opacity-100">
-                <path d="M10,80 Q30,50 60,60 T90,20 Q80,10 50,40 T10,80 Z" fill="var(--accent-blood)" opacity="0.6" />
-                <path d="M5,90 Q40,40 70,70 T95,10 Q70,30 30,80 T5,90 Z" fill="var(--accent-blood)" opacity="0.5" />
-              </svg>
-          </div>
+          {/* ─── SYSTEM EXORCISM SEAL (Narrative Background) ─── */}
+          <SystemExorcismSeal />
 
           <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
