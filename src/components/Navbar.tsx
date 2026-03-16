@@ -57,6 +57,8 @@ export function Navbar() {
   const [dotPos, setDotPos] = useState({ x: 0, y: 0 });
   const [dotScale, setDotScale] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
+  const [showSplash, setShowSplash] = useState(false);
+  const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
@@ -188,19 +190,25 @@ export function Navbar() {
       if (dotRef.current) {
         const rect = dotRef.current.getBoundingClientRect();
         const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        const currentY = rect.top + rect.height/2;
         
-        physicsRef.current = { x: rect.left + rect.width/2, y: rect.top + rect.height/2, vx: 0, vy: 0 };
+        physicsRef.current = { x: rect.left + rect.width/2, y: currentY, vx: 0, vy: 0 };
         setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
         setDotScale(1); 
         setDotMode('RELEASED');
         
+        // Eject to horizontally centered at the current Y
         anime(physicsRef.current, {
           x: centerX,
-          y: centerY,
-          duration: 1200,
-          easing: 'easeOutElastic(1, .5)',
-          update: () => setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y })
+          duration: 800,
+          easing: 'easeOutCirc',
+          update: () => setDotPos(prev => ({ ...prev, x: physicsRef.current.x })),
+          complete: () => {
+            // TRIGGER SPLASH
+            setSplashPos({ x: centerX, y: currentY });
+            setShowSplash(true);
+            setTimeout(() => setShowSplash(false), 1000);
+          }
         });
       }
     }, duration);
@@ -301,6 +309,30 @@ export function Navbar() {
 
   return (
     <>
+      {/* SPLASH EFFECT LAYER */}
+      {showSplash && (
+        <div key="splash-layer" className="fixed inset-0 pointer-events-none z-[999]">
+          <div 
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={{ left: splashPos.x, top: splashPos.y }}
+          >
+            {[0, 1, 2].map((i) => (
+              <div 
+                key={i}
+                className="absolute inset-0 rounded-full border-2 border-[var(--accent-blood)] animate-ping"
+                style={{ 
+                  animationDuration: '1s', 
+                  animationDelay: `${i * 0.2}s`,
+                  width: '60px',
+                  height: '60px',
+                  margin: '-30px 0 0 -30px'
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       <nav 
         ref={navbarRef}
         className="fixed right-0 top-0 bottom-0 z-[100] w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 touch-none"
