@@ -65,7 +65,7 @@ export function Navbar() {
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
   const chargeAnimRef = useRef<any>(null);
   const growthAnimRef = useRef<any>(null);
-  const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number, scale: number }>({ vx: 0, vy: 0, x: 0, y: 0, scale: 1 });
+  const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number, scale: number, squish: number }>({ vx: 0, vy: 0, x: 0, y: 0, scale: 1, squish: 1 });
   const lastTouchRef = useRef<{ x: number, y: number, time: number }>({ x: 0, y: 0, time: 0 });
   const rafRef = useRef<number | null>(null);
   const dotRef = useRef<HTMLDivElement>(null);
@@ -139,10 +139,10 @@ export function Navbar() {
     const currentScale = physicsRef.current.scale;
     // SPONGIER PHYSICS: Higher bounce and lower friction for big ball
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.014;
-    const bounce = -0.9 - ((currentScale - 1) / 3) * 0.2; // Max bounce -1.1 (Super spongy)
+    const bounce = -0.9 - ((currentScale - 1) / 3) * 0.2; 
     const radius = (8 * currentScale) / 2;
     
-    let { x, y, vx, vy } = physicsRef.current;
+    let { x, y, vx, vy, squish } = physicsRef.current;
     
     x += vx;
     y += vy;
@@ -153,12 +153,20 @@ export function Navbar() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    if (x + radius > width) { x = width - radius; vx *= bounce; }
-    if (x - radius < 0) { x = radius; vx *= bounce; }
-    if (y + radius > height) { y = height - radius; vy *= bounce; }
-    if (y - radius < 0) { y = radius; vy *= bounce; }
+    let hit = false;
+    if (x + radius > width) { x = width - radius; vx *= bounce; hit = true; }
+    if (x - radius < 0) { x = radius; vx *= bounce; hit = true; }
+    if (y + radius > height) { y = height - radius; vy *= bounce; hit = true; }
+    if (y - radius < 0) { y = radius; vy *= bounce; hit = true; }
 
-    physicsRef.current = { ...physicsRef.current, x, y, vx, vy };
+    // SQUISH LOGIC (SPONGINESS)
+    if (hit) {
+      squish = 0.6 + (Math.random() * 0.2); // Squish down on impact
+    } else {
+      squish += (1 - squish) * 0.15; // Smoothly return to normal
+    }
+
+    physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
     setDotPos({ x, y });
 
     rafRef.current = requestAnimationFrame(runPhysics);
@@ -195,7 +203,7 @@ export function Navbar() {
         const centerY = window.innerHeight / 2 - 155;
         
         // SPAWN EXACTLY IN THE MIDDLE OF THE VIEWPORT
-        physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1 };
+        physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1, squish: 1 };
         setDotPos({ x: centerX, y: centerY });
         setDotScale(1); 
         setDotMode('RELEASED');
@@ -377,7 +385,7 @@ export function Navbar() {
               left: dotMode === 'RELEASED' ? dotPos.x : '0',
               right: dotMode === 'RELEASED' ? 'auto' : '0',
               transform: dotMode === 'RELEASED' 
-                ? `translate(-50%, -50%) scale(${1 + Math.abs(physicsRef.current.vx + physicsRef.current.vy) * 0.01})` 
+                ? `translate(-50%, -50%) scale(${physicsRef.current.squish})` 
                 : `translateY(-50%)`,
               transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
               height: dotMode === 'RELEASED' ? `${8 * Math.max(1, dotScale)}px` : `${8 + (scrollSpeed * 0.5)}px`,
