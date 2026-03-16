@@ -190,25 +190,26 @@ export function Navbar() {
       if (dotRef.current) {
         const rect = dotRef.current.getBoundingClientRect();
         const centerX = window.innerWidth / 2;
-        const currentY = rect.top + rect.height/2;
+        const centerY = window.innerHeight / 2;
+        const navLeft = rect.left;
         
-        physicsRef.current = { x: rect.left + rect.width/2, y: currentY, vx: 0, vy: 0 };
+        // 1. Initial Position: Just outside the Nav, at vertical CENTER
+        physicsRef.current = { x: navLeft - 20, y: centerY, vx: 0, vy: 0 };
         setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
         setDotScale(1); 
         setDotMode('RELEASED');
         
-        // Eject to horizontally centered at the current Y
+        // 2. TRIGGER SPLASH IMMEDIATELY AT NAV EXIT POINT
+        setSplashPos({ x: navLeft - 20, y: centerY });
+        setShowSplash(true);
+        setTimeout(() => setShowSplash(false), 1000);
+
+        // 3. GLIDE TO HORIZONTAL CENTER
         anime(physicsRef.current, {
           x: centerX,
-          duration: 800,
-          easing: 'easeOutCirc',
-          update: () => setDotPos(prev => ({ ...prev, x: physicsRef.current.x })),
-          complete: () => {
-            // TRIGGER SPLASH
-            setSplashPos({ x: centerX, y: currentY });
-            setShowSplash(true);
-            setTimeout(() => setShowSplash(false), 1000);
-          }
+          duration: 900,
+          easing: 'easeOutQuart',
+          update: () => setDotPos(prev => ({ ...prev, x: physicsRef.current.x }))
         });
       }
     }, duration);
