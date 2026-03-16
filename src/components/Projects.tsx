@@ -70,7 +70,7 @@ export function Projects() {
         </p>
       </div>
 
-      <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-[calc(100%-2.5rem)] md:w-full mr-[2.5rem] md:mr-0 pl-0 md:pl-0'}`}>
+      <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-[calc(100%-10px)] md:w-full mr-[10px] md:mr-0 pl-0 md:pl-0'}`}>
         {!isOverridden && (
           <div className="absolute right-0 top-0 h-full w-10 md:w-12 pointer-events-none z-30">
             <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto flex justify-start pl-1">
