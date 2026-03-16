@@ -59,6 +59,7 @@ export function Navbar() {
   const [isDragging, setIsDragging] = useState(false);
   
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const chargeAnimRef = useRef<any>(null);
   const physicsRef = useRef<{ vx: number, vy: number, x: number, y: number }>({ vx: 0, vy: 0, x: 0, y: 0 });
   const lastTouchRef = useRef<{ x: number, y: number, time: number }>({ x: 0, y: 0, time: 0 });
   const rafRef = useRef<number | null>(null);
@@ -198,8 +199,7 @@ export function Navbar() {
           setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
           setDotMode('RELEASED');
           
-          anime({
-            targets: physicsRef.current,
+          anime(physicsRef.current, {
             x: centerX,
             y: centerY,
             duration: 1000,
@@ -210,12 +210,11 @@ export function Navbar() {
       }, duration);
 
       // Visual scale animation
-      anime({
-        targets: { s: 1 },
+      chargeAnimRef.current = anime({ s: 1 }, {
         s: 3,
         duration: duration,
         easing: 'linear',
-        update: (anim) => setDotScale(Number(anim.animations[0].currentValue))
+        update: (anim: any) => setDotScale(Number(anim.animations[0].currentValue))
       });
     } else if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
@@ -262,7 +261,7 @@ export function Navbar() {
     if (dotMode === 'CHARGING') {
       setDotMode('LOCKED');
       setDotScale(1);
-      anime.remove({ s: 1 }); // Stop scale anim
+      if (chargeAnimRef.current) chargeAnimRef.current.pause();
     } else if (dotMode === 'RELEASED') {
       setIsDragging(false);
     }
