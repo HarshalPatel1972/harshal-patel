@@ -189,7 +189,7 @@ export function Navbar() {
       
       if (dotRef.current) {
         const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2 - 40;
+        const centerY = window.innerHeight / 2 - 100;
         
         // SPAWN EXACTLY IN THE MIDDLE OF THE VIEWPORT
         physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0 };
