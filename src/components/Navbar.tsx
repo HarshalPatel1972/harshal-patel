@@ -186,7 +186,7 @@ export function Navbar() {
       setDotScale(1);
       
       let start = 0;
-      const duration = 4000;
+      const duration = 2000;
       
       chargeTimerRef.current = setTimeout(() => {
         // EJECT
@@ -227,7 +227,7 @@ export function Navbar() {
         // Start long-press timer for re-docking
         chargeTimerRef.current = setTimeout(() => {
           returnToNav();
-        }, 4000);
+        }, 2000);
       }
     }
   };
