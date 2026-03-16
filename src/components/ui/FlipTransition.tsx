@@ -42,8 +42,7 @@ export function FlipTransition() {
       const animationState = { flipProgress: 0, smokeProgress: 0 };
       
       // FLIP TRACK
-      anime({
-        targets: animationState,
+      anime(animationState, {
         flipProgress: totalSquares,
         duration: 2000,
         easing: 'linear',
@@ -62,8 +61,7 @@ export function FlipTransition() {
       });
 
       // SMOKE TRACK (Starts after flips are well underway)
-      anime({
-        targets: animationState,
+      anime(animationState, {
         smokeProgress: totalSquares,
         duration: 1500,
         delay: 2400,
