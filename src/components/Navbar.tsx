@@ -204,11 +204,12 @@ export function Navbar() {
       }, duration);
 
       // Visual scale animation
-      chargeAnimRef.current = anime({ s: 1 }, {
+      const scaleObj = { s: 1 };
+      chargeAnimRef.current = anime(scaleObj, {
         s: 3,
         duration: duration,
         easing: 'linear',
-        update: (anim: any) => setDotScale(Number(anim.animations[0].currentValue))
+        update: () => setDotScale(scaleObj.s)
       });
     } else if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
@@ -221,19 +222,16 @@ export function Navbar() {
         
         // GROWTH LOGIC: Hold ball while released to grow it
         chargeTimerRef.current = setTimeout(() => {
-          setDotScale(prev => {
-            const next = Math.min(prev * 2, 4);
-            
-            // Kinetic feedback animation for growth
-            anime({ s: prev }, {
-              s: next,
+          const targetScale = Math.min(dotScale * 2, 4);
+          if (targetScale !== dotScale) {
+            const growthObj = { s: dotScale };
+            anime(growthObj, {
+              s: targetScale,
               duration: 800,
               easing: 'easeOutElastic(1, .5)',
-              update: (anim: any) => setDotScale(Number(anim.animations[0].currentValue))
+              update: () => setDotScale(growthObj.s)
             });
-            
-            return prev; // Let anime handle update to prevent double-scaling
-          });
+          }
         }, 2000);
       }
     }
@@ -286,9 +284,8 @@ export function Navbar() {
                  if (dotMode === 'RELEASED') {
                    returnToNav();
                  } else {
-                   // Navigate to Hero Title
-                   const el = document.getElementById('hero-title');
-                   if (el) el.scrollIntoView({ behavior: 'smooth' });
+                   // Navigate to absolute top (Landing Page view)
+                   window.scrollTo({ top: 0, behavior: 'smooth' });
                  }
                }}
                className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden"
@@ -353,7 +350,11 @@ export function Navbar() {
                   style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleClick(item.id === 'hero' ? 'hero-title' : item.id);
+                    if (item.id === 'hero') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                      handleClick(item.id);
+                    }
                   }}
                 >
                   <span 
