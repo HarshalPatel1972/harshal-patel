@@ -7,9 +7,18 @@ const COLS = 16;
 const ROWS = 9;
 
 export function FlipTransition() {
-  const { isActive, screenshotSrc, redirectUrl } = useFlipTransition();
+  const { isActive, desktopScreenshotSrc, mobileScreenshotSrc, redirectUrl } = useFlipTransition();
   const [flippedIndices, setFlippedIndices] = useState<Set<number>>(new Set());
   const [shouldRender, setShouldRender] = useState(false);
+  const [screenshotSrc, setScreenshotSrc] = useState("");
+
+  useEffect(() => {
+    if (isActive) {
+      // Determine which screenshot to use based on viewport
+      const isMobile = window.innerWidth < 768;
+      setScreenshotSrc(isMobile ? mobileScreenshotSrc : desktopScreenshotSrc);
+    }
+  }, [isActive, desktopScreenshotSrc, mobileScreenshotSrc]);
 
   // Shuffle logic for random flip order
   const shuffledIndices = useMemo(() => {

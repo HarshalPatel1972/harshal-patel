@@ -13,6 +13,7 @@ interface Project {
   description: string;
   link: string;
   slug: string;
+  mobileScreenshot: string;
   tags: string[];
   specs: string[];
 }
@@ -126,7 +127,7 @@ export function Projects() {
                   target="_blank"
                   onClick={(e) => {
                     e.preventDefault();
-                    triggerTransition(`/screenshots/${project.slug}.webp`, project.link);
+                    triggerTransition(`/screenshots/${project.slug}.webp`, project.mobileScreenshot, project.link);
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
