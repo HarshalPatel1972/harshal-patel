@@ -57,44 +57,42 @@ export function FlipTransition() {
 
   return (
     <>
-      {/* Screenshot Background Layer */}
-      <div 
-        className="fixed inset-0 z-[9998] bg-[#050505]"
-        style={{
-          backgroundImage: `url('${screenshotSrc}')`,
-          backgroundSize: '100% 100%',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      />
-
       {/* Grid Overlay Layer */}
       <div className="fixed inset-0 z-[9999] grid grid-cols-16 grid-rows-9 pointer-events-none">
-        {Array.from({ length: COLS * ROWS }).map((_, i) => (
-          <div key={i} className="relative w-full h-full" style={{ perspective: '1000px' }}>
-            <div 
-              className={`w-full h-full transition-transform duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)]`}
-              style={{
-                transformStyle: 'preserve-3d',
-                transform: flippedIndices.has(i) ? 'rotateY(180deg)' : 'rotateY(0deg)'
-              }}
-            >
-              {/* Front Face (Matching Background) */}
+        {Array.from({ length: COLS * ROWS }).map((_, i) => {
+          const col = i % COLS;
+          const row = Math.floor(i / COLS);
+          
+          return (
+            <div key={i} className="relative w-full h-full" style={{ perspective: '1000px' }}>
               <div 
-                className="absolute inset-0 bg-[#050505]"
-                style={{ backfaceVisibility: 'hidden' }}
-              />
-              {/* Back Face (Transparent) */}
-              <div 
-                className="absolute inset-0 bg-transparent"
-                style={{ 
-                  backfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)'
+                className={`w-full h-full transition-transform duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)]`}
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: flippedIndices.has(i) ? 'rotateY(180deg)' : 'rotateY(0deg)'
                 }}
-              />
+              >
+                {/* Front Face (Transparent - Shows Portfolio Page) */}
+                <div 
+                  className="absolute inset-0 bg-transparent"
+                  style={{ backfaceVisibility: 'hidden' }}
+                />
+                {/* Back Face (Shows Screenshot Slice) */}
+                <div 
+                  className="absolute inset-0"
+                  style={{ 
+                    backfaceVisibility: 'hidden',
+                    transform: 'rotateY(180deg)',
+                    backgroundImage: `url('${screenshotSrc}')`,
+                    backgroundSize: `${COLS * 100}% ${ROWS * 100}%`,
+                    backgroundPosition: `${(col / (COLS - 1)) * 100}% ${(row / (ROWS - 1)) * 100}%`,
+                    backgroundRepeat: 'no-repeat'
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );
