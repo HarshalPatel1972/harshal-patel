@@ -188,29 +188,19 @@ export function Navbar() {
       longPressActiveRef.current = true; // Guard to block immediate navigation click
       
       if (dotRef.current) {
-        const rect = dotRef.current.getBoundingClientRect();
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        const navLeft = rect.left;
         
-        // 1. Initial Position: Just outside the Nav, at vertical CENTER
-        physicsRef.current = { x: navLeft - 20, y: centerY, vx: 0, vy: 0 };
-        setDotPos({ x: physicsRef.current.x, y: physicsRef.current.y });
+        // SPAWN EXACTLY IN THE MIDDLE OF THE VIEWPORT
+        physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0 };
+        setDotPos({ x: centerX, y: centerY });
         setDotScale(1); 
         setDotMode('RELEASED');
         
-        // 2. TRIGGER SPLASH IMMEDIATELY AT NAV EXIT POINT
-        setSplashPos({ x: navLeft - 20, y: centerY });
+        // TRIGGER SPLASH AT THE MIDDLE SPAWN POINT
+        setSplashPos({ x: centerX, y: centerY });
         setShowSplash(true);
         setTimeout(() => setShowSplash(false), 1000);
-
-        // 3. GLIDE TO HORIZONTAL CENTER
-        anime(physicsRef.current, {
-          x: centerX,
-          duration: 900,
-          easing: 'easeOutQuart',
-          update: () => setDotPos(prev => ({ ...prev, x: physicsRef.current.x }))
-        });
       }
     }, duration);
 
@@ -374,7 +364,7 @@ export function Navbar() {
 
           <div 
             ref={dotRef}
-            className={`flex items-center justify-center cursor-grab active:cursor-grabbing ${dotMode !== 'LOCKED' ? 'fixed' : 'absolute left-0 right-0'}`}
+            className={`flex items-center justify-center cursor-grab active:cursor-grabbing ${dotMode === 'RELEASED' ? 'fixed' : 'absolute left-0 right-0'}`}
             style={{ 
               top: dotMode === 'RELEASED' ? dotPos.y : `${scrollProgress}%`,
               left: dotMode === 'RELEASED' ? dotPos.x : '0',
