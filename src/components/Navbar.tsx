@@ -66,6 +66,12 @@ export function Navbar() {
   const dotRef = useRef<HTMLDivElement>(null);
   const navbarRef = useRef<HTMLElement>(null);
 
+  const returnToNav = useCallback(() => {
+    setDotMode('LOCKED');
+    setDotScale(1);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  }, []);
+
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
@@ -123,8 +129,11 @@ export function Navbar() {
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
 
-    const friction = 0.985;
-    const bounce = -0.8;
+    // PHYSICS SCALING LOGIC: Bigger ball = less loss, more jump
+    // friction ranges from 0.985 (1x) to 0.997 (4x)
+    const friction = 0.985 + ((dotScale - 1) / 3) * 0.012;
+    // bounce ranges from -0.8 (1x) to -1.0 (4x)
+    const bounce = -0.8 - ((dotScale - 1) / 3) * 0.2;
     const radius = (8 * dotScale) / 2;
     
     let { x, y, vx, vy } = physicsRef.current;
@@ -150,23 +159,8 @@ export function Navbar() {
     physicsRef.current = { x, y, vx, vy };
     setDotPos({ x, y });
 
-    // Check for re-docking if velocity is low and near navbar
-    const navbarRect = navbarRef.current?.getBoundingClientRect();
-    if (navbarRect && Math.abs(vx) < 1 && Math.abs(vy) < 1) {
-       if (x > navbarRect.left) {
-         returnToNav();
-         return;
-       }
-    }
-
     rafRef.current = requestAnimationFrame(runPhysics);
   }, [dotMode, isDragging, dotScale]);
-
-  const returnToNav = useCallback(() => {
-    setDotMode('LOCKED');
-    setDotScale(1);
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-  }, []);
 
   useEffect(() => {
     if (dotMode === 'RELEASED' && !isDragging) {
@@ -185,8 +179,7 @@ export function Navbar() {
       setDotMode('CHARGING');
       setDotScale(1);
       
-      let start = 0;
-      const duration = 2000;
+      const duration = 2000; // Hold time to eject
       
       chargeTimerRef.current = setTimeout(() => {
         // EJECT
@@ -220,13 +213,22 @@ export function Navbar() {
       const touch = e.touches[0];
       const dist = Math.hypot(touch.clientX - dotPos.x, touch.clientY - dotPos.y);
       
-      if (dist < 40) { // Grab radius
+      // Grab radius slightly larger for convenience
+      if (dist < 50) { 
         setIsDragging(true);
         lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
         
-        // Start long-press timer for re-docking
+        // GROWTH LOGIC: Long press (2s) while outside increases size by 2x (cap at 4x)
         chargeTimerRef.current = setTimeout(() => {
-          returnToNav();
+          const newScale = Math.min(dotScale * 2, 4);
+          if (newScale !== dotScale) {
+            anime({ s: dotScale }, {
+              s: newScale,
+              duration: 500,
+              easing: 'easeOutElastic(1, .8)',
+              update: (anim: any) => setDotScale(Number(anim.animations[0].currentValue))
+            });
+          }
         }, 2000);
       }
     }
@@ -239,6 +241,7 @@ export function Navbar() {
       const dt = now - lastTouchRef.current.time;
       
       if (dt > 0) {
+        // High-precision velocity calculation
         const vx = (touch.clientX - lastTouchRef.current.x) / (dt / 16);
         const vy = (touch.clientY - lastTouchRef.current.y) / (dt / 16);
         physicsRef.current = { ...physicsRef.current, x: touch.clientX, y: touch.clientY, vx, vy };
@@ -246,12 +249,6 @@ export function Navbar() {
       
       setDotPos({ x: touch.clientX, y: touch.clientY });
       lastTouchRef.current = { x: touch.clientX, y: touch.clientY, time: now };
-
-      // If dragged back to nav area, re-dock
-      const navbarRect = navbarRef.current?.getBoundingClientRect();
-      if (navbarRect && touch.clientX > navbarRect.left) {
-        returnToNav();
-      }
     }
   };
 
@@ -275,16 +272,24 @@ export function Navbar() {
         style={{ userSelect: 'none' }}
       >
         
-        {/* TOP BRAND INDICATOR */}
+        {/* TOP BRAND INDICATOR - Now serves as RE-DOCK trigger */}
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
-            <a href="#" className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden">
+            <button 
+               onClick={(e) => {
+                 e.preventDefault();
+                 if (dotMode === 'RELEASED') {
+                   returnToNav();
+                 }
+               }}
+               className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden"
+            >
               <img 
                 src="/icon.png" 
                 alt="HP Logo" 
                 className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" 
               />
-            </a>
+            </button>
           </div>
         </div>
 
@@ -308,7 +313,7 @@ export function Navbar() {
               left: dotMode === 'RELEASED' ? dotPos.x : '0',
               right: dotMode === 'RELEASED' ? 'auto' : '0',
               transform: dotMode === 'RELEASED' ? `translate(-50%, -50%)` : `translateY(-50%)`,
-              transition: isDragging ? 'none' : dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
+              transition: isDragging ? 'none' : (dotMode === 'RELEASED' ? 'none' : "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)"),
               height: dotMode === 'RELEASED' ? `${8 * dotScale}px` : `${8 + (scrollSpeed * 0.5)}px`,
               width: dotMode === 'RELEASED' ? `${8 * dotScale}px` : '100%',
               pointerEvents: 'auto',
