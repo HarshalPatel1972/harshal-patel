@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import { ScrollReveal } from './ScrollReveal';
-import SystemHeartbeat from './ui/SystemHeartbeat';
+import ExorcistsScroll from './ui/ExorcistsScroll';
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -168,8 +168,8 @@ export function Hero() {
           {/* Vertical Kanji Watermark */}
           <SubliminalKanji kanji="起源" position="right" />
 
-          {/* ─── SYSTEM HEARTBEAT (Narrative Background 05) ─── */}
-          <SystemHeartbeat />
+          {/* ─── EXORCIST'S SCROLL (Narrative Background 06) ─── */}
+          <ExorcistsScroll />
 
           <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
