@@ -60,9 +60,9 @@ export default function Cursor() {
     }
     arrowSlots.current = aSlots;
 
-    // ─── SEARCH SLOTS (🔍 - Perfect Magnifying Glass) ───
+    // ─── SEARCH SLOTS (🔍 - Scaled to match arrow) ───
     const sSlots = [];
-    const radius = 5.2 * GAP;
+    const radius = 3.2 * GAP;
     
     // Circle (14 particles)
     for (let i = 0; i < 14; i++) {
@@ -73,13 +73,13 @@ export default function Cursor() {
         });
     }
     
-    // Handle (5 particles) joined precisely at 45 degrees
+    // Handle (5 particles) - scaled handle length
     const startX = Math.cos(Math.PI / 4) * radius;
     const startY = Math.sin(Math.PI / 4) * radius;
     for (let i = 1; i <= 5; i++) {
         sSlots.push({
-            x: startX + i * (GAP * 1.3),
-            y: startY + i * (GAP * 1.3)
+            x: startX + i * (GAP * 1.1),
+            y: startY + i * (GAP * 1.1)
         });
     }
     playSlots.current = sSlots;
