@@ -13,21 +13,43 @@ export function useMagnetic(strength: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+    // Bolt: Performance optimization - use ticking and rAF to prevent layout thrashing
+    let ticking = false;
+    let currentX = 0;
+    let currentY = 0;
+    let rafId: number;
 
-      anime(el, {
+    const updateMagnetic = () => {
+      const rect = el.getBoundingClientRect();
+      const x = currentX - rect.left - rect.width / 2;
+      const y = currentY - rect.top - rect.height / 2;
+
+      anime({
+        targets: el,
         translateX: x * strength,
         translateY: y * strength,
         duration: 600,
         easing: "outQuart",
       });
+      ticking = false;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(updateMagnetic);
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
-      anime(el, {
+      if (ticking) {
+        cancelAnimationFrame(rafId);
+        ticking = false;
+      }
+      anime({
+        targets: el,
         translateX: 0,
         translateY: 0,
         duration: 800,
@@ -38,6 +60,7 @@ export function useMagnetic(strength: number = 0.3) {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
     return () => {
+      if (ticking) cancelAnimationFrame(rafId);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
     };
@@ -62,7 +85,8 @@ export function useCounter(target: number, duration: number = 2000) {
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
           const obj = { val: 0 };
-          anime(obj as any, {
+          anime({
+            targets: obj as any,
             val: target,
             duration,
             easing: "outQuart",
@@ -110,7 +134,8 @@ export function TextReveal({
       ([entry]) => {
         if (entry.isIntersecting) {
           const chars = el.querySelectorAll(".char");
-          anime(chars as any, {
+          anime({
+            targets: chars as any,
             opacity: [0, 1],
             translateY: [20, 0],
             rotateX: [40, 0],
@@ -163,18 +188,38 @@ export function useTilt(intensity: number = 10) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
+    // Bolt: Performance optimization - use ticking and rAF to prevent layout thrashing
+    let ticking = false;
+    let currentX = 0;
+    let currentY = 0;
+    let rafId: number;
+
+    const updateTilt = () => {
       const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
+      const x = (currentX - rect.left) / rect.width;
+      const y = (currentY - rect.top) / rect.height;
       const rotateX = (0.5 - y) * intensity;
       const rotateY = (x - 0.5) * intensity;
 
       el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
       el.style.transition = "transform 0.1s ease-out";
+      ticking = false;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(updateTilt);
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
+      if (ticking) {
+        cancelAnimationFrame(rafId);
+        ticking = false;
+      }
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -182,6 +227,7 @@ export function useTilt(intensity: number = 10) {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
     return () => {
+      if (ticking) cancelAnimationFrame(rafId);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
     };
@@ -200,17 +246,32 @@ export function useParallax(speed: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleScroll = () => {
+    // Bolt: Performance optimization - use ticking and rAF to prevent layout thrashing on scroll
+    let ticking = false;
+    let rafId: number;
+
+    const updateParallax = () => {
       const rect = el.getBoundingClientRect();
       const center = rect.top + rect.height / 2;
       const viewCenter = window.innerHeight / 2;
       const offset = (center - viewCenter) * speed;
       el.style.transform = `translateY(${offset}px)`;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateParallax();
+    return () => {
+      if (ticking) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [speed]);
 
   return ref;
