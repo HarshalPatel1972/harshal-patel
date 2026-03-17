@@ -285,9 +285,6 @@ const ExorcistsScroll: React.FC = () => {
 
                 <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-30">
                   <div className="w-16 h-[1px] bg-[var(--accent-blood)]" />
-                  <span className="text-[10px] font-mono tracking-[0.8em] text-[var(--accent-blood)] uppercase whitespace-nowrap font-black">
-                    {activeCard.phase === 'burning' ? 'DEDACTED' : 'CORE LOG'}
-                  </span>
                   <div className="w-16 h-[1px] bg-[var(--accent-blood)]" />
                 </div>
 
