@@ -102,7 +102,7 @@ const ExorcistsScroll: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none overflow-hidden opacity-100">
+    <div ref={containerRef} className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden opacity-100">
       
       {/* ─── SCROLL PATH ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
