@@ -222,28 +222,8 @@ const ExorcistsScroll: React.FC = () => {
                   zIndex: 1
                 }}
               >
-                {activeCard.phase === 'flipped' && (
+                {activeCard.phase !== 'summon' && (
                   <CharacterInscription text={activeCard.fact} />
-                )}
-
-                {/* Burn Particles */}
-                {activeCard.phase === 'burning' && (
-                  <div className="absolute inset-0 pointer-events-none">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <div 
-                        key={i} 
-                        className="absolute w-1 h-1 particle" 
-                        style={{ 
-                          backgroundColor: i % 2 === 0 ? '#00fff7' : '#ffffff',
-                          left: '50%',
-                          top: '50%',
-                          '--tx': `${(Math.random() - 0.5) * 300}px`,
-                          '--ty': `${(Math.random() - 0.5) * 300}px`,
-                          '--rot': `${Math.random() * 360}deg`
-                        } as any}
-                      />
-                    ))}
-                  </div>
                 )}
               </div>
             </div>
@@ -261,27 +241,20 @@ const ExorcistsScroll: React.FC = () => {
         }
 
         .animate-ofuda-burn {
-          animation: final-flicker 0.24s step-end 3, burn-up 0.4s forwards ease-in;
-          animation-delay: 0s, 0.3s;
+          animation: smoke-dissolve 0.8s forwards cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        @keyframes final-flicker {
-          0%, 100% { border-color: #00fff7; }
-          50% { border-color: #ffffff; }
-        }
-
-        @keyframes burn-up {
-          0% { clip-path: inset(0% 0% 0% 0%); }
-          100% { clip-path: inset(0% 0% 100% 0%); }
-        }
-
-        .particle {
-          animation: particle-scatter 0.8s forwards ease-out;
-        }
-
-        @keyframes particle-scatter {
-          0% { transform: translate(-50%, -50%) rotate(0); opacity: 1; }
-          100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot)); opacity: 0; }
+        @keyframes smoke-dissolve {
+          0% { 
+            opacity: 1; 
+            filter: blur(0px) brightness(1);
+            transform: rotateY(180deg) scale(1);
+          }
+          100% { 
+            opacity: 0; 
+            filter: blur(30px) brightness(1.2);
+            transform: rotateY(180deg) scale(1.05) translateY(-20px);
+          }
         }
       `}</style>
       
