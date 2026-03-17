@@ -135,10 +135,8 @@ const ExorcistsScroll: React.FC = () => {
                 </span>
                 <div className="flex flex-col gap-1 items-center">
                   <div className="w-2 h-2 rounded-full border border-[var(--accent-blood)]" />
-                  <div className="w-[1px] h-8 bg-[var(--accent-blood)] opacity-30" />
                 </div>
               </button>
-              <div className="w-[1px] h-32 bg-[var(--accent-blood)] opacity-20" />
             </div>
           );
         })}
