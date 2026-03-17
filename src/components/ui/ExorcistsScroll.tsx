@@ -132,12 +132,13 @@ const ExorcistsScroll: React.FC = () => {
 
   return (
     <div ref={containerRef} className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none overflow-hidden opacity-60">
-      {/* ─── OVERLAY LAYER ─── */}
+      {/* ─── OVERLAY LAYER (Phases B-D) ─── */}
       <div 
         className={`fixed inset-0 z-[50] transition-opacity duration-500 pointer-events-auto cursor-zoom-out
-          ${activeCard && activeCard.phase !== 'burning' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          ${activeCard && activeCard.phase !== 'summon' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         style={{ 
-          background: 'radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%, rgba(217,17,17,0.1) 100%)' 
+          background: 'rgba(0,0,0,0.85)',
+          backgroundImage: 'radial-gradient(circle at center, transparent 0%, rgba(217,17,17,0.05) 100%)'
         }}
         onClick={handleDismiss}
       />
@@ -158,15 +159,15 @@ const ExorcistsScroll: React.FC = () => {
                 animationDelay: `${s.delay}s`,
                 zIndex: isSummoned ? 51 : 1,
                 transform: isSummoned && activeCard.phase !== 'summon' ? calculateCenterTranslate(activeCard.rect) : undefined,
-                transition: isSummoned && activeCard.phase === 'flying' ? 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)' : undefined
+                transition: isSummoned && (activeCard.phase === 'flying' || activeCard.phase === 'flipped') ? 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)' : undefined
               }}
             >
               <div 
                 className="relative" 
                 style={{ 
-                  perspective: '1000px',
+                  perspective: '1200px',
                   transform: isSummoned 
-                    ? `scale(${activeCard.phase === 'summon' ? 1.3 : activeCard.phase === 'burning' ? 1 : 1.8})` 
+                    ? `scale(${activeCard.phase === 'summon' ? 1.3 : activeCard.phase === 'burning' ? 1 : 2.2})` 
                     : 'scale(1)',
                   transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
@@ -177,11 +178,11 @@ const ExorcistsScroll: React.FC = () => {
                     handleCardClick(s.id, e);
                   }}
                   disabled={isBurned || (activeCard !== null)}
-                  className={`ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 outline-none
+                  className={`ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between shadow-2xl transition-all duration-300 outline-none
                     ${isBurned 
                       ? 'bg-zinc-900 border-[rgba(217,17,17,0.15)] cursor-default' 
                       : isSummoned
-                        ? (activeCard.phase === 'summon' || activeCard.phase === 'flying' ? 'border-[#00fff7] bg-black shadow-[0_0_30px_rgba(0,255,247,0.6)]' : 'border-none bg-transparent')
+                        ? (activeCard.phase === 'summon' || activeCard.phase === 'flying' ? 'border-[#00fff7] bg-black shadow-[0_0_30px_rgba(0,255,247,0.6)]' : 'border-[#00fff7] bg-black shadow-[0_0_40px_rgba(0,255,247,0.4)]')
                         : 'border-[var(--accent-blood)] bg-black/80 hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer'
                     }
                     ${isSummoned && activeCard.phase === 'burning' ? 'animate-burn' : ''}
@@ -189,11 +190,11 @@ const ExorcistsScroll: React.FC = () => {
                   style={{
                     transformStyle: 'preserve-3d',
                     transform: isSummoned && (activeCard.phase === 'flipped' || activeCard.phase === 'burning') ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                    transition: isSummoned ? 'transform 0.6s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease' : 'all 0.3s ease'
+                    transition: isSummoned ? 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease' : 'all 0.3s ease'
                   }}
                 >
-                  {/* Front Face */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-between py-4" style={{ backfaceVisibility: 'hidden' }}>
+                  {/* FRONT FACE (The Talisman) */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-between py-4 bg-black" style={{ backfaceVisibility: 'hidden', zIndex: 2 }}>
                     <div className="flex flex-col gap-1">
                       {[1,2,3].map(j => <div key={j} className={`w-1 h-3 transition-colors ${isSummoned ? 'bg-[#00fff7]' : 'bg-[var(--accent-blood)] opacity-50'}`} />)}
                     </div>
@@ -210,20 +211,32 @@ const ExorcistsScroll: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Back Face (Revelation) */}
-                  <div className="absolute inset-0 bg-black border-2 border-[#00fff7] flex items-center justify-center p-2" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                  {/* BACK FACE (The Data) */}
+                  <div 
+                    className="absolute inset-0 bg-black border-2 border-[#00fff7] overflow-hidden" 
+                    style={{ 
+                      backfaceVisibility: 'hidden', 
+                      transform: 'rotateY(180deg)',
+                      zIndex: 1
+                    }}
+                  >
+                    {/* Interior glow for depth */}
+                    <div className="absolute inset-0 bg-radial-gradient from-cyan-500/10 to-transparent pointer-events-none" />
+                    
                     {isSummoned && activeCard.phase === 'flipped' && (
-                      <CharacterInscription text={activeCard.fact} />
+                      <div className="relative h-full w-full flex flex-col items-center justify-center">
+                        <CharacterInscription text={activeCard.fact} />
+                      </div>
                     )}
                   </div>
 
                   {/* Burn Particles */}
                   {isSummoned && activeCard.phase === 'burning' && (
-                    <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(10px)' }}>
                       {Array.from({ length: 12 }).map((_, i) => (
                         <div key={i} className="absolute particle w-1 h-1 bg-[#00fff7]" style={{ 
-                          '--tx': `${(Math.random() - 0.5) * 150}px`, 
-                          '--ty': `${(Math.random() - 0.5) * 150}px`,
+                          '--tx': `${(Math.random() - 0.5) * 200}px`, 
+                          '--ty': `${(Math.random() - 0.5) * 200}px`,
                           '--rot': `${Math.random() * 360}deg`
                         } as any} />
                       ))}
