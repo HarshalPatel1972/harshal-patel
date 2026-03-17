@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SystemBanner } from "@/components/SystemBanner";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { LanguageProvider, LanguageTransitionWrapper } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
@@ -34,6 +35,7 @@ export default function Home() {
             {/* Fixed HUD elements MUST remain outside LanguageTransitionWrapper */}
             <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
               <Navbar />
+              <LanguageSelector />
               <ScrollLine isVisible={showContent} />
             </div>
 

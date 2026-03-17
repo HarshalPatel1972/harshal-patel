@@ -51,7 +51,7 @@ const NAV_ITEMS: NavItems = {
 type DotMode = 'LOCKED' | 'CHARGING' | 'RELEASED' | 'CHARGING_RETURN';
 
 export function Navbar() {
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language];
   const [active, setActive] = useState("hero");
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -438,25 +438,6 @@ export function Navbar() {
               />
             </button>
           </div>
-
-          {/* LANGUAGE SWITCHER - ELEVATED TO TOP */}
-          <div className="flex flex-col items-center gap-2.5 mt-2">
-            {(['en', 'ja', 'ko', 'zh-tw', 'hi'] as const).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`font-mono text-[10px] md:text-[11px] font-bold transition-all duration-300 ${
-                  language === lang 
-                    ? "text-[var(--accent-blood)] scale-125" 
-                    : "text-[var(--bg-ink)]/30 hover:text-[var(--bg-ink)]/60"
-                }`}
-              >
-                {lang === 'zh-tw' ? 'ZH' : lang.toUpperCase()}
-              </button>
-            ))}
-          </div>
-          
-          <div className="w-6 h-[1px] bg-[var(--bg-ink)]/10 mt-1" />
         </div>
 
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
@@ -522,8 +503,6 @@ export function Navbar() {
             })}
           </div>
         </div>
-
-        <div className="flex flex-col items-center gap-2 opacity-40 z-20 h-8" />
       </nav>
     </>
   );
