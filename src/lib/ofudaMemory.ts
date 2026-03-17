@@ -36,19 +36,3 @@ export function getNextFact(allFacts: string[]): { fact: string; index: number }
   
   return { fact: allFacts[chosenIndex], index: chosenIndex };
 }
-
-export function markCardBurned(cardId: number): void {
-  if (typeof window === 'undefined') return;
-  const raw = localStorage.getItem('ofuda_burned');
-  const burned: number[] = raw ? JSON.parse(raw) : [];
-  if (!burned.includes(cardId)) {
-    burned.push(cardId);
-    localStorage.setItem('ofuda_burned', JSON.stringify(burned));
-  }
-}
-
-export function getBurnedCards(): number[] {
-  if (typeof window === 'undefined') return [];
-  const raw = localStorage.getItem('ofuda_burned');
-  return raw ? JSON.parse(raw) : [];
-}

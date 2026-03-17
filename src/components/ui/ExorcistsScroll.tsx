@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { OFUDA_FACTS } from '@/lib/ofudaFacts';
-import { getNextFact, markCardBurned, getBurnedCards } from '@/lib/ofudaMemory';
+import { getNextFact } from '@/lib/ofudaMemory';
 
 interface ActiveCard {
   id: number;
@@ -48,17 +48,10 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
 };
 
 const ExorcistsScroll: React.FC = () => {
-  const [burnedCards, setBurnedCards] = useState<Set<number>>(new Set());
   const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const burned = getBurnedCards();
-    setBurnedCards(new Set(burned));
-  }, []);
-
   const handleCardClick = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
-    if (burnedCards.has(id)) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const { fact } = getNextFact(OFUDA_FACTS);
     
@@ -80,8 +73,6 @@ const ExorcistsScroll: React.FC = () => {
     setActiveCard(prev => prev ? { ...prev, phase: 'burning' } : null);
     
     setTimeout(() => {
-      markCardBurned(activeCard.id);
-      setBurnedCards(prev => new Set(prev).add(activeCard.id));
       setActiveCard(prev => prev ? { ...prev, phase: 'done' } : null);
     }, 1000);
 
@@ -129,7 +120,6 @@ const ExorcistsScroll: React.FC = () => {
       {/* ─── SCROLL PATH ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => {
-          const isBurned = burnedCards.has(s.id);
           const isSummoned = activeCard?.id === s.id;
           const isFlippedOrDone = isSummoned && (activeCard.phase === 'flipped' || activeCard.phase === 'burning');
 
@@ -169,28 +159,19 @@ const ExorcistsScroll: React.FC = () => {
                       e.stopPropagation();
                       handleCardClick(s.id, e);
                     }}
-                    disabled={isBurned || activeCard !== null}
-                    className={`absolute inset-0 flex flex-col items-center justify-between py-4 border shadow-2xl transition-all duration-300 outline-none
-                      ${isBurned 
-                        ? 'bg-[#0a0a0a] border-[rgba(217,17,17,0.12)] cursor-default pointer-events-none' 
-                        : 'bg-black/80 border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer pointer-events-auto'
-                      }
-                    `}
+                    disabled={activeCard !== null}
+                    className="absolute inset-0 flex flex-col items-center justify-between py-4 border shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer pointer-events-auto"
                     style={{ backfaceVisibility: 'hidden', borderRadius: '0px' }}
                   >
-                    <div className={`flex flex-col gap-1 ${isBurned ? 'opacity-10' : 'opacity-100'}`}>
+                    <div className="flex flex-col gap-1 opacity-100">
                       {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[var(--accent-blood)] opacity-50" />)}
                     </div>
-                    <span className={`font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap transition-colors
-                      ${isBurned ? 'text-black/15 opacity-10' : 'text-[var(--accent-blood)] brightness-125'}`}>
+                    <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] brightness-125 transition-colors">
                       {s.hex}
                     </span>
                     <div className="flex flex-col gap-1 items-center relative">
-                      <div className={`w-2 h-2 rounded-full border ${isBurned ? 'border-[var(--accent-blood)] opacity-10' : 'border-[var(--accent-blood)]'}`} />
-                      <div className={`w-[1px] h-8 bg-[var(--accent-blood)] ${isBurned ? 'opacity-5' : 'opacity-30'}`} />
-                      {isBurned && (
-                        <div className="absolute bottom-[-10px] w-1 h-1 rounded-full bg-[#00fff7] shadow-[0_0_6px_#00fff7] opacity-40" />
-                      )}
+                      <div className="w-2 h-2 rounded-full border border-[var(--accent-blood)]" />
+                      <div className="w-[1px] h-8 bg-[var(--accent-blood)] opacity-30" />
                     </div>
                   </button>
 
@@ -231,7 +212,7 @@ const ExorcistsScroll: React.FC = () => {
                 </div>
               </div>
               
-              {!isBurned && !isSummoned && <div className="w-[1px] h-32 bg-[var(--accent-blood)] opacity-20" />}
+              {!isSummoned && <div className="w-[1px] h-32 bg-[var(--accent-blood)] opacity-20" />}
             </div>
           );
         })}
