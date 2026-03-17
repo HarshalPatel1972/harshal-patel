@@ -9,11 +9,11 @@ export function LanguageSelector() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const languages = [
-    { code: 'en', label: 'EN' },
-    { code: 'ja', label: 'JA' },
-    { code: 'ko', label: 'KO' },
-    { code: 'zh-tw', label: 'ZH' },
-    { code: 'hi', label: 'HI' }
+    { code: 'en', label: 'English' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+    { code: 'zh-tw', label: '繁體中文' },
+    { code: 'hi', label: 'हिन्दी' }
   ] as const;
 
   // Close when clicking outside
@@ -50,7 +50,7 @@ export function LanguageSelector() {
 
       {/* Expanded Container */}
       <div 
-        className={`flex items-center gap-1 bg-black/90 backdrop-blur-md border-y border-r border-white/10 h-9 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[400px] opacity-100 pl-4 pr-3 ml-0' : 'max-w-0 opacity-0 ml-[-10px]'}`}
+        className={`flex items-center gap-1 bg-black/90 backdrop-blur-md border-y border-r border-white/10 h-9 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[600px] opacity-100 pl-4 pr-3 ml-0' : 'max-w-0 opacity-0 ml-[-10px]'}`}
       >
         {languages.map((lang, idx) => (
           <div key={lang.code} className="flex items-center">
