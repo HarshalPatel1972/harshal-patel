@@ -113,9 +113,9 @@ const ExorcistsScroll: React.FC = () => {
               key={s.id}
               className="absolute flex flex-col items-center justify-center pointer-events-none opacity-60"
               style={{
-                animation: isSummoned && activeCard.phase !== 'done' ? 'none' : `scroll-flow 15s linear infinite`,
+                animation: `scroll-flow 15s linear infinite`,
                 animationDelay: `${s.delay}s`,
-                visibility: isSummoned && activeCard.phase !== 'done' ? 'hidden' : 'visible'
+                visibility: 'visible'
               }}
             >
               <button 
