@@ -10,8 +10,8 @@ interface ActiveCard {
   rect: DOMRect | null;
 }
 
-const OfudaSigil: React.FC<{ size?: number; color?: string; alternate?: boolean }> = ({ size = 100, color = "#00fff7", alternate = false }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" className="filter drop-shadow-[0_0_15px_rgba(0,255,247,0.6)] animate-cursed-flow shrink-0">
+const OfudaSigil: React.FC<{ size?: number; color?: string; alternate?: boolean; opacity?: number }> = ({ size = 100, color = "#00fff7", alternate = false, opacity = 1 }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="filter drop-shadow-[0_0_15px_rgba(0,255,247,0.6)] animate-cursed-flow shrink-0" style={{ opacity }}>
     <defs>
       <radialGradient id="sigil-glow" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stopColor={color} stopOpacity="0.4" />
