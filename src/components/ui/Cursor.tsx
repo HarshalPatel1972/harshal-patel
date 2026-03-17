@@ -60,34 +60,26 @@ export default function Cursor() {
     }
     arrowSlots.current = aSlots;
 
-    // ─── SEARCH SLOTS (🔍 + dots) ───
+    // ─── SEARCH SLOTS (🔍 - Perfect Magnifying Glass) ───
     const sSlots = [];
-    const radius = 4.5 * GAP;
-    const scX = -GAP;
-    const scY = -GAP;
+    const radius = 5.2 * GAP;
     
-    // Circle of the magnifying glass (12 particles)
-    for (let i = 0; i < 12; i++) {
-        const angle = (i / 12) * Math.PI * 2;
+    // Circle (14 particles)
+    for (let i = 0; i < 14; i++) {
+        const angle = (i / 14) * Math.PI * 2;
         sSlots.push({
-            x: scX + Math.cos(angle) * radius,
-            y: scY + Math.sin(angle) * radius
+            x: Math.cos(angle) * radius,
+            y: Math.sin(angle) * radius
         });
     }
     
-    // Handle of the magnifying glass (4 particles)
-    for (let i = 1; i <= 4; i++) {
+    // Handle (5 particles) joined precisely at 45 degrees
+    const startX = Math.cos(Math.PI / 4) * radius;
+    const startY = Math.sin(Math.PI / 4) * radius;
+    for (let i = 1; i <= 5; i++) {
         sSlots.push({
-            x: scX + radius + i * (GAP * 0.8),
-            y: scY + radius + i * (GAP * 0.8)
-        });
-    }
-
-    // Trailing Dots (3 particles)
-    for (let i = 0; i < 3; i++) {
-        sSlots.push({
-            x: scX - radius - (i + 2) * GAP,
-            y: scY
+            x: startX + i * (GAP * 1.3),
+            y: startY + i * (GAP * 1.3)
         });
     }
     playSlots.current = sSlots;
