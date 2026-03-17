@@ -138,14 +138,36 @@ const ExorcistsScroll: React.FC = () => {
                 className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[var(--accent-blood)] hover:shadow-[0_0_12px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
                 style={{ borderRadius: '0px' }}
               >
-                <div className="flex flex-col gap-1">
-                  {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[var(--accent-blood)] opacity-50" />)}
+                {/* 1. Ritual Seals (Top Squares from Art) */}
+                <div className="flex gap-1">
+                  {[1,2,3].map(j => (
+                    <div key={j} className="w-2 h-2 md:w-3 md:h-3 border border-[var(--accent-blood)] rotate-45 flex items-center justify-center">
+                      <div className="w-[1px] h-[1px] bg-[var(--accent-blood)]" />
+                    </div>
+                  ))}
                 </div>
-                <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] brightness-125">
+
+                {/* 2. The Central "Eye" Sigil */}
+                <div className="relative w-full flex items-center justify-center py-2">
+                  <div className="absolute inset-0 bg-[var(--accent-blood)] opacity-5 blur-xl rounded-full" />
+                  <div className="relative">
+                    {/* The Star/Cross shape */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12 md:h-16 bg-[var(--accent-blood)] opacity-40" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 md:w-16 h-[1px] bg-[var(--accent-blood)] opacity-40" />
+                    {/* The Eye */}
+                    <div className="w-4 h-4 md:w-6 md:h-6 border-2 border-[var(--accent-blood)] rounded-full flex items-center justify-center p-[2px]">
+                      <div className="w-full h-full bg-[var(--accent-blood)] rounded-full animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+
+                <span className="font-mono text-[9px] md:text-[10px] font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] tracking-[0.2em] opacity-80">
                   {s.hex}
                 </span>
+
+                {/* 3. Bottom Ritual Point */}
                 <div className="flex flex-col gap-1 items-center">
-                  <div className="w-2 h-2 rounded-full border border-[var(--accent-blood)]" />
+                   <div className="w-1 md:w-1.5 h-1 md:h-1.5 border border-[var(--accent-blood)] rotate-45" />
                 </div>
               </button>
             </div>
@@ -220,28 +242,53 @@ const ExorcistsScroll: React.FC = () => {
                 }}
               >
                 {/* 1. Atmospheric Textures */}
-                <div className="absolute inset-0 halftone-bg opacity-[0.15] mix-blend-overlay pointer-events-none" />
-                <div className="absolute inset-0 grain-bg opacity-[0.05] pointer-events-none" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] pointer-events-none" />
+                <div className="absolute inset-0 halftone-bg opacity-[0.25] mix-blend-overlay pointer-events-none" />
+                <div className="absolute inset-0 grain-bg opacity-[0.1] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
                 
-                {/* 2. Cursed Scanlines */}
+                {/* 2. Ink Splatters (Brutalist marks from Art) */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+                  <div className="absolute top-[10%] left-[5%] w-32 h-32 bg-[var(--accent-blood)] blur-3xl opacity-20 rounded-full" />
+                  <div className="absolute bottom-[20%] right-[10%] w-48 h-48 bg-[var(--accent-blood)] blur-3xl opacity-20 rounded-full" />
+                  {/* Jagged strokes */}
+                  <div className="absolute top-0 right-0 w-[2px] h-full bg-[var(--accent-blood)] opacity-10 rotate-12 origin-top" />
+                  <div className="absolute top-0 left-0 w-[1px] h-full bg-[var(--accent-blood)] opacity-10 -rotate-6 origin-top" />
+                </div>
+
+                {/* 3. The Grand Sigil (All-Seeing Eye from Art) */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none opacity-[0.05] flex items-center justify-center">
+                   <div className="relative w-[300px] h-[300px] border border-[var(--accent-blood)] rounded-full flex items-center justify-center">
+                      <div className="absolute inset-0 border-2 border-[var(--accent-blood)] scale-[0.85] rounded-full rotate-45" />
+                      <div className="w-12 h-12 bg-[var(--accent-blood)] rounded-full blur-[2px]" />
+                   </div>
+                </div>
+
+                {/* 4. Cursed Scanlines */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
                   <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(217,17,17,0.1)_50%)] bg-[length:100%_4px] animate-scanline" />
                 </div>
 
-                {/* 3. Corner Brackets */}
-                <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[var(--accent-blood)] opacity-60" />
-                <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[var(--accent-blood)] opacity-60" />
-                <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-[var(--accent-blood)] opacity-60" />
-                <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-[var(--accent-blood)] opacity-60" />
+                {/* 5. Ritual Brackets */}
+                <div className="absolute top-6 left-6 w-10 h-10 border-t-2 border-l-2 border-[var(--accent-blood)] opacity-40" />
+                <div className="absolute top-6 right-6 w-10 h-10 border-t-2 border-r-2 border-[var(--accent-blood)] opacity-40" />
+                <div className="absolute bottom-6 left-6 w-10 h-10 border-b-2 border-l-2 border-[var(--accent-blood)] opacity-40" />
+                <div className="absolute bottom-6 right-6 w-10 h-10 border-b-2 border-r-2 border-[var(--accent-blood)] opacity-40" />
 
-                {/* 4. Subliminal Watermark */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-20 group">
-                  <div className="w-12 h-[1px] bg-[var(--accent-blood)]" />
-                  <span className="text-[8px] font-mono tracking-[0.5em] text-[var(--accent-blood)] uppercase whitespace-nowrap">
-                    Ritualized Data Core
+                {/* 6. Symbolic Verification Marks (Top of the art) */}
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-4 opacity-40">
+                   {[1,2,3].map(k => (
+                     <div key={k} className="w-4 h-4 border border-[var(--accent-blood)] rotate-45 flex items-center justify-center">
+                        <div className="w-[2px] h-[2px] bg-[var(--accent-blood)]" />
+                     </div>
+                   ))}
+                </div>
+
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-30">
+                  <div className="w-16 h-[1px] bg-[var(--accent-blood)]" />
+                  <span className="text-[10px] font-mono tracking-[0.8em] text-[var(--accent-blood)] uppercase whitespace-nowrap font-black">
+                    {activeCard.phase === 'burning' ? 'DEDACTED' : 'CORE LOG'}
                   </span>
-                  <div className="w-12 h-[1px] bg-[var(--accent-blood)]" />
+                  <div className="w-16 h-[1px] bg-[var(--accent-blood)]" />
                 </div>
 
                 {activeCard.phase !== 'summon' && (
