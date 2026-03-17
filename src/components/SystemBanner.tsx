@@ -5,7 +5,7 @@ import { useLanguage } from "@/context/LanguageContext";
 
 export function SystemBanner() {
   const [visible, setVisible] = useState(true);
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
 
   if (!visible) return null;
 
