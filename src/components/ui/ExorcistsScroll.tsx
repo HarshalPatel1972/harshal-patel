@@ -29,13 +29,36 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   }, [text]);
 
   return (
-    <div className="w-full h-full p-8 flex flex-col items-start justify-start text-left relative overflow-hidden">
-      {/* HUD Accents for Mappa Aesthetic */}
-      <div className="absolute top-4 right-4 text-[var(--accent-blood)]/40 font-mono text-[8px] tracking-widest uppercase rotate-90 origin-right">
-        SECTOR_VOID_06
-      </div>
-      <div className="absolute bottom-4 left-4 text-[0.00fff7]/30 font-mono text-[8px] tracking-widest uppercase">
-        REF_ID: {Math.random().toString(16).slice(2, 8).toUpperCase()}
+    <div className="w-full h-full p-8 pt-24 flex flex-col items-start justify-start text-left relative overflow-hidden">
+      {/* Anime Sigil Art (Mappa/JJK Aesthetic) */}
+      <div className="absolute top-6 left-0 right-0 flex items-center justify-center opacity-60 pointer-events-none animate-pulse-glitch">
+        <svg width="140" height="140" viewBox="0 0 100 100" className="filter drop-shadow-[0_0_8px_rgba(0,255,247,0.4)]">
+          {/* Outer Containment Circles */}
+          <circle cx="50" cy="50" r="48" stroke="#00fff7" strokeWidth="0.2" strokeDasharray="1 2" />
+          <circle cx="50" cy="50" r="44" stroke="var(--accent-blood)" strokeWidth="0.5" opacity="0.6" />
+          
+          {/* Geometric Convergence */}
+          <path d="M50 2 L50 98 M2 50 L98 50" stroke="var(--accent-blood)" strokeWidth="0.2" opacity="0.3" />
+          <rect x="25" y="25" width="50" height="50" stroke="#00fff7" strokeWidth="0.8" transform="rotate(45 50 50)" opacity="0.8" />
+          <rect x="30" y="30" width="40" height="40" stroke="var(--accent-blood)" strokeWidth="0.5" transform="rotate(15 50 50)" />
+          
+          {/* Occult Strokes */}
+          <path d="M20 20 L80 80 M80 20 L20 80" stroke="var(--accent-blood)" strokeWidth="0.2" opacity="0.4" />
+          <g className="stroke-[#00fff7]" strokeWidth="1.5" strokeLinecap="square">
+            <path d="M42 42 L58 42 M42 50 L58 50 M42 58 L58 58" />
+            <path d="M50 38 L50 62" strokeWidth="0.5" />
+          </g>
+          
+          {/* Peripheral Symbols */}
+          {[0, 90, 180, 270].map(rot => (
+            <path 
+              key={rot}
+              d="M50 5 L48 10 L52 10 Z" 
+              fill="#00fff7" 
+              transform={`rotate(${rot} 50 50)`} 
+            />
+          ))}
+        </svg>
       </div>
       
       {/* Decorative Brackets */}
@@ -291,6 +314,16 @@ const ExorcistsScroll: React.FC = () => {
           0%, 100% { transform: translate(0); }
           33% { transform: translate(0.5px, -0.5px); }
           66% { transform: translate(-0.5px, 0.5px); }
+        }
+
+        @keyframes pulse-glitch {
+          0%, 100% { opacity: 0.6; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.02); filter: hue-rotate(15deg); }
+          51% { opacity: 0.4; filter: contrast(1.5); }
+        }
+
+        .animate-pulse-glitch {
+          animation: pulse-glitch 3s infinite;
         }
 
         .particle {
