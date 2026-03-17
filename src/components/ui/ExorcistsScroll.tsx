@@ -24,15 +24,15 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
       } else {
         clearInterval(interval);
       }
-    }, 25);
+    }, 20);
     return () => clearInterval(interval);
   }, [totalChars]);
 
   let charIndexCounter = 0;
 
   return (
-    <div className="w-full h-full p-10 flex flex-col items-center justify-center text-center">
-      <div className="text-[#E8E8E6] font-mono text-lg md:text-xl leading-[1.6] font-medium tracking-tight text-center" style={{ textShadow: '0 0 15px rgba(255,255,255,0.1)' }}>
+    <div className="w-full h-full p-8 md:p-14 flex flex-col items-center justify-center text-center">
+      <div className="text-[#E8E8E6] font-display text-2xl md:text-4xl lg:text-5xl leading-[1.3] font-black tracking-tight text-center italic" style={{ textShadow: '0 0 20px rgba(255,255,255,0.15)' }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
             {word.split("").map((char, ci) => {
@@ -40,10 +40,10 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
               return (
                 <span
                   key={ci}
-                  className="inline-block transition-all duration-800 ease-out"
+                  className="inline-block transition-all duration-700 ease-out"
                   style={{ 
                     opacity: isVisible ? 1 : 0,
-                    transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                    transform: isVisible ? 'translateY(0)' : 'translateY(50px)',
                     filter: isVisible ? 'blur(0px)' : 'blur(20px)',
                   }}
                 >
@@ -87,15 +87,12 @@ const ExorcistsScroll: React.FC = () => {
   const handleDismiss = () => {
     if (!activeCard || activeCard.phase === 'burning' || activeCard.phase === 'done') return;
     
+    // Clear any pending flipping if dismissed early
     setActiveCard(prev => prev ? { ...prev, phase: 'burning' } : null);
     
     setTimeout(() => {
-      setActiveCard(prev => prev ? { ...prev, phase: 'done' } : null);
-    }, 1000);
-
-    setTimeout(() => {
       setActiveCard(null);
-    }, 1200);
+    }, 800); // Sync with smoke-dissolve duration
   };
 
   useEffect(() => {
@@ -177,8 +174,8 @@ const ExorcistsScroll: React.FC = () => {
               zIndex: 9999,
               top: activeCard.phase === 'summon' ? `${activeCard.rect?.top}px` : '50%',
               left: activeCard.phase === 'summon' ? `${activeCard.rect?.left}px` : '50%',
-              width: activeCard.phase === 'summon' ? `${activeCard.rect?.width}px` : '320px',
-              height: activeCard.phase === 'summon' ? `${activeCard.rect?.height}px` : '480px',
+              width: activeCard.phase === 'summon' ? `${activeCard.rect?.width}px` : '420px',
+              height: activeCard.phase === 'summon' ? `${activeCard.rect?.height}px` : '600px',
               transform: activeCard.phase === 'summon' ? 'none' : 'translate(-50%, -50%)',
               transition: 'all 0.7s ease-in-out',
               perspective: '1200px',
