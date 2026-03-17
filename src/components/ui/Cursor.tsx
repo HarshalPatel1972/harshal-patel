@@ -60,32 +60,37 @@ export default function Cursor() {
     }
     arrowSlots.current = aSlots;
 
-    const pSlots = [];
-    const pSize = 6 * GAP;
-    const pTipX = 3 * GAP;
-    // Triangle pointing RIGHT (▶)
-    // Edge 1 (Top slanted: Base Top-Left to Tip)
-    for (let i = 0; i < 6; i++) {
-        pSlots.push({
-            x: (pTipX - pSize) + (i / 6) * pSize,
-            y: (-pSize / 2) + (i / 6) * (pSize / 2)
+    // ─── SEARCH SLOTS (🔍 + dots) ───
+    const sSlots = [];
+    const radius = 4.5 * GAP;
+    const centerX = -GAP;
+    const centerY = -GAP;
+    
+    // Circle of the magnifying glass (12 particles)
+    for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2;
+        sSlots.push({
+            x: centerX + Math.cos(angle) * radius,
+            y: centerY + Math.sin(angle) * radius
         });
     }
-    // Edge 2 (Bottom slanted: Base Bottom-Left to Tip)
-    for (let i = 0; i < 6; i++) {
-        pSlots.push({
-            x: (pTipX - pSize) + (i / 6) * pSize,
-            y: (pSize / 2) - (i / 6) * (pSize / 2)
+    
+    // Handle of the magnifying glass (4 particles)
+    for (let i = 1; i <= 4; i++) {
+        sSlots.push({
+            x: centerX + radius + i * (GAP * 0.8),
+            y: centerY + radius + i * (GAP * 0.8)
         });
     }
-    // Dots trailing behind in a vertical line
-    for (let i = 0; i < 7; i++) {
-        pSlots.push({
-            x: pTipX - pSize - 3 * GAP,
-            y: -3 * GAP + i * GAP
+
+    // Trailing Dots (3 particles)
+    for (let i = 0; i < 3; i++) {
+        sSlots.push({
+            x: centerX - radius - (i + 2) * GAP,
+            y: centerY
         });
     }
-    playSlots.current = pSlots;
+    playSlots.current = sSlots;
 
     // Initialize Particles
     const centerX = window.innerWidth / 2;
