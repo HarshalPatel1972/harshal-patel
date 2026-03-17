@@ -24,20 +24,25 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
           if (next[i]) next[i].visible = true;
           return next;
         });
-      }, i * 35 + Math.random() * 20);
+      }, i * 20 + Math.random() * 15);
     });
   }, [text]);
 
   return (
-    <div className="w-full h-full p-8 flex flex-col items-start justify-start text-left">
-      <div className="text-white font-mono text-base leading-[1.8] font-normal tracking-normal text-left" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
+    <div className="w-full h-full p-10 flex flex-col items-center justify-center text-center">
+      <div className="text-[#E8E8E6] font-mono text-lg md:text-xl leading-[1.6] font-medium tracking-tight text-center" style={{ textShadow: '0 0 15px rgba(255,255,255,0.1)' }}>
         {chars.map((item, i) => (
           <span
             key={i}
-            className="transition-opacity duration-300"
-            style={{ opacity: item.visible ? 1 : 0 }}
+            className="inline-block transition-all duration-700 ease-out"
+            style={{ 
+              opacity: item.visible ? 1 : 0,
+              transform: item.visible ? 'translateY(0)' : 'translateY(30px)',
+              filter: item.visible ? 'blur(0px)' : 'blur(15px)',
+              marginRight: item.char === ' ' ? '0.25em' : '0'
+            }}
           >
-            {item.char}
+            {item.char === ' ' ? '\u00A0' : item.char}
           </span>
         ))}
       </div>
