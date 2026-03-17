@@ -29,8 +29,22 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   }, [text]);
 
   return (
-    <div className="w-full h-full p-8 flex flex-col items-start justify-start text-left">
-      <div className="text-white font-mono text-base leading-[1.8] font-normal tracking-normal text-left" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
+    <div className="w-full h-full p-8 flex flex-col items-start justify-start text-left relative overflow-hidden">
+      {/* HUD Accents for Mappa Aesthetic */}
+      <div className="absolute top-4 right-4 text-[var(--accent-blood)]/40 font-mono text-[8px] tracking-widest uppercase rotate-90 origin-right">
+        SECTOR_VOID_06
+      </div>
+      <div className="absolute bottom-4 left-4 text-[0.00fff7]/30 font-mono text-[8px] tracking-widest uppercase">
+        REF_ID: {Math.random().toString(16).slice(2, 8).toUpperCase()}
+      </div>
+      
+      {/* Decorative Brackets */}
+      <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-[#00fff7]/60" />
+      <div className="absolute top-2 right-2 w-4 h-4 border-t border-r border-[#00fff7]/60" />
+      <div className="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-[#00fff7]/60" />
+      <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-[#00fff7]/60" />
+
+      <div className="text-white font-mono text-base leading-[1.8] font-normal tracking-normal text-left chromatic-aberration" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
         {chars.map((item, i) => (
           <span
             key={i}
@@ -200,18 +214,23 @@ const ExorcistsScroll: React.FC = () => {
 
               {/* Back Face (Revelation) */}
               <div 
-                className={`absolute inset-0 bg-[#000000] border-2 border-[#00fff7] flex items-center justify-center shadow-[0_0_40px_rgba(0,255,247,0.4),inset_0_0_20px_rgba(0,255,247,0.05)]
+                className={`absolute inset-0 bg-[#0a0a0a] border-2 border-[#00fff7] flex items-center justify-center shadow-[0_0_40px_rgba(0,255,247,0.4),inset_0_0_20px_rgba(0,255,247,0.05)] overflow-hidden
                   ${activeCard.phase === 'burning' ? 'animate-ofuda-burn' : ''}`}
                 style={{ 
                   backfaceVisibility: 'hidden', 
                   transform: 'rotateY(180deg)',
                   borderRadius: '0px',
-                  backgroundColor: '#000000 !important',
                   zIndex: 1
                 }}
               >
+                {/* Background Texture & Depth */}
+                <div className="absolute inset-0 halftone-bg opacity-15 pointer-events-none" />
+                <div className="absolute inset-0 bg-radial-gradient from-cyan-500/10 to-transparent pointer-events-none" />
+                
                 {activeCard.phase === 'flipped' && (
-                  <CharacterInscription text={activeCard.fact} />
+                  <div className="relative z-10 w-full h-full">
+                    <CharacterInscription text={activeCard.fact} />
+                  </div>
                 )}
 
                 {/* Burn Particles */}
@@ -261,6 +280,17 @@ const ExorcistsScroll: React.FC = () => {
         @keyframes burn-up {
           0% { clip-path: inset(0% 0% 0% 0%); }
           100% { clip-path: inset(0% 0% 100% 0%); }
+        }
+
+        .chromatic-aberration {
+          text-shadow: 1px 0 0 rgba(255,0,0,0.3), -1px 0 0 rgba(0,255,255,0.3);
+          animation: glitch-subtle 4s infinite;
+        }
+
+        @keyframes glitch-subtle {
+          0%, 100% { transform: translate(0); }
+          33% { transform: translate(0.5px, -0.5px); }
+          66% { transform: translate(-0.5px, 0.5px); }
         }
 
         .particle {
