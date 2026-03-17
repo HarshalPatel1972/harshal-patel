@@ -10,6 +10,29 @@ interface ActiveCard {
   rect: DOMRect | null;
 }
 
+const OfudaSigil: React.FC<{ size?: number; color?: string }> = ({ size = 100, color = "#00fff7" }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="filter drop-shadow-[0_0_8px_rgba(0,255,247,0.4)] transition-all duration-500 animate-pulse-glitch">
+    <circle cx="50" cy="50" r="48" stroke={color} strokeWidth="0.2" strokeDasharray="1 2" />
+    <circle cx="50" cy="50" r="44" stroke="var(--accent-blood)" strokeWidth="0.5" opacity="0.6" />
+    <path d="M50 2 L50 98 M2 50 L98 50" stroke="var(--accent-blood)" strokeWidth="0.2" opacity="0.3" />
+    <rect x="25" y="25" width="50" height="50" stroke={color} strokeWidth="0.8" transform="rotate(45 50 50)" opacity="0.8" />
+    <rect x="30" y="30" width="40" height="40" stroke="var(--accent-blood)" strokeWidth="0.5" transform="rotate(15 50 50)" />
+    <path d="M20 20 L80 80 M80 20 L20 80" stroke="var(--accent-blood)" strokeWidth="0.2" opacity="0.4" />
+    <g className={`stroke-[${color}]`} strokeWidth="1.5" strokeLinecap="square">
+      <path d="M42 42 L58 42 M42 50 L58 50 M42 58 L58 58" />
+      <path d="M50 38 L50 62" strokeWidth="0.5" />
+    </g>
+    {[0, 90, 180, 270].map(rot => (
+      <path 
+        key={rot}
+        d="M50 5 L48 10 L52 10 Z" 
+        fill={color} 
+        transform={`rotate(${rot} 50 50)`} 
+      />
+    ))}
+  </svg>
+);
+
 const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   const [chars, setChars] = useState<{ char: string; visible: boolean }[]>([]);
 
@@ -29,45 +52,14 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   }, [text]);
 
   return (
-    <div className="w-full h-full p-8 pt-24 flex flex-col items-start justify-start text-left relative overflow-hidden">
-      {/* Anime Sigil Art (Mappa/JJK Aesthetic) */}
-      <div className="absolute top-6 left-0 right-0 flex items-center justify-center opacity-60 pointer-events-none animate-pulse-glitch">
-        <svg width="140" height="140" viewBox="0 0 100 100" className="filter drop-shadow-[0_0_8px_rgba(0,255,247,0.4)]">
-          {/* Outer Containment Circles */}
-          <circle cx="50" cy="50" r="48" stroke="#00fff7" strokeWidth="0.2" strokeDasharray="1 2" />
-          <circle cx="50" cy="50" r="44" stroke="var(--accent-blood)" strokeWidth="0.5" opacity="0.6" />
-          
-          {/* Geometric Convergence */}
-          <path d="M50 2 L50 98 M2 50 L98 50" stroke="var(--accent-blood)" strokeWidth="0.2" opacity="0.3" />
-          <rect x="25" y="25" width="50" height="50" stroke="#00fff7" strokeWidth="0.8" transform="rotate(45 50 50)" opacity="0.8" />
-          <rect x="30" y="30" width="40" height="40" stroke="var(--accent-blood)" strokeWidth="0.5" transform="rotate(15 50 50)" />
-          
-          {/* Occult Strokes */}
-          <path d="M20 20 L80 80 M80 20 L20 80" stroke="var(--accent-blood)" strokeWidth="0.2" opacity="0.4" />
-          <g className="stroke-[#00fff7]" strokeWidth="1.5" strokeLinecap="square">
-            <path d="M42 42 L58 42 M42 50 L58 50 M42 58 L58 58" />
-            <path d="M50 38 L50 62" strokeWidth="0.5" />
-          </g>
-          
-          {/* Peripheral Symbols */}
-          {[0, 90, 180, 270].map(rot => (
-            <path 
-              key={rot}
-              d="M50 5 L48 10 L52 10 Z" 
-              fill="#00fff7" 
-              transform={`rotate(${rot} 50 50)`} 
-            />
-          ))}
-        </svg>
-      </div>
-      
+    <div className="w-full h-full p-8 flex flex-col items-start justify-center text-left relative overflow-hidden">
       {/* Decorative Brackets */}
       <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-[#00fff7]/60" />
       <div className="absolute top-2 right-2 w-4 h-4 border-t border-r border-[#00fff7]/60" />
       <div className="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-[#00fff7]/60" />
       <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-[#00fff7]/60" />
 
-      <div className="text-white font-mono text-base leading-[1.8] font-normal tracking-normal text-left chromatic-aberration" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
+      <div className="text-white font-mono text-base md:text-lg leading-[1.8] font-normal tracking-normal text-left chromatic-aberration" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
         {chars.map((item, i) => (
           <span
             key={i}
@@ -161,19 +153,11 @@ const ExorcistsScroll: React.FC = () => {
                   handleCardClick(s.id, e);
                 }}
                 disabled={activeCard !== null}
-                className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer"
+                className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-center p-2 shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer"
                 style={{ borderRadius: '0px' }}
               >
-                <div className="flex flex-col gap-1">
-                  {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[var(--accent-blood)] opacity-50" />)}
-                </div>
-                <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] brightness-125">
-                  {s.hex}
-                </span>
-                <div className="flex flex-col gap-1 items-center">
-                  <div className="w-2 h-2 rounded-full border border-[var(--accent-blood)]" />
-                  <div className="w-[1px] h-8 bg-[var(--accent-blood)] opacity-30" />
-                </div>
+                <div className="absolute inset-0 halftone-bg opacity-10" />
+                <OfudaSigil size={60} color="var(--accent-blood)" />
               </button>
               <div className="w-[1px] h-32 bg-[var(--accent-blood)] opacity-20" />
             </div>
@@ -220,19 +204,11 @@ const ExorcistsScroll: React.FC = () => {
             >
               {/* Front Face (Ofuda) */}
               <div 
-                className="absolute inset-0 bg-black border-2 border-[#00fff7] flex flex-col items-center justify-between py-4 shadow-[0_0_30px_rgba(0,255,247,0.6)]"
+                className="absolute inset-0 bg-black border-2 border-[#00fff7] flex items-center justify-center p-4 shadow-[0_0_30px_rgba(0,255,247,0.6)]"
                 style={{ backfaceVisibility: 'hidden', borderRadius: '0px', zIndex: 2 }}
               >
-                <div className="flex flex-col gap-1">
-                  {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[#00fff7]" />)}
-                </div>
-                <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[#00fff7]">
-                  {segments.find(s => s.id === activeCard.id)?.hex}
-                </span>
-                <div className="flex flex-col gap-1 items-center">
-                  <div className="w-2 h-2 rounded-full border border-[#00fff7]" />
-                  <div className="w-[1px] h-8 bg-[#00fff7]" />
-                </div>
+                <div className="absolute inset-0 halftone-bg opacity-10" />
+                <OfudaSigil size={180} color="#00fff7" />
               </div>
 
               {/* Back Face (Revelation) */}
