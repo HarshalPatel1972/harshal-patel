@@ -73,13 +73,13 @@ export default function Cursor() {
         });
     }
     
-    // Handle (5 particles) - scaled handle length
+    // Handle (5 particles) - tightened handle spacing
     const startX = Math.cos(Math.PI / 4) * radius;
     const startY = Math.sin(Math.PI / 4) * radius;
     for (let i = 1; i <= 5; i++) {
         sSlots.push({
-            x: startX + i * (GAP * 1.1),
-            y: startY + i * (GAP * 1.1)
+            x: startX + i * (GAP * 0.85),
+            y: startY + i * (GAP * 0.85)
         });
     }
     playSlots.current = sSlots;
