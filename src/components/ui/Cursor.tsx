@@ -60,30 +60,29 @@ export default function Cursor() {
     }
     arrowSlots.current = aSlots;
 
-    // ─── PLAY SLOTS (▶ + dots) ───
     const pSlots = [];
     const pSize = 6 * GAP;
-    const pTipX = 2 * GAP;
-    // Triangle pointing RIGHT
-    // Edge 1 (Top slanted)
+    const pTipX = 3 * GAP;
+    // Triangle pointing RIGHT (▶)
+    // Edge 1 (Top slanted: Base Top-Left to Tip)
     for (let i = 0; i < 6; i++) {
         pSlots.push({
-            x: pTipX - (i/6) * pSize,
-            y: (i/6) * (pSize/1.4) - (pSize/2.8)
+            x: (pTipX - pSize) + (i / 6) * pSize,
+            y: (-pSize / 2) + (i / 6) * (pSize / 2)
         });
     }
-    // Edge 2 (Bottom slanted)
-    for (let i = 1; i < 6; i++) {
+    // Edge 2 (Bottom slanted: Base Bottom-Left to Tip)
+    for (let i = 0; i < 6; i++) {
         pSlots.push({
-            x: pTipX - (i/6) * pSize,
-            y: -(i/6) * (pSize/1.4) + (pSize/2.8)
+            x: (pTipX - pSize) + (i / 6) * pSize,
+            y: (pSize / 2) - (i / 6) * (pSize / 2)
         });
     }
-    // Dots trailing behind
-    for (let i = 0; i < 8; i++) {
+    // Dots trailing behind in a vertical line
+    for (let i = 0; i < 7; i++) {
         pSlots.push({
-            x: pTipX - pSize - (i + 1) * GAP * 1.5,
-            y: 0
+            x: pTipX - pSize - 3 * GAP,
+            y: -3 * GAP + i * GAP
         });
     }
     playSlots.current = pSlots;
