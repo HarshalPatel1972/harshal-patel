@@ -46,10 +46,63 @@ const teko = Teko({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio by Harshal Patel",
-  description: "Exorcising technical debt and Constructing High-Performance Systems. Software Engineer Portfolio.",
-  keywords: ["Software Engineer", "Go", "TypeScript", "WebAssembly", "Portfolio"],
-  authors: [{ name: "Harshal Patel" }],
+  title: {
+    default: "Harshal Patel | Software Engineer Portfolio",
+    template: "%s | Harshal Patel"
+  },
+  description: "Software Engineer specializing in Go, TypeScript, and WebAssembly. Explore the portfolio of Harshal Patel, focused on high-performance systems and cinematic brutalist design.",
+  keywords: [
+    "Harshal Patel", "Harshal Patel Portfolio", "Software Engineer", 
+    "Go Developer Varanasi", "TypeScript Specialist India", "WebAssembly Engineer",
+    "Chandigarh University Portfolio", "Mappa Brutalist Web Design", 
+    "High-Performance Systems", "Full Stack Developer", "Backend Engineer India"
+  ],
+  authors: [{ name: "Harshal Patel", url: "https://github.com/HarshalPatel1972" }],
+  creator: "Harshal Patel",
+  publisher: "Harshal Patel",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL("https://harshalpatel.dev"), // Placeholder: Change to your actual domain
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Harshal Patel | Software Engineer Portfolio",
+    description: "Constructing High-Performance Systems with Go & WebAssembly. Explore my work.",
+    url: "https://harshalpatel.dev",
+    siteName: "Harshal Patel Portfolio",
+    images: [
+      {
+        url: "/harshal-0.png",
+        width: 1200,
+        height: 630,
+        alt: "Harshal Patel Portfolio Preview",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Harshal Patel | Software Engineer Portfolio",
+    description: "Constructing High-Performance Systems with Go & WebAssembly.",
+    creator: "@HarshalPatel",
+    images: ["/harshal-0.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
@@ -68,6 +121,28 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ImageGuard />
+        {/* JSON-LD Structured Data for Google Search */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Harshal Patel",
+              "url": "https://harshalpatel.dev",
+              "jobTitle": "Software Engineer",
+              "alumniOf": {
+                "@type": "CollegeOrUniversity",
+                "name": "Chandigarh University"
+              },
+              "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
+              "sameAs": [
+                "https://github.com/HarshalPatel1972",
+                "https://www.linkedin.com/in/harshal-patel"
+              ]
+            })
+          }}
+        />
         {children}
       </body>
     </html>
