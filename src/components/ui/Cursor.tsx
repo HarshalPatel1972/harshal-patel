@@ -63,31 +63,31 @@ export default function Cursor() {
     // ─── SEARCH SLOTS (🔍 + dots) ───
     const sSlots = [];
     const radius = 4.5 * GAP;
-    const centerX = -GAP;
-    const centerY = -GAP;
+    const scX = -GAP;
+    const scY = -GAP;
     
     // Circle of the magnifying glass (12 particles)
     for (let i = 0; i < 12; i++) {
         const angle = (i / 12) * Math.PI * 2;
         sSlots.push({
-            x: centerX + Math.cos(angle) * radius,
-            y: centerY + Math.sin(angle) * radius
+            x: scX + Math.cos(angle) * radius,
+            y: scY + Math.sin(angle) * radius
         });
     }
     
     // Handle of the magnifying glass (4 particles)
     for (let i = 1; i <= 4; i++) {
         sSlots.push({
-            x: centerX + radius + i * (GAP * 0.8),
-            y: centerY + radius + i * (GAP * 0.8)
+            x: scX + radius + i * (GAP * 0.8),
+            y: scY + radius + i * (GAP * 0.8)
         });
     }
 
     // Trailing Dots (3 particles)
     for (let i = 0; i < 3; i++) {
         sSlots.push({
-            x: centerX - radius - (i + 2) * GAP,
-            y: centerY
+            x: scX - radius - (i + 2) * GAP,
+            y: scY
         });
     }
     playSlots.current = sSlots;
