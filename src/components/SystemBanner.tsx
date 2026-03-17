@@ -33,44 +33,6 @@ export function SystemBanner() {
       </div>
 
       <div className="flex items-center gap-4 shrink-0">
-        {/* Language Toggle - Redesigned for red BG */}
-        <div className="flex items-center gap-2 border border-white/40 px-2 py-1 bg-black/20 backdrop-blur-sm">
-          <button 
-            onClick={() => setLanguage('en')}
-            className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'en' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
-          >
-            [EN]
-          </button>
-          <span className="text-white/30 text-[10px]">/</span>
-          <button 
-            onClick={() => setLanguage('ja')}
-            className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'ja' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
-          >
-            [JA]
-          </button>
-          <span className="text-white/30 text-[10px]">/</span>
-          <button 
-            onClick={() => setLanguage('ko')}
-            className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'ko' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
-          >
-            [KO]
-          </button>
-          <span className="text-white/30 text-[10px]">/</span>
-          <button 
-            onClick={() => setLanguage('zh-tw')}
-            className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'zh-tw' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
-          >
-            [ZH]
-          </button>
-          <span className="text-white/30 text-[10px]">/</span>
-          <button 
-            onClick={() => setLanguage('hi')}
-            className={`font-mono text-[9px] md:text-[10px] uppercase tracking-wider transition-colors duration-300 ${language === 'hi' ? "text-white font-black" : "text-white/40 hover:text-white"}`}
-          >
-            [HI]
-          </button>
-        </div>
-
         {/* Dismiss Button */}
         <button 
           onClick={() => setVisible(false)} 
