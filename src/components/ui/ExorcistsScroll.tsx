@@ -123,6 +123,7 @@ const ExorcistsScroll: React.FC = () => {
                   e.stopPropagation();
                   handleCardClick(s.id, e);
                 }}
+                data-cursor="play"
                 disabled={activeCard !== null}
                 className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer"
                 style={{ borderRadius: '0px' }}

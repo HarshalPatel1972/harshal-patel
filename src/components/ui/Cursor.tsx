@@ -17,7 +17,7 @@ export default function Cursor() {
   
   // Mouse and Meta State
   const mouse = useRef({ x: 0, y: 0 });
-  const isHover = useRef(false);
+  const hoverType = useRef<"none" | "standard" | "play">("none");
   const totalClicks = useRef(0);
   const clickIdleTimer = useRef(0);
   const burstFlash = useRef(0);
@@ -26,7 +26,7 @@ export default function Cursor() {
   
   // Constants
   const PSIZE = 2.2;
-  const GAP = PSIZE * 2 + 1.2; // Reduced gap for tighter formation
+  const GAP = PSIZE * 2 + 1.2; 
   const tipX = 4 * GAP;
   const tipY = -4 * GAP;
   
@@ -34,8 +34,9 @@ export default function Cursor() {
   const CYAN = "#0ee0c3";
   const BLOOD = "#d91111";
 
-  // Pre-calculate Arrow Slots (↗)
+  // Pre-calculate Slots
   const arrowSlots = useRef<{x: number, y: number}[]>([]);
+  const playSlots = useRef<{x: number, y: number}[]>([]);
 
   useEffect(() => {
     // Detect Touch
@@ -43,30 +44,49 @@ export default function Cursor() {
     setIsTouch(touchDevice);
     if (touchDevice) return;
 
-    // Initialize Slots
-    const slots = [];
-    // Diagonal shaft (0-8)
+    // ─── ARROW SLOTS (↗) ───
+    const aSlots = [];
     for (let i = 0; i <= 8; i++) {
-      slots.push({
+        aSlots.push({
         x: -4 * GAP + (i / 8) * 8 * GAP,
         y: 4 * GAP - (i / 8) * 8 * GAP
       });
     }
-    // Horizontal arm (9-13) - tip going LEFT
     for (let i = 1; i <= 5; i++) {
-      slots.push({
-        x: tipX - i * GAP,
-        y: tipY
-      });
+        aSlots.push({ x: tipX - i * GAP, y: tipY });
     }
-    // Vertical arm (14-18) - tip going DOWN
     for (let i = 1; i <= 5; i++) {
-      slots.push({
-        x: tipX,
-        y: tipY + i * GAP
-      });
+        aSlots.push({ x: tipX, y: tipY + i * GAP });
     }
-    arrowSlots.current = slots;
+    arrowSlots.current = aSlots;
+
+    // ─── PLAY SLOTS (▶ + dots) ───
+    const pSlots = [];
+    const pSize = 6 * GAP;
+    const pTipX = 2 * GAP;
+    // Triangle pointing RIGHT
+    // Edge 1 (Top slanted)
+    for (let i = 0; i < 6; i++) {
+        pSlots.push({
+            x: pTipX - (i/6) * pSize,
+            y: (i/6) * (pSize/1.4) - (pSize/2.8)
+        });
+    }
+    // Edge 2 (Bottom slanted)
+    for (let i = 1; i < 6; i++) {
+        pSlots.push({
+            x: pTipX - (i/6) * pSize,
+            y: -(i/6) * (pSize/1.4) + (pSize/2.8)
+        });
+    }
+    // Dots trailing behind
+    for (let i = 0; i < 8; i++) {
+        pSlots.push({
+            x: pTipX - pSize - (i + 1) * GAP * 1.5,
+            y: 0
+        });
+    }
+    playSlots.current = pSlots;
 
     // Initialize Particles
     const centerX = window.innerWidth / 2;
@@ -78,11 +98,9 @@ export default function Cursor() {
       py.current[i] = centerY + Math.sin(angle) * dist;
       vx.current[i] = -Math.sin(angle) * 2;
       vy.current[i] = Math.cos(angle) * 2;
-      // Orbit Phase
       pt.current[i] = (Math.PI * 2 / 19) * (i - 1);
     }
 
-    // Canvas Resize
     const handleResize = () => {
       if (canvasRef.current) {
         canvasRef.current.width = window.innerWidth;
@@ -92,29 +110,33 @@ export default function Cursor() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Mouse Tracking
     const onMouseMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
     };
 
-    // Hover Detection via Delegation
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.matches('a, button, [role="button"], [data-cursor="hover"]') || 
-          target.closest('a, button, [role="button"], [data-cursor="hover"]')) {
-        isHover.current = true;
-      }
-    };
-    const onMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.matches('a, button, [role="button"], [data-cursor="hover"]') || 
-          target.closest('a, button, [role="button"], [data-cursor="hover"]')) {
-        isHover.current = false;
-        locked.current.fill(0); // Release all locks on exit
+      const closestHover = target.closest('a, button, [role="button"], [data-cursor]');
+      
+      if (closestHover) {
+        const type = (closestHover as HTMLElement).getAttribute('data-cursor');
+        if (type === 'play') {
+          hoverType.current = "play";
+        } else {
+          hoverType.current = "standard";
+        }
       }
     };
 
-    // Click Burst
+    const onMouseOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const closestHover = target.closest('a, button, [role="button"], [data-cursor]');
+      if (closestHover) {
+        hoverType.current = "none";
+        locked.current.fill(0);
+      }
+    };
+
     const onMouseDown = () => {
       totalClicks.current++;
       clickIdleTimer.current = 0;
@@ -129,16 +151,10 @@ export default function Cursor() {
       }
     };
 
-
     const handleScroll = () => {
-      if (!isScrolling.current) {
-        isScrolling.current = true;
-      }
-      
+      if (!isScrolling.current) isScrolling.current = true;
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => {
-        isScrolling.current = false;
-      }, 150); // Threshold to detect scroll end
+      scrollTimeout.current = setTimeout(() => { isScrolling.current = false; }, 150);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -147,7 +163,6 @@ export default function Cursor() {
     document.addEventListener("mouseout", onMouseOut);
     window.addEventListener("mousedown", onMouseDown);
 
-    // Physics Loop
     let animationFrameId: number;
     const loop = () => {
       const canvas = canvasRef.current;
@@ -164,7 +179,6 @@ export default function Cursor() {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Parent Physics
       vx.current[0] += (mouse.current.x - px.current[0]) * 0.20;
       vy.current[0] += (mouse.current.y - py.current[0]) * 0.20;
       vx.current[0] *= 0.68;
@@ -172,18 +186,16 @@ export default function Cursor() {
       px.current[0] += vx.current[0];
       py.current[0] += vy.current[0];
 
-      // 2. Click Logic
       if (burstFlash.current > 0) burstFlash.current--;
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      const currentColor = burstFlash.current > 0 ? BLOOD : (isHover.current ? CYAN : BONE);
+      const currentColor = burstFlash.current > 0 ? BLOOD : (hoverType.current !== "none" ? CYAN : BONE);
 
-      // 3. Child Physics
       for (let i = 1; i < 20; i++) {
-        if (isHover.current) {
-          // HOVER STATE (↗ formation)
-          const slot = arrowSlots.current[i - 1];
+        if (hoverType.current !== "none") {
+          const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
+          const slot = slots[i - 1];
           const tx = px.current[0] + slot.x;
           const ty = py.current[0] + slot.y;
 
@@ -207,12 +219,10 @@ export default function Cursor() {
               const grav = Math.min(100000 / (dist + 1), 600);
               vx.current[i] += (dx / dist) * grav * 0.016;
               vy.current[i] += (dy / dist) * grav * 0.016;
-
               let drag = 0.72;
               if (dist < 8) drag = 0.35;
               else if (dist < 20) drag = 0.52;
               else if (dist < 50) drag = 0.62;
-
               vx.current[i] *= drag;
               vy.current[i] *= drag;
               px.current[i] += vx.current[i];
@@ -220,17 +230,13 @@ export default function Cursor() {
             }
           }
         } else {
-          // IDLE/MOVE STATE — Circle Orbit
           pt.current[i] += 0.020;
           const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
-
           const dx = tx - px.current[i];
           const dy = ty - py.current[i];
           const distToTarget = Math.sqrt(dx * dx + dy * dy);
-          
           const lerpStrength = distToTarget > 40 ? 0.08 : distToTarget > 15 ? 0.14 : 0.22;
-          
           vx.current[i] += dx * lerpStrength;
           vy.current[i] += dy * lerpStrength;
           vx.current[i] *= 0.60;
@@ -240,9 +246,7 @@ export default function Cursor() {
         }
       }
 
-      // 4. Rendering
-      if (!isHover.current) {
-        // Faint Orbit Ring Guide
+      if (hoverType.current === "none") {
         ctx.beginPath();
         ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
         ctx.strokeStyle = "#E8E8E6";
@@ -254,25 +258,20 @@ export default function Cursor() {
       for (let i = 0; i < 20; i++) {
         const x = px.current[i];
         const y = py.current[i];
-
-        // Main Body
         ctx.beginPath();
         ctx.arc(x, y, PSIZE, 0, Math.PI * 2);
         ctx.fillStyle = currentColor;
         ctx.fill();
 
         if (burstFlash.current === 0) {
-          // Glass Specular
           ctx.beginPath();
           ctx.arc(x - PSIZE * 0.30, y - PSIZE * 0.30, PSIZE * 0.38, 0, Math.PI * 2);
           ctx.fillStyle = "rgba(255, 255, 255, 0.70)";
           ctx.fill();
-
-          // Rim Glow
           ctx.beginPath();
           ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
           ctx.lineWidth = 0.6;
-          ctx.strokeStyle = isHover.current ? "rgba(14, 224, 195, 0.30)" : "rgba(232, 232, 230, 0.09)";
+          ctx.strokeStyle = hoverType.current !== "none" ? "rgba(14, 224, 195, 0.30)" : "rgba(232, 232, 230, 0.09)";
           ctx.stroke();
         }
       }
