@@ -30,7 +30,7 @@ export function LanguageSelector() {
   return (
     <div 
       ref={containerRef}
-      className="fixed left-4 top-14 z-[70] flex items-center group"
+      className="fixed left-[11px] top-14 z-[70] flex items-center group"
     >
       {/* Trigger Icon */}
       <button
@@ -50,7 +50,7 @@ export function LanguageSelector() {
 
       {/* Expanded Container */}
       <div 
-        className={`flex items-center gap-1 bg-black/90 backdrop-blur-md border-y border-r border-white/10 h-9 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[600px] opacity-100 pl-4 pr-3 ml-0' : 'max-w-0 opacity-0 ml-[-10px]'}`}
+        className={`flex items-center gap-1 bg-black/90 backdrop-blur-md border-y border-r border-white/10 h-9 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[600px] opacity-100 pl-[11px] pr-3 ml-0' : 'max-w-0 opacity-0 ml-[-10px]'}`}
       >
         {languages.map((lang, idx) => (
           <div key={lang.code} className="flex items-center">
