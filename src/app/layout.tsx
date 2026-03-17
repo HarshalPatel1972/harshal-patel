@@ -104,7 +104,11 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/favicon.png",
     apple: "/favicon.png",
   }
 };
@@ -125,22 +129,31 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              "name": "Harshal Patel",
-              "url": "https://harshal-patel-chi.vercel.app",
-              "jobTitle": "Software Engineer",
-              "alumniOf": {
-                "@type": "CollegeOrUniversity",
-                "name": "Chandigarh University"
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Harshal Patel",
+                "alternateName": ["Harshal Patel Portfolio", "Harshal Patel Engineer"],
+                "url": "https://harshal-patel-chi.vercel.app"
               },
-              "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
-              "sameAs": [
-                "https://github.com/HarshalPatel1972",
-                "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
-              ]
-            })
+              {
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "name": "Harshal Patel",
+                "url": "https://harshal-patel-chi.vercel.app",
+                "jobTitle": "Software Engineer",
+                "alumniOf": {
+                  "@type": "CollegeOrUniversity",
+                  "name": "Chandigarh University"
+                },
+                "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
+                "sameAs": [
+                  "https://github.com/HarshalPatel1972",
+                  "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
+                ]
+              }
+            ])
           }}
         />
         {children}
