@@ -212,8 +212,10 @@ const ExorcistsScroll: React.FC = () => {
 
               {/* Back Face (Revelation) */}
               <div 
-                className={`absolute inset-0 bg-[#000000] border-2 border-[#00fff7] flex items-center justify-center shadow-[0_0_40px_rgba(0,255,247,0.4),inset_0_0_20px_rgba(0,255,247,0.05)]
-                  ${activeCard.phase === 'burning' ? 'animate-ofuda-burn' : ''}`}
+                className={`absolute inset-0 bg-[#000000] border-2 flex items-center justify-center transition-colors duration-300
+                  ${activeCard.phase === 'burning' 
+                    ? 'border-[var(--accent-blood)] shadow-[0_0_50px_rgba(217,17,17,0.6)] animate-ofuda-burn' 
+                    : 'border-[#00fff7] shadow-[0_0_40px_rgba(0,255,247,0.4),inset_0_0_20px_rgba(0,255,247,0.05)]'}`}
                 style={{ 
                   backfaceVisibility: 'hidden', 
                   transform: 'rotateY(180deg)',
