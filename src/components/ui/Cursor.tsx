@@ -252,6 +252,9 @@ export default function Cursor() {
         ctx.globalAlpha = 1.0;
       }
       for (let i = 0; i < 20; i++) {
+        // Skip rendering the center dot for search icon to keep the circle empty
+        if (i === 0 && hoverType.current === "play") continue;
+
         const x = px.current[i];
         const y = py.current[i];
         ctx.beginPath();
