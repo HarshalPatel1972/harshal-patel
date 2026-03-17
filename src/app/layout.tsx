@@ -138,7 +138,7 @@ export default function RootLayout({
               "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
               "sameAs": [
                 "https://github.com/HarshalPatel1972",
-                "https://www.linkedin.com/in/harshal-patel"
+                "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
               ]
             })
           }}

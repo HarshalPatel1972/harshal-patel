@@ -7,7 +7,7 @@ export const profile = {
     email: "harshalpatel6828@gmail.com",
     phone: "+91-7017297823",
     github: "https://github.com/HarshalPatel1972",
-    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
     location: "Varanasi, India",
     
     education: {
@@ -49,7 +49,7 @@ export const profile = {
     email: "harshalpatel6828@gmail.com",
     phone: "+91-7017297823",
     github: "https://github.com/HarshalPatel1972",
-    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
     location: "インド、バラナシ",
     
     education: {
@@ -91,7 +91,7 @@ export const profile = {
     email: "harshalpatel6828@gmail.com",
     phone: "+91-7017297823",
     github: "https://github.com/HarshalPatel1972",
-    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
     location: "인도, 바라나시",
     
     education: {
@@ -133,7 +133,7 @@ export const profile = {
     email: "harshalpatel6828@gmail.com",
     phone: "+91-7017297823",
     github: "https://github.com/HarshalPatel1972",
-    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
     location: "印度，瓦拉納西",
     
     education: {
@@ -175,7 +175,7 @@ export const profile = {
     email: "harshalpatel6828@gmail.com",
     phone: "+91-7017297823",
     github: "https://github.com/HarshalPatel1972",
-    linkedin: "https://www.linkedin.com/in/harshal-patel",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
     location: "वाराणसी, भारत",
     
     education: {
