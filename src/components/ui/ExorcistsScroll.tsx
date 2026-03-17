@@ -32,7 +32,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div className="w-full h-full p-8 md:p-14 flex flex-col items-center justify-center text-center">
-      <div className="text-[#E8E8E6] font-display text-2xl md:text-4xl lg:text-5xl leading-[1.3] font-black tracking-tight text-center italic" style={{ textShadow: '0 0 20px rgba(255,255,255,0.15)' }}>
+      <div className="text-[#E8E8E6] font-display text-xl md:text-3xl lg:text-4xl leading-[1.3] font-black tracking-tight text-center italic" style={{ textShadow: '0 0 20px rgba(255,255,255,0.15)' }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
             {word.split("").map((char, ci) => {
@@ -135,7 +135,7 @@ const ExorcistsScroll: React.FC = () => {
                 }}
                 data-cursor="play"
                 disabled={activeCard !== null}
-                className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_12px_rgba(0,255,247,0.3)] hover:scale-[1.05] cursor-pointer"
+                className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 outline-none bg-black/80 border-[var(--accent-blood)] hover:border-[var(--accent-blood)] hover:shadow-[0_0_12px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
                 style={{ borderRadius: '0px' }}
               >
                 <div className="flex flex-col gap-1">
@@ -192,27 +192,25 @@ const ExorcistsScroll: React.FC = () => {
             >
               {/* Front Face (Ofuda) */}
               <div 
-                className="absolute inset-0 bg-black border-2 border-[#00fff7] flex flex-col items-center justify-between py-4 shadow-[0_0_30px_rgba(0,255,247,0.6)]"
+                className="absolute inset-0 bg-black border-2 border-[var(--accent-blood)] flex flex-col items-center justify-between py-4 shadow-[0_0_30px_rgba(217,17,17,0.6)]"
                 style={{ backfaceVisibility: 'hidden', borderRadius: '0px', zIndex: 2 }}
               >
                 <div className="flex flex-col gap-1">
-                  {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[#00fff7]" />)}
+                  {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[var(--accent-blood)]" />)}
                 </div>
-                <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[#00fff7]">
+                <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)]">
                   {segments.find(s => s.id === activeCard.id)?.hex}
                 </span>
                 <div className="flex flex-col gap-1 items-center">
-                  <div className="w-2 h-2 rounded-full border border-[#00fff7]" />
-                  <div className="w-[1px] h-8 bg-[#00fff7]" />
+                  <div className="w-2 h-2 rounded-full border border-[var(--accent-blood)]" />
+                  <div className="w-[1px] h-8 bg-[var(--accent-blood)]" />
                 </div>
               </div>
 
               {/* Back Face (Revelation) */}
               <div 
-                className={`absolute inset-0 bg-[#000000] border-2 flex items-center justify-center transition-colors duration-300
-                  ${activeCard.phase === 'burning' 
-                    ? 'border-[var(--accent-blood)] shadow-[0_0_50px_rgba(217,17,17,0.6)] animate-ofuda-burn' 
-                    : 'border-[#00fff7] shadow-[0_0_40px_rgba(0,255,247,0.4),inset_0_0_20px_rgba(0,255,247,0.05)]'}`}
+                className={`absolute inset-0 bg-[#000000] border-2 border-[var(--accent-blood)] flex items-center justify-center transition-colors duration-300 shadow-[0_0_50px_rgba(217,17,17,0.6)]
+                  ${activeCard.phase === 'burning' ? 'animate-ofuda-burn' : ''}`}
                 style={{ 
                   backfaceVisibility: 'hidden', 
                   transform: 'rotateY(180deg)',
