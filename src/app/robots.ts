@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://harshalpatel.dev/sitemap.xml', // Replace with your actual URL
+    sitemap: 'https://harshal-patel-chi.vercel.app/sitemap.xml',
   }
 }

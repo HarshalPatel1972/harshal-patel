@@ -65,14 +65,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://harshalpatel.dev"), // Placeholder: Change to your actual domain
+  metadataBase: new URL("https://harshal-patel-chi.vercel.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Harshal Patel | Software Engineer Portfolio",
     description: "Constructing High-Performance Systems with Go & WebAssembly. Explore my work.",
-    url: "https://harshalpatel.dev",
+    url: "https://harshal-patel-chi.vercel.app",
     siteName: "Harshal Patel Portfolio",
     images: [
       {
@@ -129,7 +129,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               "name": "Harshal Patel",
-              "url": "https://harshalpatel.dev",
+              "url": "https://harshal-patel-chi.vercel.app",
               "jobTitle": "Software Engineer",
               "alumniOf": {
                 "@type": "CollegeOrUniversity",
