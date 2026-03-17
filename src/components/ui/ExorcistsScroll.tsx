@@ -10,40 +10,33 @@ interface ActiveCard {
   rect: DOMRect | null;
 }
 
-const OfudaSigil: React.FC<{ size?: number; color?: string; opacity?: number }> = ({ size = 100, color = "#00fff7", opacity = 1 }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" className="filter drop-shadow-[0_0_12px_rgba(0,255,247,0.5)] transition-all duration-700 select-none animate-pulse-glitch" style={{ opacity }}>
-    {/* Geometric Architecture */}
-    <path d="M50 0 L100 50 L50 100 L0 50 Z" fill="none" stroke={color} strokeWidth="0.1" strokeDasharray="2 2" className="opacity-20" />
-    <path d="M0 0 L100 100 M100 0 L0 100" stroke={color} strokeWidth="0.05" className="opacity-10" />
+const OfudaSigil: React.FC<{ size?: number; color?: string; alternate?: boolean }> = ({ size = 100, color = "#00fff7", alternate = false }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" className="filter drop-shadow-[0_0_15px_rgba(0,255,247,0.6)] animate-cursed-flow shrink-0">
+    <defs>
+      <radialGradient id="sigil-glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor={color} stopOpacity="0.4" />
+        <stop offset="100%" stopColor={color} stopOpacity="0" />
+      </radialGradient>
+    </defs>
+    <circle cx="50" cy="50" r="45" fill="url(#sigil-glow)" className="animate-pulse" />
     
-    {/* Cursed Containment Circles */}
-    <circle cx="50" cy="50" r="48" fill="none" stroke={color} strokeWidth="0.5" strokeDasharray="8 4" className="opacity-40" />
-    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent-blood)" strokeWidth="1" className="opacity-30" />
+    {/* Geometric Outer Seal */}
+    <rect x="15" y="15" width="70" height="70" stroke={color} strokeWidth="1" fill="none" transform="rotate(45 50 50)" />
+    <rect x="20" y="20" width="60" height="60" stroke="var(--accent-blood)" strokeWidth="0.5" fill="none" transform="rotate(15 50 50)" />
     
-    {/* Central Occult Glyph - Hand Crafted Minimalist Abstract */}
-    <g transform="translate(30, 30) scale(0.4)" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="square">
-      <path d="M10 10 L40 10 M10 40 L40 40 M10 25 L35 25" />
-      <path d="M25 5 L25 45 M50 10 L50 90" strokeWidth="1" stroke="var(--accent-blood)" />
-      <path d="M10 60 L90 60 L50 85 Z" strokeWidth="2" stroke={color} />
-      <rect x="0" y="0" width="100" height="100" strokeWidth="0.5" strokeDasharray="2 1" className="opacity-20" />
-    </g>
-
-    {/* Corner Resonance Tags */}
-    {[
-      "M2,2 L10,2 M2,2 L2,10", 
-      "M98,2 L90,2 M98,2 L98,10", 
-      "M2,98 L10,98 M2,98 L2,90", 
-      "M98,98 L90,98 M98,98 L98,90"
-    ].map((d, i) => (
-      <path key={i} d={d} stroke={color} strokeWidth="1.5" className="opacity-80" />
-    ))}
-
-    {/* Peripheral Kanji-like Fractals */}
-    <g className="fill-[var(--accent-blood)]" opacity="0.6">
-      <text x="50" y="15" textAnchor="middle" fontSize="6" fontFamily="serif" transform="rotate(0 50 50)">呪</text>
-      <text x="85" y="50" textAnchor="middle" fontSize="6" fontFamily="serif" transform="rotate(90 50 50)">封</text>
-      <text x="50" y="85" textAnchor="middle" fontSize="6" fontFamily="serif" transform="rotate(180 50 50)">厄</text>
-      <text x="15" y="50" textAnchor="middle" fontSize="6" fontFamily="serif" transform="rotate(270 50 50)">滅</text>
+    {/* Central Occult Character - Abstract JJK Style */}
+    {alternate ? (
+      <path d="M30 40 L70 40 M50 20 L50 80 M35 60 L65 60 M40 75 L60 75" stroke={color} strokeWidth="4" strokeLinecap="square" fill="none" />
+    ) : (
+      <g stroke={color} strokeWidth="3" strokeLinecap="round" fill="none">
+        <path d="M40 30 L60 30 M50 30 L50 70 M35 70 L65 70" />
+        <path d="M45 45 L55 55 M55 45 L45 55" stroke="var(--accent-blood)" strokeWidth="1.5" />
+      </g>
+    )}
+    
+    {/* Peripheral Void Marks */}
+    <g className="opacity-80">
+      <path d="M50 5 L50 15 M50 85 L50 95 M5 50 L15 50 M85 50 L95 50" stroke={color} strokeWidth="2" />
     </g>
   </svg>
 );
@@ -54,7 +47,6 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   useEffect(() => {
     const charArray = text.split("").map((c) => ({ char: c, visible: false }));
     setChars(charArray);
-
     charArray.forEach((_, i) => {
       setTimeout(() => {
         setChars((prev) => {
@@ -62,36 +54,36 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
           if (next[i]) next[i].visible = true;
           return next;
         });
-      }, i * 35 + Math.random() * 20);
+      }, i * 30 + Math.random() * 20);
     });
   }, [text]);
 
   return (
-    <div className="w-full h-full p-8 flex flex-col items-start justify-center text-left relative overflow-hidden">
-      {/* Structural Brackets (Cinematic Brutalist) */}
-      <div className="absolute inset-4 border border-white/5 pointer-events-none" />
-      <div className="absolute top-4 left-4 w-8 h-[1px] bg-[#00fff7]/40" />
-      <div className="absolute top-4 left-4 w-[1px] h-8 bg-[#00fff7]/40" />
-      <div className="absolute bottom-4 right-4 w-8 h-[1px] bg-[#00fff7]/40" />
-      <div className="absolute bottom-4 right-4 w-[1px] h-8 bg-[#00fff7]/40" />
-
-      {/* Background Vertical Text Accent */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 rotate-90 origin-center pointer-events-none opacity-10">
-        <span className="text-[var(--accent-blood)] font-mono text-[80px] font-black tracking-tighter uppercase whitespace-nowrap select-none">
-          REVEAL_DATA_PULSE
-        </span>
+    <div className="w-full h-full p-10 flex flex-col items-start justify-center text-left relative overflow-hidden bg-black">
+      {/* MAPPA CINEMATIC LAYERING */}
+      <div className="absolute inset-0 halftone-bg opacity-20 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[200%] h-[1px] bg-gradient-to-r from-transparent via-[#00fff7]/20 to-transparent rotate-[-45deg] translate-y-[200px]" />
+      
+      {/* HUD Label */}
+      <div className="absolute top-6 left-10 flex items-center gap-3">
+        <div className="w-1 h-3 bg-[var(--accent-blood)]" />
+        <span className="font-mono text-[9px] tracking-[0.4em] text-white/40 uppercase">EXORCISM_LOG_PROTOCOL_06</span>
       </div>
 
-      <div className="text-white font-mono text-base md:text-xl leading-[1.8] font-normal tracking-tight text-left chromatic-aberration relative z-10" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
+      <div className="text-white font-mono text-lg md:text-2xl leading-[1.6] font-normal tracking-tight text-left chromatic-aberration relative z-10" style={{ color: '#ffffff !important' }}>
         {chars.map((item, i) => (
-          <span
-            key={i}
-            className="transition-opacity duration-300"
-            style={{ opacity: item.visible ? 1 : 0 }}
-          >
+          <span key={i} className="transition-opacity duration-300" style={{ opacity: item.visible ? 1 : 0 }}>
             {item.char}
           </span>
         ))}
+      </div>
+      
+      {/* Bottom Aesthetic Accent */}
+      <div className="absolute bottom-6 right-10 opacity-30">
+        <div className="flex flex-col items-end gap-1">
+          <div className="w-12 h-[1px] bg-[#00fff7]" />
+          <div className="w-6 h-[1px] bg-[#00fff7]" />
+        </div>
       </div>
     </div>
   );
@@ -112,15 +104,15 @@ const ExorcistsScroll: React.FC = () => {
     const { fact } = getNextFact(OFUDA_FACTS);
     setActiveCard({ id, fact, phase: 'summon', rect });
     
-    setTimeout(() => setActiveCard(prev => prev ? { ...prev, phase: 'flying' } : null), 100);
-    setTimeout(() => setActiveCard(prev => prev ? { ...prev, phase: 'flipped' } : null), 800); 
+    setTimeout(() => setActiveCard(prev => prev ? { ...prev, phase: 'flying' } : null), 50);
+    setTimeout(() => setActiveCard(prev => prev ? { ...prev, phase: 'flipped' } : null), 600); 
   };
 
   const handleDismiss = () => {
     if (!activeCard || activeCard.phase === 'burning' || activeCard.phase === 'done') return;
     setActiveCard(prev => prev ? { ...prev, phase: 'burning' } : null);
-    setTimeout(() => setActiveCard(prev => prev ? { ...prev, phase: 'done' } : null), 1000);
-    setTimeout(() => setActiveCard(null), 1200);
+    setTimeout(() => setActiveCard(prev => prev ? { ...prev, phase: 'done' } : null), 800);
+    setTimeout(() => setActiveCard(null), 1000);
   };
 
   useEffect(() => {
@@ -132,34 +124,24 @@ const ExorcistsScroll: React.FC = () => {
   }, [activeCard]);
 
   const segments = useMemo(() => {
-    return Array.from({ length: 30 }).map((_, i) => ({
+    return Array.from({ length: 28 }).map((_, i) => ({
       id: i,
-      delay: i * -0.5
+      delay: i * -0.6
     }));
   }, []);
-
-  const calculateCenterTranslate = (rect: DOMRect | null) => {
-    if (!rect) return 'translate(0, 0)';
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const cardX = rect.left + rect.width / 2;
-    const cardY = rect.top + rect.height / 2;
-    return `translate(${centerX - cardX}px, ${centerY - cardY}px)`;
-  };
 
   return (
     <div ref={containerRef} className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden opacity-100">
       
       {/* ─── SCROLL PATH ─── */}
-      <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
+      <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-5%] pointer-events-none">
         {segments.map((s) => {
-          const isSummoned = activeCard?.id === s.id;
           return (
             <div 
               key={s.id}
-              className="absolute flex flex-col items-center justify-center pointer-events-none opacity-40 grayscale-[0.5] hover:opacity-80 hover:grayscale-0 transition-all duration-700"
+              className="absolute flex flex-col items-center justify-center pointer-events-none group"
               style={{
-                animation: `scroll-flow 18s linear infinite`,
+                animation: `scroll-flow 20s linear infinite`,
                 animationDelay: `${s.delay}s`,
                 visibility: 'visible'
               }}
@@ -170,20 +152,23 @@ const ExorcistsScroll: React.FC = () => {
                   handleCardClick(s.id, e);
                 }}
                 disabled={activeCard !== null}
-                className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-52 border-[1px] flex flex-col items-center justify-center p-2 shadow-2xl transition-all duration-300 outline-none bg-black border-[var(--accent-blood)] hover:border-[#00fff7] hover:shadow-[0_0_20px_rgba(0,255,247,0.4)] cursor-pointer overflow-hidden"
+                className="ofuda-talisman pointer-events-auto relative w-12 md:w-24 h-36 md:h-56 border-2 flex flex-col items-center justify-center transition-all duration-500 outline-none bg-black border-[var(--accent-blood)] hover:border-[#00fff7] shadow-[0_0_15px_rgba(185,28,28,0.2)] hover:shadow-[0_0_30px_rgba(0,255,247,0.5)] cursor-pointer group-hover:scale-110 active:scale-95 overflow-hidden"
               >
-                {/* Vintage Paper Texture Overlay */}
-                <div className="absolute inset-0 halftone-bg opacity-10 pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-20 pointer-events-none" />
+                {/* HIGH VISIBILITY ACCENTS */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--accent-blood)]/10 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 border-[1px] border-white/5 m-1 pointer-events-none" />
                 
-                {/* Minimalist Occult Pattern */}
-                <div className="w-full h-full border border-white/5 flex flex-col items-center justify-between py-6">
-                  <div className="w-[1px] h-8 bg-[var(--accent-blood)] opacity-40 shrink-0" />
-                  <OfudaSigil size={50} color="var(--accent-blood)" opacity={0.7} />
-                  <div className="w-[1px] h-8 bg-[var(--accent-blood)] opacity-40 shrink-0" />
+                {/* SIGIL */}
+                <OfudaSigil size={60} color="var(--accent-blood)" opacity={0.9} />
+                
+                {/* STAMP AESTHETIC */}
+                <div className="absolute bottom-2 right-2 w-4 h-4 border border-[var(--accent-blood)]/30 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-[var(--accent-blood)]/20" />
                 </div>
               </button>
-              <div className="w-[0.5px] h-32 bg-[var(--accent-blood)] opacity-10" />
+              
+              {/* String / Connection */}
+              <div className="w-[2px] h-32 bg-gradient-to-b from-[var(--accent-blood)] to-transparent opacity-20" />
             </div>
           );
         })}
@@ -192,25 +177,24 @@ const ExorcistsScroll: React.FC = () => {
       {/* ─── REVELATION PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 9998, pointerEvents: 'auto' }}>
-          {/* Overlay */}
+          {/* Overlay - Deeper and more clinical */}
           <div 
-            className={`fixed inset-0 transition-opacity duration-500 cursor-default
-              ${activeCard.phase !== 'summon' && activeCard.phase !== 'done' ? 'opacity-95' : 'opacity-0'}`}
+            className={`fixed inset-0 transition-opacity duration-700 cursor-default
+              ${activeCard.phase !== 'summon' && activeCard.phase !== 'done' ? 'opacity-98' : 'opacity-0'}`}
             style={{ backgroundColor: '#000000', zIndex: 9998 }}
             onClick={handleDismiss}
           />
 
-          {/* Active Card Container */}
           <div 
             className="fixed"
             style={{
               zIndex: 9999,
               top: activeCard.phase === 'summon' ? `${activeCard.rect?.top}px` : '50%',
               left: activeCard.phase === 'summon' ? `${activeCard.rect?.left}px` : '50%',
-              width: activeCard.phase === 'summon' ? `${activeCard.rect?.width}px` : '320px',
-              height: activeCard.phase === 'summon' ? `${activeCard.rect?.height}px` : '500px',
+              width: activeCard.phase === 'summon' ? `${activeCard.rect?.width}px` : '360px',
+              height: activeCard.phase === 'summon' ? `${activeCard.rect?.height}px` : '540px',
               transform: activeCard.phase === 'summon' ? 'none' : 'translate(-50%, -50%)',
-              transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+              transition: 'all 0.8s cubic-bezier(0.2, 1, 0.2, 1)',
               perspective: '2000px'
             }}
           >
@@ -219,54 +203,45 @@ const ExorcistsScroll: React.FC = () => {
               style={{
                 transformStyle: 'preserve-3d',
                 transform: (activeCard.phase === 'flipped' || activeCard.phase === 'burning') ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                transition: 'transform 0.8s cubic-bezier(0.6, 0.05, 0.2, 1)'
               }}
             >
-              {/* Front Face (Ofuda) */}
+              {/* Front Face (Talisman) */}
               <div 
-                className="absolute inset-0 bg-black border-2 border-[#00fff7] flex flex-col items-center justify-center p-8 shadow-[0_0_60px_rgba(0,255,247,0.3)] overflow-hidden"
+                className="absolute inset-0 bg-black border-[3px] border-[#00fff7] flex flex-col items-center justify-center p-8 shadow-[0_0_100px_rgba(0,255,247,0.4)] overflow-hidden"
                 style={{ backfaceVisibility: 'hidden', zIndex: 2 }}
               >
-                <div className="absolute inset-0 halftone-bg opacity-20" />
+                <div className="absolute inset-0 halftone-bg opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent" />
                 
-                {/* Cinematic Sigil Presentation */}
-                <div className="relative flex flex-col items-center gap-12">
-                   <div className="w-[1px] h-12 bg-[#00fff7] opacity-40" />
-                   <OfudaSigil size={200} color="#00fff7" />
-                   <div className="w-[1px] h-12 bg-[#00fff7] opacity-40" />
-                </div>
-
-                {/* HUD Metadata Overlay */}
-                <div className="absolute top-4 left-6 font-mono text-[8px] tracking-[0.4em] text-[#00fff7]/40 uppercase select-none">
-                  // EXORCISM_VOID_PROTOCOL
+                <div className="relative flex flex-col items-center gap-16">
+                   <div className="w-[2px] h-16 bg-[#00fff7] opacity-60 shadow-[0_0_15px_#00fff7]" />
+                   <OfudaSigil size={240} color="#00fff7" alternate />
+                   <div className="w-[2px] h-16 bg-[#00fff7] opacity-60 shadow-[0_0_15px_#00fff7]" />
                 </div>
               </div>
 
               {/* Back Face (Revelation) */}
               <div 
-                className={`absolute inset-0 bg-[#070707] border-2 border-[#00fff7] shadow-[0_0_80px_rgba(0,255,247,0.2),inset_0_0_40px_rgba(0,255,247,0.05)] overflow-hidden
+                className={`absolute inset-0 bg-black border-[3px] border-[#00fff7] shadow-[0_0_120px_rgba(0,255,247,0.3),inset_0_0_50px_rgba(0,255,247,0.1)] overflow-hidden
                   ${activeCard.phase === 'burning' ? 'animate-ofuda-burn' : ''}`}
                 style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', zIndex: 1 }}
               >
-                <div className="absolute inset-0 halftone-bg opacity-15" />
-                <div className="absolute inset-0 bg-radial-gradient from-cyan-900/10 to-transparent" />
-                
                 {activeCard.phase === 'flipped' && (
-                  <div className="relative z-10 w-full h-full flex items-center justify-center">
-                    <CharacterInscription text={activeCard.fact} />
-                  </div>
+                  <CharacterInscription text={activeCard.fact} />
                 )}
 
-                {/* Burn Sequence Particles */}
+                {/* VISCERAL PARTICLE SYSTEM */}
                 {activeCard.phase === 'burning' && (
                   <div className="absolute inset-0 pointer-events-none">
-                    {Array.from({ length: 15 }).map((_, i) => (
-                      <div key={i} className="absolute w-1 h-1 particle" style={{ 
-                        backgroundColor: i % 2 === 0 ? '#00fff7' : '#ffffff',
+                    {Array.from({ length: 24 }).map((_, i) => (
+                      <div key={i} className="absolute w-1.5 h-1.5 particle-cinematic" style={{ 
+                        backgroundColor: i % 3 === 0 ? '#00fff7' : i % 3 === 1 ? 'var(--accent-blood)' : '#ffffff',
                         left: '50%', top: '50%',
-                        '--tx': `${(Math.random() - 0.5) * 400}px`,
-                        '--ty': `${(Math.random() - 0.5) * 400}px`,
-                        '--rot': `${Math.random() * 360}deg`
+                        '--tx': `${(Math.random() - 0.5) * 500}px`,
+                        '--ty': `${(Math.random() - 0.5) * 500}px`,
+                        '--rot': `${Math.random() * 720}deg`,
+                        '--scale': Math.random() * 2 + 1
                       } as any} />
                     ))}
                   </div>
@@ -280,58 +255,56 @@ const ExorcistsScroll: React.FC = () => {
 
       <style>{`
         @keyframes scroll-flow {
-          0% { transform: translateX(110vw) translateY(5vh) rotateZ(5deg) scale(0.7); opacity: 0; }
-          15% { opacity: 0.4; }
-          50% { transform: translateX(0vw) translateY(0vh) rotateZ(0deg) scale(1.1); opacity: 0.6; }
-          85% { opacity: 0.4; }
-          100% { transform: translateX(-110vw) translateY(-5vh) rotateZ(-5deg) scale(0.7); opacity: 0; }
+          0% { transform: translateX(110vw) translateY(5vh) rotateZ(8deg) scale(0.8); opacity: 0; filter: blur(4px); }
+          15% { opacity: 0.9; filter: blur(0px); }
+          50% { transform: translateX(0vw) translateY(0vh) rotateZ(0deg) scale(1.15); opacity: 1; filter: drop-shadow(0 0 15px rgba(217,17,17,0.3)); }
+          85% { opacity: 0.9; filter: blur(0px); }
+          100% { transform: translateX(-110vw) translateY(-5vh) rotateZ(-8deg) scale(0.8); opacity: 0; filter: blur(4px); }
         }
 
-        @keyframes pulse-glitch {
-          0%, 100% { opacity: 0.7; transform: scale(1); filter: contrast(1); }
-          48% { opacity: 0.8; transform: scale(1.03); filter: contrast(1.2) brightness(1.2); }
-          50% { opacity: 0.4; transform: scale(0.98); filter: hue-rotate(90deg) invert(0.1); }
-          52% { opacity: 0.9; transform: scale(1.05); filter: contrast(1.5) brightness(1.5); }
+        @keyframes cursed-flow {
+          0%, 100% { filter: drop-shadow(0 0 10px rgba(0,255,247,0.4)) contrast(1); }
+          50% { filter: drop-shadow(0 0 25px rgba(0,255,247,0.8)) contrast(1.4); transform: scale(1.02); }
         }
 
-        .animate-pulse-glitch {
-          animation: pulse-glitch 5s infinite;
+        .animate-cursed-flow {
+          animation: cursed-flow 4s ease-in-out infinite;
         }
 
         .animate-ofuda-burn {
-          animation: final-flicker 0.1s step-end 6, burn-up 0.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
+          animation: hyper-flicker 0.15s step-end 4, cinematic-dissolve 0.6s forwards ease-out;
           animation-delay: 0s, 0.4s;
         }
 
-        @keyframes final-flicker {
-          0%, 100% { border-color: #00fff7; box-shadow: 0 0 60px rgba(0,255,247,0.4); }
-          50% { border-color: white; box-shadow: 0 0 100px white; filter: brightness(2); }
+        @keyframes hyper-flicker {
+          0%, 100% { border-color: #00fff7; opacity: 1; filter: brightness(1) drop-shadow(0 0 50px #00fff7); }
+          50% { border-color: white; opacity: 0.5; filter: brightness(3) drop-shadow(0 0 100px white); }
         }
 
-        @keyframes burn-up {
-          0% { clip-path: inset(0% 0% 0% 0%); filter: grayscale(0) brightness(1); }
-          100% { clip-path: inset(0% 0% 100% 0%); filter: grayscale(1) brightness(0); }
+        @keyframes cinematic-dissolve {
+          0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; transform: scale(1) rotateY(180deg); }
+          100% { clip-path: polygon(10% 20%, 90% 10%, 80% 90%, 20% 80%); opacity: 0; transform: scale(0.8) translateY(-50px) rotateY(200deg); filter: blur(20px); }
         }
 
         .chromatic-aberration {
-          text-shadow: 2px 0 0 rgba(255,0,0,0.4), -2px 0 0 rgba(0,255,255,0.4);
-          animation: glitch-subtle 6s infinite;
+          text-shadow: 2px 1px 0 rgba(255,0,0,0.5), -2px -1px 0 rgba(0,255,255,0.5);
+          animation: jjk-glitch 8s infinite;
         }
 
-        @keyframes glitch-subtle {
-          0%, 95%, 100% { transform: translate(0); text-shadow: 1px 0 0 rgba(255,0,0,0.3), -1px 0 0 rgba(0,255,255,0.3); }
-          96% { transform: translate(-2px, 1px); text-shadow: 3px 0 0 rgba(255,0,0,0.5), -3px 0 0 rgba(0,255,255,0.5); }
-          97% { transform: translate(2px, -1px); }
-          98% { transform: translate(-1px, -1px); filter: contrast(1.5); }
+        @keyframes jjk-glitch {
+          0%, 94%, 98%, 100% { transform: translate(0); filter: blur(0); }
+          95% { transform: translate(-3px, 2px); filter: contrast(2) brightness(1.5); }
+          96% { transform: translate(3px, -2px); filter: blur(1px); }
+          97% { transform: translate(-1px, 1px); }
         }
 
-        .particle {
-          animation: particle-scatter 0.8s forwards ease-out;
+        .particle-cinematic {
+          animation: scatter-vibrant 1s forwards cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        @keyframes particle-scatter {
-          0% { transform: translate(-50%, -50%) rotate(0); opacity: 1; scale: 2; }
-          100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot)); opacity: 0; scale: 0; }
+        @keyframes scatter-vibrant {
+          0% { transform: translate(-50%, -50%) rotate(0) scale(var(--scale)); opacity: 1; filter: brightness(2) blur(0px); }
+          100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) rotate(var(--rot)) scale(0); opacity: 0; filter: blur(8px); }
         }
       `}</style>
     </div>
