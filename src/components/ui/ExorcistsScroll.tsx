@@ -209,16 +209,41 @@ const ExorcistsScroll: React.FC = () => {
 
               {/* Back Face (Revelation) */}
               <div 
-                className={`absolute inset-0 bg-[#000000] border-2 border-[var(--accent-blood)] flex items-center justify-center transition-colors duration-300 shadow-[0_0_50px_rgba(217,17,17,0.6)]
+                className={`absolute inset-0 bg-[#000000] border-2 border-[var(--accent-blood)] flex items-center justify-center transition-colors duration-300 shadow-[0_0_50px_rgba(217,17,17,0.6)] overflow-hidden
                   ${activeCard.phase === 'burning' ? 'animate-ofuda-burn' : ''}`}
                 style={{ 
                   backfaceVisibility: 'hidden', 
                   transform: 'rotateY(180deg)',
                   borderRadius: '0px',
-                  backgroundColor: '#000000 !important',
+                  backgroundColor: '#050505',
                   zIndex: 1
                 }}
               >
+                {/* 1. Atmospheric Textures */}
+                <div className="absolute inset-0 halftone-bg opacity-[0.15] mix-blend-overlay pointer-events-none" />
+                <div className="absolute inset-0 grain-bg opacity-[0.05] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] pointer-events-none" />
+                
+                {/* 2. Cursed Scanlines */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+                  <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(217,17,17,0.1)_50%)] bg-[length:100%_4px] animate-scanline" />
+                </div>
+
+                {/* 3. Corner Brackets */}
+                <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-[var(--accent-blood)] opacity-60" />
+                <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-[var(--accent-blood)] opacity-60" />
+                <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-[var(--accent-blood)] opacity-60" />
+                <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-[var(--accent-blood)] opacity-60" />
+
+                {/* 4. Subliminal Watermark */}
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-20 group">
+                  <div className="w-12 h-[1px] bg-[var(--accent-blood)]" />
+                  <span className="text-[8px] font-mono tracking-[0.5em] text-[var(--accent-blood)] uppercase whitespace-nowrap">
+                    Ritualized Data Core
+                  </span>
+                  <div className="w-12 h-[1px] bg-[var(--accent-blood)]" />
+                </div>
+
                 {activeCard.phase !== 'summon' && (
                   <CharacterInscription text={activeCard.fact} />
                 )}
@@ -252,6 +277,15 @@ const ExorcistsScroll: React.FC = () => {
             filter: blur(30px) brightness(1.2);
             transform: rotateY(180deg) scale(1.05) translateY(-20px);
           }
+        }
+
+        @keyframes scanline {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(100%); }
+        }
+
+        .animate-scanline {
+          animation: scanline 8s linear infinite;
         }
       `}</style>
       
