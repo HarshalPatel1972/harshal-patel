@@ -11,38 +11,46 @@ interface ActiveCard {
 }
 
 const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
-  const [chars, setChars] = useState<{ char: string; visible: boolean }[]>([]);
+  const [visibleCount, setVisibleCount] = useState(0);
+  const words = useMemo(() => text.split(" "), [text]);
+  const totalChars = text.length;
 
   useEffect(() => {
-    const charArray = text.split("").map((c) => ({ char: c, visible: false }));
-    setChars(charArray);
+    let current = 0;
+    const interval = setInterval(() => {
+      if (current < totalChars) {
+        current++;
+        setVisibleCount(current);
+      } else {
+        clearInterval(interval);
+      }
+    }, 25);
+    return () => clearInterval(interval);
+  }, [totalChars]);
 
-    charArray.forEach((_, i) => {
-      setTimeout(() => {
-        setChars((prev) => {
-          const next = [...prev];
-          if (next[i]) next[i].visible = true;
-          return next;
-        });
-      }, i * 20 + Math.random() * 15);
-    });
-  }, [text]);
+  let charIndexCounter = 0;
 
   return (
     <div className="w-full h-full p-10 flex flex-col items-center justify-center text-center">
       <div className="text-[#E8E8E6] font-mono text-lg md:text-xl leading-[1.6] font-medium tracking-tight text-center" style={{ textShadow: '0 0 15px rgba(255,255,255,0.1)' }}>
-        {chars.map((item, i) => (
-          <span
-            key={i}
-            className="inline-block transition-all duration-700 ease-out"
-            style={{ 
-              opacity: item.visible ? 1 : 0,
-              transform: item.visible ? 'translateY(0)' : 'translateY(30px)',
-              filter: item.visible ? 'blur(0px)' : 'blur(15px)',
-              marginRight: item.char === ' ' ? '0.25em' : '0'
-            }}
-          >
-            {item.char === ' ' ? '\u00A0' : item.char}
+        {words.map((word, wi) => (
+          <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
+            {word.split("").map((char, ci) => {
+              const isVisible = charIndexCounter++ < visibleCount;
+              return (
+                <span
+                  key={ci}
+                  className="inline-block transition-all duration-800 ease-out"
+                  style={{ 
+                    opacity: isVisible ? 1 : 0,
+                    transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                    filter: isVisible ? 'blur(0px)' : 'blur(20px)',
+                  }}
+                >
+                  {char}
+                </span>
+              );
+            })}
           </span>
         ))}
       </div>
