@@ -30,9 +30,6 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div className="w-full h-full p-8 flex flex-col items-start justify-start text-left">
-      <div className="text-[#ff1111] text-[0.65rem] font-mono tracking-[0.3em] mb-6 uppercase">
-        // REVELATION
-      </div>
       <div className="text-white font-mono text-base leading-[1.8] font-normal tracking-normal text-left" style={{ color: '#ffffff !important', opacity: '1 !important' }}>
         {chars.map((item, i) => (
           <span
