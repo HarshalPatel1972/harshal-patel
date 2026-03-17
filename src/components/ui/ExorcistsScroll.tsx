@@ -32,7 +32,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div className="w-full h-full p-8 md:p-14 flex flex-col items-center justify-center text-center">
-      <div className="text-[#E8E8E6] font-display text-xl md:text-3xl lg:text-4xl leading-[1.3] font-black tracking-tight text-center italic" style={{ textShadow: '0 0 20px rgba(255,255,255,0.15)' }}>
+      <div className="text-[#E8E8E6] font-hindi text-3xl md:text-5xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-center uppercase" style={{ textShadow: '0 0 20px rgba(217,17,17,0.4)' }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
             {word.split("").map((char, ci) => {
@@ -241,7 +241,13 @@ const ExorcistsScroll: React.FC = () => {
                   zIndex: 1
                 }}
               >
-                {/* 1. Atmospheric Textures */}
+                {/* 1. Atmospheric Textures & Grid */}
+                <div className="absolute inset-0 ritual-grid opacity-30 pointer-events-none" />
+                <div className="absolute inset-x-12 inset-y-0 pointer-events-none opacity-10 flex justify-between z-0">
+                  <div className="w-[1px] h-full bg-[var(--accent-blood)]" />
+                  <div className="w-[1px] h-full bg-[var(--accent-blood)]" />
+                  <div className="w-[1px] h-full bg-[var(--accent-blood)]" />
+                </div>
                 <div className="absolute inset-0 halftone-bg opacity-[0.25] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 grain-bg opacity-[0.1] pointer-events-none" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
@@ -330,6 +336,14 @@ const ExorcistsScroll: React.FC = () => {
 
         .animate-scanline {
           animation: scanline 8s linear infinite;
+        }
+
+        .ritual-grid {
+          background-image: 
+            linear-gradient(rgba(217, 17, 17, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(217, 17, 17, 0.1) 1px, transparent 1px);
+          background-size: 30px 30px;
+          mask-image: radial-gradient(circle at center, black, transparent 80%);
         }
       `}</style>
       
