@@ -124,8 +124,8 @@ export function Hero() {
                       <span 
                         className={`text-[2.2rem] md:text-[5rem] lg:text-[7rem] select-none transition-all duration-700
                           ${isSpecial ? 
-                            `${language === 'hi' ? 'font-hindi' : 'font-eiko'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
-                            `${language === 'hi' ? 'font-hindi' : 'font-sans'} text-[var(--text-bone)]`}`}
+                            `${language === 'hi' ? 'font-neue' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
+                            `${language === 'hi' ? 'font-neue' : 'font-neue'} text-[var(--text-bone)]`}`}
                       >
                         {word}
                       </span>

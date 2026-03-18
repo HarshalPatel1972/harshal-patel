@@ -16,15 +16,15 @@
 }
 
 @theme inline {
-  --font-serif: var(--font-playfair);
+  --font-serif: var(--font-cirka);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
-  --font-sans: var(--font-almarena);
-  --font-almarena: var(--font-almarena);
-  --font-eiko: var(--font-eiko);
-  --font-mono: var(--font-jetbrains-mono);
-  --font-display: var(--font-oswald);
-  --font-hindi: var(--font-teko);
+  --font-sans: var(--font-neue-montreal);
+  --font-cirka: var(--font-cirka);
+  --font-neue-montreal: var(--font-neue-montreal);
+  --font-mono: var(--font-neue-montreal);
+  --font-display: var(--font-cirka);
+  --font-hindi: var(--font-neue-montreal);
 }
 
 /* ─── BASE ─── */
@@ -60,8 +60,8 @@ body::-webkit-scrollbar {
 body {
   background: var(--bg-ink);
   color: var(--text-bone);
-  /* PP Eiko for body text/remaining */
-  font-family: var(--font-eiko), system-ui, serif !important;
+  /* Neue Montreal as the core technical sans for body/technical text */
+  font-family: var(--font-neue-montreal), system-ui, sans-serif !important;
   overflow-x: hidden;
   letter-spacing: -0.01em;
 }
@@ -346,20 +346,9 @@ img, svg, picture, .ink-slash, .manga-panel {
 
 
 /* ─── LANGUAGE SPECIFIC FONTS ─── */
-.font-japanese {
-  font-family: "Hiragino Sans", "Meiryo", "MS PGothic", sans-serif;
-}
-
-.font-korean {
-  font-family: var(--font-noto-sans-kr), sans-serif;
-}
-
-.font-chinese {
-  font-family: var(--font-noto-sans-tc), sans-serif;
-}
-
-.font-hindi {
-  font-family: var(--font-teko), sans-serif;
+/* Legacy fonts removed as per 'Only Cirka and Neue Montreal' requirement */
+.font-japanese, .font-korean, .font-chinese, .font-hindi {
+  font-family: inherit !important;
 }
 
 .force-clean {

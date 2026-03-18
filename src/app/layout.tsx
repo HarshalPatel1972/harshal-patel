@@ -1,82 +1,51 @@
 import type { Metadata } from "next";
-import { Inter, Oswald, JetBrains_Mono, Playfair_Display, Noto_Sans_KR, Noto_Sans_TC, Teko } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
 
-const almarena = localFont({
+const cirka = localFont({
   src: [
     {
-      path: "./fonts/almarena-display.woff2",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-  variable: "--font-almarena",
-  display: 'swap',
-});
-
-const ppeiko = localFont({
-  src: [
-    {
-      path: "./fonts/ppeiko-thin.otf",
+      path: "./fonts/cirka-light.otf",
       weight: "300",
       style: "normal",
     },
     {
-      path: "./fonts/ppeiko-medium.otf",
+      path: "./fonts/cirka-bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-cirka",
+  display: 'swap',
+});
+
+const neueMontreal = localFont({
+  src: [
+    {
+      path: "./fonts/neue-montreal-thin.otf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "./fonts/neue-montreal-book.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/neue-montreal-medium.otf",
       weight: "500",
       style: "normal",
     },
     {
-      path: "./fonts/ppeiko-heavy.otf",
-      weight: "900",
+      path: "./fonts/neue-montreal-bold.otf",
+      weight: "700",
       style: "normal",
     },
   ],
-  variable: "--font-eiko",
+  variable: "--font-neue-montreal",
   display: 'swap',
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const oswald = Oswald({
-  variable: "--font-oswald",
-  subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600", "700", "800", "900"]
-});
-
-const notoSansKR = Noto_Sans_KR({
-  variable: "--font-noto-sans-kr",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-});
-
-const notoSansTC = Noto_Sans_TC({
-  variable: "--font-noto-sans-tc",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-});
-
-const teko = Teko({
-  variable: "--font-teko",
-  subsets: ["latin", "devanagari"],
-  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -155,7 +124,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${almarena.variable} ${ppeiko.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} ${teko.variable} font-almarena antialiased bg-background text-foreground`}
+        className={`${cirka.variable} ${neueMontreal.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />
