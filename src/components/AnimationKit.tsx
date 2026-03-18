@@ -260,7 +260,10 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
            className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[50px] md:translate-x-[97px] md:translate-y-[110px] z-20 pointer-events-none select-none"
          />
          {/* The 000 Text Block */}
-         <div ref={textRef} className="relative z-10 font-display font-black text-[3rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end w-[4.5rem] md:w-[15rem] justify-end">
+         <div ref={textRef} 
+              className="relative z-10 font-display font-black text-[3.5rem] md:text-[12rem] tracking-tighter leading-[0.8] flex items-end w-[6rem] md:w-[22rem] justify-end"
+              style={{ WebkitTextStroke: '2.5px currentColor', fontWeight: 950 }}
+         >
            000
          </div>
        </div>
