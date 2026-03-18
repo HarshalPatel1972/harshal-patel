@@ -21,6 +21,7 @@
   --color-foreground: var(--text-bone);
   --font-sans: var(--font-almarena);
   --font-almarena: var(--font-almarena);
+  --font-eiko: var(--font-eiko);
   --font-mono: var(--font-jetbrains-mono);
   --font-display: var(--font-oswald);
   --font-hindi: var(--font-teko);
@@ -59,7 +60,8 @@ body::-webkit-scrollbar {
 body {
   background: var(--bg-ink);
   color: var(--text-bone);
-  font-family: var(--font-almarena), system-ui, sans-serif !important;
+  /* PP Eiko for body text/remaining */
+  font-family: var(--font-eiko), system-ui, serif !important;
   overflow-x: hidden;
   letter-spacing: -0.01em;
 }

@@ -17,6 +17,28 @@ const almarena = localFont({
   display: 'swap',
 });
 
+const ppeiko = localFont({
+  src: [
+    {
+      path: "./fonts/ppeiko-thin.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ppeiko-medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ppeiko-heavy.otf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-eiko",
+  display: 'swap',
+});
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -133,7 +155,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${almarena.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} ${teko.variable} font-almarena antialiased bg-background text-foreground`}
+        className={`${almarena.variable} ${ppeiko.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} ${teko.variable} font-almarena antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />
