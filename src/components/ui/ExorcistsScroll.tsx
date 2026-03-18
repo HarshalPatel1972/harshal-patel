@@ -217,15 +217,36 @@ const ExorcistsScroll: React.FC = () => {
                 className="absolute inset-0 bg-black border-2 border-[var(--accent-blood)] flex flex-col items-center justify-between py-4 shadow-[0_0_30px_rgba(217,17,17,0.6)]"
                 style={{ backfaceVisibility: 'hidden', borderRadius: '0px', zIndex: 2 }}
               >
-                <div className="flex flex-col gap-1">
-                  {[1,2,3].map(j => <div key={j} className="w-1 h-3 bg-[var(--accent-blood)]" />)}
+                {/* 1. Ritual Seals (Top Squares from Art) */}
+                <div className="flex gap-1">
+                  {[1,2,3].map(j => (
+                    <div key={j} className="w-2 h-2 md:w-3 md:h-3 border border-[var(--accent-blood)] rotate-45 flex items-center justify-center">
+                      <div className="w-[1px] h-[1px] bg-[var(--accent-blood)]" />
+                    </div>
+                  ))}
                 </div>
-                <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)]">
+
+                {/* 2. The Central "Eye" Sigil */}
+                <div className="relative w-full flex items-center justify-center py-2">
+                  <div className="absolute inset-0 bg-[var(--accent-blood)] opacity-5 blur-xl rounded-full" />
+                  <div className="relative">
+                    {/* The Star/Cross shape */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12 md:h-16 bg-[var(--accent-blood)] opacity-40" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 md:w-16 h-[1px] bg-[var(--accent-blood)] opacity-40" />
+                    {/* The Eye */}
+                    <div className="w-4 h-4 md:w-6 md:h-6 border-2 border-[var(--accent-blood)] rounded-full flex items-center justify-center p-[2px]">
+                      <div className="w-full h-full bg-[var(--accent-blood)] rounded-full animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+
+                <span className="font-mono text-[9px] md:text-[10px] font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] tracking-[0.2em] opacity-80">
                   {segments.find(s => s.id === activeCard.id)?.hex}
                 </span>
+
+                {/* 3. Bottom Ritual Point */}
                 <div className="flex flex-col gap-1 items-center">
-                  <div className="w-2 h-2 rounded-full border border-[var(--accent-blood)]" />
-                  <div className="w-[1px] h-8 bg-[var(--accent-blood)]" />
+                   <div className="w-1 md:w-1.5 h-1 md:h-1.5 border border-[var(--accent-blood)] rotate-45" />
                 </div>
               </div>
 
