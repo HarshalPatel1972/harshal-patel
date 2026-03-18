@@ -1,9 +1,25 @@
 import type { Metadata } from "next";
 import { Inter, Oswald, JetBrains_Mono, Playfair_Display, Noto_Sans_KR, Noto_Sans_TC, Teko } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
 
+const almarena = localFont({
+  src: [
+    {
+      path: "../../public/fonts/almarenaneue-regular.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/almarenaneue-ds-regular-it.otf",
+      weight: "400",
+      style: "italic",
+    },
+  ],
+  variable: "--font-almarena",
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -121,7 +137,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} ${teko.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${almarena.variable} ${oswald.variable} ${jetbrainsMono.variable} ${playfair.variable} ${notoSansKR.variable} ${notoSansTC.variable} ${teko.variable} font-almarena antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />

@@ -19,7 +19,8 @@
   --font-serif: var(--font-playfair);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-almarena);
+  --font-almarena: var(--font-almarena);
   --font-mono: var(--font-jetbrains-mono);
   --font-display: var(--font-oswald);
   --font-hindi: var(--font-teko);
