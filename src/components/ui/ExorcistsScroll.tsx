@@ -104,10 +104,10 @@ const ExorcistsScroll: React.FC = () => {
   }, [activeCard]);
 
   const segments = useMemo(() => {
-    return Array.from({ length: 30 }).map((_, i) => ({
+    return Array.from({ length: 12 }).map((_, i) => ({
       id: i,
       hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
-      delay: i * -0.5
+      delay: i * -1.25 // Adjusted delay for fewer segments
     }));
   }, []);
 
@@ -125,7 +125,8 @@ const ExorcistsScroll: React.FC = () => {
               style={{
                 animation: `scroll-flow 15s linear infinite`,
                 animationDelay: `${s.delay}s`,
-                visibility: 'visible'
+                visibility: 'visible',
+                willChange: 'transform, opacity'
               }}
             >
               <button 
@@ -277,8 +278,7 @@ const ExorcistsScroll: React.FC = () => {
                   <div className="w-[1px] h-full bg-[var(--accent-blood)]" />
                   <div className="w-[1px] h-full bg-[var(--accent-blood)]" />
                 </div>
-                <div className="absolute inset-0 halftone-bg opacity-[0.25] mix-blend-overlay pointer-events-none" />
-                <div className="absolute inset-0 grain-bg opacity-[0.1] pointer-events-none" />
+                <div className="absolute inset-0 halftone-bg opacity-[0.2] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
                 
                 {/* 2. Ink Splatters (Brutalist marks from Art) */}
@@ -335,10 +335,10 @@ const ExorcistsScroll: React.FC = () => {
 
       <style>{`
         @keyframes scroll-flow {
-          0% { transform: translateX(100vw) translateY(15vh) rotateZ(15deg) scale(0.6); opacity: 0; filter: blur(4px) grayscale(1); }
-          45%, 55% { opacity: 1; filter: blur(0px) grayscale(0); }
-          50% { transform: translateX(0vw) translateY(0vh) rotateZ(0deg) scale(1.1); }
-          100% { transform: translateX(-100vw) translateY(-15vh) rotateZ(-15deg) scale(0.6); opacity: 0; filter: blur(4px) grayscale(1); }
+          0% { transform: translateX(100vw) translateY(15vh) rotateZ(15deg) scale(0.6) translateZ(0); opacity: 0; }
+          45%, 55% { opacity: 1; }
+          50% { transform: translateX(0vw) translateY(0vh) rotateZ(0deg) scale(1.1) translateZ(0); }
+          100% { transform: translateX(-100vw) translateY(-15vh) rotateZ(-15deg) scale(0.6) translateZ(0); opacity: 0; }
         }
 
         .animate-ofuda-burn {
