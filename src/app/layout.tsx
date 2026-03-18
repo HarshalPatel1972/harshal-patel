@@ -8,17 +8,13 @@ import ImageGuard from "@/components/ui/ImageGuard";
 const almarena = localFont({
   src: [
     {
-      path: "../../public/fonts/almarenaneue-regular.otf",
+      path: "../../public/fonts/almarena-display.woff2",
       weight: "400",
       style: "normal",
     },
-    {
-      path: "../../public/fonts/almarenaneue-ds-regular-it.otf",
-      weight: "400",
-      style: "italic",
-    },
   ],
   variable: "--font-almarena",
+  display: 'swap',
 });
 
 const inter = Inter({
