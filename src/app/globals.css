@@ -19,12 +19,12 @@
   --font-serif: var(--font-cirka);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
-  --font-sans: var(--font-neue-montreal);
+  --font-sans: var(--font-victor);
   --font-cirka: var(--font-cirka);
-  --font-neue-montreal: var(--font-neue-montreal);
-  --font-mono: var(--font-neue-montreal);
+  --font-victor: var(--font-victor);
+  --font-mono: var(--font-victor);
   --font-display: var(--font-cirka);
-  --font-hindi: var(--font-neue-montreal);
+  --font-hindi: var(--font-victor);
 }
 
 /* ─── BASE ─── */
@@ -60,8 +60,8 @@ body::-webkit-scrollbar {
 body {
   background: var(--bg-ink);
   color: var(--text-bone);
-  /* Neue Montreal as the core technical sans for body/technical text */
-  font-family: var(--font-neue-montreal), system-ui, sans-serif !important;
+  /* Victor as the core universal base */
+  font-family: var(--font-victor), system-ui, sans-serif !important;
   overflow-x: hidden;
   letter-spacing: -0.01em;
 }

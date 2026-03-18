@@ -21,30 +21,20 @@ const cirka = localFont({
   display: 'swap',
 });
 
-const neueMontreal = localFont({
+const victor = localFont({
   src: [
     {
-      path: "./fonts/neue-montreal-thin.otf",
-      weight: "100",
-      style: "normal",
-    },
-    {
-      path: "./fonts/neue-montreal-book.otf",
+      path: "./fonts/victor-regular.otf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/neue-montreal-medium.otf",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "./fonts/neue-montreal-bold.otf",
+      path: "./fonts/victor-serif.otf",
       weight: "700",
       style: "normal",
     },
   ],
-  variable: "--font-neue-montreal",
+  variable: "--font-victor",
   display: 'swap',
 });
 
@@ -124,7 +114,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cirka.variable} ${neueMontreal.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${cirka.variable} ${victor.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />
