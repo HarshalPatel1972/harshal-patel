@@ -16,13 +16,8 @@ export function Footer() {
         <div className="text-sm md:text-base font-bold font-mono uppercase tracking-[0.3em] text-[var(--text-bone)]/60">
           {currentProfile.name} <span className="text-[var(--accent-blood)] ml-4">© {new Date().getFullYear()}</span>
         </div>
-        
-        {/* Subtle technical indicator typical of the Mappa aesthetic */}
-        <div className="hidden md:flex items-center gap-4 text-[10px] font-mono text-[var(--text-bone)]/20 tracking-tighter">
-          <span>REGION: ASIA-SOUTH</span>
-          <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] rounded-full animate-pulse" />
-          <span>STATUS: OPERATIONAL</span>
-        </div>
+        {/* Empty space for layout balance */}
+        <div className="hidden md:block" />
       </div>
     </footer>
   );
