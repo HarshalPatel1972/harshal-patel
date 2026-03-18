@@ -13,21 +13,45 @@ export function useMagnetic(strength: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+    let ticking = false;
+    let rafId: number;
+    let currentX = 0;
+    let currentY = 0;
 
-      anime(el, {
+    // Performance Optimization:
+    // What: Batched DOM reads/writes in high-frequency mousemove event using requestAnimationFrame.
+    // Why: Prevents layout thrashing and excessive React/anime.js calculations on every single mouse event.
+    // Expected Impact: Reduces main thread CPU usage and jank during hover, keeping FPS at a stable 60.
+
+    const updateMagnetic = () => {
+      const rect = el.getBoundingClientRect();
+      const x = currentX - rect.left - rect.width / 2;
+      const y = currentY - rect.top - rect.height / 2;
+
+      anime({
+        targets: el, // use the object syntax as recommended
         translateX: x * strength,
         translateY: y * strength,
         duration: 600,
         easing: "outQuart",
       });
+      ticking = false;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateMagnetic);
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
-      anime(el, {
+      if (rafId) cancelAnimationFrame(rafId);
+      ticking = false;
+      anime({
+        targets: el,
         translateX: 0,
         translateY: 0,
         duration: 800,
@@ -38,6 +62,7 @@ export function useMagnetic(strength: number = 0.3) {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
     };
@@ -163,18 +188,40 @@ export function useTilt(intensity: number = 10) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
+    let ticking = false;
+    let rafId: number;
+    let currentX = 0;
+    let currentY = 0;
+
+    // Performance Optimization:
+    // What: Batched DOM reads/writes in high-frequency mousemove event using requestAnimationFrame.
+    // Why: Prevents layout thrashing from continuous `getBoundingClientRect` calls during hover.
+    // Expected Impact: Eliminates forced synchronous layout recalculations and ensures smooth 3D tilting.
+
+    const updateTilt = () => {
       const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
+      const x = (currentX - rect.left) / rect.width;
+      const y = (currentY - rect.top) / rect.height;
       const rotateX = (0.5 - y) * intensity;
       const rotateY = (x - 0.5) * intensity;
 
       el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
       el.style.transition = "transform 0.1s ease-out";
+      ticking = false;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateTilt);
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      ticking = false;
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -182,6 +229,7 @@ export function useTilt(intensity: number = 10) {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
     };
@@ -200,17 +248,36 @@ export function useParallax(speed: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleScroll = () => {
+    let ticking = false;
+    let rafId: number;
+
+    // Performance Optimization:
+    // What: Batched DOM reads/writes in high-frequency scroll event using requestAnimationFrame.
+    // Why: `getBoundingClientRect` triggers a reflow; doing it synchronously on scroll causes extreme jank.
+    // Expected Impact: Significant reduction in composite layer calculation time, resulting in buttery smooth scrolling.
+
+    const updateParallax = () => {
       const rect = el.getBoundingClientRect();
       const center = rect.top + rect.height / 2;
       const viewCenter = window.innerHeight / 2;
       const offset = (center - viewCenter) * speed;
       el.style.transform = `translateY(${offset}px)`;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [speed]);
 
   return ref;
