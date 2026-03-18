@@ -1,0 +1,4 @@
+
+## 2024-03-18 - High-Frequency Event Throttling with rAF
+**Learning:** High-frequency interactive effects (e.g., `mousemove`, `scroll`) in hooks like `useMagnetic`, `useTilt`, and `useParallax` can cause significant layout thrashing if DOM reads (`getBoundingClientRect`) and writes are done synchronously in the event handler. Using `requestAnimationFrame` with a simple frame counter can be insufficient or cause desync if coordinate tracking isn't handled correctly.
+**Action:** When batching high-frequency events with `requestAnimationFrame`, combine a boolean `ticking` flag with mutable outer variables (e.g., `currentX = e.clientX`) to store the latest event coordinates. This prevents closing over stale data and visual desync, while ensuring DOM reads and writes are safely batched in the rAF callback. Always track the rAF ID and call `cancelAnimationFrame` within reset or teardown handlers.
