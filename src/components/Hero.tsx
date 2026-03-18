@@ -74,7 +74,7 @@ export function Hero() {
   const allWords = currentIntro.join(" ").split(" ");
 
   return (
-    <section ref={trackRef} className="h-[250vh] relative bg-[var(--bg-ink)]">
+    <section ref={trackRef} className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu">
       <div 
         id="hero" 
         ref={containerRef} 

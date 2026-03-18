@@ -203,7 +203,8 @@ export function About() {
     <section 
       id="about" 
       ref={sectionRef} 
-      className="relative z-40 pt-[34px] pb-[34px] md:pt-[98px] md:pb-[98px] px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden"
+      className="relative z-20 pt-[34px] pb-[34px] md:pt-[98px] md:pb-[98px] px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden isolate transform-gpu
+                 before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-[var(--bg-ink)] before:pointer-events-none"
     >
       {/* Background Halftone Drop */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />

@@ -43,7 +43,8 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-[46px] md:pt-[78px] pb-[10vh] px-6 md:px-8 bg-white flex flex-col items-center z-20"
+      className="relative pt-[46px] md:pt-[78px] pb-[10vh] px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate transform-gpu 
+                 before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-white before:pointer-events-none"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
       <SubliminalKanji kanji="作品" position="left" />
