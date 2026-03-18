@@ -37,11 +37,13 @@ html {
 
 /* Force browser to stop "guessing" frames during fast scroll */
 section {
-  will-change: transform;
+  will-change: transform, opacity, contents;
   transform: translate3d(0, 0, 0);
   -webkit-transform: translate3d(0, 0, 0);
-  contain: paint;
+  contain: paint layout;
   position: relative;
+  /* Clip-path inset forces a clean, isolated paint layer and prevents composite leaks */
+  clip-path: inset(0);
 }
 html::-webkit-scrollbar {
   display: none;             /* Chrome, Safari and Opera */
