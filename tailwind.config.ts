@@ -60,6 +60,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-almarena)", "system-ui", "sans-serif"],
         almarena: ["var(--font-almarena)", "sans-serif"],
+        eiko: ["var(--font-eiko)", "serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
         space: ["var(--font-space-grotesk)", "sans-serif"],
         serif: ["var(--font-cormorant-garamond)", "serif"],
