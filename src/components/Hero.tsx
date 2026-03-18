@@ -111,24 +111,27 @@ export function Hero() {
                                   word.includes('स्रोत') || word.includes('निर्माण');
                 
                 return (
-                  <span 
-                    key={i}
-                    className="inline-block mr-[0.45em] mb-2"
-                    style={{
-                      opacity: activeProgress,
-                      transform: `translateY(${(1 - activeProgress) * 25}px)`,
-                      filter: `blur(${(1 - activeProgress) * 12}px)`,
-                      willChange: 'opacity, transform, filter'
-                    }}
-                  >
                     <span 
-                      className={`text-[1.38rem] md:text-[2.76rem] lg:text-[4.14rem] select-none transition-all duration-700 force-clean
-                        ${isSpecial ? 
-                          `${language === 'hi' ? 'font-hindi' : 'font-eiko'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
-                          `${language === 'hi' ? 'font-hindi' : 'font-sans'} text-[var(--text-bone)]`}`}
+                      key={i}
+                      className="inline-block mr-[0.45em] mb-2 hero-typography-lock"
+                      style={{
+                        opacity: activeProgress,
+                        transform: `translateY(${(1 - activeProgress) * 25}px)`,
+                        filter: `blur(${(1 - activeProgress) * 12}px)`,
+                        willChange: 'opacity, transform, filter',
+                        fontStyle: 'normal',
+                        fontWeight: 400
+                      }}
                     >
-                      {word}
-                    </span>
+                      <span 
+                        style={{ fontStyle: 'normal', fontWeight: 400 }}
+                        className={`text-[1.38rem] md:text-[2.76rem] lg:text-[4.14rem] select-none transition-all duration-700
+                          ${isSpecial ? 
+                            `${language === 'hi' ? 'font-hindi' : 'font-eiko'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
+                            `${language === 'hi' ? 'font-hindi' : 'font-sans'} text-[var(--text-bone)]`}`}
+                      >
+                        {word}
+                      </span>
                     {/* Poetic Line breaks */}
                     {((language === 'en' && i === 5) || 
                       (language === 'ja' && i === 1)) && <br className="hidden md:block" />}
