@@ -58,7 +58,8 @@ const config: Config = {
         border: "#27272a",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-almarena)", "system-ui", "sans-serif"],
+        almarena: ["var(--font-almarena)", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
         space: ["var(--font-space-grotesk)", "sans-serif"],
         serif: ["var(--font-cormorant-garamond)", "serif"],
