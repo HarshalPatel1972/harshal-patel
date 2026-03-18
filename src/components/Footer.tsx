@@ -8,7 +8,7 @@ export function Footer() {
   const currentProfile = profile[language];
 
   return (
-    <footer className="relative bg-[#050505] border-t-2 border-[var(--text-bone)] px-4 py-4 md:px-8">
+    <footer className="relative bg-[#050505] border-t border-[var(--text-bone)]/10 px-4 py-3 md:px-8">
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
