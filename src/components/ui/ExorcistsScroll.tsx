@@ -215,7 +215,17 @@ const ExorcistsScroll: React.FC = () => {
               {/* Front Face (Ofuda) */}
               <div 
                 className="absolute inset-0 bg-black border-2 border-[var(--accent-blood)] flex flex-col items-center justify-between py-12 shadow-[0_0_30px_rgba(217,17,17,0.6)]"
-                style={{ backfaceVisibility: 'hidden', borderRadius: '0px', zIndex: 2 }}
+                style={{ 
+                  backfaceVisibility: 'hidden', 
+                  borderRadius: '0px', 
+                  zIndex: 2,
+                  // Unified Scale Control
+                  transform: activeCard.phase === 'summon' 
+                    ? `scale(${activeCard.rect?.width ? activeCard.rect.width / (window.innerWidth < 768 ? window.innerWidth * 0.9 : 420) : 0.2})` 
+                    : 'scale(1)',
+                  transition: 'transform 0.7s ease-in-out',
+                  transformOrigin: 'center'
+                }}
               >
                 {/* 1. Ritual Seals - Upscaled for Large Card */}
                 <div className="flex gap-4">
