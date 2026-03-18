@@ -122,9 +122,9 @@ export function Hero() {
                     }}
                   >
                     <span 
-                      className={`text-[1.38rem] md:text-[2.76rem] lg:text-[4.14rem] uppercase tracking-tighter select-none transition-all duration-700
+                      className={`text-[1.38rem] md:text-[2.76rem] lg:text-[4.14rem] tracking-tighter select-none transition-all duration-700
                         ${isSpecial ? 
-                          `${language === 'hi' ? 'font-hindi' : 'font-eiko italic'} font-normal capitalize text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
+                          `${language === 'hi' ? 'font-hindi' : 'font-eiko italic'} font-normal text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
                           `${language === 'hi' ? 'font-hindi' : 'font-sans'} font-medium text-[var(--text-bone)]`}`}
                     >
                       {word}
