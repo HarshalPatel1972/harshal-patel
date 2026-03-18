@@ -58,10 +58,10 @@ const config: Config = {
         border: "#27272a",
       },
       fontFamily: {
-        sans: ["var(--font-victor)", "system-ui", "sans-serif"],
-        victor: ["var(--font-victor)", "sans-serif"],
+        sans: ["var(--font-season)", "system-ui", "serif"],
+        season: ["var(--font-season)", "serif"],
         cirka: ["var(--font-cirka)", "serif"],
-        mono: ["var(--font-victor)", "monospace"],
+        mono: ["var(--font-season)", "serif"],
         serif: ["var(--font-cirka)", "serif"],
         display: ["var(--font-cirka)", "serif"],
       },

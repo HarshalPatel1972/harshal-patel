@@ -21,20 +21,30 @@ const cirka = localFont({
   display: 'swap',
 });
 
-const victor = localFont({
+const season = localFont({
   src: [
     {
-      path: "./fonts/victor-regular.otf",
+      path: "./fonts/season-light.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "./fonts/season-regular.otf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/victor-serif.otf",
+      path: "./fonts/season-medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/season-bold.otf",
       weight: "700",
       style: "normal",
     },
   ],
-  variable: "--font-victor",
+  variable: "--font-season",
   display: 'swap',
 });
 
@@ -114,7 +124,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cirka.variable} ${victor.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${cirka.variable} ${season.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />
