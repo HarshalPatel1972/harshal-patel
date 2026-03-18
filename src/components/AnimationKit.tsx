@@ -257,11 +257,11 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
          <img 
            src="/Lying Down.png" 
            alt="Resting on the scroll" 
-           className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[55px] md:translate-x-[97px] md:translate-y-[115px] z-20 pointer-events-none select-none"
+           className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[40px] md:translate-x-[97px] md:translate-y-[100px] z-20 pointer-events-none select-none"
          />
          {/* The 000 Text Block */}
          <div ref={textRef} 
-              className="relative z-10 font-sans font-black text-[2.8rem] md:text-[9.7rem] tracking-tighter leading-[0.8] flex items-end w-[5rem] md:w-[20rem] justify-end"
+              className="relative z-10 font-sans font-black text-[2.52rem] md:text-[8.73rem] tracking-tighter leading-[0.8] flex items-end w-[4.5rem] md:w-[18rem] justify-end"
               style={{ WebkitTextStroke: '2.5px currentColor', fontWeight: 950 }}
          >
            000
