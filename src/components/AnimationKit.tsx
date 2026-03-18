@@ -13,10 +13,17 @@ export function useMagnetic(strength: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
+    let rAFId: number;
+    let ticking = false;
+    let currentX = 0;
+    let currentY = 0;
+
+    const updatePosition = () => {
+      // ⚡ Bolt: Batch DOM reads (getBoundingClientRect) and writes inside requestAnimationFrame
+      // to avoid layout thrashing on high-frequency mousemove events.
       const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+      const x = currentX - rect.left - rect.width / 2;
+      const y = currentY - rect.top - rect.height / 2;
 
       anime(el, {
         translateX: x * strength,
@@ -24,9 +31,23 @@ export function useMagnetic(strength: number = 0.3) {
         duration: 600,
         easing: "outQuart",
       });
+      ticking = false;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+      if (!ticking) {
+        rAFId = window.requestAnimationFrame(updatePosition);
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
+      if (ticking) {
+        window.cancelAnimationFrame(rAFId);
+        ticking = false;
+      }
       anime(el, {
         translateX: 0,
         translateY: 0,
@@ -38,6 +59,7 @@ export function useMagnetic(strength: number = 0.3) {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
     return () => {
+      if (ticking) window.cancelAnimationFrame(rAFId);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
     };
@@ -163,18 +185,39 @@ export function useTilt(intensity: number = 10) {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
+    let rAFId: number;
+    let ticking = false;
+    let currentX = 0;
+    let currentY = 0;
+
+    const updateTilt = () => {
+      // ⚡ Bolt: Batch DOM reads (getBoundingClientRect) and writes inside requestAnimationFrame
+      // to avoid layout thrashing on high-frequency mousemove events.
       const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
+      const x = (currentX - rect.left) / rect.width;
+      const y = (currentY - rect.top) / rect.height;
       const rotateX = (0.5 - y) * intensity;
       const rotateY = (x - 0.5) * intensity;
 
       el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
       el.style.transition = "transform 0.1s ease-out";
+      ticking = false;
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+      if (!ticking) {
+        rAFId = window.requestAnimationFrame(updateTilt);
+        ticking = true;
+      }
     };
 
     const handleLeave = () => {
+      if (ticking) {
+        window.cancelAnimationFrame(rAFId);
+        ticking = false;
+      }
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -182,6 +225,7 @@ export function useTilt(intensity: number = 10) {
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
     return () => {
+      if (ticking) window.cancelAnimationFrame(rAFId);
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
     };
@@ -200,17 +244,33 @@ export function useParallax(speed: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleScroll = () => {
+    let rAFId: number;
+    let ticking = false;
+
+    const updateParallax = () => {
+      // ⚡ Bolt: Batch DOM reads (getBoundingClientRect, innerHeight) and writes
+      // inside requestAnimationFrame to avoid layout thrashing on scroll.
       const rect = el.getBoundingClientRect();
       const center = rect.top + rect.height / 2;
       const viewCenter = window.innerHeight / 2;
       const offset = (center - viewCenter) * speed;
       el.style.transform = `translateY(${offset}px)`;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        rAFId = window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateParallax(); // Initial positioning
+    return () => {
+      if (ticking) window.cancelAnimationFrame(rAFId);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [speed]);
 
   return ref;
