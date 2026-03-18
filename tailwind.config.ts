@@ -64,6 +64,7 @@ const config: Config = {
         mono: ["var(--font-season)", "serif"],
         serif: ["var(--font-cirka)", "serif"],
         display: ["var(--font-cirka)", "serif"],
+        luna: ["var(--font-luna)", "sans-serif"],
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",

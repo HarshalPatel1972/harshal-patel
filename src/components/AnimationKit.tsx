@@ -261,8 +261,8 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
          />
          {/* The 000 Text Block */}
          <div ref={textRef} 
-              className="relative z-10 font-sans font-black text-[2.52rem] md:text-[8.73rem] tracking-tighter leading-[0.8] flex items-end w-[4.5rem] md:w-[18rem] justify-end"
-              style={{ WebkitTextStroke: '2.5px currentColor', fontWeight: 950 }}
+              className="relative z-10 font-luna font-black text-[2.52rem] md:text-[8.73rem] tracking-tighter leading-[0.8] flex items-end w-[4.5rem] md:w-[18rem] justify-end"
+              style={{ WebkitTextStroke: '2.5px currentColor', fontWeight: 900 }}
          >
            000
          </div>

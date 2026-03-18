@@ -48,6 +48,23 @@ const season = localFont({
   display: 'swap',
 });
 
+const luna = localFont({
+  src: [
+    {
+      path: "./fonts/luna-heavy.otf",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "./fonts/luna-light.otf",
+      weight: "300",
+      style: "normal",
+    },
+  ],
+  variable: "--font-luna",
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: {
     default: "Harshal Patel | Software Engineer Portfolio",
@@ -124,7 +141,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cirka.variable} ${season.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${cirka.variable} ${season.variable} ${luna.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
       >
         <ImageGuard />
