@@ -8,7 +8,7 @@ import ImageGuard from "@/components/ui/ImageGuard";
 const almarena = localFont({
   src: [
     {
-      path: "../../public/fonts/almarena-display.woff2",
+      path: "./fonts/almarena-display.woff2",
       weight: "400",
       style: "normal",
     },
