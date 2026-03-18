@@ -65,6 +65,7 @@ const config: Config = {
         serif: ["var(--font-cirka)", "serif"],
         display: ["var(--font-cirka)", "serif"],
         luna: ["var(--font-luna)", "sans-serif"],
+        victor: ["var(--font-victor)", "sans-serif"],
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",
