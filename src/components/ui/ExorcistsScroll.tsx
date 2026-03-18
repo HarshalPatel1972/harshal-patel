@@ -31,8 +31,8 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   let charIndexCounter = 0;
 
   return (
-    <div className="w-full h-full p-8 md:p-14 flex flex-col items-center justify-center text-center">
-      <div className="text-[#E8E8E6] font-hindi text-3xl md:text-5xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-center uppercase" style={{ textShadow: '0 0 20px rgba(217,17,17,0.4)' }}>
+    <div className="w-full h-full p-10 md:p-16 flex flex-col items-center justify-center text-center">
+      <div className="text-[#E8E8E6] font-hindi text-2xl md:text-3xl lg:text-4xl leading-[1.1] font-black tracking-tighter text-center uppercase" style={{ textShadow: '0 0 20px rgba(217,17,17,0.4)' }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
             {word.split("").map((char, ci) => {
