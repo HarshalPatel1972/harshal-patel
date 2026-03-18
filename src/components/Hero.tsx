@@ -113,19 +113,16 @@ export function Hero() {
                 return (
                     <span 
                       key={i}
-                      className="inline-block mr-[0.45em] mb-2 hero-typography-lock"
+                      className="inline-block mr-[0.55em] mb-2"
                       style={{
                         opacity: activeProgress,
                         transform: `translateY(${(1 - activeProgress) * 25}px)`,
                         filter: `blur(${(1 - activeProgress) * 12}px)`,
-                        willChange: 'opacity, transform, filter',
-                        fontStyle: 'normal',
-                        fontWeight: 400
+                        willChange: 'opacity, transform, filter'
                       }}
                     >
                       <span 
-                        style={{ fontStyle: 'normal', fontWeight: 400 }}
-                        className={`text-[1.38rem] md:text-[2.76rem] lg:text-[4.14rem] select-none transition-all duration-700
+                        className={`text-[2.2rem] md:text-[5rem] lg:text-[7rem] select-none transition-all duration-700
                           ${isSpecial ? 
                             `${language === 'hi' ? 'font-hindi' : 'font-eiko'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
                             `${language === 'hi' ? 'font-hindi' : 'font-sans'} text-[var(--text-bone)]`}`}
