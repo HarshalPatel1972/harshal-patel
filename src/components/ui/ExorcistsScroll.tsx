@@ -210,12 +210,14 @@ const ExorcistsScroll: React.FC = () => {
               style={{
                 transformStyle: 'preserve-3d',
                 transform: (activeCard.phase === 'flipped' || activeCard.phase === 'burning') ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                transition: 'transform 0.7s ease-in-out'
+                transition: 'transform 0.7s cubic-bezier(0.19, 1, 0.22, 1)',
+                willChange: 'transform'
               }}
             >
               {/* Front Face (Ofuda) */}
               <div 
-                className="absolute inset-0 bg-black border-2 border-[var(--accent-blood)] flex flex-col items-center justify-between py-12 shadow-[0_0_30px_rgba(217,17,17,0.6)]"
+                className={`absolute inset-0 bg-black border-2 border-[var(--accent-blood)] flex flex-col items-center justify-between py-12 transition-shadow duration-700
+                  ${activeCard.phase === 'flipped' ? 'shadow-none' : 'shadow-[0_0_20px_rgba(217,17,17,0.4)]'}`}
                 style={{ 
                   backfaceVisibility: 'hidden', 
                   borderRadius: '0px', 
@@ -261,14 +263,15 @@ const ExorcistsScroll: React.FC = () => {
 
               {/* Back Face (Revelation) */}
               <div 
-                className={`absolute inset-0 bg-[#000000] border-2 border-[var(--accent-blood)] flex items-center justify-center transition-colors duration-300 shadow-[0_0_50px_rgba(217,17,17,0.6)] overflow-hidden
+                className={`absolute inset-0 bg-[#000000] border-2 border-[var(--accent-blood)] flex items-center justify-center transition-all duration-300 shadow-[0_0_40px_rgba(217,17,17,0.4)] overflow-hidden
                   ${activeCard.phase === 'burning' ? 'animate-ofuda-burn' : ''}`}
                 style={{ 
                   backfaceVisibility: 'hidden', 
                   transform: 'rotateY(180deg)',
                   borderRadius: '0px',
                   backgroundColor: '#050505',
-                  zIndex: 1
+                  zIndex: 1,
+                  opacity: (activeCard.phase === 'flipped' || activeCard.phase === 'burning') ? 1 : 0
                 }}
               >
                 {/* 1. Atmospheric Textures & Grid */}
@@ -298,9 +301,10 @@ const ExorcistsScroll: React.FC = () => {
                    </div>
                 </div>
 
-                {/* 4. Cursed Scanlines */}
+                {/* 4. Cursed Scanlines (Only animate after flip) */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-                  <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(217,17,17,0.1)_50%)] bg-[length:100%_4px] animate-scanline" />
+                  <div className={`absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(217,17,17,0.1)_50%)] bg-[length:100%_4px] 
+                    ${activeCard.phase === 'flipped' ? 'animate-scanline' : ''}`} />
                 </div>
 
                 {/* 5. Ritual Brackets */}
