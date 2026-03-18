@@ -197,7 +197,7 @@ export const mappaQuotesList: QuoteEntry[] = [
   },
   {
     charId: "LEVI",
-    en: "THE ONLY THING WE'RE ALLOWED TO DO IS BELIEVE THAT WE WON'T REGRET THE CHOCIE WE MADE.",
+    en: "THE ONLY THING WE'RE ALLOWED TO DO IS BELIEVE THAT WE WON'T REGRET THE CHOICE WE MADE.",
     ja: "俺たちに許されたのは、自分の選択を後悔しないと信じることだけだ。",
     ko: "우리가 할 수 있는 유일한 것은 자신의 선택을 후회하지 않겠다고 믿는 것뿐이다.",
     "zh-tw": "我們唯一被允許做的事，就是相信自己不會後悔所做的選擇。",
