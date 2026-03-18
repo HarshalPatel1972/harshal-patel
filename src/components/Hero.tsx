@@ -91,7 +91,7 @@ export function Hero() {
           
           <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
 
-            <div className="text-justify leading-[0.95] md:leading-[1.05]">
+            <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => {
                 const start = (i / allWords.length) * 0.8;
                 const end = start + 0.2;

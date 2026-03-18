@@ -368,3 +368,16 @@ img, svg, picture, .ink-slash, .manga-panel {
   text-transform: none !important;
   font-variant: normal !important;
 }
+
+/* NUCLEAR LOCKDOWN for Hero Intro Typography */
+#hero-intro-text, 
+#hero-intro-text *, 
+#hero-intro-text span, 
+#hero-intro-text div {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-optical-sizing: auto !important;
+  font-kerning: normal !important;
+  transform: none !important;
+  -webkit-font-smoothing: antialiased !important;
+}
