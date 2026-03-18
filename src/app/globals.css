@@ -361,3 +361,10 @@ img, svg, picture, .ink-slash, .manga-panel {
 .font-hindi {
   font-family: var(--font-teko), sans-serif;
 }
+
+.force-clean {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  font-variant: normal !important;
+}
