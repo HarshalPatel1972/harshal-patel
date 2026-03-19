@@ -1,29 +1,18 @@
 "use client";
-
-import { useEffect, useState, useRef } from "react";
+ 
+import { useEffect, useRef } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
-import { animate as anime } from "animejs";
-
+import { animate as anime, createTimeline } from "animejs";
+ 
 export function FlipTransition() {
   const { isActive, screenshotSrc, gridConfig, redirectUrl, setPreloading } = useFlipTransition();
   const { cols, rows } = gridConfig;
+  const totalSquares = cols * rows;
   
-  // High-performance state tracking
-  const [flippedIndices, setFlippedIndices] = useState<Set<number>>(new Set());
-  const [smokedIndices, setSmokedIndices] = useState<Set<number>>(new Set());
-  
-  const flippedRef = useRef<Set<number>>(new Set());
-  const smokedRef = useRef<Set<number>>(new Set());
-
+  const squaresRef = useRef<(HTMLDivElement | null)[]>([]);
+ 
   useEffect(() => {
     if (isActive) {
-      // 1. Reset
-      flippedRef.current = new Set();
-      smokedRef.current = new Set();
-      setFlippedIndices(new Set());
-      setSmokedIndices(new Set());
-      
-      const totalSquares = cols * rows;
       const indices = Array.from({ length: totalSquares }, (_, i) => i);
       
       // Randomize reveal order
@@ -31,75 +20,57 @@ export function FlipTransition() {
         const j = Math.floor(Math.random() * (i + 1));
         [indices[i], indices[j]] = [indices[j], indices[i]];
       }
-
-      // 2. Parallel Preload (Doesn't block animation)
+ 
+      // Parallel Preload
       const img = new Image();
       img.src = screenshotSrc;
       img.onload = () => setPreloading(false, null);
       img.onerror = () => setPreloading(false, null);
-
-      // 3. Animation Phase Control
-      const animationState = { flipProgress: 0, smokeProgress: 0 };
-      
-      // FLIP TRACK
-      anime(animationState, {
-        flipProgress: totalSquares,
-        duration: 2000,
-        easing: 'linear',
-        update: () => {
-          const count = Math.floor(animationState.flipProgress);
-          let changed = false;
-          for (let i = 0; i < count; i++) {
-            const idx = indices[i];
-            if (!flippedRef.current.has(idx)) {
-              flippedRef.current.add(idx);
-              changed = true;
-            }
-          }
-          if (changed) setFlippedIndices(new Set(flippedRef.current));
+ 
+      // Reset all squares to initial state
+      squaresRef.current.forEach(sq => {
+        if (sq) {
+          sq.style.transform = 'rotateY(0deg)';
+          sq.style.opacity = '1';
+          sq.style.filter = 'none';
         }
       });
-
-      // SMOKE TRACK (Starts after flips are well underway)
-      anime(animationState, {
-        smokeProgress: totalSquares,
-        duration: 1500,
-        delay: 2400,
-        easing: 'linear',
-        update: () => {
-          const count = Math.floor(animationState.smokeProgress);
-          let changed = false;
-          for (let i = 0; i < count; i++) {
-            const idx = indices[i];
-            if (!smokedRef.current.has(idx)) {
-              smokedRef.current.add(idx);
-              changed = true;
-            }
-          }
-          if (changed) setSmokedIndices(new Set(smokedRef.current));
-        },
+ 
+      const tl = createTimeline();
+ 
+      // FLIP PHASE (Direct Target via staggered indices)
+      tl.add({
+        targets: indices.map(idx => squaresRef.current[idx]),
+        rotateY: 180,
+        duration: 600,
+        delay: anime.stagger(15), 
+        easing: 'cubicBezier(0.23, 1, 0.32, 1)'
+      });
+ 
+      // SMOKE PHASE (Starts later)
+      tl.add({
+        targets: indices.map(idx => squaresRef.current[idx]),
+        opacity: 0,
+        filter: 'blur(24px)',
+        duration: 1000,
+        delay: anime.stagger(10, { start: 1400 }), // Start smoking while flips are finishing
+        easing: 'easeInSine',
         complete: () => {
-          // Final Sync'd Redirect
           setTimeout(() => {
             window.location.href = redirectUrl;
-          }, 600);
+          }, 400);
         }
       });
-
-      return () => {
-        // Anime instances are automatically cleaned up if scope is lost, 
-        // but we ensure the redirect doesn't fire if unmounted during transition
-      };
     }
-  }, [isActive, cols, rows, screenshotSrc, redirectUrl, setPreloading]);
-
+  }, [isActive, totalSquares, screenshotSrc, redirectUrl, setPreloading]);
+ 
   if (!isActive) return null;
-
+ 
   return (
     <div 
       className="fixed inset-0 pointer-events-auto"
       style={{
-        zIndex: 9999999, // Absolute top
+        zIndex: 9999999,
         display: 'grid',
         gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
         gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
@@ -108,12 +79,10 @@ export function FlipTransition() {
         backgroundColor: 'transparent'
       }}
     >
-      {Array.from({ length: cols * rows }).map((_, i) => {
+      {Array.from({ length: totalSquares }).map((_, i) => {
         const colIndex = i % cols;
         const rowIndex = Math.floor(i / cols);
-        const isFlipped = flippedIndices.has(i);
-        const isSmoking = smokedIndices.has(i);
-
+ 
         return (
           <div 
             key={i} 
@@ -121,17 +90,14 @@ export function FlipTransition() {
             style={{ perspective: '1200px' }}
           >
             <div 
-              className="w-full h-full"
+              ref={el => { squaresRef.current[i] = el; }}
+              className="w-full h-full will-change-transform"
               style={{
                 transformStyle: 'preserve-3d',
-                transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                opacity: isSmoking ? 0 : 1,
-                filter: isSmoking ? 'blur(24px)' : 'none',
-                // We use CSS transition for the rotation and smoke so it's GPU accelerated
-                transition: 'transform 600ms cubic-bezier(0.23, 1, 0.32, 1), opacity 1000ms ease, filter 1000ms ease'
+                transform: 'rotateY(0deg)',
               }}
             >
-              {/* Front Face (Transparent) */}
+              {/* Front Face */}
               <div 
                 className="absolute inset-0 z-10"
                 style={{ 
@@ -141,7 +107,7 @@ export function FlipTransition() {
                 }}
               />
               
-              {/* Back Face (Screenshot Slice) */}
+              {/* Back Face */}
               <div 
                 className="absolute inset-0 bg-[#0a0a0a]"
                 style={{ 
