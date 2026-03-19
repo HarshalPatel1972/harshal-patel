@@ -28,10 +28,10 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   }, [text]);
  
   return (
-    <div ref={containerRef} className="w-full h-full p-10 md:p-16 flex flex-col items-center justify-center text-center relative z-10">
-      <div className="text-white font-inter text-2xl md:text-3xl lg:text-5xl leading-[1.1] font-black tracking-tight text-center uppercase transition-all duration-700" 
+    <div ref={containerRef} className="w-full h-full p-8 md:p-12 flex flex-col items-center justify-center text-center relative z-10">
+      <div className="text-white font-inter text-xl md:text-2xl lg:text-4xl leading-[1.2] font-black tracking-tight text-center uppercase" 
            style={{ 
-             textShadow: '2px 0 10px rgba(0,255,255,0.4), -2px 0 10px rgba(217,17,17,0.4), 0 0 30px rgba(255,255,255,0.3)' 
+             textShadow: '2px 0 12px rgba(0,255,255,0.5), -2px 0 12px rgba(217,17,17,0.5), 0 0 40px rgba(255,255,255,0.4)' 
            }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.3em]">
@@ -82,23 +82,26 @@ const ExorcistsScroll: React.FC = () => {
     }));
   }, []);
  
-  const SystemNodes = () => (
-    <>
-      {[0,1,2,3].map(i => (
-        <div key={i} className={`absolute w-16 h-16 z-30 transition-all duration-1000 ${showShutters ? 'opacity-60 scale-100' : 'opacity-0 scale-110'}`}
-             style={{ 
-               top: i < 2 ? '0' : 'auto', 
-               bottom: i >= 2 ? '0' : 'auto', 
-               left: i % 2 === 0 ? '0' : 'auto', 
-               right: i % 2 !== 0 ? '0' : 'auto',
-               transform: `rotate(${i * 90}deg)`
-             }}>
-           <div className="w-full h-full border-t border-l border-cyan-400/40" />
-           <div className="absolute top-0 left-0 w-2 h-2 bg-red-600 shadow-[0_0_8px_#D91111]" />
-        </div>
-      ))}
-    </>
-  );
+  const SystemNodes = () => {
+    const rotations = [0, 90, 270, 180]; // TL, TR, BL, BR inward orientation
+    return (
+      <>
+        {[0,1,2,3].map(i => (
+          <div key={i} className={`absolute w-12 h-12 z-30 transition-all duration-1000 ${showShutters ? 'opacity-80 scale-100' : 'opacity-0 scale-120'}`}
+               style={{ 
+                 top: i < 2 ? '0' : 'auto', 
+                 bottom: i >= 2 ? '0' : 'auto', 
+                 left: i % 2 === 0 ? '0' : 'auto', 
+                 right: i % 2 !== 0 ? '0' : 'auto',
+                 transform: `rotate(${rotations[i]}deg)`
+               }}>
+             <div className="w-full h-full border-t-2 border-l-2 border-cyan-400/60" />
+             <div className="absolute top-0 left-0 w-2 h-2 bg-red-600 shadow-[0_0_10px_#D91111]" />
+          </div>
+        ))}
+      </>
+    );
+  };
  
   // MOBILE-ONLY RESTRICTION
   if (mounted && window.innerWidth >= 1024) return null;
@@ -117,40 +120,38 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-white/10 bg-black/90 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
+              className="ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-32 md:h-40 border border-white/10 bg-black/90 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
             >
                <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" />
                <div className="w-full h-[0.5px] bg-cyan-400/20" />
-               <div className="w-3 h-3 border border-white/30 rotate-45" />
+               <div className="w-3 h-3 border border-white/20 rotate-45" />
             </button>
           </div>
         ))}
       </div>
  
-      {/* ─── CYAN-HALO PRODUCTION PORTAL ─── */}
+      {/* ─── CYAN-HALO COMPACT PRODUCTION PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
-            className={`fixed inset-0 bg-[#020202] transition-opacity duration-[1200ms] ${showShutters ? 'opacity-98' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-[#000000]/98 transition-opacity duration-[1200ms] ${showShutters ? 'opacity-98' : 'opacity-0'}`}
             onClick={handleDismiss}
           />
  
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[94vw] md:w-[480px] h-[80vh] md:h-[660px] pointer-events-none" style={{ zIndex: 9999991 }}>
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[400px] h-[65vh] md:h-[580px] pointer-events-none" style={{ zIndex: 9999991 }}>
              {/* 1. System Core Layer (Cyan/Red/White/Black) */}
-             <div className={`absolute inset-0 bg-[#000000] flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
+             <div className={`absolute inset-0 bg-[#000000] border border-white/10 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
                 
-                {/* Technical Surface (Grid & Halftone) */}
+                {/* Technical Surface */}
                 <div className="absolute inset-0 system-grid opacity-20" />
-                <div className="absolute inset-0 cyan-halftone opacity-10 mix-blend-screen" />
+                <div className="absolute inset-0 cyan-halftone opacity-10" />
                 
-                {/* Volumetric Emittance */}
-                <div className="absolute inset-0 border-[0.5px] border-white/5 shadow-[inset_0_0_120px_rgba(0,255,255,0.05),0_0_60px_rgba(217,17,17,0.05)]" />
+                {/* High-Contrast Emittance */}
+                <div className="absolute inset-0 border border-cyan-400/10 shadow-[inset_0_0_100px_rgba(0,255,255,0.05)]" />
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-red-600/30 to-transparent animate-pulse" />
                 
-                {/* Human Connection Light (Warm Bloom) */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,transparent_85%)]" />
-                
-                {/* Grain Vignette */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.95)_100%)]" />
+                {/* Light Archetype */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0%,transparent_85%)]" />
                 
                 <SystemNodes />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
@@ -174,7 +175,6 @@ const ExorcistsScroll: React.FC = () => {
                       >
                          <div className="absolute inset-y-0 w-full h-full flex flex-col items-center justify-center opacity-10">
                             <div className="w-[1px] h-32 bg-cyan-400/40" />
-                            <div className="w-12 h-[1px] bg-red-600/40" />
                          </div>
                       </div>
                    );
@@ -194,11 +194,11 @@ const ExorcistsScroll: React.FC = () => {
         }
         .system-grid {
           background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-          background-size: 60px 60px;
+          background-size: 80px 80px;
         }
         .cyan-halftone {
-          background-image: radial-gradient(#00FFFF 0.5px, transparent 0.5px);
-          background-size: 5px 5px;
+          background-image: radial-gradient(#00FFFF 1px, transparent 1px);
+          background-size: 8px 8px;
         }
       `}</style>
     </div>
