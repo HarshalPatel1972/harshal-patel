@@ -251,7 +251,7 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
   }, []);
 
   return (
-    <div className={`fixed bottom-4 right-[64px] md:bottom-8 md:right-[112px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`fixed bottom-4 right-[59px] md:bottom-8 md:right-[107px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
        <div className="relative flex flex-col items-end">
          {/* Reclining Character (MAPPA 4th-Wall Break on the UI) */}
          <img 
