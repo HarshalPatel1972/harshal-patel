@@ -46,20 +46,17 @@ const ExorcistsScroll: React.FC = () => {
   const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
   const [mounted, setMounted] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const shutterTopRef = useRef<HTMLDivElement>(null);
-  const shutterBottomRef = useRef<HTMLDivElement>(null);
-  const sunderLineRef = useRef<HTMLDivElement>(null);
+  const glitchLayerRef = useRef<HTMLDivElement>(null);
  
   useEffect(() => {
     setMounted(true);
   }, []);
  
-  // ORCHESTRATION ENGINE (The Sunder Sequence)
+  // ORCHESTRATION ENGINE (The Glitch Breach)
   useEffect(() => {
-    // We wait for the Portal to mount the elements and populate the refs
     if (activeCard?.phase === 'summon') {
-      const initAnimation = requestAnimationFrame(() => {
-        if (!cardRef.current || !shutterTopRef.current || !shutterBottomRef.current) return;
+       requestAnimationFrame(() => {
+        if (!cardRef.current) return;
         
         const rect = activeCard.rect!;
         const isMobile = window.innerWidth < 768;
@@ -73,7 +70,7 @@ const ExorcistsScroll: React.FC = () => {
  
         const tl = createTimeline({} as any);
  
-        // Phase 1: Move & Scale to focus
+        // 1. Kinetic Summon
         tl.add({
           targets: cardRef.current,
           translateX: [rect.left, targetX],
@@ -84,39 +81,23 @@ const ExorcistsScroll: React.FC = () => {
           easing: 'cubicBezier(0.19, 1, 0.22, 1)'
         } as any);
  
-        // Phase 2: The Sunder Pulse
+        // 2. The Glitch Breach (Swap during flashes)
         tl.add({
-          targets: sunderLineRef.current,
-          opacity: [0, 1, 0],
-          scaleX: [0, 1.2],
+          targets: glitchLayerRef.current,
+          opacity: [0, 1, 0, 1, 0],
+          translateX: () => (Math.random() - 0.5) * 40,
           duration: 400,
-          easing: 'easeInOutQuad'
-        } as any, "-=200");
- 
-        // Phase 3: The Mechanical Breach (Splitting Open)
-        tl.add({
-          targets: shutterTopRef.current,
-          translateY: [0, '-100%'],
-          duration: 800,
-          perspective: 1000,
-          easing: 'cubicBezier(0.19, 1, 0.22, 1)'
-        } as any, "-=300");
- 
-        tl.add({
-          targets: shutterBottomRef.current,
-          translateY: [0, '100%'],
-          duration: 800,
-          perspective: 1000,
-          easing: 'cubicBezier(0.19, 1, 0.22, 1)',
-          complete: () => {
-            setActiveCard(prev => prev ? { ...prev, phase: 'active' } : null);
+          easing: 'linear',
+          begin: () => {
+             // Halfway through the glitch, we set phase to active
+             setTimeout(() => {
+                setActiveCard(prev => prev ? { ...prev, phase: 'active' } : null);
+             }, 150);
           }
-        } as any, "-=800");
+        } as any, "-=100");
       });
- 
-      return () => cancelAnimationFrame(initAnimation);
     }
-  }, [activeCard?.phase, mounted]); // Depend on mounted and phase
+  }, [activeCard?.phase]);
  
   const handleCardClick = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -138,9 +119,7 @@ const ExorcistsScroll: React.FC = () => {
         easing: 'easeOutQuint',
         complete: () => setActiveCard(null)
       });
-    } else {
-      setActiveCard(null);
-    }
+    } else { setActiveCard(null); }
   };
  
   useEffect(() => {
@@ -199,7 +178,7 @@ const ExorcistsScroll: React.FC = () => {
         ))}
       </div>
  
-      {/* ─── REVELATION PORTAL (THE SUNDER) ─── */}
+      {/* ─── REVELATION PORTAL (THE BREACH) ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 9998, pointerEvents: 'auto' }}>
           <div 
@@ -215,45 +194,33 @@ const ExorcistsScroll: React.FC = () => {
               height: `${activeCard.rect?.height}px`,
               transform: `translate3d(${activeCard.rect?.left}px, ${activeCard.rect?.top}px, 0)`,
               transformOrigin: '0 0',
-              willChange: 'transform',
-              boxShadow: activeCard.phase === 'summon' ? '0 0 20px rgba(217,17,17,0.4)' : 'none'
+              willChange: 'transform'
             }}
           >
-            {/* 1. Underlying Truth Layer (Revealed when shuttes open) */}
-            <div className="absolute inset-0 bg-[#050505] flex items-center justify-center overflow-hidden z-0">
-               <div className="absolute inset-0 ritual-grid opacity-20" />
-               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.05)_0%,transparent_80%)]" />
-               <div className="absolute inset-0 halftone-bg opacity-10 mix-blend-overlay" />
-               {activeCard.phase === 'active' && <CharacterInscription text={activeCard.fact} />}
-            </div>
+            <div className="relative w-full h-full">
+               {/* 1. Content Plane */}
+               <div className="absolute inset-0">
+                  {activeCard.phase === 'summon' ? (
+                    <OfudaPattern hex={segments.find(s => s.id === activeCard.id)?.hex || "0x00"} isLarge />
+                  ) : (
+                    <div className="w-full h-full bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden">
+                       <div className="absolute inset-0 ritual-grid opacity-20" />
+                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.05)_0%,transparent_80%)]" />
+                       <CharacterInscription text={activeCard.fact} />
+                    </div>
+                  )}
+               </div>
  
-            {/* 2. Top Shutter */}
-            <div 
-              ref={shutterTopRef}
-              className="absolute top-0 left-0 w-full h-[50.5%] z-20 overflow-hidden"
-              style={{ transformOrigin: 'top center' }}
-            >
-               <div className="w-full h-[200%] absolute top-0 left-0">
-                 <OfudaPattern hex={activeCard.fact.slice(0, 4)} isLarge />
+               {/* 2. Glitch Overlay (Active during transition) */}
+               <div 
+                 ref={glitchLayerRef}
+                 className="absolute inset-0 bg-white mix-blend-difference opacity-0 pointer-events-none z-50 overflow-hidden"
+               >
+                  <div className="w-full h-full bg-[var(--accent-blood)] opacity-50 flex items-center justify-center text-black font-mono text-[10vw]">
+                     SYSTEM_ERR
+                  </div>
                </div>
             </div>
- 
-            {/* 3. Bottom Shutter */}
-            <div 
-              ref={shutterBottomRef}
-              className="absolute bottom-0 left-0 w-full h-[50.5%] z-20 overflow-hidden"
-              style={{ transformOrigin: 'bottom center' }}
-            >
-               <div className="w-full h-[200%] absolute bottom-0 left-0">
-                 <OfudaPattern hex={activeCard.fact.slice(0, 4)} isLarge />
-               </div>
-            </div>
- 
-            {/* 4. The Sunder Laser Line */}
-            <div 
-              ref={sunderLineRef}
-              className="absolute top-1/2 left-0 w-full h-[3px] bg-[#d91111] -translate-y-1/2 z-30 opacity-0 scale-x-0 shadow-[0_0_30px_#d91111]"
-            />
           </div>
         </div>,
         document.body
