@@ -1,82 +1,105 @@
 "use client";
- 
-import { useEffect, useRef } from "react";
+
+import { useEffect, useState, useRef } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
-import { animate as anime, createTimeline, stagger } from "animejs";
- 
+import { animate as anime } from "animejs";
+
 export function FlipTransition() {
   const { isActive, screenshotSrc, gridConfig, redirectUrl, setPreloading } = useFlipTransition();
   const { cols, rows } = gridConfig;
-  const totalSquares = cols * rows;
   
-  const squaresRef = useRef<(HTMLDivElement | null)[]>([]);
- 
+  // High-performance state tracking
+  const [flippedIndices, setFlippedIndices] = useState<Set<number>>(new Set());
+  const [smokedIndices, setSmokedIndices] = useState<Set<number>>(new Set());
+  
+  const flippedRef = useRef<Set<number>>(new Set());
+  const smokedRef = useRef<Set<number>>(new Set());
+
   useEffect(() => {
     if (isActive) {
-      // Micro-delay to ensure React has painted the portal and populated squaresRef
-      const animationInit = requestAnimationFrame(() => {
-        const indices = Array.from({ length: totalSquares }, (_, i) => i);
-        
-        // Randomize
-        for (let i = indices.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [indices[i], indices[j]] = [indices[j], indices[i]];
-        }
- 
-        // Initial Reset
-        squaresRef.current.forEach(sq => {
-          if (sq) {
-            sq.style.transform = 'rotateY(0deg)';
-            sq.style.opacity = '1';
-            sq.style.filter = 'none';
-          }
-        });
- 
-        const targetNodes = indices.map(idx => squaresRef.current[idx]).filter(Boolean);
-        if (targetNodes.length === 0) return;
- 
-        const tl = createTimeline({} as any);
- 
-        // FLIP PHASE
-        tl.add({
-          targets: targetNodes,
-          rotateY: 180,
-          duration: 700,
-          delay: stagger(15), 
-          easing: 'cubicBezier(0.19, 1, 0.22, 1)'
-        } as any);
- 
-        // SMOKE PHASE
-        tl.add({
-          targets: targetNodes,
-          opacity: 0,
-          filter: 'blur(30px)',
-          duration: 1000,
-          delay: stagger(12, { start: 1600 }), 
-          easing: 'easeInSine',
-          complete: () => {
-            setTimeout(() => { window.location.href = redirectUrl; }, 400);
-          }
-        } as any);
-      });
- 
-      // Parallel Preload
+      // 1. Reset
+      flippedRef.current = new Set();
+      smokedRef.current = new Set();
+      setFlippedIndices(new Set());
+      setSmokedIndices(new Set());
+      
+      const totalSquares = cols * rows;
+      const indices = Array.from({ length: totalSquares }, (_, i) => i);
+      
+      // Randomize reveal order
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+
+      // 2. Parallel Preload (Doesn't block animation)
       const img = new Image();
       img.src = screenshotSrc;
       img.onload = () => setPreloading(false, null);
       img.onerror = () => setPreloading(false, null);
- 
-      return () => cancelAnimationFrame(animationInit);
+
+      // 3. Animation Phase Control
+      const animationState = { flipProgress: 0, smokeProgress: 0 };
+      
+      // FLIP TRACK
+      anime(animationState, {
+        flipProgress: totalSquares,
+        duration: 2000,
+        easing: 'linear',
+        update: () => {
+          const count = Math.floor(animationState.flipProgress);
+          let changed = false;
+          for (let i = 0; i < count; i++) {
+            const idx = indices[i];
+            if (!flippedRef.current.has(idx)) {
+              flippedRef.current.add(idx);
+              changed = true;
+            }
+          }
+          if (changed) setFlippedIndices(new Set(flippedRef.current));
+        }
+      });
+
+      // SMOKE TRACK (Starts after flips are well underway)
+      anime(animationState, {
+        smokeProgress: totalSquares,
+        duration: 1500,
+        delay: 2400,
+        easing: 'linear',
+        update: () => {
+          const count = Math.floor(animationState.smokeProgress);
+          let changed = false;
+          for (let i = 0; i < count; i++) {
+            const idx = indices[i];
+            if (!smokedRef.current.has(idx)) {
+              smokedRef.current.add(idx);
+              changed = true;
+            }
+          }
+          if (changed) setSmokedIndices(new Set(smokedRef.current));
+        },
+        complete: () => {
+          // Final Sync'd Redirect
+          setTimeout(() => {
+            window.location.href = redirectUrl;
+          }, 600);
+        }
+      });
+
+      return () => {
+        // Anime instances are automatically cleaned up if scope is lost, 
+        // but we ensure the redirect doesn't fire if unmounted during transition
+      };
     }
-  }, [isActive, totalSquares, screenshotSrc, redirectUrl, setPreloading]);
- 
+  }, [isActive, cols, rows, screenshotSrc, redirectUrl, setPreloading]);
+
   if (!isActive) return null;
- 
+
   return (
     <div 
       className="fixed inset-0 pointer-events-auto"
       style={{
-        zIndex: 9999999,
+        zIndex: 9999999, // Absolute top
         display: 'grid',
         gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
         gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
@@ -85,10 +108,12 @@ export function FlipTransition() {
         backgroundColor: 'transparent'
       }}
     >
-      {Array.from({ length: totalSquares }).map((_, i) => {
+      {Array.from({ length: cols * rows }).map((_, i) => {
         const colIndex = i % cols;
         const rowIndex = Math.floor(i / cols);
- 
+        const isFlipped = flippedIndices.has(i);
+        const isSmoking = smokedIndices.has(i);
+
         return (
           <div 
             key={i} 
@@ -96,14 +121,17 @@ export function FlipTransition() {
             style={{ perspective: '1200px' }}
           >
             <div 
-              ref={el => { squaresRef.current[i] = el; }}
-              className="w-full h-full will-change-transform"
+              className="w-full h-full"
               style={{
                 transformStyle: 'preserve-3d',
-                transform: 'rotateY(0deg)',
+                transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+                opacity: isSmoking ? 0 : 1,
+                filter: isSmoking ? 'blur(24px)' : 'none',
+                // We use CSS transition for the rotation and smoke so it's GPU accelerated
+                transition: 'transform 600ms cubic-bezier(0.23, 1, 0.32, 1), opacity 1000ms ease, filter 1000ms ease'
               }}
             >
-              {/* Front Face */}
+              {/* Front Face (Transparent) */}
               <div 
                 className="absolute inset-0 z-10"
                 style={{ 
@@ -113,7 +141,7 @@ export function FlipTransition() {
                 }}
               />
               
-              {/* Back Face */}
+              {/* Back Face (Screenshot Slice) */}
               <div 
                 className="absolute inset-0 bg-[#0a0a0a]"
                 style={{ 
