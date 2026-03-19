@@ -74,11 +74,10 @@ const ExorcistsScroll: React.FC = () => {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [activeCard]);
  
-  const segments = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => ({
+  const baseTalismanSet = useMemo(() => {
+    return Array.from({ length: 6 }).map((_, i) => ({
       id: i,
-      hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
-      delay: i * -1.25
+      hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6]
     }));
   }, []);
  
@@ -98,31 +97,29 @@ const ExorcistsScroll: React.FC = () => {
  
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
-      {/* ─── LEGACY 97ca6550 DESIGN FLOATING FLOW ─── */}
-      <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
-        {segments.map((s) => (
-          <div 
-            key={s.id}
-            className="absolute flex flex-col items-center justify-center pointer-events-none will-change-transform"
-            style={{ animation: `scroll-flow 20s linear infinite`, animationDelay: `${s.delay}s` }}
-          >
-            <button 
-              onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
-              data-cursor="play"
-              disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 border-red-600/60 bg-black flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_12px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
-            >
-               {/* 1. Ritual Seals (Top Squares from Legacy Art) */}
-               <div className="flex gap-1 opacity-80">
+      
+      {/* ─── INFINITE CONVEYOR TRACK (Eliminates Lag) ─── */}
+      <div className="relative w-full h-[600px] flex items-center overflow-hidden pointer-events-none translate-y-[-10%]">
+        <div className="flex animate-infinite-scroll will-change-transform py-20 pointer-events-none">
+          {/* Duplicate the set twice for the illusion */}
+          {[...baseTalismanSet, ...baseTalismanSet, ...baseTalismanSet].map((s, idx) => (
+            <div key={`${s.id}-${idx}`} className="flex-shrink-0 px-8 pointer-events-none">
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
+                data-cursor="play"
+                disabled={activeCard !== null}
+                className="group ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 border-red-600/60 bg-black flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_15px_rgba(217,17,17,0.3)] hover:scale-[1.1] cursor-pointer"
+              >
+                {/* Legacy 97ca6550 Design System */}
+                <div className="flex gap-1 opacity-80">
                   {[1,2,3].map(j => (
                     <div key={j} className="w-2 md:w-3 h-2 md:h-3 border border-red-600 rotate-45 flex items-center justify-center">
                       <div className="w-[1px] h-[1px] bg-red-600" />
                     </div>
                   ))}
-               </div>
+                </div>
  
-               {/* 2. The Central "Eye" Pulse (Legacy Architecture) */}
-               <div className="relative w-full flex items-center justify-center py-2">
+                <div className="relative w-full flex items-center justify-center py-2">
                   <div className="absolute inset-0 bg-red-600/5 blur-xl rounded-full" />
                   <div className="relative">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12 md:h-16 bg-red-600/40" />
@@ -131,20 +128,19 @@ const ExorcistsScroll: React.FC = () => {
                       <div className="w-full h-full bg-red-600 rounded-full animate-pulse" />
                     </div>
                   </div>
-               </div>
+                </div>
  
-               {/* 3. Legacy Hex Inscription */}
-               <span className="font-mono text-[9px] md:text-[10px] font-black rotate-[-90deg] whitespace-nowrap text-red-600/90 tracking-[0.2em] group-hover:text-red-500 transition-colors">
+                <span className="font-mono text-[9px] md:text-[10px] font-black rotate-[-90deg] whitespace-nowrap text-red-600/90 tracking-[0.2em] group-hover:text-red-500 transition-colors">
                   {s.hex}
-               </span>
+                </span>
  
-               {/* 4. Bottom Ritual Anchor */}
-               <div className="flex flex-col gap-1 items-center opacity-80">
+                <div className="flex flex-col gap-1 items-center opacity-80">
                   <div className="w-1 md:w-1.5 h-1 md:h-1.5 border border-red-600 rotate-45" />
-               </div>
-            </button>
-          </div>
-        ))}
+                </div>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
  
       {/* ─── PORTAL REMAINS IN LATEST COMPACT STATE ─── */}
@@ -159,7 +155,6 @@ const ExorcistsScroll: React.FC = () => {
              <div className={`absolute inset-0 bg-black border border-red-600/30 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
                 <div className="absolute inset-0 blood-grid opacity-10" />
                 <div className="absolute inset-0 red-halftone opacity-5" />
-                <div className="absolute inset-x-0 bottom-0 h-[100px] bg-gradient-to-t from-red-600/10 to-transparent pointer-events-none" />
                 <SystemNodes />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
@@ -188,18 +183,19 @@ const ExorcistsScroll: React.FC = () => {
       )}
  
       <style>{`
-        @keyframes scroll-flow {
-          0% { transform: translate3d(100vw, 20vh, 0) rotateZ(8deg) scale(0.6); opacity: 0; }
-          45%, 55% { opacity: 1; }
-          50% { transform: translate3d(0vw, 5vh, 0) rotateZ(0deg) scale(1.1); }
-          100% { transform: translate3d(-100vw, -20vh, 0) rotateZ(-8deg) scale(0.6); opacity: 0; }
+        @keyframes infinite-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-33.33%); }
+        }
+        .animate-infinite-scroll {
+          animation: infinite-scroll 25s linear infinite;
         }
         .blood-grid {
-          background-image: linear-gradient(rgba(217, 17, 17, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.1) 1px, transparent 1px);
+          background-image: linear-gradient(rgba(217, 17, 17, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.05) 1px, transparent 1px);
           background-size: 80px 80px;
         }
         .red-halftone {
-          background-image: radial-gradient(#D91111 1.2px, transparent 1.2px);
+          background-image: radial-gradient(#D91111 0.8px, transparent 0.8px);
           background-size: 10px 10px;
         }
       `}</style>
