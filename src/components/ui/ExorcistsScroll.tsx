@@ -83,7 +83,7 @@ const ExorcistsScroll: React.FC = () => {
   }, []);
  
   const SystemNodes = () => {
-    const rotations = [0, 90, 270, 180]; // TL, TR, BL, BR inward orientation
+    const rotations = [0, 90, 270, 180];
     return (
       <>
         {[0,1,2,3].map(i => (
@@ -120,17 +120,32 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-32 md:h-40 border border-white/10 bg-black/90 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
+              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-32 md:h-44 border border-white/20 bg-black flex flex-col items-center justify-between py-5 hover:scale-[1.15] hover:border-cyan-400/60 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden"
             >
-               <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" />
-               <div className="w-full h-[0.5px] bg-cyan-400/20" />
-               <div className="w-3 h-3 border border-white/20 rotate-45" />
+               {/* Surface Grit */}
+               <div className="absolute inset-0 cyan-halftone opacity-5 group-hover:opacity-10 transition-opacity duration-300" />
+               
+               {/* Technical Markers */}
+               <div className="w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_8px_#D91111] animate-pulse z-10" />
+               
+               <div className="flex flex-col items-center gap-2 z-10">
+                  <div className="w-6 h-[0.5px] bg-cyan-400 opacity-40 group-hover:opacity-100 group-hover:w-full transition-all duration-500" />
+                  <div className="w-4 h-4 border border-white/40 rotate-45 flex items-center justify-center group-hover:border-cyan-400 group-hover:rotate-[225deg] transition-all duration-700">
+                     <div className="w-1 h-1 bg-white group-hover:bg-cyan-400" />
+                  </div>
+                  <div className="w-6 h-[0.5px] bg-cyan-400 opacity-40 group-hover:opacity-100 group-hover:w-full transition-all duration-500" />
+               </div>
+ 
+               <div className="w-2 h-2 border-b border-r border-white/40 group-hover:border-red-600 transition-colors duration-300 z-10" />
+ 
+               {/* Interaction Glow */}
+               <div className="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
           </div>
         ))}
       </div>
  
-      {/* ─── CYAN-HALO COMPACT PRODUCTION PORTAL ─── */}
+      {/* ─── PORTAL REMAINS COMPACT ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
@@ -139,25 +154,16 @@ const ExorcistsScroll: React.FC = () => {
           />
  
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[400px] h-[65vh] md:h-[580px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             {/* 1. System Core Layer (Cyan/Red/White/Black) */}
              <div className={`absolute inset-0 bg-[#000000] border border-white/10 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
-                
-                {/* Technical Surface */}
                 <div className="absolute inset-0 system-grid opacity-20" />
                 <div className="absolute inset-0 cyan-halftone opacity-10" />
-                
-                {/* High-Contrast Emittance */}
                 <div className="absolute inset-0 border border-cyan-400/10 shadow-[inset_0_0_100px_rgba(0,255,255,0.05)]" />
                 <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-red-600/30 to-transparent animate-pulse" />
-                
-                {/* Light Archetype */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0%,transparent_85%)]" />
-                
                 <SystemNodes />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
-             {/* 2. Vertical Assembly Pillars (Shutters) */}
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" 
                   style={{ visibility: activeCard.isAssembled ? 'hidden' : 'visible' }}>
                 {[0,1,2,3].map(i => {
