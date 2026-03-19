@@ -119,15 +119,19 @@ const ExorcistsScroll: React.FC = () => {
     if (!activeCard || activeCard.phase === 'burning') return;
     setActiveCard(prev => prev ? { ...prev, phase: 'burning' } : null);
     
-    anime(cardRef.current, {
-      opacity: 0,
-      scale: 1.05,
-      translateY: '-=20px',
-      filter: 'blur(30px)',
-      duration: 600,
-      easing: 'easeOutQuint',
-      complete: () => setActiveCard(null)
-    });
+    if (cardRef.current) {
+      anime(cardRef.current, {
+        opacity: 0,
+        scale: 1.05,
+        translateY: '-=20px',
+        filter: 'blur(30px)',
+        duration: 600,
+        easing: 'easeOutQuint',
+        complete: () => setActiveCard(null)
+      });
+    } else {
+      setActiveCard(null);
+    }
   };
  
   useEffect(() => {
