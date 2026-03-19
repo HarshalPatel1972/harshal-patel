@@ -2,7 +2,7 @@
  
 import { useEffect, useRef } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
-import { animate as anime, createTimeline } from "animejs";
+import { animate as anime, createTimeline, stagger } from "animejs";
  
 export function FlipTransition() {
   const { isActive, screenshotSrc, gridConfig, redirectUrl, setPreloading } = useFlipTransition();
@@ -36,31 +36,34 @@ export function FlipTransition() {
         }
       });
  
-      const tl = createTimeline();
+      const tl = createTimeline({
+      } as any);
+ 
+      const targetNodes = indices.map(idx => squaresRef.current[idx]).filter(Boolean);
  
       // FLIP PHASE (Direct Target via staggered indices)
       tl.add({
-        targets: indices.map(idx => squaresRef.current[idx]),
+        targets: targetNodes,
         rotateY: 180,
         duration: 600,
-        delay: anime.stagger(15), 
+        delay: stagger(15), 
         easing: 'cubicBezier(0.23, 1, 0.32, 1)'
-      });
+      } as any); // Cast as any to bypass strict TimerParams inference if needed
  
       // SMOKE PHASE (Starts later)
       tl.add({
-        targets: indices.map(idx => squaresRef.current[idx]),
+        targets: targetNodes,
         opacity: 0,
         filter: 'blur(24px)',
         duration: 1000,
-        delay: anime.stagger(10, { start: 1400 }), // Start smoking while flips are finishing
+        delay: stagger(10, { start: 1400 }), 
         easing: 'easeInSine',
         complete: () => {
           setTimeout(() => {
             window.location.href = redirectUrl;
           }, 400);
         }
-      });
+      } as any);
     }
   }, [isActive, totalSquares, screenshotSrc, redirectUrl, setPreloading]);
  
