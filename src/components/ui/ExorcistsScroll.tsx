@@ -125,7 +125,6 @@ const ExorcistsScroll: React.FC = () => {
             >
                <div className="w-2 h-2 border border-[var(--accent-blood)] rotate-45 opacity-60" />
                <div className="w-5 h-5 border border-[var(--accent-blood)] rounded-full animate-pulse" />
-               <span className="text-[10px] font-mono font-black rotate-[-90deg] text-[var(--accent-blood)] tracking-widest opacity-80">{s.hex}</span>
             </button>
           </div>
         ))}
