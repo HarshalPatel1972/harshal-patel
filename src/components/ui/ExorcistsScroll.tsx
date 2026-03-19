@@ -58,7 +58,7 @@ const ExorcistsScroll: React.FC = () => {
     setTimeout(() => setShowShutters(true), 50);
     setTimeout(() => {
       setActiveCard(prev => prev ? { ...prev, isAssembled: true } : null);
-    }, 1200); // Wait for shutters to meet
+    }, 1200); 
   };
  
   const handleDismiss = () => {
@@ -121,30 +121,30 @@ const ExorcistsScroll: React.FC = () => {
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
-             {/* 2. Shutter Pieces (4-Piece Vertical Weave) */}
+             {/* 2. Shutter Pieces (4-Piece Vertical Columns Weave) */}
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
                 {[0,1,2,3].map(i => {
-                   const fromAbove = i % 2 === 0;
+                   const fromAbove = i % 2 !== 0; // Alternating weave
                    return (
                       <div 
                         key={i}
-                        className="absolute inset-x-0 h-[25.2%] overflow-hidden bg-black border-x border-[var(--accent-blood)] transition-all duration-[800ms] cubic-bezier(0.19, 1, 0.22, 1)"
+                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black border-y border-x-[0.5px] border-[var(--accent-blood)] transition-all duration-[800ms] cubic-bezier(0.19, 1, 0.22, 1)"
                         style={{
-                           top: `${i * 25}%`,
+                           left: `${i * 25}%`,
                            transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-120%' : '120%'})`,
-                           transitionDelay: `${i * 100}ms`,
+                           transitionDelay: `${i * 120}ms`,
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
                          {/* Card Slice Content */}
-                         <div className="absolute inset-x-0 w-full h-[600px] flex flex-col items-center justify-between py-12"
-                              style={{ top: `-${i * 25}%`, height: '400%' }}>
+                         <div className="absolute inset-y-0 h-full w-[420px] flex flex-col items-center justify-between py-12"
+                              style={{ left: `-${i * 100}%`, width: '400%' }}>
                             <div className="flex gap-4">
                                {[1,2,3].map(j => (
-                                 <div key={j} className="w-10 h-10 border border-[var(--accent-blood)] rotate-45 opacity-40" />
+                                 <div key={j} className="w-10 h-10 border border-[var(--accent-blood)] rotate-45 opacity-30" />
                                ))}
                             </div>
-                            <div className="w-24 h-24 border-2 border-[var(--accent-blood)] rounded-full animate-pulse opacity-30" />
+                            <div className="w-24 h-24 border-2 border-[var(--accent-blood)] rounded-full animate-pulse opacity-20" />
                             <span className="text-4xl font-mono font-black rotate-[-90deg] text-[var(--accent-blood)] tracking-[0.4em] opacity-40 uppercase">
                                READY
                             </span>
