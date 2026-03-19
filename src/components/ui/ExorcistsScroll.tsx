@@ -29,8 +29,10 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
  
   return (
     <div ref={containerRef} className="w-full h-full p-10 md:p-16 flex flex-col items-center justify-center text-center relative z-10">
-      <div className="text-[#E8E8E6] font-inter text-2xl md:text-3xl lg:text-5xl leading-[1.1] font-black tracking-tight text-center uppercase" 
-           style={{ textShadow: '0 0 40px rgba(255,255,255,0.4)' }}>
+      <div className="text-white font-inter text-2xl md:text-3xl lg:text-5xl leading-[1.1] font-black tracking-tight text-center uppercase transition-all duration-700" 
+           style={{ 
+             textShadow: '2px 0 10px rgba(0,255,255,0.4), -2px 0 10px rgba(217,17,17,0.4), 0 0 30px rgba(255,255,255,0.3)' 
+           }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.3em]">
             {word.split("").map((char, ci) => (
@@ -80,10 +82,10 @@ const ExorcistsScroll: React.FC = () => {
     }));
   }, []);
  
-  const RitualSigils = () => (
+  const SystemNodes = () => (
     <>
       {[0,1,2,3].map(i => (
-        <div key={i} className={`absolute w-20 h-20 opacity-40 z-30 transition-all duration-1000 ${showShutters ? 'p-1 opacity-100 scale-100' : 'p-0 opacity-0 scale-120'}`}
+        <div key={i} className={`absolute w-16 h-16 z-30 transition-all duration-1000 ${showShutters ? 'opacity-60 scale-100' : 'opacity-0 scale-110'}`}
              style={{ 
                top: i < 2 ? '0' : 'auto', 
                bottom: i >= 2 ? '0' : 'auto', 
@@ -91,8 +93,8 @@ const ExorcistsScroll: React.FC = () => {
                right: i % 2 !== 0 ? '0' : 'auto',
                transform: `rotate(${i * 90}deg)`
              }}>
-           <div className="w-full h-full border-t-2 border-l-2 border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.2)]" />
-           <div className="absolute top-0 left-0 w-3 h-3 bg-white" />
+           <div className="w-full h-full border-t border-l border-cyan-400/40" />
+           <div className="absolute top-0 left-0 w-2 h-2 bg-red-600 shadow-[0_0_8px_#D91111]" />
         </div>
       ))}
     </>
@@ -103,7 +105,7 @@ const ExorcistsScroll: React.FC = () => {
  
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
-      {/* ─── FLOATING TALISMANS ─── */}
+      {/* ─── FLOATING FLOW ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => (
           <div 
@@ -115,46 +117,42 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-white/20 bg-black flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
+              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-white/10 bg-black/90 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
             >
-               <div className="w-2 h-2 border border-white/40 rotate-45 opacity-60" />
-               <div className="w-5 h-5 border border-white/40 rounded-full animate-pulse" />
+               <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" />
+               <div className="w-full h-[0.5px] bg-cyan-400/20" />
+               <div className="w-3 h-3 border border-white/30 rotate-45" />
             </button>
           </div>
         ))}
       </div>
  
-      {/* ─── INFINITE INK PRODUCTION PORTAL ─── */}
+      {/* ─── CYAN-HALO PRODUCTION PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
-            className={`fixed inset-0 bg-black transition-opacity duration-[1200ms] ${showShutters ? 'opacity-98' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-[#020202] transition-opacity duration-[1200ms] ${showShutters ? 'opacity-98' : 'opacity-0'}`}
             onClick={handleDismiss}
           />
  
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[94vw] md:w-[480px] h-[80vh] md:h-[660px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             {/* 1. Infinite Ink Layer (Monochrome Archetype) */}
-             <div className={`absolute inset-0 bg-[#020202] flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
-                {/* Infinite Ink Texture (Concentric Rings) */}
-                <div className="absolute inset-x-0 bottom-0 top-0 opacity-25 mix-blend-screen overflow-hidden group">
-                   <img 
-                      src="/infinite_ink_seal.png" 
-                      alt="Infinite Ink Ritual Seal" 
-                      className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[8000ms] brightness-125"
-                   />
-                </div>
- 
-                {/* Technical Border (White Emittance) */}
-                <div className="absolute inset-0 border-2 border-white/10 shadow-[inset_0_0_100px_rgba(255,255,255,0.1),0_0_40px_rgba(255,255,255,0.05)]" />
+             {/* 1. System Core Layer (Cyan/Red/White/Black) */}
+             <div className={`absolute inset-0 bg-[#000000] flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
                 
-                {/* Ritual Patterns */}
-                <div className="absolute inset-0 ritual-grid opacity-10" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_85%)]" />
+                {/* Technical Surface (Grid & Halftone) */}
+                <div className="absolute inset-0 system-grid opacity-20" />
+                <div className="absolute inset-0 cyan-halftone opacity-10 mix-blend-screen" />
                 
-                {/* Smoke Vignette */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.9)_100%)]" />
+                {/* Volumetric Emittance */}
+                <div className="absolute inset-0 border-[0.5px] border-white/5 shadow-[inset_0_0_120px_rgba(0,255,255,0.05),0_0_60px_rgba(217,17,17,0.05)]" />
                 
-                <RitualSigils />
+                {/* Human Connection Light (Warm Bloom) */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,transparent_85%)]" />
+                
+                {/* Grain Vignette */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.95)_100%)]" />
+                
+                <SystemNodes />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
@@ -170,13 +168,13 @@ const ExorcistsScroll: React.FC = () => {
                         style={{
                            left: `${i * 25}%`,
                            transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-130%' : '130%'})`,
-                           transitionDelay: showShutters ? `${i * 90}ms` : `${(3-i) * 60}ms`,
+                           transitionDelay: showShutters ? `${i * 100}ms` : `${(3-i) * 60}ms`,
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
-                         <div className="absolute inset-0 border-x-[0.5px] border-white/10 opacity-20" />
-                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="w-24 h-24 border border-white rotate-45 opacity-10 blur-[3px]" />
+                         <div className="absolute inset-y-0 w-full h-full flex flex-col items-center justify-center opacity-10">
+                            <div className="w-[1px] h-32 bg-cyan-400/40" />
+                            <div className="w-12 h-[1px] bg-red-600/40" />
                          </div>
                       </div>
                    );
@@ -194,9 +192,13 @@ const ExorcistsScroll: React.FC = () => {
           50% { transform: translate3d(0vw, 5vh, 0) rotateZ(0deg) scale(1.1); }
           100% { transform: translate3d(-100vw, -20vh, 0) rotateZ(-15deg) scale(0.6); opacity: 0; }
         }
-        .ritual-grid {
-          background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-          background-size: 70px 70px;
+        .system-grid {
+          background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+          background-size: 60px 60px;
+        }
+        .cyan-halftone {
+          background-image: radial-gradient(#00FFFF 0.5px, transparent 0.5px);
+          background-size: 5px 5px;
         }
       `}</style>
     </div>
