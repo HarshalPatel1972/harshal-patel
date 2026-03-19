@@ -1,41 +1,64 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Next.js / React Production Ignored
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
 /.next/
 /out/
-
-# production
 /build
+.vercel
 
-# misc
+# Testing Artifacts & Coverage
+/coverage
+/__tests__/**/*.snap
+jest.setup.js
+jest.setup.ts
+
+# Operating System Specific
 .DS_Store
-*.pem
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# debug
+# Environmental & Sensitive Information
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa
+auth_token.txt
+
+# Development Working Files & Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
+build_output.txt
+dev_server.log
+conflict_search.txt
 
-# env files (can opt-in for committing if needed)
-.env*
+# Media / Debug Artifacts
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+!public/**/*
+!src/app/fonts/**/*
 
-# vercel
-.vercel
-
-# typescript
+# Project-Specific Working Directories
+/tmp/
 *.tsbuildinfo
 next-env.d.ts
+
+# Binary Archive Blocks (Source ZIPs)
+*.zip
+*.tar.gz
+*.rar
+*.7z
