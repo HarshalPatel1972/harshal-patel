@@ -22,7 +22,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
       translateY: [15, 0],
       filter: ['blur(10px)', 'blur(0px)'],
       duration: 800,
-      delay: stagger(18),
+      delay: stagger(20),
       easing: 'easeOutQuart'
     });
   }, [text]);
@@ -49,36 +49,50 @@ const ExorcistsScroll: React.FC = () => {
  
   useEffect(() => { setMounted(true); }, []);
  
-  // THE ASSEMBLY RITUAL ENGINE
+  // THE ROBUST ASSEMBLY ENGINE (Waits for DOM nodes to be ready)
   useEffect(() => {
     if (activeCard?.phase === 'assembling') {
-      requestAnimationFrame(() => {
-        const targetNodes = slicesRef.current.filter(Boolean);
-        if (targetNodes.length < 4) return;
+      let rafId: number;
+      const startTime = Date.now();
+ 
+      const checkAndAnimate = () => {
+        const nodes = slicesRef.current.filter(Boolean);
+        
+        // Polling logic: Wait until all 4 slices are mounted in the Portal
+        if (nodes.length < 4) {
+          if (Date.now() - startTime < 2000) { // 2s timeout
+            rafId = requestAnimationFrame(checkAndAnimate);
+          }
+          return;
+        }
  
         const tl = createTimeline({} as any);
  
-        // 4-Piece Sequential Weave (Top, Bottom, Top, Bottom)
-        targetNodes.forEach((node, i) => {
+        // 4-Piece Sequential Vertical Weave
+        nodes.forEach((node, i) => {
            const fromAbove = i % 2 === 0;
            tl.add({
              targets: node,
              translateY: [fromAbove ? '-150%' : '150%', '0%'],
+             scale: [1.1, 1],
              opacity: [0, 1],
-             duration: 700,
+             duration: 800,
              easing: 'cubicBezier(0.19, 1, 0.22, 1)'
-           } as any, i * 150);
+           } as any, i * 160);
         });
  
-        // Activation
+        // Complete current phase
         tl.add({
-           targets: {}, // Dummy
+           targets: {},
            duration: 100,
            complete: () => {
               setActiveCard(prev => prev ? { ...prev, phase: 'active' } : null);
            }
         } as any);
-      });
+      };
+ 
+      rafId = requestAnimationFrame(checkAndAnimate);
+      return () => cancelAnimationFrame(rafId);
     }
   }, [activeCard?.phase]);
  
@@ -121,25 +135,24 @@ const ExorcistsScroll: React.FC = () => {
     const topOffset = index * heightPercent;
     
     return (
-      <div className="absolute inset-x-0 w-full h-[600px] bg-[#050505] border-x-2 border-[var(--accent-blood)] overflow-hidden" 
+      <div className="absolute inset-x-0 w-full h-[600px] bg-[#020202] border-x border-[var(--accent-blood)] overflow-hidden" 
            style={{ top: `-${topOffset}%`, height: `${total * 100}%` }}>
-         {/* Border caps for whole card */}
-         {index === 0 && <div className="absolute top-0 inset-x-0 h-1 bg-[var(--accent-blood)] z-30" />}
-         {index === total - 1 && <div className="absolute bottom-0 inset-x-0 h-1 bg-[var(--accent-blood)] z-30" />}
+         {index === 0 && <div className="absolute top-0 inset-x-0 h-[2px] bg-[var(--accent-blood)] z-30 opacity-60" />}
+         {index === total - 1 && <div className="absolute bottom-0 inset-x-0 h-[2px] bg-[var(--accent-blood)] z-30 opacity-60" />}
          
-         <div className="absolute inset-0 ritual-grid opacity-20" />
+         <div className="absolute inset-x-0 bottom-0 h-[100%] bg-black" />
          <div className="w-full h-full flex flex-col items-center justify-between py-12">
             <div className="flex gap-4">
                {[1,2,3].map(j => (
-                 <div key={j} className="w-8 h-8 md:w-10 md:h-10 border-2 border-[var(--accent-blood)] rotate-45 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-[var(--accent-blood)]" />
+                 <div key={j} className="w-10 h-10 border border-[var(--accent-blood)] rotate-45 flex items-center justify-center opacity-40">
+                    <div className="w-1 h-1 bg-[var(--accent-blood)]" />
                  </div>
                ))}
             </div>
-            <div className="w-16 h-16 md:w-24 md:h-24 border-4 border-[var(--accent-blood)] rounded-full flex items-center justify-center p-[4px]">
-               <div className="w-full h-full bg-[var(--accent-blood)] rounded-full animate-pulse shadow-[0_0_20px_rgba(217,17,17,0.4)]" />
+            <div className="w-24 h-24 border-2 border-[var(--accent-blood)] rounded-full flex items-center justify-center p-[4px] opacity-30">
+               <div className="w-full h-full bg-[var(--accent-blood)] rounded-full animate-pulse" />
             </div>
-            <span className="text-2xl md:text-3xl font-mono font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] tracking-[0.3em] opacity-90">
+            <span className="text-4xl font-mono font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] tracking-[0.4em] opacity-40">
                {hex}
             </span>
          </div>
@@ -154,22 +167,19 @@ const ExorcistsScroll: React.FC = () => {
         {segments.map((s) => (
           <div 
             key={s.id}
-            className="absolute flex flex-col items-center justify-center pointer-events-none opacity-60"
+            className="absolute flex flex-col items-center justify-center pointer-events-none"
             style={{ animation: `scroll-flow 15s linear infinite`, animationDelay: `${s.delay}s`, willChange: 'transform' }}
           >
             <button 
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 border-[var(--accent-blood)] bg-black/80 flex flex-col items-center justify-between py-4 hover:scale-[1.15] transition-all duration-300 cursor-pointer"
+              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-[var(--accent-blood)] bg-black/80 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300 shadow-[0_0_15px_rgba(217,17,17,0.1)] outline-none"
             >
-               <div className="flex gap-1">
-                 {[1,2,3].map(j => <div key={j} className="w-2 h-2 border border-[var(--accent-blood)] rotate-45" />)}
-               </div>
-               <div className="w-4 h-4 md:w-6 md:h-6 border-2 border-[var(--accent-blood)] rounded-full flex items-center justify-center">
-                  <div className="w-full h-full bg-[var(--accent-blood)] rounded-full animate-pulse" />
-               </div>
-               <span className="text-[10px] font-mono font-black rotate-[-90deg] text-[var(--accent-blood)] tracking-widest">{s.hex}</span>
+               <div className="w-[1px] h-full absolute inset-y-0 left-1/2 -translate-x-1/2 bg-[var(--accent-blood)] opacity-10" />
+               <div className="w-2 h-2 border border-[var(--accent-blood)] rotate-45 opacity-60" />
+               <div className="w-5 h-5 border border-[var(--accent-blood)] rounded-full animate-pulse" />
+               <span className="text-[10px] font-mono font-black rotate-[-90deg] text-[var(--accent-blood)] tracking-widest opacity-80">{s.hex}</span>
             </button>
           </div>
         ))}
@@ -177,36 +187,40 @@ const ExorcistsScroll: React.FC = () => {
  
       {/* ─── ASSEMBLY PORTAL ─── */}
       {mounted && activeCard && createPortal(
-        <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
+        <div id="revelation-overlay" className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
-            className={`fixed inset-0 bg-[#020202] transition-opacity duration-1000 ${activeCard.phase !== 'assembling' ? 'opacity-98' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-black transition-opacity duration-1000 ${activeCard.phase !== 'assembling' ? 'opacity-98' : 'opacity-0'}`}
             onClick={handleDismiss}
           />
  
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[420px] h-[70vh] md:h-[600px]" style={{ zIndex: 9999991 }}>
-             {/* The Revelation Text (Underneath) */}
-             <div className="absolute inset-0 bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden z-0">
-                <div className="absolute inset-0 ritual-grid opacity-30" />
+             {/* Text Layer (Beneath) */}
+             <div className="absolute inset-0 bg-[#050505] border border-[var(--accent-blood)] flex items-center justify-center overflow-hidden z-0">
+                <div className="absolute inset-0 ritual-grid opacity-20" />
                 {activeCard.phase === 'active' && <CharacterInscription text={activeCard.fact} />}
              </div>
  
-             {/* The Mechanical Shutters (Above) */}
+             {/* Assembly Shutters (Above) */}
              <div className="absolute inset-0 z-10 pointer-events-none">
-                {[0,1,2,3].map(i => (
-                   <div 
-                     key={i}
-                     ref={el => { slicesRef.current[i] = el; }}
-                     className="absolute inset-x-0 overflow-hidden will-change-transform"
-                     style={{
-                        top: `${i * 25}%`,
-                        height: '25.5%', // Tiny overlap to hide seams
-                        opacity: activeCard.phase === 'active' ? 0 : 1,
-                        transition: activeCard.phase === 'active' ? 'opacity 0.5s ease-out' : 'none'
-                     }}
-                   >
-                     <CardSliceContent hex={segments.find(s => s.id === activeCard.id)?.hex || "0xNULL"} index={i} total={4} />
-                   </div>
-                ))}
+                {[0,1,2,3].map(i => {
+                   const fromAbove = i % 2 === 0;
+                   return (
+                      <div 
+                        key={i}
+                        ref={el => { slicesRef.current[i] = el; }}
+                        className="absolute inset-x-0 overflow-hidden will-change-transform"
+                        style={{
+                           top: `${i * 25}%`,
+                           height: '25.2%',
+                           transform: `translateY(${activeCard.phase === 'active' ? '0%' : (fromAbove ? '-150%' : '150%')})`,
+                           opacity: activeCard.phase === 'active' ? 0 : 1,
+                           transition: activeCard.phase === 'active' ? 'opacity 0.6s ease-out' : 'none'
+                        }}
+                      >
+                        <CardSliceContent hex={segments.find(s => s.id === activeCard.id)?.hex || "0xNULL"} index={i} total={4} />
+                      </div>
+                   );
+                })}
              </div>
           </div>
         </div>,
@@ -222,7 +236,7 @@ const ExorcistsScroll: React.FC = () => {
         }
         .ritual-grid {
           background-image: linear-gradient(rgba(217, 17, 17, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.1) 1px, transparent 1px);
-          background-size: 30px 30px;
+          background-size: 40px 40px;
         }
       `}</style>
     </div>
