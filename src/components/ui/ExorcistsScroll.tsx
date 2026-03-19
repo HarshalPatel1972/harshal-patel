@@ -46,16 +46,14 @@ const ExorcistsScroll: React.FC = () => {
   const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
   const [mounted, setMounted] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const glitchLayerRef = useRef<HTMLDivElement>(null);
+  const glitchRef = useRef<HTMLDivElement>(null);
  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
  
-  // ORCHESTRATION ENGINE (The Glitch Breach)
+  // RITUAL ORCHESTRATOR
   useEffect(() => {
     if (activeCard?.phase === 'summon') {
-       requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         if (!cardRef.current) return;
         
         const rect = activeCard.rect!;
@@ -63,38 +61,39 @@ const ExorcistsScroll: React.FC = () => {
         const targetW = isMobile ? window.innerWidth * 0.9 : 420;
         const targetH = isMobile ? window.innerHeight * 0.7 : 600;
         
+        const destX = (window.innerWidth - targetW) / 2;
+        const destY = (window.innerHeight - targetH) / 2;
         const scaleX = targetW / rect.width;
         const scaleY = targetH / rect.height;
-        const targetX = (window.innerWidth - targetW) / 2;
-        const targetY = (window.innerHeight - targetH) / 2;
  
         const tl = createTimeline({} as any);
  
-        // 1. Kinetic Summon
+        // 1. Move to focus (Absolute values for reliability)
         tl.add({
           targets: cardRef.current,
-          translateX: [rect.left, targetX],
-          translateY: [rect.top, targetY],
-          scaleX: [1, scaleX],
-          scaleY: [1, scaleY],
-          duration: 600,
+          translateX: destX - rect.left,
+          translateY: destY - rect.top,
+          scaleX: scaleX,
+          scaleY: scaleY,
+          duration: 700,
           easing: 'cubicBezier(0.19, 1, 0.22, 1)'
         } as any);
  
-        // 2. The Glitch Breach (Swap during flashes)
+        // 2. Glitch Pulse strobe
         tl.add({
-          targets: glitchLayerRef.current,
+          targets: glitchRef.current,
           opacity: [0, 1, 0, 1, 0],
-          translateX: () => (Math.random() - 0.5) * 40,
-          duration: 400,
+          translateX: () => (Math.random() - 0.5) * 60,
+          skewX: () => (Math.random() - 0.5) * 40,
+          duration: 350,
           easing: 'linear',
           begin: () => {
-             // Halfway through the glitch, we set phase to active
+             // Precise frame swap
              setTimeout(() => {
                 setActiveCard(prev => prev ? { ...prev, phase: 'active' } : null);
              }, 150);
           }
-        } as any, "-=100");
+        } as any, "-=150");
       });
     }
   }, [activeCard?.phase]);
@@ -108,17 +107,15 @@ const ExorcistsScroll: React.FC = () => {
   const handleDismiss = () => {
     if (!activeCard || activeCard.phase === 'burning') return;
     setActiveCard(prev => prev ? { ...prev, phase: 'burning' } : null);
-    
     if (cardRef.current) {
-      anime(cardRef.current, {
-        opacity: 0,
-        scale: 1.05,
-        translateY: '-=20px',
-        filter: 'blur(30px)',
-        duration: 600,
-        easing: 'easeOutQuint',
-        complete: () => setActiveCard(null)
-      });
+        anime(cardRef.current, {
+          opacity: 0,
+          scale: 1.1,
+          translateY: '-=50px',
+          duration: 700,
+          easing: 'easeOutQuart',
+          complete: () => setActiveCard(null)
+        });
     } else { setActiveCard(null); }
   };
  
@@ -146,11 +143,11 @@ const ExorcistsScroll: React.FC = () => {
         ))}
       </div>
       <div className="relative w-full flex items-center justify-center">
-        <div className={`${isLarge ? 'w-16 h-16 md:w-24 md:h-24 border-4 p-[4px]' : 'w-4 h-4 md:w-6 md:h-6 border-2 p-[2px]'} border-[var(--accent-blood)] rounded-full flex items-center justify-center`}>
+        <div className={`${isLarge ? 'w-16 h-16 md:w-24 md:h-24 border-4 p-[4px]' : 'w-4 h-4 md:w-6 md:h-6 border-2 p-[2px]'} border-[var(--accent-blood)] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(217,17,17,0.4)]`}>
            <div className="w-full h-full bg-[var(--accent-blood)] rounded-full animate-pulse" />
         </div>
       </div>
-      <span className={`${isLarge ? 'text-xl md:text-3xl' : 'text-[9px] md:text-[10px]'} font-mono font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] tracking-[0.2em] opacity-80 uppercase`}>
+      <span className={`${isLarge ? 'text-2xl md:text-4xl' : 'text-[9px] md:text-[10px]'} font-mono font-black rotate-[-90deg] whitespace-nowrap text-[var(--accent-blood)] tracking-[0.3em] opacity-90 uppercase`}>
         {hex}
       </span>
     </div>
@@ -158,7 +155,7 @@ const ExorcistsScroll: React.FC = () => {
  
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
-      {/* ─── FLOATING FLOW ─── */}
+      {/* ─── SCROLLING CARDS ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => (
           <div 
@@ -170,7 +167,7 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-0 outline-none bg-transparent hover:shadow-[0_0_20px_rgba(217,17,17,0.3)] hover:scale-[1.05] transition-all duration-300 cursor-pointer"
+              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-0 outline-none bg-transparent hover:scale-[1.1] transition-all duration-300 cursor-pointer"
             >
               <OfudaPattern hex={s.hex} />
             </button>
@@ -178,49 +175,47 @@ const ExorcistsScroll: React.FC = () => {
         ))}
       </div>
  
-      {/* ─── REVELATION PORTAL (THE BREACH) ─── */}
+      {/* ─── PORTAL OVERLAY ─── */}
       {mounted && activeCard && createPortal(
-        <div className="fixed inset-0" style={{ zIndex: 9998, pointerEvents: 'auto' }}>
+        <div id="revelation-overlay" className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
-            className={`fixed inset-0 transition-opacity duration-700 bg-[#020202] ${activeCard.phase !== 'summon' ? 'opacity-98' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-[#020202] transition-opacity duration-700 ${activeCard.phase !== 'summon' ? 'opacity-98' : 'opacity-0'}`}
             onClick={handleDismiss}
           />
  
           <div 
             ref={cardRef}
-            className="fixed top-0 left-0 overflow-hidden"
+            className="fixed"
             style={{
-              width: `${activeCard.rect?.width}px`,
-              height: `${activeCard.rect?.height}px`,
-              transform: `translate3d(${activeCard.rect?.left}px, ${activeCard.rect?.top}px, 0)`,
-              transformOrigin: '0 0',
-              willChange: 'transform'
+               top: `${activeCard.rect?.top}px`,
+               left: `${activeCard.rect?.left}px`,
+               width: `${activeCard.rect?.width}px`,
+               height: `${activeCard.rect?.height}px`,
+               willChange: 'transform',
+               zIndex: 9999991
             }}
           >
-            <div className="relative w-full h-full">
-               {/* 1. Content Plane */}
-               <div className="absolute inset-0">
-                  {activeCard.phase === 'summon' ? (
-                    <OfudaPattern hex={segments.find(s => s.id === activeCard.id)?.hex || "0x00"} isLarge />
-                  ) : (
-                    <div className="w-full h-full bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden">
-                       <div className="absolute inset-0 ritual-grid opacity-20" />
-                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.05)_0%,transparent_80%)]" />
-                       <CharacterInscription text={activeCard.fact} />
-                    </div>
-                  )}
-               </div>
+             <div className="relative w-full h-full">
+                {/* Visual Content */}
+                <div className="w-full h-full relative">
+                   {activeCard.phase === 'summon' ? (
+                     <OfudaPattern hex={segments.find(s => s.id === activeCard.id)?.hex || "0x00"} isLarge />
+                   ) : (
+                     <div className="w-full h-full bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 ritual-grid opacity-20" />
+                        <CharacterInscription text={activeCard.fact} />
+                     </div>
+                   )}
+                </div>
  
-               {/* 2. Glitch Overlay (Active during transition) */}
-               <div 
-                 ref={glitchLayerRef}
-                 className="absolute inset-0 bg-white mix-blend-difference opacity-0 pointer-events-none z-50 overflow-hidden"
-               >
-                  <div className="w-full h-full bg-[var(--accent-blood)] opacity-50 flex items-center justify-center text-black font-mono text-[10vw]">
-                     SYSTEM_ERR
-                  </div>
-               </div>
-            </div>
+                {/* Interference Layer */}
+                <div 
+                  ref={glitchRef}
+                  className="absolute inset-0 bg-white mix-blend-difference opacity-0 z-50 pointer-events-none flex items-center justify-center"
+                >
+                   <div className="text-[var(--accent-blood)] font-mono text-5xl font-black text-center">BREACH<br/>DETECTED</div>
+                </div>
+             </div>
           </div>
         </div>,
         document.body
