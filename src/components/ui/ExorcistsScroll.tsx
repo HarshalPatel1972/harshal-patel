@@ -121,38 +121,32 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-36 md:h-48 border border-white/10 bg-black flex flex-col items-center justify-between pb-3 pt-4 px-2 hover:scale-[1.15] hover:border-cyan-400/60 transition-all duration-300 shadow-[0_40px_80px_rgba(0,0,0,0.8)] overflow-hidden"
-              style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 5%, 100% 95%, 90% 100%, 10% 100%, 0 95%, 0 5%)' }}
+              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-36 md:h-48 border border-white/10 bg-black flex flex-col items-center justify-between pb-4 pt-5 px-1.5 hover:scale-[1.15] hover:border-cyan-400/60 transition-all duration-300 shadow-[0_40px_80px_rgba(0,0,0,0.8)] overflow-hidden"
+              style={{ clipPath: 'polygon(12% 0, 88% 0, 100% 6%, 100% 94%, 88% 100%, 12% 100%, 0 94%, 0 6%)' }}
             >
                {/* Surface Internal Grid */}
                <div className="absolute inset-0 system-grid opacity-10 group-hover:opacity-20 pointer-events-none" style={{ backgroundSize: '8px 8px' }} />
                
-               {/* TOP: System Identifier */}
-               <div className="w-full flex justify-between items-start opacity-40 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[7px] font-mono font-bold text-white tracking-tighter">{s.idCode}</span>
-                  <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_#D91111]" />
-               </div>
+               {/* TOP: System Pulse */}
+               <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_10px_#D91111] z-10" />
                
-               {/* MIDDLE: Vertical Command-Line Metadata */}
-               <div className="flex flex-col items-center justify-center w-full">
-                  <span className="text-[12px] font-hindi font-black rotate-[-90deg] translate-y-[-2px] text-white tracking-[0.2em] group-hover:text-cyan-400 transition-colors uppercase">
-                     {s.metadata}
-                  </span>
-                  <div className="h-10 w-[0.5px] bg-cyan-400/20 group-hover:bg-cyan-400/60 mt-4 transition-all" />
+               {/* MIDDLE: Pure Frequency Architecture */}
+               <div className="flex flex-col items-center justify-center w-full gap-5 z-10">
+                  <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-cyan-400/80 to-transparent group-hover:h-16 transition-all duration-500" />
+                  <div className="w-5 h-5 border border-white/30 rotate-45 flex items-center justify-center group-hover:border-cyan-400 group-hover:rotate-[225deg] transition-all duration-700">
+                     <div className="w-1.5 h-1.5 bg-red-600 group-hover:bg-cyan-400" />
+                  </div>
+                  <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-cyan-400/80 to-transparent group-hover:h-16 transition-all duration-500" />
                </div>
  
-               {/* BOTTOM: Holographic Barcode */}
-               <div className="w-full flex flex-col items-center gap-1 opacity-20 group-hover:opacity-80 transition-opacity">
-                  <div className="w-full h-[6px] flex gap-[1px]">
-                     {[...Array(12)].map((_, i) => (
-                        <div key={i} className={`flex-1 ${i % 3 === 0 ? 'bg-red-600' : 'bg-cyan-400'}`} style={{ height: `${20 + Math.random() * 80}%` }} />
+               {/* BOTTOM: Holographic Geometric Barcode */}
+               <div className="w-full flex flex-col items-center gap-1 opacity-10 group-hover:opacity-60 transition-opacity z-10">
+                  <div className="w-full h-[6px] flex gap-[1.5px]">
+                     {[...Array(10)].map((_, i) => (
+                        <div key={i} className={`flex-1 ${i % 3 === 0 ? 'bg-red-600' : 'bg-cyan-400'}`} style={{ height: `${30 + Math.random() * 70}%` }} />
                      ))}
                   </div>
-                  <span className="text-[5px] font-mono font-bold text-white uppercase italic tracking-[0.3em]">VALIDATION</span>
                </div>
- 
-               {/* Interaction Aura */}
-               <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           </div>
         ))}
