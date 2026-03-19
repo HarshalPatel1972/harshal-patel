@@ -29,9 +29,9 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
  
   return (
     <div ref={containerRef} className="w-full h-full p-8 md:p-12 flex flex-col items-center justify-center text-center relative z-10">
-      <div className="text-white font-inter text-xl md:text-2xl lg:text-4xl leading-[1.2] font-black tracking-tight text-center uppercase" 
+      <div className="text-white font-inter text-xl md:text-2xl lg:text-4xl leading-[1.2] font-black tracking-tighter text-center uppercase" 
            style={{ 
-             textShadow: '2px 0 12px rgba(0,255,255,0.5), -2px 0 12px rgba(217,17,17,0.5), 0 0 40px rgba(255,255,255,0.4)' 
+             textShadow: '1px 0 10px rgba(0,255,255,0.4), -1px 0 10px rgba(217,17,17,0.4), 0 0 40px rgba(255,255,255,0.2)' 
            }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.3em]">
@@ -75,10 +75,12 @@ const ExorcistsScroll: React.FC = () => {
   }, [activeCard]);
  
   const segments = useMemo(() => {
+    const metas = ["CORE.INIT", "SYS.BOOT", "MEM.PURGE", "LOAD.EXEC", "NULL.VOID", "ARCH.DNA"];
     return Array.from({ length: 12 }).map((_, i) => ({
       id: i,
-      hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
-      delay: i * -1.25
+      metadata: metas[i % 6],
+      delay: i * -1.25,
+      idCode: `EXO-${1000 + i}`
     }));
   }, []);
  
@@ -87,7 +89,7 @@ const ExorcistsScroll: React.FC = () => {
     return (
       <>
         {[0,1,2,3].map(i => (
-          <div key={i} className={`absolute w-12 h-12 z-30 transition-all duration-1000 ${showShutters ? 'opacity-80 scale-100' : 'opacity-0 scale-120'}`}
+          <div key={i} className={`absolute w-12 h-12 z-30 transition-all duration-1000 ${showShutters ? 'opacity-80' : 'opacity-0'}`}
                style={{ 
                  top: i < 2 ? '0' : 'auto', 
                  bottom: i >= 2 ? '0' : 'auto', 
@@ -95,8 +97,7 @@ const ExorcistsScroll: React.FC = () => {
                  right: i % 2 !== 0 ? '0' : 'auto',
                  transform: `rotate(${rotations[i]}deg)`
                }}>
-             <div className="w-full h-full border-t-2 border-l-2 border-cyan-400/60" />
-             <div className="absolute top-0 left-0 w-2 h-2 bg-red-600 shadow-[0_0_10px_#D91111]" />
+             <div className="w-full h-full border-t-2 border-l-2 border-cyan-400/40" />
           </div>
         ))}
       </>
@@ -108,7 +109,7 @@ const ExorcistsScroll: React.FC = () => {
  
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
-      {/* ─── FLOATING FLOW ─── */}
+      {/* ─── FLOATING TALISMAN FLOW ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => (
           <div 
@@ -120,32 +121,44 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-32 md:h-44 border border-white/20 bg-black flex flex-col items-center justify-between py-5 hover:scale-[1.15] hover:border-cyan-400/60 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden"
+              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-16 h-36 md:h-48 border border-white/10 bg-black flex flex-col items-center justify-between pb-3 pt-4 px-2 hover:scale-[1.15] hover:border-cyan-400/60 transition-all duration-300 shadow-[0_40px_80px_rgba(0,0,0,0.8)] overflow-hidden"
+              style={{ clipPath: 'polygon(10% 0, 90% 0, 100% 5%, 100% 95%, 90% 100%, 10% 100%, 0 95%, 0 5%)' }}
             >
-               {/* Surface Grit */}
-               <div className="absolute inset-0 cyan-halftone opacity-5 group-hover:opacity-10 transition-opacity duration-300" />
+               {/* Surface Internal Grid */}
+               <div className="absolute inset-0 system-grid opacity-10 group-hover:opacity-20 pointer-events-none" style={{ backgroundSize: '8px 8px' }} />
                
-               {/* Technical Markers */}
-               <div className="w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_8px_#D91111] animate-pulse z-10" />
+               {/* TOP: System Identifier */}
+               <div className="w-full flex justify-between items-start opacity-40 group-hover:opacity-100 transition-opacity">
+                  <span className="text-[7px] font-mono font-bold text-white tracking-tighter">{s.idCode}</span>
+                  <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse shadow-[0_0_8px_#D91111]" />
+               </div>
                
-               <div className="flex flex-col items-center gap-2 z-10">
-                  <div className="w-6 h-[0.5px] bg-cyan-400 opacity-40 group-hover:opacity-100 group-hover:w-full transition-all duration-500" />
-                  <div className="w-4 h-4 border border-white/40 rotate-45 flex items-center justify-center group-hover:border-cyan-400 group-hover:rotate-[225deg] transition-all duration-700">
-                     <div className="w-1 h-1 bg-white group-hover:bg-cyan-400" />
-                  </div>
-                  <div className="w-6 h-[0.5px] bg-cyan-400 opacity-40 group-hover:opacity-100 group-hover:w-full transition-all duration-500" />
+               {/* MIDDLE: Vertical Command-Line Metadata */}
+               <div className="flex flex-col items-center justify-center w-full">
+                  <span className="text-[12px] font-hindi font-black rotate-[-90deg] translate-y-[-2px] text-white tracking-[0.2em] group-hover:text-cyan-400 transition-colors uppercase">
+                     {s.metadata}
+                  </span>
+                  <div className="h-10 w-[0.5px] bg-cyan-400/20 group-hover:bg-cyan-400/60 mt-4 transition-all" />
                </div>
  
-               <div className="w-2 h-2 border-b border-r border-white/40 group-hover:border-red-600 transition-colors duration-300 z-10" />
+               {/* BOTTOM: Holographic Barcode */}
+               <div className="w-full flex flex-col items-center gap-1 opacity-20 group-hover:opacity-80 transition-opacity">
+                  <div className="w-full h-[6px] flex gap-[1px]">
+                     {[...Array(12)].map((_, i) => (
+                        <div key={i} className={`flex-1 ${i % 3 === 0 ? 'bg-red-600' : 'bg-cyan-400'}`} style={{ height: `${20 + Math.random() * 80}%` }} />
+                     ))}
+                  </div>
+                  <span className="text-[5px] font-mono font-bold text-white uppercase italic tracking-[0.3em]">VALIDATION</span>
+               </div>
  
-               {/* Interaction Glow */}
-               <div className="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+               {/* Interaction Aura */}
+               <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           </div>
         ))}
       </div>
  
-      {/* ─── PORTAL REMAINS COMPACT ─── */}
+      {/* ─── CYAN-HALO COMPACT PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
