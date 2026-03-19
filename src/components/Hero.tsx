@@ -122,10 +122,10 @@ export function Hero() {
                       }}
                     >
                       <span 
-                        className={`text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] select-none transition-all duration-700
+                        className={`select-none transition-all duration-700
                           ${isSpecial ? 
-                            `${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
-                            `${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
+                            `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
+                            `text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] ${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
                       >
                         {word}
                       </span>
