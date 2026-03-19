@@ -251,13 +251,13 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
   }, []);
 
   return (
-    <div className={`fixed bottom-4 right-[59px] md:bottom-8 md:right-[107px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`fixed bottom-4 right-[49px] md:bottom-8 md:right-[97px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
        <div className="relative flex flex-col items-end">
          {/* Reclining Character (MAPPA 4th-Wall Break on the UI) */}
          <img 
            src="/Lying Down.png" 
            alt="Resting on the scroll" 
-           className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[45px] md:translate-x-[97px] md:translate-y-[105px] z-20 pointer-events-none select-none"
+           className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[48px] md:translate-x-[97px] md:translate-y-[108px] z-20 pointer-events-none select-none"
          />
          {/* The 000 Text Block */}
          <div ref={textRef} 
