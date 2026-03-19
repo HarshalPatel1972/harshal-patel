@@ -69,10 +69,16 @@ src/
 └── ...           # Testing suites and configurations
 ```
 
-## ⚖️ License & Intellectual Property
+## ⚖️ License & Intellectual Property (HPCL v1.0)
 
-- **Code**: Licensed under the [MIT License](./LICENSE). Explore and construct.
-- **Design & Assets**: The unique visual identity, branding elements, and custom media assets are **Copyright © 2026 Harshal Patel**. All rights reserved. Reproduction or redistribution is strictly prohibited without explicit written consent.
+This project and its unique visual identity are the intellectual property of **Harshal Patel**. Any use must strictly adhere to the [Harshal Patel Creative License (HPCL v1.0)](./LICENSE).
+
+- **Creative Ownership**: Every design decision—from the "Cinematic Brutalist" layout to the "000" scroll indicator and technical serif systems—is an original aesthetic idea. Replicating this specific system architecture is restricted.
+- **Strict Attribution**: You must provide visible credit to "Harshal Patel" and include a direct link back to this repository and my [live portfolio](https://harshal-patel-chi.vercel.app).
+- **Non-Commercial**: You may **not** sell, rent, or lease this design or its code in any form.
+- **No Misattribution**: You may **not** claim this work or any part of it as your own original creation.
+
+> "People don't deserve to copy what took a lifetime of effort to build." — Harshal Patel
 
 ---
 
