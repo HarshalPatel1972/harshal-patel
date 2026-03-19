@@ -135,10 +135,10 @@ const ExorcistsScroll: React.FC = () => {
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] md:w-[460px] h-[75vh] md:h-[640px] pointer-events-none" style={{ zIndex: 9999991 }}>
              {/* 1. Underlying Truth Layer (Anime Art Standard) */}
              <div className={`absolute inset-0 bg-[#030303] flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}>
-                {/* Ritual Sea Texture (The Cursed Core) */}
+                {/* Ritual Seal Texture (The Cursed Core) */}
                 <div className="absolute inset-x-0 bottom-0 top-0 opacity-40 mix-blend-screen overflow-hidden group">
                    <img 
-                      src="/mappa_ritual_seal_texture_1773944825802.png" 
+                      src="/mappa_ritual_seal_texture.png" 
                       alt="Cursed Energy Texture" 
                       className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[4000ms] filter hue-rotate-[15deg] brightness-75"
                    />
