@@ -200,16 +200,28 @@ export function useParallax(speed: number = 0.3) {
     const el = ref.current;
     if (!el) return;
 
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateParallax = () => {
+      // Performance Optimization: Batched DOM read/write
+      // Expected Impact: Prevents layout thrashing on high-frequency scroll events
       const rect = el.getBoundingClientRect();
       const center = rect.top + rect.height / 2;
       const viewCenter = window.innerHeight / 2;
       const offset = (center - viewCenter) * speed;
       el.style.transform = `translateY(${offset}px)`;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    updateParallax(); // Initial check
     return () => window.removeEventListener("scroll", handleScroll);
   }, [speed]);
 
