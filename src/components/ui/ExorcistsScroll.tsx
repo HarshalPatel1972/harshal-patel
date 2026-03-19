@@ -104,8 +104,11 @@ const ExorcistsScroll: React.FC = () => {
     </>
   );
  
+  // MOBILE-ONLY RESTRICTION
+  if (mounted && window.innerWidth >= 1024) return null;
+ 
   return (
-    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
       {/* ─── FLOATING FLOW ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => (
