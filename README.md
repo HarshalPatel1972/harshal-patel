@@ -42,24 +42,6 @@ The portfolio utilizes a highly curated, multi-font typographic hierarchy that b
 - **Character-Mapped Preloader**: A quote-driven loading sequence with dynamic, author-mapped backgrounds.
 - **The Ofuda System**: A custom truth-engine mapping technical facts and profiles in a high-fidelity data structure.
 
-## 🚀 Getting Started
-
-```bash
-# Clone the repository
-git clone https://github.com/HarshalPatel1972/harshal-patel.git
-
-# Enter the system
-cd harshal-patel
-
-# Install dependencies
-npm install
-
-# Launch production-ready development server
-npm run dev
-```
-
-The system will initialize at [http://localhost:3000](http://localhost:3000).
-
 ## 📂 Project Anatomy
 
 ```text
