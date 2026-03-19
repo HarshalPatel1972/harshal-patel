@@ -20,18 +20,19 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
     anime(containerRef.current.querySelectorAll('.ofuda-char'), {
       opacity: [0, 1],
       translateY: [15, 0],
-      filter: ['blur(10px)', 'blur(0px)'],
-      duration: 800,
-      delay: stagger(20),
+      filter: ['blur(12px)', 'blur(0px)'],
+      duration: 1200,
+      delay: stagger(25),
       easing: 'easeOutQuart'
     });
   }, [text]);
  
   return (
     <div ref={containerRef} className="w-full h-full p-10 md:p-16 flex flex-col items-center justify-center text-center relative z-10">
-      <div className="text-[#E8E8E6] font-hindi text-2xl md:text-3xl lg:text-4xl leading-[1.1] font-black tracking-tight text-center uppercase" style={{ textShadow: '0 0 20px rgba(217,17,17,0.4)' }}>
+      <div className="text-[#E8E8E6] font-hindi text-2xl md:text-3xl lg:text-5xl leading-[1] font-black tracking-tight text-center uppercase" 
+           style={{ textShadow: '0 0 30px rgba(217,17,17,0.6)' }}>
         {words.map((word, wi) => (
-          <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
+          <span key={wi} className="inline-block whitespace-nowrap mr-[0.3em]">
             {word.split("").map((char, ci) => (
               <span key={ci} className="ofuda-char inline-block opacity-0 will-change-transform">{char}</span>
             ))}
@@ -53,19 +54,15 @@ const ExorcistsScroll: React.FC = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { fact } = getNextFact(OFUDA_FACTS);
     setActiveCard({ id, fact, isAssembled: false, rect });
-    
-    // Trigger assembly sequence
     setTimeout(() => setShowShutters(true), 50);
     setTimeout(() => {
       setActiveCard(prev => prev ? { ...prev, isAssembled: true } : null);
-    }, 1200); 
+    }, 1100); 
   };
  
   const handleDismiss = () => {
     setShowShutters(false);
-    setTimeout(() => {
-      setActiveCard(null);
-    }, 500);
+    setTimeout(() => { setActiveCard(null); }, 500);
   };
  
   useEffect(() => {
@@ -82,6 +79,21 @@ const ExorcistsScroll: React.FC = () => {
     }));
   }, []);
  
+  const RitualSigils = () => (
+    <>
+      {[0,1,2,3].map(i => (
+        <div key={i} className={`absolute w-12 h-12 border-t border-l border-[var(--accent-blood)] opacity-60 z-30 transition-opacity duration-1000 ${showShutters ? 'opacity-100' : 'opacity-0'}`}
+             style={{ 
+               top: i < 2 ? '0' : 'auto', 
+               bottom: i >= 2 ? '0' : 'auto', 
+               left: i % 2 === 0 ? '0' : 'auto', 
+               right: i % 2 !== 0 ? '0' : 'auto',
+               transform: `rotate(${i * 90}deg)`
+             }} />
+      ))}
+    </>
+  );
+ 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
       {/* ─── FLOATING FLOW ─── */}
@@ -96,7 +108,7 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-[var(--accent-blood)] bg-black/80 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300 shadow-[0_0_15px_rgba(217,17,17,0.1)] outline-none"
+              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-[var(--accent-blood)] bg-black/80 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
             >
                <div className="w-2 h-2 border border-[var(--accent-blood)] rotate-45 opacity-60" />
                <div className="w-5 h-5 border border-[var(--accent-blood)] rounded-full animate-pulse" />
@@ -106,48 +118,52 @@ const ExorcistsScroll: React.FC = () => {
         ))}
       </div>
  
-      {/* ─── REVELATION PORTAL ─── */}
+      {/* ─── MAPPA CINEMATIC PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
-            className={`fixed inset-0 bg-black transition-opacity duration-1000 ${showShutters ? 'opacity-98' : 'opacity-0'}`}
+            className={`fixed inset-0 bg-[#020202] transition-opacity duration-[1500ms] ${showShutters ? 'opacity-98' : 'opacity-0'}`}
             onClick={handleDismiss}
           />
  
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[420px] h-[70vh] md:h-[600px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             {/* 1. Underlying Truth Layer (Only visible AFTER assembly) */}
-             <div className={`absolute inset-x-0 top-0 bottom-0 bg-[#050505] border border-[var(--accent-blood)] flex items-center justify-center overflow-hidden z-0 transition-opacity duration-500 ${activeCard.isAssembled ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="absolute inset-0 ritual-grid opacity-20" />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] md:w-[460px] h-[75vh] md:h-[640px] pointer-events-none" style={{ zIndex: 9999991 }}>
+             {/* 1. Mappa Depth Layer (Background) */}
+             <div className={`absolute inset-0 bg-[#030303] flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}>
+                {/* Glowing Emittance Border */}
+                <div className="absolute inset-0 border-2 border-[var(--accent-blood)] shadow-[inset_0_0_80px_rgba(217,17,17,0.3),0_0_40px_rgba(217,17,17,0.2)]" />
+                
+                {/* Ritual Elements */}
+                <div className="absolute inset-0 ritual-grid opacity-15" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.1)_0%,transparent_90%)]" />
+                <div className="absolute inset-0 halftone-bg opacity-20 mix-blend-screen animate-pulse" style={{ animationDuration: '0.1s' }} />
+                
+                <RitualSigils />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
-             {/* 2. Shutter Pieces (4-Piece Vertical Columns Weave) */}
+             {/* 2. Vertical Assembly Pillars (Shutters) */}
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
                 {[0,1,2,3].map(i => {
-                   const fromAbove = i % 2 !== 0; // Alternating weave
+                   const fromAbove = i % 2 !== 0;
                    return (
                       <div 
                         key={i}
-                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black border-y border-x-[0.5px] border-[var(--accent-blood)] transition-all duration-[800ms] cubic-bezier(0.19, 1, 0.22, 1)"
+                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black border-x-[0.5px] border-[var(--accent-blood)]/40 transition-all duration-[900ms] cubic-bezier(0.19, 1, 0.22, 1)"
                         style={{
                            left: `${i * 25}%`,
-                           transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-120%' : '120%'})`,
-                           transitionDelay: `${i * 120}ms`,
+                           transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-125%' : '125%'})`,
+                           transitionDelay: `${i * 80}ms`,
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
                          {/* Card Slice Content */}
-                         <div className="absolute inset-y-0 h-full w-[420px] flex flex-col items-center justify-between py-12"
+                         <div className="absolute inset-y-0 h-full w-[460px] flex flex-col items-center justify-between py-12"
                               style={{ left: `-${i * 100}%`, width: '400%' }}>
-                            <div className="flex gap-4">
-                               {[1,2,3].map(j => (
-                                 <div key={j} className="w-10 h-10 border border-[var(--accent-blood)] rotate-45 opacity-30" />
-                               ))}
+                            <div className="flex gap-6 mt-8">
+                               {[1,2,3].map(j => <div key={j} className="w-8 h-8 md:w-12 md:h-12 border-2 border-[var(--accent-blood)] rotate-45 opacity-40" />)}
                             </div>
-                            <div className="w-24 h-24 border-2 border-[var(--accent-blood)] rounded-full animate-pulse opacity-20" />
-                            <span className="text-4xl font-mono font-black rotate-[-90deg] text-[var(--accent-blood)] tracking-[0.4em] opacity-40 uppercase">
-                               READY
-                            </span>
+                            <div className="w-32 h-32 border-4 border-[var(--accent-blood)] rounded-full animate-[ping_2s_infinite] opacity-20" />
+                            <span className="text-4xl md:text-5xl font-mono font-black rotate-[-90deg] text-[var(--accent-blood)] tracking-[0.5em] opacity-40 uppercase">CORE</span>
                          </div>
                       </div>
                    );
@@ -166,8 +182,12 @@ const ExorcistsScroll: React.FC = () => {
           100% { transform: translate3d(-100vw, -20vh, 0) rotateZ(-15deg) scale(0.6); opacity: 0; }
         }
         .ritual-grid {
-          background-image: linear-gradient(rgba(217, 17, 17, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.1) 1px, transparent 1px);
-          background-size: 40px 40px;
+          background-image: linear-gradient(rgba(217, 17, 17, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.12) 1px, transparent 1px);
+          background-size: 50px 50px;
+        }
+        .halftone-bg {
+          background-image: radial-gradient(rgba(217,17,17,0.3) 1px, transparent 1px);
+          background-size: 5px 5px;
         }
       `}</style>
     </div>
