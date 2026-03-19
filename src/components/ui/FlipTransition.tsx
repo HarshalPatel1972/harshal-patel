@@ -13,13 +13,52 @@ export function FlipTransition() {
  
   useEffect(() => {
     if (isActive) {
-      const indices = Array.from({ length: totalSquares }, (_, i) => i);
-      
-      // Randomize reveal order
-      for (let i = indices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [indices[i], indices[j]] = [indices[j], indices[i]];
-      }
+      // Micro-delay to ensure React has painted the portal and populated squaresRef
+      const animationInit = requestAnimationFrame(() => {
+        const indices = Array.from({ length: totalSquares }, (_, i) => i);
+        
+        // Randomize
+        for (let i = indices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+ 
+        // Initial Reset
+        squaresRef.current.forEach(sq => {
+          if (sq) {
+            sq.style.transform = 'rotateY(0deg)';
+            sq.style.opacity = '1';
+            sq.style.filter = 'none';
+          }
+        });
+ 
+        const targetNodes = indices.map(idx => squaresRef.current[idx]).filter(Boolean);
+        if (targetNodes.length === 0) return;
+ 
+        const tl = createTimeline({} as any);
+ 
+        // FLIP PHASE
+        tl.add({
+          targets: targetNodes,
+          rotateY: 180,
+          duration: 700,
+          delay: stagger(15), 
+          easing: 'cubicBezier(0.19, 1, 0.22, 1)'
+        } as any);
+ 
+        // SMOKE PHASE
+        tl.add({
+          targets: targetNodes,
+          opacity: 0,
+          filter: 'blur(30px)',
+          duration: 1000,
+          delay: stagger(12, { start: 1600 }), 
+          easing: 'easeInSine',
+          complete: () => {
+            setTimeout(() => { window.location.href = redirectUrl; }, 400);
+          }
+        } as any);
+      });
  
       // Parallel Preload
       const img = new Image();
@@ -27,43 +66,7 @@ export function FlipTransition() {
       img.onload = () => setPreloading(false, null);
       img.onerror = () => setPreloading(false, null);
  
-      // Reset all squares to initial state
-      squaresRef.current.forEach(sq => {
-        if (sq) {
-          sq.style.transform = 'rotateY(0deg)';
-          sq.style.opacity = '1';
-          sq.style.filter = 'none';
-        }
-      });
- 
-      const tl = createTimeline({
-      } as any);
- 
-      const targetNodes = indices.map(idx => squaresRef.current[idx]).filter(Boolean);
- 
-      // FLIP PHASE (Direct Target via staggered indices)
-      tl.add({
-        targets: targetNodes,
-        rotateY: 180,
-        duration: 600,
-        delay: stagger(15), 
-        easing: 'cubicBezier(0.23, 1, 0.32, 1)'
-      } as any); // Cast as any to bypass strict TimerParams inference if needed
- 
-      // SMOKE PHASE (Starts later)
-      tl.add({
-        targets: targetNodes,
-        opacity: 0,
-        filter: 'blur(24px)',
-        duration: 1000,
-        delay: stagger(10, { start: 1400 }), 
-        easing: 'easeInSine',
-        complete: () => {
-          setTimeout(() => {
-            window.location.href = redirectUrl;
-          }, 400);
-        }
-      } as any);
+      return () => cancelAnimationFrame(animationInit);
     }
   }, [isActive, totalSquares, screenshotSrc, redirectUrl, setPreloading]);
  
