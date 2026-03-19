@@ -147,9 +147,8 @@ const ExorcistsScroll: React.FC = () => {
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
-             {/* 2. Vertical Assembly Pillars (Shutters) */}
-             <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-                {[0,1,2,3].map(i => {
+              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" style={{ visibility: activeCard.isAssembled ? 'hidden' : 'visible' }}>
+                 {[0,1,2,3].map(i => {
                    const fromAbove = i % 2 !== 0;
                    return (
                       <div 
