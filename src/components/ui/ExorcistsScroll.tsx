@@ -115,8 +115,8 @@ const ExorcistsScroll: React.FC = () => {
           />
  
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[420px] h-[70vh] md:h-[600px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             {/* 1. Underlying Truth Layer */}
-             <div className="absolute inset-x-0 top-0 bottom-0 bg-[#050505] border border-[var(--accent-blood)] flex items-center justify-center overflow-hidden z-0">
+             {/* 1. Underlying Truth Layer (Only visible AFTER assembly) */}
+             <div className={`absolute inset-x-0 top-0 bottom-0 bg-[#050505] border border-[var(--accent-blood)] flex items-center justify-center overflow-hidden z-0 transition-opacity duration-500 ${activeCard.isAssembled ? 'opacity-100' : 'opacity-0'}`}>
                 <div className="absolute inset-0 ritual-grid opacity-20" />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
