@@ -31,7 +31,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
     <div ref={containerRef} className="w-full h-full p-6 md:p-10 flex flex-col items-center justify-center text-center relative z-10">
       <div className="text-white font-inter text-lg md:text-xl lg:text-3xl leading-[1.3] font-black tracking-tighter text-center uppercase" 
            style={{ 
-             textShadow: '0 0 20px rgba(217,17,17,0.8)' 
+             textShadow: '0 0 20px rgba(217,17,17,0.7)' 
            }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.3em]">
@@ -84,10 +84,10 @@ const ExorcistsScroll: React.FC = () => {
   const SystemNodes = () => {
     return (
       <>
-        <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-red-600/80 z-30" />
-        <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-red-600/80 z-30" />
-        <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-red-600/80 z-30" />
-        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-red-600/80 z-30" />
+        <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-red-600/60 z-30" />
+        <div className="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-red-600/60 z-30" />
+        <div className="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-red-600/60 z-30" />
+        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-red-600/60 z-30" />
       </>
     );
   };
@@ -97,7 +97,7 @@ const ExorcistsScroll: React.FC = () => {
  
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
-      {/* ─── HIGH-VISIBILITY FLOATING FLOW ─── */}
+      {/* ─── FLOATING FLOW ─── */}
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => (
           <div 
@@ -109,30 +109,21 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-14 h-36 md:h-48 border border-red-600/60 bg-[#120000] flex flex-col items-center justify-between pb-6 pt-6 px-1 hover:scale-[1.12] hover:border-red-500 transition-all duration-200 shadow-[0_4px_30px_rgba(217,17,17,0.25)] overflow-hidden"
+              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-14 h-32 md:h-44 border border-red-600/20 bg-[#080000] flex flex-col items-center justify-between pb-6 pt-6 px-1 hover:scale-[1.1] hover:border-red-600 transition-all duration-200 shadow-lg overflow-hidden"
             >
-               {/* Surface Emittance (Core Halftone) */}
-               <div className="absolute inset-0 red-halftone opacity-10 group-hover:opacity-30 transition-opacity" />
-               <div className="absolute inset-x-0 bottom-0 h-1 bg-red-600 shadow-[0_0_15px_#D91111]" />
-               
-               {/* Status Node */}
-               <div className="w-2 h-2 bg-red-500 shadow-[0_0_15px_#D91111] animate-pulse z-10" />
-               
-               {/* High-Contrast Tracers */}
-               <div className="flex flex-col items-center justify-center w-full gap-5 z-10">
-                  <div className="w-[1px] h-12 bg-red-600 shadow-[0_0_8px_rgba(217,17,17,0.4)]" />
-                  <div className="w-full h-[0.5px] bg-red-500/80 px-2 box-content" />
-                  <div className="w-[1px] h-12 bg-red-600 shadow-[0_0_8px_rgba(217,17,17,0.4)]" />
+               {/* Simplified Internal Design */}
+               <div className="w-1.5 h-1.5 bg-red-600 shadow-[0_0_8px_#D91111] z-10" />
+               <div className="flex flex-col items-center justify-center w-full gap-4 z-10">
+                  <div className="w-[1px] h-10 bg-red-600/40" />
+                  <div className="w-[1px] h-10 bg-red-600/40" />
                </div>
- 
-               {/* Interaction Flash */}
-               <div className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-[0.05] transition-opacity duration-300" />
+               <div className="w-full h-[3px] bg-red-600/30 opacity-20 z-10" />
             </button>
           </div>
         ))}
       </div>
  
-      {/* ─── PORTAL REMAINS COMPACT ─── */}
+      {/* ─── COMPACT PRODUCTION PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
@@ -141,14 +132,22 @@ const ExorcistsScroll: React.FC = () => {
           />
  
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-black border border-red-600/30 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
+             <div className={`absolute inset-0 bg-black border border-red-600/20 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
+                
+                {/* Surface Inscriptions */}
                 <div className="absolute inset-0 blood-grid opacity-10" />
                 <div className="absolute inset-0 red-halftone opacity-5" />
-                <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(217,17,17,0.15)]" />
+                
+                {/* Bloom Effect */}
+                <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(217,17,17,0.1)]" />
+                
+                {/* Geometrically Correct Corners (L-Nodes) */}
                 <SystemNodes />
+                
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
+             {/* Vertical Assembly Shutters */}
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" 
                   style={{ visibility: activeCard.isAssembled ? 'hidden' : 'visible' }}>
                 {[0,1,2,3].map(i => {
@@ -164,7 +163,7 @@ const ExorcistsScroll: React.FC = () => {
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
-                         <div className="w-[0.5px] h-full bg-red-600/20 mx-auto" />
+                         <div className="w-[0.5px] h-full bg-white/5 mx-auto" />
                       </div>
                    );
                 })}
@@ -186,7 +185,7 @@ const ExorcistsScroll: React.FC = () => {
           background-size: 80px 80px;
         }
         .red-halftone {
-          background-image: radial-gradient(#D91111 1.2px, transparent 1.2px);
+          background-image: radial-gradient(#D91111 0.8px, transparent 0.8px);
           background-size: 10px 10px;
         }
       `}</style>
