@@ -56,58 +56,67 @@ const ExorcistsScroll: React.FC = () => {
  
   // ORCHESTRATION ENGINE (The Sunder Sequence)
   useEffect(() => {
-    if (activeCard?.phase === 'summon' && cardRef.current) {
-      const rect = activeCard.rect!;
-      const isMobile = window.innerWidth < 768;
-      const targetW = isMobile ? window.innerWidth * 0.9 : 420;
-      const targetH = isMobile ? window.innerHeight * 0.7 : 600;
-      
-      const scaleX = targetW / rect.width;
-      const scaleY = targetH / rect.height;
-      const targetX = (window.innerWidth - targetW) / 2;
-      const targetY = (window.innerHeight - targetH) / 2;
+    // We wait for the Portal to mount the elements and populate the refs
+    if (activeCard?.phase === 'summon') {
+      const initAnimation = requestAnimationFrame(() => {
+        if (!cardRef.current || !shutterTopRef.current || !shutterBottomRef.current) return;
+        
+        const rect = activeCard.rect!;
+        const isMobile = window.innerWidth < 768;
+        const targetW = isMobile ? window.innerWidth * 0.9 : 420;
+        const targetH = isMobile ? window.innerHeight * 0.7 : 600;
+        
+        const scaleX = targetW / rect.width;
+        const scaleY = targetH / rect.height;
+        const targetX = (window.innerWidth - targetW) / 2;
+        const targetY = (window.innerHeight - targetH) / 2;
  
-      const tl = createTimeline({} as any);
+        const tl = createTimeline({} as any);
  
-      // Phase 1: Move & Scale to focus
-      tl.add({
-        targets: cardRef.current,
-        translateX: [rect.left, targetX],
-        translateY: [rect.top, targetY],
-        scaleX: [1, scaleX],
-        scaleY: [1, scaleY],
-        duration: 600,
-        easing: 'cubicBezier(0.19, 1, 0.22, 1)'
-      } as any);
+        // Phase 1: Move & Scale to focus
+        tl.add({
+          targets: cardRef.current,
+          translateX: [rect.left, targetX],
+          translateY: [rect.top, targetY],
+          scaleX: [1, scaleX],
+          scaleY: [1, scaleY],
+          duration: 600,
+          easing: 'cubicBezier(0.19, 1, 0.22, 1)'
+        } as any);
  
-      // Phase 2: The Sunder Pulse
-      tl.add({
-        targets: sunderLineRef.current,
-        opacity: [0, 1, 0],
-        scaleX: [0, 1.2],
-        duration: 400,
-        easing: 'easeInOutQuad'
-      } as any, "-=200");
+        // Phase 2: The Sunder Pulse
+        tl.add({
+          targets: sunderLineRef.current,
+          opacity: [0, 1, 0],
+          scaleX: [0, 1.2],
+          duration: 400,
+          easing: 'easeInOutQuad'
+        } as any, "-=200");
  
-      // Phase 3: The Mechanical Breach (Splitting Open)
-      tl.add({
-        targets: shutterTopRef.current,
-        translateY: '-100%',
-        duration: 800,
-        easing: 'cubicBezier(0.19, 1, 0.22, 1)'
-      } as any, "-=300");
+        // Phase 3: The Mechanical Breach (Splitting Open)
+        tl.add({
+          targets: shutterTopRef.current,
+          translateY: [0, '-100%'],
+          duration: 800,
+          perspective: 1000,
+          easing: 'cubicBezier(0.19, 1, 0.22, 1)'
+        } as any, "-=300");
  
-      tl.add({
-        targets: shutterBottomRef.current,
-        translateY: '100%',
-        duration: 800,
-        easing: 'cubicBezier(0.19, 1, 0.22, 1)',
-        complete: () => {
-          setActiveCard(prev => prev ? { ...prev, phase: 'active' } : null);
-        }
-      } as any, "-=800");
+        tl.add({
+          targets: shutterBottomRef.current,
+          translateY: [0, '100%'],
+          duration: 800,
+          perspective: 1000,
+          easing: 'cubicBezier(0.19, 1, 0.22, 1)',
+          complete: () => {
+            setActiveCard(prev => prev ? { ...prev, phase: 'active' } : null);
+          }
+        } as any, "-=800");
+      });
+ 
+      return () => cancelAnimationFrame(initAnimation);
     }
-  }, [activeCard?.phase]);
+  }, [activeCard?.phase, mounted]); // Depend on mounted and phase
  
   const handleCardClick = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
