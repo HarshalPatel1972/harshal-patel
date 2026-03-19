@@ -30,7 +30,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   return (
     <div ref={containerRef} className="w-full h-full p-10 md:p-16 flex flex-col items-center justify-center text-center relative z-10">
       <div className="text-[#E8E8E6] font-hindi text-2xl md:text-3xl lg:text-5xl leading-[1] font-black tracking-tight text-center uppercase" 
-           style={{ textShadow: '0 0 30px rgba(217,17,17,0.6)' }}>
+           style={{ textShadow: '0 0 30px rgba(217,17,17,0.8)' }}>
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.3em]">
             {word.split("").map((char, ci) => (
@@ -61,18 +61,9 @@ const ExorcistsScroll: React.FC = () => {
   };
  
   const handleDismiss = () => {
-    // Phase 1: Reveal shutters again
     setActiveCard(prev => prev ? { ...prev, isAssembled: false } : null);
-    
-    // Phase 2: Slide shutters away
-    setTimeout(() => {
-       setShowShutters(false);
-    }, 100);
- 
-    // Phase 3: Unmount
-    setTimeout(() => { 
-       setActiveCard(null); 
-    }, 1200);
+    setTimeout(() => { setShowShutters(false); }, 100);
+    setTimeout(() => { setActiveCard(null); }, 1200);
   };
  
   useEffect(() => {
@@ -92,14 +83,17 @@ const ExorcistsScroll: React.FC = () => {
   const RitualSigils = () => (
     <>
       {[0,1,2,3].map(i => (
-        <div key={i} className={`absolute w-12 h-12 border-t border-l border-[var(--accent-blood)] z-30 transition-opacity duration-1000 ${showShutters ? 'opacity-100' : 'opacity-0'}`}
+        <div key={i} className={`absolute w-16 h-16 opacity-60 z-30 transition-all duration-1000 ${showShutters ? 'p-1 opacity-100 scale-100' : 'p-0 opacity-0 scale-120'}`}
              style={{ 
                top: i < 2 ? '0' : 'auto', 
                bottom: i >= 2 ? '0' : 'auto', 
                left: i % 2 === 0 ? '0' : 'auto', 
                right: i % 2 !== 0 ? '0' : 'auto',
                transform: `rotate(${i * 90}deg)`
-             }} />
+             }}>
+           <div className="w-full h-full border-t-4 border-l-4 border-[var(--accent-blood)] animate-pulse" />
+           <div className="absolute top-0 left-0 w-2 h-2 bg-[var(--accent-blood)]" />
+        </div>
       ))}
     </>
   );
@@ -121,7 +115,7 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-[var(--accent-blood)] bg-black flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
+              className="ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border border-[var(--accent-blood)] bg-black/80 flex flex-col items-center justify-between py-4 hover:scale-[1.1] transition-all duration-300"
             >
                <div className="w-2 h-2 border border-[var(--accent-blood)] rotate-45 opacity-60" />
                <div className="w-5 h-5 border border-[var(--accent-blood)] rounded-full animate-pulse" />
@@ -130,7 +124,7 @@ const ExorcistsScroll: React.FC = () => {
         ))}
       </div>
  
-      {/* ─── MAPPA CINEMATIC PORTAL ─── */}
+      {/* ─── MAPPA ART PRODUCTION PORTAL ─── */}
       {mounted && activeCard && createPortal(
         <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
           <div 
@@ -139,18 +133,35 @@ const ExorcistsScroll: React.FC = () => {
           />
  
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] md:w-[460px] h-[75vh] md:h-[640px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             {/* 1. Underlying Truth Layer */}
+             {/* 1. Underlying Truth Layer (Anime Art Standard) */}
              <div className={`absolute inset-0 bg-[#030303] flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}>
-                <div className="absolute inset-0 border-2 border-[var(--accent-blood)] shadow-[inset_0_0_80px_rgba(217,17,17,0.3),0_0_40px_rgba(217,17,17,0.2)]" />
-                <div className="absolute inset-0 ritual-grid opacity-15" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.1)_0%,transparent_90%)]" />
-                <div className="absolute inset-0 halftone-bg opacity-20 mix-blend-screen animate-pulse" style={{ animationDuration: '0.1s' }} />
+                {/* Ritual Sea Texture (The Cursed Core) */}
+                <div className="absolute inset-x-0 bottom-0 top-0 opacity-40 mix-blend-screen overflow-hidden group">
+                   <img 
+                      src="/mappa_ritual_seal_texture_1773944825802.png" 
+                      alt="Cursed Energy Texture" 
+                      className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[4000ms] filter hue-rotate-[15deg] brightness-75"
+                   />
+                </div>
+ 
+                {/* Glowing Emittance Border (Volumetric) */}
+                <div className="absolute inset-0 border-[3px] border-[var(--accent-blood)] shadow-[inset_0_0_120px_rgba(217,17,17,0.4),0_0_60px_rgba(217,17,17,0.3)] animate-pulse" />
+                
+                {/* Advanced Ritual Elements */}
+                <div className="absolute inset-0 ritual-grid opacity-20" />
+                <div className="absolute inset-0 halftone-bg opacity-30" />
+                
+                {/* Ink Wash Vignette */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)] opacity-80" />
+                
                 <RitualSigils />
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
              </div>
  
-              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" style={{ visibility: activeCard.isAssembled ? 'hidden' : 'visible' }}>
-                 {[0,1,2,3].map(i => {
+             {/* 2. Vertical Assembly Pillars (Shutters) */}
+             <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" 
+                  style={{ visibility: activeCard.isAssembled ? 'hidden' : 'visible' }}>
+                {[0,1,2,3].map(i => {
                    const fromAbove = i % 2 !== 0;
                    return (
                       <div 
@@ -164,7 +175,9 @@ const ExorcistsScroll: React.FC = () => {
                         }}
                       >
                          <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="w-16 h-16 border border-[var(--accent-blood)] rotate-45 opacity-20 blur-[1px]" />
+                            {/* Brush-stroke Sigil Placeholders */}
+                            <div className="w-20 h-20 border-2 border-[var(--accent-blood)] rotate-45 opacity-20 blur-[2px] animate-spin" style={{ animationDuration: '4s' }} />
+                            <div className="w-8 h-32 bg-[var(--accent-blood)] opacity-10 absolute -rotate-12 blur-[10px]" />
                          </div>
                       </div>
                    );
@@ -183,12 +196,12 @@ const ExorcistsScroll: React.FC = () => {
           100% { transform: translate3d(-100vw, -20vh, 0) rotateZ(-15deg) scale(0.6); opacity: 0; }
         }
         .ritual-grid {
-          background-image: linear-gradient(rgba(217, 17, 17, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.12) 1px, transparent 1px);
-          background-size: 50px 50px;
+          background-image: linear-gradient(rgba(217, 17, 17, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.15) 1px, transparent 1px);
+          background-size: 60px 60px;
         }
         .halftone-bg {
-          background-image: radial-gradient(rgba(217,17,17,0.3) 1px, transparent 1px);
-          background-size: 5px 5px;
+          background-image: radial-gradient(rgba(217,17,17,0.4) 1px, transparent 1px);
+          background-size: 6px 6px;
         }
       `}</style>
     </div>
