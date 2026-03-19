@@ -161,7 +161,6 @@ const ExorcistsScroll: React.FC = () => {
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
-                         <div className="absolute inset-0 border-x border-[var(--accent-blood)]/30 opacity-40 z-20" />
                          <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <div className="w-16 h-16 border border-[var(--accent-blood)] rotate-45 opacity-20 blur-[1px]" />
                          </div>
