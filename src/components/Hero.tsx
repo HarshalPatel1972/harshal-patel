@@ -137,7 +137,33 @@ export function Hero() {
                            transition: isFind ? 'opacity 0.2s 700ms' : undefined
                         }}
                       >
-                        {word}
+                        {/* Character rendering for 'broken' or normal text */}
+                        {isBroken ? (
+                          word.split('').map((char, charIdx) => {
+                            const seedX = (charIdx * 137) % 17 - 8;
+                            const seedY = (charIdx * 97) % 9 - 4;
+                            const seedRot = (charIdx * 157) % 13 - 6;
+                            
+                            // Converge from 0.1 to 0.8
+                            const convergeProgress = Math.max(0, Math.min(1, (activeProgress - 0.1) / 0.7));
+                            const tx = seedX * (1 - convergeProgress);
+                            const ty = seedY * (1 - convergeProgress);
+                            const rot = seedRot * (1 - convergeProgress);
+                            
+                            return (
+                              <span 
+                                key={charIdx} 
+                                className="inline-block"
+                                style={{
+                                  transform: `translate(${tx}px, ${ty}px) rotate(${rot}deg)`,
+                                  animation: activeProgress >= 0.8 ? 'hero-broken-slam 200ms ease-out' : 'none'
+                                }}
+                              >
+                                {char}
+                              </span>
+                            );
+                          })
+                        ) : word}
 
                         {/* Special Effect: Finding Glass */}
                         {isFind && activeProgress >= 0.9 && (
@@ -152,17 +178,6 @@ export function Hero() {
                               <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                             </svg>
                           </div>
-                        )}
-
-                        {/* Special Effect: Broken Crack */}
-                        {isBroken && showSpecial && (
-                          <span 
-                            className="absolute top-1/2 left-0 w-full h-[1px] bg-[var(--accent-blood)] pointer-events-none opacity-0"
-                            style={{ 
-                              animation: 'hero-crack-line 400ms ease-out forwards',
-                              transform: 'translateY(-50%)'
-                            }}
-                          />
                         )}
 
                         {/* Special Effect: Build Underline */}
@@ -260,10 +275,12 @@ export function Hero() {
         <div className="absolute bottom-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
       </div>
       <style>{`
-        @keyframes hero-crack-line {
-          0% { opacity: 0; transform: translateY(-50%) scaleX(0.8); }
-          50% { opacity: 0.7; transform: translateY(-50%) scaleX(1.1); }
-          100% { opacity: 0; transform: translateY(-50%) scaleX(1); }
+        @keyframes hero-broken-slam {
+          0% { transform: translateX(-2px); }
+          25% { transform: translateX(2px); }
+          50% { transform: translateX(-1px); }
+          75% { transform: translateX(1px); }
+          100% { transform: translateX(0); }
         }
         @keyframes hero-scan {
           0% { transform: translateX(-100%) scale(1); opacity: 0; }
