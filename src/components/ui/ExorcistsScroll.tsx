@@ -30,7 +30,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div ref={containerRef} className="w-full h-full p-6 md:p-10 flex flex-col items-center justify-center text-center relative z-10">
-      <div className="text-white font-inter text-lg md:text-xl lg:text-3xl leading-[1.3] font-black tracking-tighter text-center uppercase" 
+      <div className="text-[#F5F5F0] font-inter text-lg md:text-xl lg:text-3xl leading-[1.3] font-black tracking-tighter text-center uppercase" 
            style={{ 
              textShadow: '0 0 20px rgba(217,17,17,0.8)' 
            }}>
@@ -156,11 +156,23 @@ const ExorcistsScroll: React.FC = () => {
           />
 
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-black border border-red-600/30 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_50px_rgba(217,17,17,0.4)]' : 'opacity-0 scale-102'}`}>
-                <div className="absolute inset-0 blood-grid opacity-10" />
-                <div className="absolute inset-0 red-halftone opacity-5" />
+             <div className={`absolute inset-0 bg-[#050505] border-2 border-red-600 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_60px_rgba(217,17,17,0.6)]' : 'opacity-0 scale-102'}`}>
+                {/* Enhanced Card Body: Scarlet Inner Seal */}
+                <div className="absolute inset-4 border border-red-600/20 bg-gradient-to-br from-red-600/10 via-black to-black" />
+                
+                <div className="absolute inset-0 blood-grid opacity-15" />
+                <div className="absolute inset-0 red-halftone opacity-10" />
+                
+                {/* MAPPA Corner Seals */}
                 <SystemNodes />
+                
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
+                
+                {/* Bottom Status Monotype */}
+                <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center opacity-30 font-mono text-[8px] text-red-600 tracking-tighter">
+                   <span>SYS_RECOVERY_OK</span>
+                   <span>SEAL_STABLE</span>
+                </div>
              </div>
 
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" 
@@ -170,7 +182,7 @@ const ExorcistsScroll: React.FC = () => {
                    return (
                       <div 
                         key={i}
-                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[900ms] cubic-bezier(0.19, 1, 0.22, 1) flex flex-col items-center justify-center border-l border-r border-red-600/20"
+                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[900ms] cubic-bezier(0.19, 1, 0.22, 1) flex flex-col items-center justify-center border-l border-r border-red-600/30"
                         style={{
                            left: `${i * 25}%`,
                            transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-130%' : '130%'})`,
@@ -178,17 +190,9 @@ const ExorcistsScroll: React.FC = () => {
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
-                         {/* Stylized Shutter Details */}
-                         <div className="absolute inset-0 red-halftone opacity-[0.03]" />
-                         
-                         {/* Glitch Accent Lines */}
-                         <div className="absolute top-0 left-0 right-0 h-1 bg-red-600/40" />
-                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-600/40" />
-                         
-                         {/* Individual Serial Number for Shutter Part */}
-                         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 rotate-[-90deg] font-mono text-[8px] text-red-600/30 font-black tracking-widest uppercase">
-                            0xSunder_{i}
-                         </div>
+                         <div className="absolute inset-0 red-halftone opacity-[0.05]" />
+                         <div className="absolute top-0 left-0 right-0 h-[2px] bg-red-600/60" />
+                         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-red-600/60" />
                       </div>
                    );
                 })}
