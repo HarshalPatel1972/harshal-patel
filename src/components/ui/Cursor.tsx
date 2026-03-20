@@ -1,21 +1,19 @@
 "use client";
-
 import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { createPortal } from "react-dom";
 
-// ─── Exported Handle ─────────────────────────────────────────────────────────
 export interface CursorHandle {
   getSpherePositions: () => { x: number; y: number }[];
-  setGaps: (gaps: { x: number; y: number; id: number }[]) => void;
-  setGapHoverCallback: (cb: (hovering: boolean) => void) => void;
-  dispatchClickDisperse: () => void;
 }
 
-const Cursor = forwardRef<CursorHandle>((_, ref) => {
+interface CursorProps {
+  chargeLevel: React.MutableRefObject<number>;
+}
+
+const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
   const [isTouch, setIsTouch] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Physics State
   const px = useRef(new Float32Array(20));
   const py = useRef(new Float32Array(20));
   const vx = useRef(new Float32Array(20));
@@ -23,7 +21,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const locked = useRef(new Uint8Array(20));
   const pt = useRef(new Float32Array(20));
 
-  // Mouse and Meta State
   const mouse = useRef({ x: 0, y: 0 });
   const hoverType = useRef<"none" | "standard" | "play">("none");
   const totalClicks = useRef(0);
@@ -32,13 +29,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ─── NEW: Gap system refs ─────────────────────────────────────────────────
-  const gaps = useRef<{ x: number; y: number; id: number }[]>([]);
-  const isHoveringGap = useRef(false);
-  const gapHoverCallback = useRef<((hovering: boolean) => void) | null>(null);
-  const disperseRequested = useRef(false);
-
-  // Constants
   const PSIZE = 2.2;
   const GAP = PSIZE * 2 + 1.2;
   const tipX = 4 * GAP;
@@ -47,141 +37,70 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const BONE = "#FFFFFF";
   const CYAN = "#0ee0c3";
   const BLOOD = "#d91111";
-  const BLOOD_LIGHT = "#ff4444"; // Gap hover state
 
-  // Pre-calculate Slots
   const arrowSlots = useRef<{ x: number; y: number }[]>([]);
   const playSlots = useRef<{ x: number; y: number }[]>([]);
 
-  // ─── Exposed Handle ──────────────────────────────────────────────────────
   useImperativeHandle(ref, () => ({
     getSpherePositions: () =>
-      Array.from({ length: 20 }, (_, i) => ({
-        x: px.current[i],
-        y: py.current[i],
-      })),
-    setGaps: (newGaps) => {
-      gaps.current = newGaps;
-    },
-    setGapHoverCallback: (cb) => {
-      gapHoverCallback.current = cb;
-    },
-    dispatchClickDisperse: () => {
-      disperseRequested.current = true;
-    },
+      Array.from({ length: 20 }, (_, i) => ({ x: px.current[i], y: py.current[i] })),
   }));
 
   useEffect(() => {
-    // Detect Touch
     const touchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     setIsTouch(touchDevice);
     if (touchDevice) return;
 
-    // ─── ARROW SLOTS (↗) ─────────────────────────────────────────────────
+    // Arrow slots (↗)
     const aSlots = [];
-    for (let i = 0; i <= 8; i++) {
-      aSlots.push({
-        x: -4 * GAP + (i / 8) * 8 * GAP,
-        y: 4 * GAP - (i / 8) * 8 * GAP,
-      });
-    }
-    for (let i = 1; i <= 5; i++) {
-      aSlots.push({ x: tipX - i * GAP, y: tipY });
-    }
-    for (let i = 1; i <= 5; i++) {
-      aSlots.push({ x: tipX, y: tipY + i * GAP });
-    }
+    for (let i = 0; i <= 8; i++) aSlots.push({ x: -4 * GAP + (i / 8) * 8 * GAP, y: 4 * GAP - (i / 8) * 8 * GAP });
+    for (let i = 1; i <= 5; i++) aSlots.push({ x: tipX - i * GAP, y: tipY });
+    for (let i = 1; i <= 5; i++) aSlots.push({ x: tipX, y: tipY + i * GAP });
     arrowSlots.current = aSlots;
 
-    // ─── SEARCH SLOTS (🔍) ───────────────────────────────────────────────
+    // Search slots (🔍)
     const sSlots = [];
     const radius = 3.2 * GAP;
     for (let i = 0; i < 14; i++) {
       const angle = (i / 14) * Math.PI * 2;
       sSlots.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius });
     }
-    const startX = Math.cos(Math.PI / 4) * radius;
-    const startY = Math.sin(Math.PI / 4) * radius;
-    for (let i = 1; i <= 5; i++) {
-      sSlots.push({ x: startX + i * GAP * 0.85, y: startY + i * GAP * 0.85 });
-    }
+    const sX = Math.cos(Math.PI / 4) * radius, sY = Math.sin(Math.PI / 4) * radius;
+    for (let i = 1; i <= 5; i++) sSlots.push({ x: sX + i * GAP * 0.85, y: sY + i * GAP * 0.85 });
     playSlots.current = sSlots;
 
-    // Initialize Particles
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
+    // Init particles
+    const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
     for (let i = 0; i < 20; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 50 + Math.random() * 100;
-      px.current[i] = centerX + Math.cos(angle) * dist;
-      py.current[i] = centerY + Math.sin(angle) * dist;
-      vx.current[i] = -Math.sin(angle) * 2;
-      vy.current[i] = Math.cos(angle) * 2;
+      const a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 100;
+      px.current[i] = cx + Math.cos(a) * d; py.current[i] = cy + Math.sin(a) * d;
+      vx.current[i] = -Math.sin(a) * 2; vy.current[i] = Math.cos(a) * 2;
       pt.current[i] = (Math.PI * 2 / 19) * (i - 1);
     }
 
-    const handleResize = () => {
-      if (canvasRef.current) {
-        canvasRef.current.width = window.innerWidth;
-        canvasRef.current.height = window.innerHeight;
-      }
-    };
+    const handleResize = () => { if (canvasRef.current) { canvasRef.current.width = window.innerWidth; canvasRef.current.height = window.innerHeight; } };
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    const onMouseMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
-
-      // ─── Gap proximity detection ─────────────────────────────────────
-      if (gaps.current.length > 0) {
-        const nearGap = gaps.current.some(
-          (g) => Math.hypot(e.clientX - g.x, e.clientY - g.y) < 18
-        );
-        if (nearGap !== isHoveringGap.current) {
-          isHoveringGap.current = nearGap;
-          gapHoverCallback.current?.(nearGap);
-        }
-      }
-    };
-
+    const onMouseMove = (e: MouseEvent) => { mouse.current = { x: e.clientX, y: e.clientY }; };
     const onMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const closestHover = target.closest('a, button, [role="button"], [data-cursor]');
-      if (closestHover) {
-        const type = (closestHover as HTMLElement).getAttribute("data-cursor");
-        hoverType.current = type === "play" ? "play" : "standard";
-      }
+      const t = e.target as HTMLElement;
+      const c = t.closest('a, button, [role="button"], [data-cursor]');
+      if (c) hoverType.current = (c as HTMLElement).getAttribute('data-cursor') === 'play' ? 'play' : 'standard';
     };
-
     const onMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const closestHover = target.closest('a, button, [role="button"], [data-cursor]');
-      if (closestHover) {
-        hoverType.current = "none";
-        locked.current.fill(0);
-      }
+      const t = e.target as HTMLElement;
+      if (t.closest('a, button, [role="button"], [data-cursor]')) { hoverType.current = "none"; locked.current.fill(0); }
     };
-
     const onMouseDown = () => {
-      totalClicks.current++;
-      clickIdleTimer.current = 0;
-      burstFlash.current = 18;
-      locked.current.fill(0);
-
+      totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
       const force = 6 + totalClicks.current * 5;
-      for (let i = 0; i < 20; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        vx.current[i] += Math.cos(angle) * force;
-        vy.current[i] += Math.sin(angle) * force;
-      }
+      for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
-
     const handleScroll = () => {
       if (!isScrolling.current) isScrolling.current = true;
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => {
-        isScrolling.current = false;
-      }, 150);
+      scrollTimeout.current = setTimeout(() => { isScrolling.current = false; }, 150);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -190,148 +109,107 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     document.addEventListener("mouseout", onMouseOut);
     window.addEventListener("mousedown", onMouseDown);
 
-    let animationFrameId: number;
-
+    let rafId: number;
     const loop = () => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (!canvas || !ctx) return;
 
-      if (isScrolling.current) {
-        canvas.style.opacity = "0";
-        animationFrameId = requestAnimationFrame(loop);
-        return;
-      } else {
-        canvas.style.opacity = "1";
-      }
-
+      if (isScrolling.current) { canvas.style.opacity = "0"; rafId = requestAnimationFrame(loop); return; }
+      canvas.style.opacity = "1";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Core follows mouse
       vx.current[0] += (mouse.current.x - px.current[0]) * 0.2;
       vy.current[0] += (mouse.current.y - py.current[0]) * 0.2;
-      vx.current[0] *= 0.68;
-      vy.current[0] *= 0.68;
-      px.current[0] += vx.current[0];
-      py.current[0] += vy.current[0];
+      vx.current[0] *= 0.68; vy.current[0] *= 0.68;
+      px.current[0] += vx.current[0]; py.current[0] += vy.current[0];
 
       if (burstFlash.current > 0) burstFlash.current--;
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      // ─── Color Selection with Gap Hover ───────────────────────────────
-      const currentColor =
-        burstFlash.current > 0
-          ? BLOOD
-          : isHoveringGap.current
-          ? BLOOD_LIGHT
-          : hoverType.current !== "none"
-          ? CYAN
-          : BONE;
+      // ── chargeLevel-based color + glow ─────────────────────────────────────
+      const cl = Math.min(chargeLevel.current, 15);
+      const t = cl / 15;
+      const g = Math.round(255 - (255 - 68) * t);
+      const b = Math.round(255 - (255 - 68) * t);
+      const chargeColor = cl > 0 ? `rgb(255,${g},${b})` : BONE;
+      const chargeShadow = t * 40;
+      const charging = cl > 0 && hoverType.current === 'none' && burstFlash.current === 0;
+
+      // Base sphere color
+      const currentColor = burstFlash.current > 0 ? BLOOD : hoverType.current !== "none" ? CYAN : chargeColor;
 
       for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
-          const slots =
-            hoverType.current === "play"
-              ? playSlots.current
-              : arrowSlots.current;
+          const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
           const slot = slots[i - 1];
-          const tx = px.current[0] + slot.x;
-          const ty = py.current[0] + slot.y;
-
+          const tx = px.current[0] + slot.x, ty = py.current[0] + slot.y;
           if (locked.current[i]) {
-            px.current[i] = tx;
-            py.current[i] = ty;
-            vx.current[i] = 0;
-            vy.current[i] = 0;
+            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0;
           } else {
-            const dx = tx - px.current[i];
-            const dy = ty - py.current[i];
-            const dist = Math.sqrt(dx * dx + dy * dy) + 0.001;
-
-            if (dist < 2.5) {
-              px.current[i] = tx;
-              py.current[i] = ty;
-              vx.current[i] = 0;
-              vy.current[i] = 0;
-              locked.current[i] = 1;
-            } else {
+            const ddx = tx - px.current[i], ddy = ty - py.current[i];
+            const dist = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001;
+            if (dist < 2.5) { px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; }
+            else {
               const grav = Math.min(100000 / (dist + 1), 600);
-              vx.current[i] += (dx / dist) * grav * 0.016;
-              vy.current[i] += (dy / dist) * grav * 0.016;
-              let drag = 0.72;
-              if (dist < 8) drag = 0.35;
-              else if (dist < 20) drag = 0.52;
-              else if (dist < 50) drag = 0.62;
-              vx.current[i] *= drag;
-              vy.current[i] *= drag;
-              px.current[i] += vx.current[i];
-              py.current[i] += vy.current[i];
+              vx.current[i] += (ddx / dist) * grav * 0.016; vy.current[i] += (ddy / dist) * grav * 0.016;
+              let drag = 0.72; if (dist < 8) drag = 0.35; else if (dist < 20) drag = 0.52; else if (dist < 50) drag = 0.62;
+              vx.current[i] *= drag; vy.current[i] *= drag;
+              px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
             }
           }
         } else {
           pt.current[i] += 0.02;
           const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
-          const dx = tx - px.current[i];
-          const dy = ty - py.current[i];
-          const distToTarget = Math.sqrt(dx * dx + dy * dy);
-          const lerpStrength =
-            distToTarget > 40 ? 0.08 : distToTarget > 15 ? 0.14 : 0.22;
-          vx.current[i] += dx * lerpStrength;
-          vy.current[i] += dy * lerpStrength;
-          vx.current[i] *= 0.6;
-          vy.current[i] *= 0.6;
-          px.current[i] += vx.current[i];
-          py.current[i] += vy.current[i];
+          const ddx = tx - px.current[i], ddy = ty - py.current[i];
+          const dd = Math.sqrt(ddx * ddx + ddy * ddy);
+          const ls = dd > 40 ? 0.08 : dd > 15 ? 0.14 : 0.22;
+          vx.current[i] += ddx * ls; vy.current[i] += ddy * ls;
+          vx.current[i] *= 0.6; vy.current[i] *= 0.6;
+          px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
         }
       }
 
-      // Orbit ring
       if (hoverType.current === "none") {
-        ctx.beginPath();
-        ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
-        ctx.strokeStyle = "#E8E8E6";
-        ctx.globalAlpha = 0.04;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-        ctx.globalAlpha = 1.0;
+        ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
+        ctx.strokeStyle = "#E8E8E6"; ctx.globalAlpha = 0.04; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
       }
 
       for (let i = 0; i < 20; i++) {
         if (i === 0 && hoverType.current === "play") continue;
-        const x = px.current[i];
-        const y = py.current[i];
-        ctx.beginPath();
-        ctx.arc(x, y, PSIZE, 0, Math.PI * 2);
-        ctx.fillStyle = currentColor;
-        ctx.fill();
+        const x = px.current[i], y = py.current[i];
+
+        // Apply charge glow
+        if (charging) {
+          const pulse = cl >= 15 ? (Math.sin(Date.now() * 0.01) + 1) / 2 : 0;
+          ctx.shadowBlur = cl >= 15 ? 20 + pulse * 40 : chargeShadow;
+          ctx.shadowColor = '#ff4444';
+        } else {
+          ctx.shadowBlur = 0;
+        }
+
+        ctx.beginPath(); ctx.arc(x, y, PSIZE, 0, Math.PI * 2); ctx.fillStyle = currentColor; ctx.fill();
 
         if (burstFlash.current === 0) {
-          ctx.beginPath();
-          ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255, 255, 255, 0.70)";
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
+          ctx.shadowBlur = 0;
+          ctx.beginPath(); ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
+          ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
           ctx.lineWidth = 0.6;
-          ctx.strokeStyle =
-            hoverType.current !== "none"
-              ? "rgba(14, 224, 195, 0.30)"
-              : isHoveringGap.current
-              ? "rgba(255,68,68,0.30)"
-              : "rgba(232, 232, 230, 0.09)";
+          ctx.strokeStyle = hoverType.current !== "none" ? "rgba(14,224,195,0.30)" : `rgba(232,232,230,0.09)`;
           ctx.stroke();
         }
       }
-
-      animationFrameId = requestAnimationFrame(loop);
+      ctx.shadowBlur = 0;
+      rafId = requestAnimationFrame(loop);
     };
-
-    animationFrameId = requestAnimationFrame(loop);
+    rafId = requestAnimationFrame(loop);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
@@ -340,49 +218,17 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       document.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("mousedown", onMouseDown);
     };
-  }, [isTouch]);
+  }, [isTouch, chargeLevel]);
 
   if (isTouch) return null;
 
   return createPortal(
     <>
-      <style>{`
-        body, a, button, input, textarea, select, * {
-          cursor: none !important;
-        }
-        .gravity-parent-fixed {
-          position: fixed;
-          top: 0; left: 0;
-          width: 0; height: 0;
-          z-index: 10000;
-          pointer-events: none;
-          mix-blend-mode: difference;
-          will-change: transform;
-        }
-        .particle-swatch {
-          position: absolute;
-          width: 4.4px; height: 4.4px;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-        }
-      `}</style>
-
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "fixed",
-          top: 0, left: 0,
-          width: "100vw", height: "100vh",
-          zIndex: 9999,
-          pointerEvents: "none",
-          mixBlendMode: "difference",
-          willChange: "transform",
-        }}
-      />
+      <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform" }} />
     </>,
     document.body
   );
 });
-
 Cursor.displayName = "Cursor";
 export default Cursor;

@@ -1,100 +1,24 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import ExorcistsScroll from './ui/ExorcistsScroll';
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
-import { useCursor } from "@/context/CursorContext";
-import HeroLights, { HeroLightsHandle } from "./ui/HeroLights";
-import { animate } from "animejs";
+import HeroLights from "./ui/HeroLights";
 
-export function Hero() {
+interface HeroProps {
+  chargeLevel: React.MutableRefObject<number>;
+}
+
+export function Hero({ chargeLevel }: HeroProps) {
   const { language } = useLanguage();
   const currentProfile = profile[language];
   const containerRef = useRef<HTMLDivElement>(null);
   const titlesRef = useRef<HTMLDivElement>(null);
   const cta1Ref = useMagnetic(0.2);
   const cta2Ref = useMagnetic(0.2);
-  const heroContentRef = useRef<HTMLDivElement>(null);
-  
   const [scrollProgress, setScrollProgress] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
-
-  // ─── HeroLights ref ─────────────────────────────────────────────────────
-  const lightsRef = useRef<HeroLightsHandle | null>(null);
-  const [isGapHovering, setIsGapHovering] = useState(false);
-  const [dispersePhase, setDispersePhase] = useState<'idle' | 'dispersing' | 'reading' | 'done'>('idle');
-  const [factIndex, setFactIndex] = useState(0);
-
-  // ─── Cursor context ──────────────────────────────────────────────────────
-  const cursorRef = useCursor();
-
-  // ─── Wire cursor ↔ lights on mount ─────────────────────────────────────
-  useEffect(() => {
-    const cursor = cursorRef.current;
-    const lights = lightsRef.current;
-    if (!cursor || !lights) return;
-
-    // Push initial gaps to cursor
-    cursor.setGaps(lights.gaps);
-
-    // Notify hero when cursor is near a gap
-    cursor.setGapHoverCallback((hovering) => {
-      setIsGapHovering(hovering);
-    });
-  }, [cursorRef]);
-
-  // ─── Click handler: trigger disperse when hovering a gap ────────────────
-  const handleHeroClick = useCallback((e: React.MouseEvent) => {
-    if (dispersePhase !== 'idle') return;
-    if (!isGapHovering) return;
-    if (!cursorRef.current || !lightsRef.current) return;
-
-    e.stopPropagation();
-    setDispersePhase('dispersing');
-
-    // Fade hero content out
-    if (heroContentRef.current) {
-      animate(heroContentRef.current, {
-        opacity: [1, 0],
-        translateY: [0, -20],
-        duration: 300,
-        easing: 'easeOutQuad',
-      });
-    }
-
-    const spheres = cursorRef.current.getSpherePositions();
-    const lights = lightsRef.current;
-
-    lights.triggerDisperse(spheres, () => {
-      setDispersePhase('reading');
-    });
-  }, [dispersePhase, isGapHovering, cursorRef]);
-
-  // ─── Reset handler: click after reading phase ────────────────────────────
-  const handleReset = useCallback(() => {
-    if (dispersePhase !== 'reading') return;
-    lightsRef.current?.resetScene();
-    setDispersePhase('idle');
-    setFactIndex(i => (i + 1) % 5);
-
-    // Fade hero content back in
-    if (heroContentRef.current) {
-      animate(heroContentRef.current, {
-        opacity: [0, 1],
-        translateY: [-20, 0],
-        duration: 500,
-        easing: 'easeOutQuart',
-      });
-    }
-
-    // Push new gaps to cursor after reset
-    setTimeout(() => {
-      if (cursorRef.current && lightsRef.current) {
-        cursorRef.current.setGaps(lightsRef.current.gaps);
-      }
-    }, 100);
-  }, [dispersePhase, cursorRef]);
 
   const introStages = {
     en: [
@@ -161,40 +85,12 @@ export function Hero() {
     <section
       ref={trackRef}
       className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu"
-      onClick={dispersePhase === 'reading' ? handleReset : handleHeroClick}
     >
       <div 
         id="hero" 
         ref={containerRef} 
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
       >
-        {/* HeroLights — behind everything at z-[10] */}
-        <HeroLights ref={lightsRef} factIndex={factIndex} />
-
-        {/* Cinematic HUD Lines */}
-        <div className="absolute inset-x-24 inset-y-0 pointer-events-none opacity-5 flex justify-between z-0">
-          <div className="w-[1px] h-full bg-[var(--text-bone)]" />
-          <div className="w-[1px] h-full bg-[var(--text-bone)]" />
-          <div className="w-[1px] h-full bg-[var(--text-bone)]" />
-        </div>
-
-        {/* Gap hover hint */}
-        {isGapHovering && dispersePhase === 'idle' && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
-            <span className="font-mono text-[9px] text-red-600/60 tracking-[0.3em] uppercase animate-pulse">
-              CLICK TO BREACH
-            </span>
-          </div>
-        )}
-
-        {/* Reading phase hint */}
-        {dispersePhase === 'reading' && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
-            <span className="font-mono text-[9px] text-white/30 tracking-[0.3em] uppercase">
-              CLICK TO RESET
-            </span>
-          </div>
-        )}
 
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
           
@@ -270,6 +166,9 @@ export function Hero() {
           </div>
 
         <div style={heroRecedeStyle} className="w-full h-full flex items-center justify-center">
+          {/* HeroLights — fixed canvas at z-[10] */}
+          <HeroLights chargeLevel={chargeLevel} />
+
           {/* Halftone / Grain Texture Base */}
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
@@ -279,7 +178,7 @@ export function Hero() {
           {/* ─── EXORCIST'S SCROLL (Narrative Background 06) ─── */}
           <ExorcistsScroll />
 
-          <div ref={heroContentRef} className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                 {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : "अवसरों के लिए उपलब्ध"}
