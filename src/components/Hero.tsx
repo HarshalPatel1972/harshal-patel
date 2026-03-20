@@ -104,6 +104,7 @@ export function Hero() {
                 const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
                 
                 const cleanWord = word.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+                const isFind = cleanWord === 'find' || cleanWord === '見つけ' || cleanWord === '찾아내어' || cleanWord === '找出' || cleanWord === 'ढूंढता' || cleanWord === 'trouve' || cleanWord === 'menemukan';
                 const isBroken = cleanWord === 'broken' || cleanWord === '壊れた' || cleanWord === '망가진' || cleanWord === '破碎' || cleanWord === 'टूटा' || cleanWord === 'brisé' || cleanWord === 'rusak';
                 const isBuild = cleanWord === 'build' || cleanWord === '創る' || cleanWord === 'बनाता' || cleanWord === 'membangun';
                 const isMissing = cleanWord === 'missing' || cleanWord === '足りない' || cleanWord === '부족한' || cleanWord === '缺失' || cleanWord === 'गायब' || cleanWord === 'manque' || cleanWord === 'hilang' || word === '.';
@@ -131,8 +132,27 @@ export function Hero() {
                           ${(isBroken || isBuild || isMissing) ? 
                             `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
                             `text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] ${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
+                        style={{
+                           opacity: isFind && activeProgress >= 0.9 ? (activeProgress < 0.99 ? 0.3 : 1) : undefined,
+                           transition: isFind ? 'opacity 0.2s 700ms' : undefined
+                        }}
                       >
                         {word}
+
+                        {/* Special Effect: Finding Glass */}
+                        {isFind && activeProgress >= 0.9 && (
+                          <div 
+                            className="absolute -top-4 left-0 w-full h-full pointer-events-none"
+                            style={{ 
+                              animation: 'hero-scan 700ms ease-in-out forwards',
+                            }}
+                          >
+                            <svg width="24" height="24" viewBox="0 0 24 24" className="text-[var(--accent-blood)]">
+                              <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="2"/>
+                              <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
+                          </div>
+                        )}
 
                         {/* Special Effect: Broken Crack */}
                         {isBroken && showSpecial && (
@@ -244,6 +264,12 @@ export function Hero() {
           0% { opacity: 0; transform: translateY(-50%) scaleX(0.8); }
           50% { opacity: 0.7; transform: translateY(-50%) scaleX(1.1); }
           100% { opacity: 0; transform: translateY(-50%) scaleX(1); }
+        }
+        @keyframes hero-scan {
+          0% { transform: translateX(-100%) scale(1); opacity: 0; }
+          15% { opacity: 1; }
+          85% { opacity: 1; }
+          100% { transform: translateX(110%) scale(1); opacity: 0; }
         }
       `}</style>
     </section>
