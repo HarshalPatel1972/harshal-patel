@@ -1,6 +1,4 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import ExorcistsScroll from './ui/ExorcistsScroll';
@@ -9,11 +7,11 @@ import { useLanguage } from "@/context/LanguageContext";
 
 export function Hero() {
   const { language } = useLanguage();
-  const currentProfile = profile[language as keyof typeof profile];
+  const currentProfile = profile[language];
   const containerRef = useRef<HTMLDivElement>(null);
   const titlesRef = useRef<HTMLDivElement>(null);
-  const cta1Ref = useMagnetic<HTMLButtonElement>(0.2);
-  const cta2Ref = useMagnetic<HTMLButtonElement>(0.2);
+  const cta1Ref = useMagnetic<HTMLAnchorElement>(0.2);
+  const cta2Ref = useMagnetic<HTMLAnchorElement>(0.2);
   const [scrollProgress, setScrollProgress] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -48,18 +46,7 @@ export function Hero() {
     ]
   };
 
-  const buttonLabels = {
-    en: { work: "View Projects", about: "About Me" },
-    ja: { work: "プロジェクト", about: "私について" },
-    ko: { work: "프로젝트 보기", about: "소개" },
-    "zh-tw": { work: "查看專案", about: "關於我" },
-    hi: { work: "प्रोजेक्ट देखें", about: "मेरे बारे में" },
-    fr: { work: "Voir Projets", about: "À Propos" },
-    id: { work: "Lihat Proyek", about: "Tentang Saya" }
-  };
-
   const currentIntro = introStages[language as keyof typeof introStages];
-  const currentButtons = buttonLabels[language as keyof typeof buttonLabels] || buttonLabels.en;
 
   // ─── SCROLL TRACKER ENGINE ───────────────────────────────────────────────
   useEffect(() => {
@@ -87,7 +74,13 @@ export function Hero() {
     willChange: 'transform, filter, opacity'
   };
 
-  const allWords = currentIntro.join(" ").split(" ");
+  // To handle the delayed period for "missing.", we split it into separate units
+  const allWords = currentIntro.join(" ").split(" ").flatMap(word => {
+    if (word.endsWith('.') && word.length > 1) {
+      return [word.slice(0, -1), '.'];
+    }
+    return word;
+  });
 
   return (
     <section
@@ -111,13 +104,15 @@ export function Hero() {
                 const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
                 
                 const cleanWord = word.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
-                const isSpecial = cleanWord === 'broken' || cleanWord === 'build' || cleanWord === 'missing' ||
-                                  cleanWord === '壊れた' || cleanWord === '創る' || cleanWord === '足りない' ||
-                                  cleanWord === '망가진' || cleanWord === '부족한' || 
-                                  cleanWord === '破碎' || cleanWord === '缺失' ||
-                                  cleanWord === 'टूटा' || cleanWord === 'बनाता' || cleanWord === 'गायब' ||
-                                  cleanWord === 'brisé' || cleanWord === 'construit' || cleanWord === 'manque' ||
-                                  cleanWord === 'rusak' || cleanWord === 'membangun';
+                const isFind = cleanWord === 'find' || cleanWord === '見つけ' || cleanWord === '찾아내어' || cleanWord === '找出' || cleanWord === 'ढूंढता' || cleanWord === 'trouve' || cleanWord === 'menemukan';
+                const isBroken = cleanWord === 'broken' || cleanWord === '壊れた' || cleanWord === '망가진' || cleanWord === '破碎' || cleanWord === 'टूटा' || cleanWord === 'brisé' || cleanWord === 'rusak';
+                const isBuild = cleanWord === 'build' || cleanWord === '創る' || cleanWord === 'बनाता' || cleanWord === 'membangun';
+                const isMissing = cleanWord === 'missing' || cleanWord === '足りない' || cleanWord === '부족한' || cleanWord === '缺失' || cleanWord === 'गायब' || cleanWord === 'manque' || cleanWord === 'hilang' || word === '.';
+                
+                const baseBlur = 12;
+                const baseTravel = 25;
+                
+                const showSpecial = activeProgress >= 0.95;
                 
                 return (
                     <span 
@@ -125,14 +120,14 @@ export function Hero() {
                       className="inline-block mr-[0.55em] mb-2"
                       style={{
                         opacity: activeProgress,
-                        transform: `translateY(${(1 - activeProgress) * 25}px)`,
-                        filter: `blur(${(1 - activeProgress) * 12}px)`,
+                        transform: `translateY(${(1 - activeProgress) * baseTravel}px)`,
+                        filter: `blur(${(1 - activeProgress) * baseBlur}px)`,
                         willChange: 'opacity, transform, filter'
                       }}
                     >
                       <span 
-                        className={`select-none transition-all duration-700
-                          ${isSpecial ? 
+                        className={`relative select-none transition-all duration-700
+                          ${(isBroken || isBuild || isMissing) ? 
                             `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
                             `text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] ${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
                       >
@@ -156,94 +151,76 @@ export function Hero() {
               transform: `translateY(${scrollProgress > 0.05 ? 40 : 0}px)`
             }}
           >
-             <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--text-bone)] to-transparent opacity-20" />
+            <div className="relative h-20 w-8 flex flex-col items-center justify-center">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <svg 
+                  key={i} 
+                  className="absolute animate-arrow-flow" 
+                  style={{ animationDelay: `${i * 0.4}s` }}
+                  width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square"/>
+                </svg>
+              ))}
+            </div>
           </div>
 
         <div style={heroRecedeStyle} className="w-full h-full flex items-center justify-center">
           {/* Halftone / Grain Texture Base */}
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
-          {/* Subliminal Elements Layer */}
-          <div className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 opacity-[0.03] scale-150 pointer-events-none">
-            <SubliminalKanji kanji="構築" />
-          </div>
+          {/* Vertical Kanji Watermark */}
+          <SubliminalKanji kanji="起源" position="right" />
 
-          <div className="relative z-10 w-full px-6 flex flex-col items-center">
-            
-            {/* Minimalist Profile Indicator (Poetic) */}
-            <div className="mb-8 flex items-center gap-12 opacity-80 mix-blend-difference overflow-hidden">
-               <span className="text-[10px] tracking-[0.5em] text-[var(--text-bone)] font-mono uppercase">System: Operational</span>
-               <div className="w-12 h-[1px] bg-[var(--accent-blood)] opacity-50" />
-               <span className="text-[10px] tracking-[0.5em] text-[var(--text-bone)] font-mono uppercase">Identity: {currentProfile.title.split(' ')[0]}</span>
+          {/* ─── EXORCIST'S SCROLL (Narrative Background 06) ─── */}
+          <ExorcistsScroll />
+
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+            <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+              <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : "अवसरों के लिए उपलब्ध"}
+              </span>
             </div>
 
-            <div 
-              ref={titlesRef}
-              className="relative flex flex-col items-center space-y-4 md:space-y-6"
-            >
-              {/* Cinematic Name Reveal (Already visible or part of scroll recede) */}
-               <h1 className="text-4xl md:text-6xl lg:text-7xl font-cirka text-[var(--text-bone)] tracking-tighter mix-blend-difference">
-                 {currentProfile.name}
-               </h1>
+            <div ref={titlesRef} className="relative mb-8 w-full">
+              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
+                {currentProfile.name.split(" ")[0]}
+              </h1>
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                {currentProfile.name.split(" ").slice(1).join(" ")}
+              </h1>
             </div>
 
-            <div className="mt-20 flex flex-col md:flex-row items-center gap-8 md:gap-16">
-               <button 
-                 ref={cta1Ref}
-                 data-cursor="play"
-                 className="group relative px-8 py-3 bg-[var(--text-bone)] text-[var(--bg-ink)] font-season text-lg overflow-hidden transition-all duration-500 hover:tracking-widest"
-               >
-                 <span className="relative z-10">{currentButtons.work}</span>
-                 <div className="absolute inset-0 bg-[var(--accent-blood)] translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-               </button>
+            <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
+              {currentProfile.tagline}
+            </p>
 
-               <button 
-                 ref={cta2Ref}
-                 className="group flex items-center gap-4 text-[var(--text-bone)] font-season text-lg tracking-wide hover:gap-8 transition-all duration-500"
-               >
-                 <span className="opacity-60 group-hover:opacity-100 transition-opacity underline decoration-[var(--accent-blood)] decoration-2 underline-offset-8">
-                   {currentButtons.about}
-                 </span>
-                 <div className="w-8 h-[1px] bg-[var(--text-bone)] opacity-40 group-hover:w-16 transition-all" />
-               </button>
+            <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
+              <a ref={cta1Ref} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
+                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
+                  <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : "कार्य देखें"}
+                  </span>
+                </div>
+              </a>
+              <a ref={cta2Ref} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
+                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
+                  <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Kontak" : "संपर्क करें"}
+                  </span>
+                </div>
+              </a>
             </div>
-          </div>
-
-          {/* BACKGROUND DECORATIVE LINES (Poetic/Structural) */}
-          <div className="absolute inset-0 z-[-1] pointer-events-none opacity-20">
-            <div className="absolute left-[8%] top-0 bottom-0 w-[1px] bg-[var(--text-bone)] opacity-5" />
-            <div className="absolute right-[8%] top-0 bottom-0 w-[1px] bg-[var(--text-bone)] opacity-5" />
-            <div className="absolute top-[20%] left-0 right-0 h-[1px] bg-[var(--text-bone)] opacity-5" />
-            <div className="absolute bottom-[20%] left-0 right-0 h-[1px] bg-[var(--text-bone)] opacity-5" />
           </div>
         </div>
 
-        {/* Global UI Decoration (Corner Frames) */}
         <div className="absolute top-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
         <div className="absolute bottom-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
       </div>
+      <style>{`
+      `}</style>
     </section>
-  );
-}
-
-export function ScrollProgress() {
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    const update = () => {
-      const h = document.documentElement, b = document.body, st = 'scrollTop', sh = 'scrollHeight';
-      const total = (h[sh] || b[sh]) - h.clientHeight;
-      if (total === 0) {
-        setProgress(0);
-        return;
-      }
-      setProgress((h[st] || b[st]) / total * 100);
-    };
-    window.addEventListener('scroll', update);
-    return () => window.removeEventListener('scroll', update);
-  }, []);
-  return (
-    <div className="fixed top-0 left-0 w-full h-[1px] z-[100] pointer-events-none">
-      <div className="h-full bg-[var(--accent-blood)] transition-all duration-300 ease-out" style={{ width: `${progress}%` }} />
-    </div>
   );
 }
