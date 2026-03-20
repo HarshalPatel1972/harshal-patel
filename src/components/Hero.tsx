@@ -212,7 +212,7 @@ export function Hero() {
                            transition: isFind ? 'opacity 0.2s 700ms' : undefined
                         }}
                       >
-                        {/* Character rendering for 'broken' or normal text */}
+                        {/* Character rendering for 'broken', 'missing' or normal text */}
                         {isBroken ? (
                           word.split('').map((char, charIdx) => {
                             const seedX = (charIdx * 137) % 17 - 8;
@@ -236,6 +236,26 @@ export function Hero() {
                               >
                                 {char}
                               </span>
+                            );
+                          })
+                        ) : isMissing && word !== '.' ? (
+                          word.split('').map((char, charIdx) => {
+                            const isLMissing = charIdx === 2 || charIdx === 3 || charIdx === 6;
+                            const threshold = charIdx === 2 ? 0.75 : charIdx === 3 ? 0.85 : 0.95;
+                            const isRevealed = activeProgress >= threshold;
+                            const opacity = isLMissing ? (isRevealed ? 1 : 0) : 1;
+                            
+                            return (
+                               <span 
+                                 key={charIdx} 
+                                 className="inline-block transition-all duration-300"
+                                 style={{ 
+                                   opacity,
+                                   transform: isLMissing && isRevealed ? 'scale(1)' : isLMissing ? 'scale(0.8)' : 'scale(1)',
+                                 } as any}
+                               >
+                                 {char}
+                               </span>
                             );
                           })
                         ) : isBuild ? (
