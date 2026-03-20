@@ -75,12 +75,7 @@ export function Hero() {
   };
 
   // To handle the delayed period for "missing.", we split it into separate units
-  const allWords = currentIntro.join(" ").split(" ").flatMap(word => {
-    if (word.endsWith('.') && word.length > 1) {
-      return [word.slice(0, -1), '.'];
-    }
-    return word;
-  });
+  const allWords = currentIntro.join(" ").split(" ");
 
   return (
     <section

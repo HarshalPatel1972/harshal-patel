@@ -75,7 +75,7 @@ export function Projects() {
         </p>
       </div>
 
-      <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-[calc(100%-10px)] md:w-full mr-[10px] md:mr-0 pl-0 md:pl-0'}`}>
+      <div className={`transition-all duration-1000 relative ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl w-full' : 'flex flex-col gap-[20vh] max-w-5xl w-full md:w-[65rem] md:-mr-5 pl-0 md:pl-0'}`}>
         {!isOverridden && (
           <div className="absolute right-0 top-0 h-full w-10 md:w-12 pointer-events-none z-30">
             <div className="sticky top-[10vh] md:top-[12vh] pointer-events-auto flex justify-start pl-1">
@@ -142,7 +142,7 @@ export function Projects() {
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
-                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[450px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
+                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[490px] md:h-[610px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
                 >
                   <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
                      <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="currentColor" />
