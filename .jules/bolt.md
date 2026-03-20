@@ -1,0 +1,3 @@
+## 2025-02-23 - Batching Scroll Listeners in High-Frequency Components
+**Learning:** `Hero.tsx` performed direct DOM reads (`window.scrollY`, `offsetTop`, `offsetHeight`) inside a naked scroll event listener. While passive, synchronous style calculations in scroll loops cause extreme layout thrashing and jank, specifically on scroll-bound interactive or parallax components in React architectures.
+**Action:** Always wrap state updates and DOM measurements within `scroll` (and `mousemove`) handlers inside a `requestAnimationFrame` block combined with a `ticking` boolean flag. Ensure the frame ID is captured to call `cancelAnimationFrame` inside the cleanup function, avoiding memory leaks and pending frame crashes.
