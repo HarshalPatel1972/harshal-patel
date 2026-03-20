@@ -49,10 +49,10 @@ export function LanguageSelector() {
         </svg>
       </button>
 
-      {/* Expanded Container - Grid Layout */}
+      {/* Expanded Container - 3 Column Grid */}
       <div 
-        className={`absolute top-0 left-[36px] grid grid-cols-4 gap-0 bg-black/90 backdrop-blur-md border border-white/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[420px] opacity-100 p-[1px]' : 'max-w-0 opacity-0 pointer-events-none'}`}
-        style={{ width: '380px' }}
+        className={`absolute top-0 left-[36px] grid grid-cols-3 gap-0 bg-black/90 backdrop-blur-md border border-white/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[400px] opacity-100 p-[1px]' : 'max-w-0 opacity-0 pointer-events-none'}`}
+        style={{ width: '300px' }}
       >
         {languages.map((lang) => (
           <button
@@ -69,8 +69,8 @@ export function LanguageSelector() {
             {lang.label.toUpperCase()}
           </button>
         ))}
-        {/* Fill empty cells to maintain 4 items per row layout if needed */}
-        {languages.length % 4 !== 0 && Array.from({ length: 4 - (languages.length % 4) }).map((_, i) => (
+        {/* Fill empty cells to maintain 3 items per row layout */}
+        {languages.length % 3 !== 0 && Array.from({ length: 3 - (languages.length % 3) }).map((_, i) => (
           <div key={`empty-${i}`} className="border border-white/5 h-9" />
         ))}
       </div>
