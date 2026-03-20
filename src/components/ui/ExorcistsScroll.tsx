@@ -167,12 +167,6 @@ const ExorcistsScroll: React.FC = () => {
                 <SystemNodes />
                 
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
-                
-                {/* Bottom Status Monotype */}
-                <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center opacity-30 font-mono text-[8px] text-red-600 tracking-tighter">
-                   <span>SYS_RECOVERY_OK</span>
-                   <span>SEAL_STABLE</span>
-                </div>
              </div>
 
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" 
