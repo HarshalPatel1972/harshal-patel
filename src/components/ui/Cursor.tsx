@@ -129,14 +129,27 @@ const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      // ── chargeLevel-based color + glow ─────────────────────────────────────
-      const cl = Math.min(chargeLevel.current, 15);
-      const t = cl / 15;
-      const g = Math.round(255 - (255 - 68) * t);
-      const b = Math.round(255 - (255 - 68) * t);
-      const chargeColor = cl > 0 ? `rgb(255,${g},${b})` : BONE;
-      const chargeShadow = t * 40;
+      // ── chargeLevel-based color + glow (13 lines total) ──────────────────
+      const cl = Math.min(chargeLevel.current, 13);
+      const ratio = cl / 13;
+      const cg = Math.round(255 - ratio * 155);
+      const cb = Math.round(255 - ratio * 155);
+      const chargeColor = cl > 0 ? `rgb(255,${cg},${cb})` : BONE;
       const charging = cl > 0 && hoverType.current === 'none' && burstFlash.current === 0;
+
+      // Outer glow ring at full charge
+      if (cl >= 13 && hoverType.current === 'none') {
+        // Mean position of all spheres
+        let mx = 0, my = 0;
+        for (let i = 0; i < 20; i++) { mx += px.current[i]; my += py.current[i]; }
+        mx /= 20; my /= 20;
+        const pulse = (Math.sin(Date.now() * 0.008) + 1) / 2;
+        ctx.save();
+        ctx.beginPath(); ctx.arc(mx, my, 18, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,80,80,${0.2 + pulse * 0.3})`;
+        ctx.lineWidth = 1.5; ctx.shadowBlur = 12; ctx.shadowColor = '#ff4444';
+        ctx.stroke(); ctx.restore();
+      }
 
       // Base sphere color
       const currentColor = burstFlash.current > 0 ? BLOOD : hoverType.current !== "none" ? CYAN : chargeColor;
@@ -184,8 +197,8 @@ const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
 
         // Apply charge glow
         if (charging) {
-          const pulse = cl >= 15 ? (Math.sin(Date.now() * 0.01) + 1) / 2 : 0;
-          ctx.shadowBlur = cl >= 15 ? 20 + pulse * 40 : chargeShadow;
+          const pulse = cl >= 13 ? (Math.sin(Date.now() * 0.008) + 1) / 2 : 0;
+          ctx.shadowBlur = cl >= 13 ? 35 + pulse * 12 : ratio * 35;
           ctx.shadowColor = '#ff4444';
         } else {
           ctx.shadowBlur = 0;
