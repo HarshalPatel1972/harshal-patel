@@ -74,7 +74,13 @@ export function Hero() {
     willChange: 'transform, filter, opacity'
   };
 
-  const allWords = currentIntro.join(" ").split(" ");
+  // To handle the delayed period for "missing.", we split it into separate units
+  const allWords = currentIntro.join(" ").split(" ").flatMap(word => {
+    if (word.endsWith('.') && word.length > 1) {
+      return [word.slice(0, -1), '.'];
+    }
+    return word;
+  });
 
   return (
     <section
@@ -98,15 +104,16 @@ export function Hero() {
                 const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
                 
                 const cleanWord = word.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
-                const isSpecial = cleanWord === 'broken' || cleanWord === 'build' || cleanWord === 'missing' ||
-                                  cleanWord === '壊れた' || cleanWord === '創る' || cleanWord === '足りない' ||
-                                  cleanWord === '망가진' || cleanWord === '부족한' || 
-                                  cleanWord === '破碎' || cleanWord === '缺失' ||
-                                  cleanWord === 'टूटा' || cleanWord === 'बनाता' || cleanWord === 'गायब' ||
-                                  cleanWord === 'brisé' || cleanWord === 'construit' || cleanWord === 'manque' ||
-                                  cleanWord === 'rusak' || cleanWord === 'membangun';
-                
+                const isBroken = cleanWord === 'broken' || cleanWord === '壊れた' || cleanWord === '망가진' || cleanWord === '破碎' || cleanWord === 'टूटा' || cleanWord === 'brisé' || cleanWord === 'rusak';
                 const isBuild = cleanWord === 'build' || cleanWord === '創る' || cleanWord === 'बनाता' || cleanWord === 'membangun';
+                const isMissing = cleanWord === 'missing' || cleanWord === '足りない' || cleanWord === '부족한' || cleanWord === '缺失' || cleanWord === 'गायब' || cleanWord === 'manque' || cleanWord === 'hilang' || word === '.';
+                
+                // Physical reveal adjustments: First half discovery vs Second half construction
+                const isFirstHalf = i <= (allWords.length / 2);
+                const baseBlur = isFirstHalf ? 20 : 12;
+                const baseTravel = isFirstHalf ? 25 : 35;
+                
+                const showSpecial = activeProgress >= 0.95;
                 
                 return (
                     <span 
@@ -114,18 +121,37 @@ export function Hero() {
                       className="inline-block mr-[0.55em] mb-2"
                       style={{
                         opacity: activeProgress,
-                        transform: `translateY(${(1 - activeProgress) * 25}px)`,
-                        filter: `blur(${(1 - activeProgress) * 12}px)`,
+                        transform: `translateY(${(1 - activeProgress) * baseTravel}px)`,
+                        filter: `blur(${(1 - activeProgress) * baseBlur}px)`,
                         willChange: 'opacity, transform, filter'
                       }}
                     >
                       <span 
-                        className={`select-none transition-all duration-700
-                          ${isSpecial ? 
+                        className={`relative select-none transition-all duration-700
+                          ${(isBroken || isBuild || isMissing) ? 
                             `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
                             `text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] ${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
                       >
                         {word}
+
+                        {/* Special Effect: Broken Crack */}
+                        {isBroken && showSpecial && (
+                          <span 
+                            className="absolute top-1/2 left-0 w-full h-[1px] bg-[var(--accent-blood)] pointer-events-none opacity-0"
+                            style={{ 
+                              animation: 'hero-crack-line 400ms ease-out forwards',
+                              transform: 'translateY(-50%)'
+                            }}
+                          />
+                        )}
+
+                        {/* Special Effect: Build Underline */}
+                        {isBuild && (
+                          <span 
+                            className="absolute bottom-0 left-0 h-[1.5px] bg-[var(--accent-blood)] pointer-events-none transition-all duration-500 ease-out"
+                            style={{ width: showSpecial ? '100%' : '0%' }}
+                          />
+                        )}
                       </span>
                     {/* Poetic Line breaks */}
                     {((language === 'en' && i === 3) || 
@@ -213,6 +239,13 @@ export function Hero() {
         <div className="absolute top-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
         <div className="absolute bottom-8 left-8 right-8 h-[1px] bg-[var(--text-bone)] opacity-10 pointer-events-none hidden md:block" />
       </div>
+      <style>{`
+        @keyframes hero-crack-line {
+          0% { opacity: 0; transform: translateY(-50%) scaleX(0.8); }
+          50% { opacity: 0.7; transform: translateY(-50%) scaleX(1.1); }
+          100% { opacity: 0; transform: translateY(-50%) scaleX(1); }
+        }
+      `}</style>
     </section>
   );
 }
