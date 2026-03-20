@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
-import { ScrollReveal } from './ScrollReveal';
 import ExorcistsScroll from './ui/ExorcistsScroll';
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCursor } from "@/context/CursorContext";
+import HeroLights, { HeroLightsHandle } from "./ui/HeroLights";
+import { animate } from "animejs";
 
 export function Hero() {
   const { language } = useLanguage();
@@ -13,14 +15,91 @@ export function Hero() {
   const titlesRef = useRef<HTMLDivElement>(null);
   const cta1Ref = useMagnetic(0.2);
   const cta2Ref = useMagnetic(0.2);
+  const heroContentRef = useRef<HTMLDivElement>(null);
   
   const [scrollProgress, setScrollProgress] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
 
+  // ─── HeroLights ref ─────────────────────────────────────────────────────
+  const lightsRef = useRef<HeroLightsHandle | null>(null);
+  const [isGapHovering, setIsGapHovering] = useState(false);
+  const [dispersePhase, setDispersePhase] = useState<'idle' | 'dispersing' | 'reading' | 'done'>('idle');
+  const [factIndex, setFactIndex] = useState(0);
+
+  // ─── Cursor context ──────────────────────────────────────────────────────
+  const cursorRef = useCursor();
+
+  // ─── Wire cursor ↔ lights on mount ─────────────────────────────────────
+  useEffect(() => {
+    const cursor = cursorRef.current;
+    const lights = lightsRef.current;
+    if (!cursor || !lights) return;
+
+    // Push initial gaps to cursor
+    cursor.setGaps(lights.gaps);
+
+    // Notify hero when cursor is near a gap
+    cursor.setGapHoverCallback((hovering) => {
+      setIsGapHovering(hovering);
+    });
+  }, [cursorRef]);
+
+  // ─── Click handler: trigger disperse when hovering a gap ────────────────
+  const handleHeroClick = useCallback((e: React.MouseEvent) => {
+    if (dispersePhase !== 'idle') return;
+    if (!isGapHovering) return;
+    if (!cursorRef.current || !lightsRef.current) return;
+
+    e.stopPropagation();
+    setDispersePhase('dispersing');
+
+    // Fade hero content out
+    if (heroContentRef.current) {
+      animate(heroContentRef.current, {
+        opacity: [1, 0],
+        translateY: [0, -20],
+        duration: 300,
+        easing: 'easeOutQuad',
+      });
+    }
+
+    const spheres = cursorRef.current.getSpherePositions();
+    const lights = lightsRef.current;
+
+    lights.triggerDisperse(spheres, () => {
+      setDispersePhase('reading');
+    });
+  }, [dispersePhase, isGapHovering, cursorRef]);
+
+  // ─── Reset handler: click after reading phase ────────────────────────────
+  const handleReset = useCallback(() => {
+    if (dispersePhase !== 'reading') return;
+    lightsRef.current?.resetScene();
+    setDispersePhase('idle');
+    setFactIndex(i => (i + 1) % 5);
+
+    // Fade hero content back in
+    if (heroContentRef.current) {
+      animate(heroContentRef.current, {
+        opacity: [0, 1],
+        translateY: [-20, 0],
+        duration: 500,
+        easing: 'easeOutQuart',
+      });
+    }
+
+    // Push new gaps to cursor after reset
+    setTimeout(() => {
+      if (cursorRef.current && lightsRef.current) {
+        cursorRef.current.setGaps(lightsRef.current.gaps);
+      }
+    }, 100);
+  }, [dispersePhase, cursorRef]);
+
   const introStages = {
     en: [
       "Searching for speed? Facing scale's need?",
-      "A fresh eye for the win? You’ve reached the source. Let the building begin."
+      "A fresh eye for the win? You've reached the source. Let the building begin."
     ],
     ja: [
       "速さを求めるか？ 規模に挑むか？",
@@ -49,11 +128,8 @@ export function Hero() {
   };
 
   const currentIntro = introStages[language as keyof typeof introStages];
-  
-  // Split the intro into individual words for the word-by-word reveal
-  const words = currentIntro.join(" ").split(" ");
 
-  // ─── SCROLL TRACKER ENGINE ───
+  // ─── SCROLL TRACKER ENGINE ───────────────────────────────────────────────
   useEffect(() => {
     const handleScroll = () => {
       if (!trackRef.current) return;
@@ -74,26 +150,51 @@ export function Hero() {
   const heroRecedeStyle = {
     transform: `scale(${1 - scrollProgress * 0.5}) translateY(${scrollProgress * -150}px)`,
     filter: `blur(${scrollProgress * 25}px)`,
-    opacity: 1 - scrollProgress * 3.5, // Fade branding out faster to make the void "deep"
-    pointerEvents: (scrollProgress > 0.4 ? 'none' : 'auto') as any,
+    opacity: 1 - scrollProgress * 3.5,
+    pointerEvents: (scrollProgress > 0.4 ? 'none' : 'auto') as React.CSSProperties['pointerEvents'],
     willChange: 'transform, filter, opacity'
   };
 
   const allWords = currentIntro.join(" ").split(" ");
 
   return (
-    <section ref={trackRef} className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu">
+    <section
+      ref={trackRef}
+      className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu"
+      onClick={dispersePhase === 'reading' ? handleReset : handleHeroClick}
+    >
       <div 
         id="hero" 
         ref={containerRef} 
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
       >
+        {/* HeroLights — behind everything at z-[10] */}
+        <HeroLights ref={lightsRef} factIndex={factIndex} />
+
         {/* Cinematic HUD Lines */}
         <div className="absolute inset-x-24 inset-y-0 pointer-events-none opacity-5 flex justify-between z-0">
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
           <div className="w-[1px] h-full bg-[var(--text-bone)]" />
         </div>
+
+        {/* Gap hover hint */}
+        {isGapHovering && dispersePhase === 'idle' && (
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
+            <span className="font-mono text-[9px] text-red-600/60 tracking-[0.3em] uppercase animate-pulse">
+              CLICK TO BREACH
+            </span>
+          </div>
+        )}
+
+        {/* Reading phase hint */}
+        {dispersePhase === 'reading' && (
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-[60] pointer-events-none">
+            <span className="font-mono text-[9px] text-white/30 tracking-[0.3em] uppercase">
+              CLICK TO RESET
+            </span>
+          </div>
+        )}
 
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
           
@@ -105,7 +206,6 @@ export function Hero() {
                 const end = start + 0.2;
                 const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
                 
-                // Narrative Semantic Styling for Rhyme Version
                 const isSpecial = word.toLowerCase().includes('speed') || word.toLowerCase().includes('scale') || 
                                   word.toLowerCase().includes('win') || word.toLowerCase().includes('source') || 
                                   word.toLowerCase().includes('begin') ||
@@ -179,7 +279,7 @@ export function Hero() {
           {/* ─── EXORCIST'S SCROLL (Narrative Background 06) ─── */}
           <ExorcistsScroll />
 
-          <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+          <div ref={heroContentRef} className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
             <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                 {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : "अवसरों के लिए उपलब्ध"}
@@ -200,7 +300,7 @@ export function Hero() {
             </p>
 
             <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
-              <a ref={cta1Ref as any} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
+              <a ref={cta1Ref as React.Ref<HTMLAnchorElement>} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
@@ -208,7 +308,7 @@ export function Hero() {
                   </span>
                 </div>
               </a>
-              <a ref={cta2Ref as any} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
+              <a ref={cta2Ref as React.Ref<HTMLAnchorElement>} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                   <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
