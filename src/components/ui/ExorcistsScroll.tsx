@@ -77,6 +77,15 @@ const ExorcistsScroll: React.FC = () => {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [activeCard]);
 
+  useEffect(() => {
+    if (activeCard) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [activeCard]);
+
   const segments = useMemo(() => {
     return Array.from({ length: 12 }).map((_, i) => ({
       id: i,
