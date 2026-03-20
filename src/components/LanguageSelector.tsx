@@ -9,13 +9,13 @@ export function LanguageSelector() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const languages = [
-    { code: 'en', label: 'ENG' },
-    { code: 'ja', label: 'JPN' },
-    { code: 'ko', label: 'KOR' },
-    { code: 'zh-tw', label: 'TWC' },
-    { code: 'hi', label: 'HIN' },
-    { code: 'fr', label: 'FRA' },
-    { code: 'id', label: 'IND' }
+    { code: 'en', label: 'English' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+    { code: 'zh-tw', label: '繁體中文' },
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'fr', label: 'Français' },
+    { code: 'id', label: 'Indonesia' }
   ] as const;
 
   // Close when clicking outside
@@ -66,7 +66,7 @@ export function LanguageSelector() {
               ${language === lang.code ? 'text-[var(--accent-blood)] bg-white/5' : 'text-white/80'}
             `}
           >
-            {lang.label.toUpperCase()}
+            {lang.label}
           </button>
         ))}
         {/* Fill empty cells to maintain 3 items per row layout */}
