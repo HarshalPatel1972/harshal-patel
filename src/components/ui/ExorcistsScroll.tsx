@@ -170,14 +170,26 @@ const ExorcistsScroll: React.FC = () => {
                    return (
                       <div 
                         key={i}
-                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[900ms] cubic-bezier(0.19, 1, 0.22, 1) flex flex-col items-center justify-center"
+                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[900ms] cubic-bezier(0.19, 1, 0.22, 1) flex flex-col items-center justify-center border-l border-r border-red-600/20"
                         style={{
                            left: `${i * 25}%`,
                            transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-130%' : '130%'})`,
                            transitionDelay: showShutters ? `${i * 100}ms` : `${(3-i) * 60}ms`,
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
-                      />
+                      >
+                         {/* Stylized Shutter Details */}
+                         <div className="absolute inset-0 red-halftone opacity-[0.03]" />
+                         
+                         {/* Glitch Accent Lines */}
+                         <div className="absolute top-0 left-0 right-0 h-1 bg-red-600/40" />
+                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-600/40" />
+                         
+                         {/* Individual Serial Number for Shutter Part */}
+                         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 rotate-[-90deg] font-mono text-[8px] text-red-600/30 font-black tracking-widest uppercase">
+                            0xSunder_{i}
+                         </div>
+                      </div>
                    );
                 })}
              </div>
