@@ -127,7 +127,7 @@ export function Projects() {
           return (
             <div 
               key={project.title} 
-              className={`transition-all duration-700 ease-out w-full ${isOverridden ? `relative top-0 ${i === 0 ? "md:col-span-2" : ""}` : 'sticky top-[10vh] md:top-[12vh]'}`} 
+              className={`transition-all duration-700 ease-out w-full ${isOverridden ? `relative top-0 ${i === 0 ? "md:col-span-2" : ""}` : (i === 0 ? 'sticky top-[calc(10vh+60px)] md:top-[calc(12vh+60px)]' : 'sticky top-[10vh] md:top-[12vh]')}`} 
               style={{ zIndex: isOverridden ? 1 : i }}
             >
               <div className="flex items-start">
