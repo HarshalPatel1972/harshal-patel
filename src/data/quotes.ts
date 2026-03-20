@@ -5,6 +5,7 @@ export interface CharacterData {
   "zh-tw": { name: string };
   hi?: { name: string };
   fr: { name: string };
+  id: { name: string };
   image: string;
   opacity?: number;
 }
@@ -17,6 +18,7 @@ export interface QuoteEntry {
   "zh-tw": string;
   hi?: string;
   fr: string;
+  id: string;
 }
 
 export const characterRegistry: Record<string, CharacterData> = {
@@ -27,16 +29,18 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "艾連·葉卡" },
     hi: { name: "एरेन येजर" },
     fr: { name: "EREN JÄGER" },
+    id: { name: "EREN YEAGER" },
     image: "/Eren Yeager.jpg",
     opacity: 0.35
   },
   THORS: {
     en: { name: "THORS SNORESSON" },
-    ja: { name: "トール즈・スノーレソン" },
+    ja: { name: "トールズ・スノーレソン" },
     ko: { name: "토르즈 스노레손" },
     "zh-tw": { name: "托爾茲·斯諾雷松" },
     hi: { name: "थोर्स स्नोरेसन" },
     fr: { name: "THORS SNORESSON" },
+    id: { name: "THORS SNORESSON" },
     image: "/THORS SNORESSON.png"
   },
   SUKUNA: {
@@ -44,8 +48,9 @@ export const characterRegistry: Record<string, CharacterData> = {
     ja: { name: "両面宿儺" },
     ko: { name: "료멘 스쿠나" },
     "zh-tw": { name: "兩面宿儺" },
-    hi: { name: "र्योमेन सुकुना" },
+    hi: { name: "र्योमेन सुकु나" },
     fr: { name: "RYOMEN SUKUNA" },
+    id: { name: "RYOMEN SUKUNA" },
     image: "/RYOMEN SUKUNA.jpg",
     opacity: 0.25
   },
@@ -56,6 +61,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "利威爾·阿卡曼" },
     hi: { name: "लेवी एकरमैन" },
     fr: { name: "LEVI ACKERMAN" },
+    id: { name: "LEVI ACKERMAN" },
     image: "/Levi Ackerman.png",
     opacity: 0.3
   },
@@ -66,6 +72,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "五條悟" },
     hi: { name: "सटोरू गोजो" },
     fr: { name: "SATORU GOJO" },
+    id: { name: "SATORU GOJO" },
     image: "/Saturo Gojo.png",
     opacity: 0.3
   },
@@ -76,6 +83,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "米卡莎·阿卡曼" },
     hi: { name: "मिकासा एकरमैन" },
     fr: { name: "MIKASA ACKERMAN" },
+    id: { name: "MIKASA ACKERMAN" },
     image: "/Mikasa Ackerman.jpg"
   },
   YUJI: {
@@ -85,6 +93,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "虎杖悠仁" },
     hi: { name: "यूजी इतादोरी" },
     fr: { name: "YUJI ITADORI" },
+    id: { name: "YUJI ITADORI" },
     image: "/Yuji Itadori.png"
   },
   ARMIN: {
@@ -94,6 +103,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "阿爾敏·亞魯雷特" },
     hi: { name: "अर्मिन अर्लर्ट" },
     fr: { name: "ARMIN ARLERT" },
+    id: { name: "ARMIN ARLERT" },
     image: "/ARMIN ARLERT.jpg",
     opacity: 0.3
   },
@@ -104,6 +114,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "艾爾文·史密斯" },
     hi: { name: "इरविन स्मिथ" },
     fr: { name: "ERWIN SMITH" },
+    id: { name: "ERWIN SMITH" },
     image: "/ERWIN SMITH.jpg",
     opacity: 0.3
   },
@@ -114,6 +125,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "托爾芬" },
     hi: { name: "थोरफिन" },
     fr: { name: "THORFINN" },
+    id: { name: "THORFINN" },
     image: "/THORFINN.png",
     opacity: 0.3
   },
@@ -124,6 +136,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "阿謝拉特" },
     hi: { name: "एस्केलाड" },
     fr: { name: "ASKELADD" },
+    id: { name: "ASKELADD" },
     image: "/ASKELADD.jpg",
     opacity: 0.3
   },
@@ -134,6 +147,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "七海建人" },
     hi: { name: "नानामी केंटो" },
     fr: { name: "NANAMI KENTO" },
+    id: { name: "NANAMI KENTO" },
     image: "/NANAMI KENTO.png",
     opacity: 0.3
   },
@@ -144,6 +158,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "夜見介大" },
     hi: { name: "यामी सुकेहिरो" },
     fr: { name: "YAMI SUKEHIRO" },
+    id: { name: "YAMI SUKEHIRO" },
     image: "/YAMI SUKEHIRO.png",
     opacity: 0.3
   },
@@ -154,6 +169,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "釘崎野薔薇" },
     hi: { name: "नोबारा कुगिसाकी" },
     fr: { name: "NOBARA KUGISAKI" },
+    id: { name: "NOBARA KUGISAKI" },
     image: "/NOBARA KUGISAKI.jpeg",
     opacity: 0.3
   },
@@ -164,6 +180,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "伏黑甚爾" },
     hi: { name: "तोजी फुशिगुरो" },
     fr: { name: "TOJI FUSHIGURO" },
+    id: { name: "TOJI FUSHIGURO" },
     image: "/TOJI FUSHIGURO.png",
     opacity: 0.3
   },
@@ -174,6 +191,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "淀治" },
     hi: { name: "डेंजी" },
     fr: { name: "DENJI" },
+    id: { name: "DENJI" },
     image: "/DENJI.png",
     opacity: 0.3
   },
@@ -184,6 +202,7 @@ export const characterRegistry: Record<string, CharacterData> = {
     "zh-tw": { name: "岸邊" },
     hi: { name: "किशिबे" },
     fr: { name: "KISHIBE" },
+    id: { name: "KISHIBE" },
     image: "/KISHIBE.jpg",
     opacity: 0.3
   }
@@ -197,7 +216,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "싸우지 않으면 이길 수 없어.",
     "zh-tw": "如果不戰鬥，就無法贏也。",
     hi: "यदि आप नहीं लड़ते हैं, तो आप जीत नहीं सकते।",
-    fr: "SI TU NE TE BATS PAS, TU NE PEUX PAS GAGNER."
+    fr: "SI TU NE TE BATS PAS, TU NE PEUX PAS GAGNER.",
+    id: "JIKA KAU TIDAK BERTARUNG, KAU TIDAK BISA MENANG."
   },
   {
     charId: "THORS",
@@ -206,7 +226,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "너에게 적이란 없다. 누구에게도 적이란 없단다. 상처 입혀도 되는 사람은 그 어디에도 없어.",
     "zh-tw": "你沒有敵人。任何人都沒有敵人。這世界上沒有任何一個人是可以被隨意傷害의。",
     hi: "तुम्हारा कोई दुश्मन नहीं है। किसी का कोई दुश्मन नहीं होता। ऐसा कोई नहीं है जिसे चोट पहुँचाना ठीक हो।",
-    fr: "TU N'AS PAS D'ENNEMIS. PERSONNE N'EN A. IL N'Y A PERSONNE QU'IL SOIT JUSTE DE BLESSER."
+    fr: "TU N'AS PAS D'ENNEMIS. PERSONNE N'EN A. IL N'Y A PERSONNE QU'IL SOIT JUSTE DE BLESSER.",
+    id: "KAU TIDAK PUNYA MUSUH. TIDAK ADA ORANG YANG PUNYA MUSUH. TIDAK ADA SEORANG PUN YANG BOLEH DISAKITI."
   },
   {
     charId: "SUKUNA",
@@ -215,7 +236,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "자랑스러워해라. 너는 강하다.",
     "zh-tw": "挺起胸膛吧। 你很強。",
     hi: "गर्व करो। तुम शक्तिशाली हो।",
-    fr: "SOIS FIER. TU ES PUISSANT."
+    fr: "SOIS FIER. TU ES PUISSANT.",
+    id: "BERDIRILAH DENGAN BANGGA. KAU KUAT."
   },
   {
     charId: "LEVI",
@@ -224,7 +246,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "우리가 할 수 있는 유일한 것은 자신의 선택을 후회하지 않겠다고 믿는 것뿐이다.",
     "zh-tw": "我們唯一被允許做的事，就是相信自己不會後悔所做的選擇。",
     hi: "हमें केवल यह विश्वास करने की अनुमति है कि हम अपने द्वारा किए गए चुनाव पर पछतावा नहीं करेंगे।",
-    fr: "LA SEULE CHOSE QU'IL NOUS EST PERMIS DE FAIRE EST DE CROIRE QUE NOUS NE REGRETTERONS PAS NOTRE CHOIX."
+    fr: "LA SEULE CHOSE QU'IL NOUS EST PERMIS DE FAIRE EST DE CROIRE QUE NOUS NE REGRETTERONS PAS NOTRE CHOIX.",
+    id: "SATU-SATUNYA HAL YANG BOLEH KITA LAKUKAN ADALAH PERCAYA BAHWA KITA TIDAK AKAN MENYESALI PILIHAN YANG KITA BUAT."
   },
   {
     charId: "GOJO",
@@ -233,7 +256,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "이겨서 죽는 것과 죽어서 이기는 것은 전혀 다르단다.",
     "zh-tw": "「以死求勝」與「拼死奪勝」，是完全不同的兩回事。",
     hi: "जीतने के लिए मरना और जीतने के लिए जोखिम उठाना दो अलग चीजें हैं।",
-    fr: "MOURIR POUR GAGNER ET RISQUER LA MORT POUR GAGNER SONT DEUX CHOSES BIEN DIFFÉRENTES."
+    fr: "MOURIR POUR GAGNER ET RISQUER LA MORT POUR GAGNER SONT DEUX CHOSES BIEN DIFFÉRENTES.",
+    id: "MATI UNTUK MENANG DAN MEMPERTARUHKAN NYAWA UNTUK MENANG ADALAH DUA HAL YANG BERBEDA."
   },
   {
     charId: "MIKASA",
@@ -242,7 +266,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "세상은 잔혹하다... 그리고... 너무나도 아름답다.",
     "zh-tw": "這世界是殘酷的……但同時……也非常美麗。",
     hi: "दुनिया क्रूर है, लेकिन बहुत सुंदर भी है।",
-    fr: "LE MONDE EST CRUEL, MAIS AUSSI TRÈS BEAU."
+    fr: "LE MONDE EST CRUEL, MAIS AUSSI TRÈS BEAU.",
+    id: "DUNIA INI KEJAM, TAPI JUGA SANGAT INDAH."
   },
   {
     charId: "YUJI",
@@ -251,7 +276,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "내가 어떻게 죽을지는 모르겠지만, 살아온 날들을 후회하고 싶지는 않아.",
     "zh-tw": "我不知道自己死的時候會怎樣，但我不想為自己的活法感到後悔。",
     hi: "मैं ऐसा जीवन जीना चाहता हूँ जिस पर मुझे गर्व हो।",
-    fr: "JE VEUX MENER UNE VIE DONT JE PEUX ÊTRE FIER."
+    fr: "JE VEUX MENER UNE VIE DONT JE PEUX ÊTRE FIER.",
+    id: "AKU INGIN MENJALANI HIDUP YANG BISA AKU BANGGAKAN."
   },
   {
     charId: "EREN",
@@ -260,7 +286,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "나는 계속 나아갈 거야। 적을 구축할 때까지.",
     "zh-tw": "我會繼續前進। 直到將敵人驅逐殆盡為止。",
     hi: "मैं आगे बढ़ता रहूँगा। जब तक मेरे दुश्मन नष्ट नहीं हो जाते।",
-    fr: "JE CONTINUERAI D'AVANCER. JUSQU'À CE QUE MES ENNEMIS SOIENT DÉTRUITS."
+    fr: "JE CONTINUERAI D'AVANCER. JUSQU'À CE QUE MES ENNEMIS SOIENT DÉTRUITS.",
+    id: "AKU AKAN TERUS MELANGKAH MAJU. SAMPAI MUSUHKU HANCUR."
   },
   {
     charId: "GOJO",
@@ -269,7 +296,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "천상천하 유아독존",
     "zh-tw": "天上天下，唯我獨尊。",
     hi: "आकाश और पृथ्वी के बीच, मैं अकेला ही सम्मानित हूँ।",
-    fr: "À TRAVERS LE CIEL ET LA TERRE, MOI SEUL SUIS L'HONORÉ."
+    fr: "À TRAVERS LE CIEL ET LA TERRE, MOI SEUL SUIS L'HONORÉ.",
+    id: "DI SELURUH LANGIT DAN BUMI, HANYA AKU YANG TERHORMAT."
   },
   {
     charId: "ARMIN",
@@ -278,7 +306,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "아무것도 버릴 수 없는 사람은 아무것도 바꿀 수 없다.",
     "zh-tw": "什麼都無法捨棄的人，肯定什麼也改變不了。",
     hi: "जो कुछ भी त्याग नहीं सकता, वह कुछ भी नहीं बदल सकता।",
-    fr: "CELUI QUI NE PEUT RIEN SACRIFIER NE POURRA JAMAIS RIEN CHANGER."
+    fr: "CELUI QUI NE PEUT RIEN SACRIFIER NE POURRA JAMAIS RIEN CHANGER.",
+    id: "SESEORANG YANG TIDAK BISA MENGORBANKAN APA PUN TIDAK AKAN BISA MENGUBAH APA PUN."
   },
   {
     charId: "ERWIN",
@@ -287,7 +316,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "후회는 다음의 결단을 흐리게 한다। 그리고 타인에게 선택을 맡기게 될 것이다.",
     "zh-tw": "後悔會讓下一次的決斷變得遲鈍। 然後會把選擇權拱手讓給他人。",
     hi: "यदि आप पछताना शुरू करते हैं, तो आप अपने भविष्य के निर्णयों को सुस्त कर देंगे।",
-    fr: "SI TU COMMENCES À REGRETTER, TU ÉMOUSSERAS TES DÉCISIONS FUTURES ET LAISSERAS LES AUTRES CHOISIR POUR TOI."
+    fr: "SI TU COMMENCES À REGRETTER, TU ÉMOUSSERAS TES DÉCISIONS FUTURES ET LAISSERAS LES AUTRES CHOISIR POUR TOI.",
+    id: "JIKA KAU MULAI MENYESAL, KAU AKAN MENUMPULKAN KEPUTUSANMU DI MASA DEPAN DAN MEMBIARKAN ORANG LAIN MEMBUAT PILIHAN UNTUKMU."
   },
   {
     charId: "THORFINN",
@@ -296,7 +326,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "복수 같은 하찮은 일에 인생을 낭비하지 마라। 너만의 빈란드를 찾아라.",
     "zh-tw": "不要把人生浪費ใน復仇這種小事上। 去尋找屬於你自己的文蘭吧。",
     hi: "अपना जीवन बदले जैसी छोटी चीज़ पर बर्बाद न करें। अपना खुद का विनलैंड खोजें।",
-    fr: "NE GASPILLE PAS TA VIE POUR QUELQUE CHOSE D'AUSSI PETIT QUE LA VENGEANCE. TROUVE TON PROPRE VINLAND."
+    fr: "NE GASPILLE PAS TA VIE POUR QUELQUE CHOSE D'AUSSI PETIT QUE LA VENGEANCE. TROUVE TON PROPRE VINLAND.",
+    id: "JANGAN SIA-SIAKAN HIDUPMU UNTUK SESUATU YANG KECIL SEPERTI BALAS DENDAM. TEMUKAN VINLAND-MU SENDIRI."
   },
   {
     charId: "ASKELADD",
@@ -305,7 +336,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "죽는 법을 고를 수 있는 것은 전사뿐이다.",
     "zh-tw": "只有戰士才能選擇自己的死亡方式。",
     hi: "केवल एक योद्धा ही अपनी मृत्यु का तरीका चुन सकता है।",
-    fr: "SEUL UN GUERRIER A LE PRIVILÈGE DE CHOISIR SA MORT."
+    fr: "SEUL UN GUERRIER A LE PRIVILÈGE DE CHOISIR SA MORT.",
+    id: "HANYA SEORANG PEJUANG YANG BISA MEMILIH CARA KEMATIANNYA."
   },
   {
     charId: "NANAMI",
@@ -314,7 +346,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "죽지 않는 자가 강한 게 아니다. 무엇을 위해 살지 선택한 자가 강한 것이다.",
     "zh-tw": "強大的不是不會死的人। 而是那些選擇了為何而活的人。",
     hi: "वे शक्तिशाली नहीं हैं जो मर नहीं सकते। वे शक्तिशाली हैं जिन्होंने चुना है कि किसके लिए जीना है।",
-    fr: "CE NE SONT PAS CEUX QUI NE PEUVENT PAS MOURIR QUI SONT FORTS. CE SONT CEUX QUI ONT CHOISI POUR QUOI VIVRE."
+    fr: "CE NE SONT PAS CEUX QUI NE PEUVENT PAS MOURIR QUI SONT FORTS. CE SONT CEUX QUI ONT CHOISI POUR QUOI VIVRE.",
+    id: "BUKAN MEREKA YANG TIDAK BISA MATI YANG KUAT. TAPI MEREKA YANG TELAH MEMILIH UNTUK APA MEREKA HIDUP."
   },
   {
     charId: "YAMI",
@@ -323,7 +356,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "여기서 한계를 넘어라। 그것이 새로운 한계를 만드는 유일한 길이다.",
     "zh-tw": "在這裡，超越你的極限吧। 這才是創造新極限的唯一途徑。",
     hi: "अपनी सीमाओं से आगे बढ़ें। इसी तरह नई सीमाएँ तय होती हैं।",
-    fr: "DÉPASSE TES LIMITES. C'EST AINSI QUE DE NOUVELLES SONT ÉTABLIES."
+    fr: "DÉPASSE TES LIMITES. C'EST AINSI QUE DE NOUVELLES SONT ÉTABLIES.",
+    id: "LAMPAUI BATASMU. ITULAH CARA BATAS BARU DITETAPKAN."
   },
   {
     charId: "NOBARA",
@@ -332,7 +366,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "후회 따위는 없어. 내가 선택한 길이야.",
     "zh-tw": "我絕不後悔। 這是我自己選擇的道路。",
     hi: "मुझे अपने रास्ते पर कोई पछतावा नहीं है। मैंने इसे चुना है।",
-    fr: "JE N'AI AUCUN REGRET SUR MON CHEMIN. JE L'AI CHOISI. JE L'ASSUME."
+    fr: "JE N'AI AUCUN REGRET SUR MON CHEMIN. JE L'AI CHOISI. JE L'ASSUME.",
+    id: "AKU TIDAK MENYESAL DENGAN JALANKU. AKU MEMILIHNYA. AKU MENJALANINYA."
   },
   {
     charId: "TOJI",
@@ -341,7 +376,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "재능은 그저 출발점일 뿐이다. 의지가 그것을 완성시킨다.",
     "zh-tw": "才能僅僅是起點। 意志才是將其完成的動力。",
     hi: "प्रतिभा सिर्फ शुरुआत है। इच्छाशक्ति ही इसे पूरा करती है।",
-    fr: "LE TALENT N'EST QUE LE POINT DE DÉPART. LA VOLONTÉ EST CE QUI L'ACHÈVE."
+    fr: "LE TALENT N'EST QUE LE POINT DE DÉPART. LA VOLONTÉ EST CE QUI L'ACHÈVE.",
+    id: "BAKAT HANYALAH TITIK AWAL. KEHENDAKLAH YANG MENYELESAIKANNYA."
   },
   {
     charId: "DENJI",
@@ -350,7 +386,8 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "꿈은 보는 게 아니야. 피를 흘리며 이루는 거야.",
     "zh-tw": "夢想不是用來看的，而是要流血去實現的。",
     hi: "सपना वह नहीं है जिसे आप देखते हैं। यह वह है जिसके लिए आप खून बहाते हैं।",
-    fr: "UN RÊVE N'EST PAS QUELQUE CHOSE QUE L'ON REGARDE. C'EST QUELQUE CHOSE POUR LEQUEL ON SAIGNE."
+    fr: "UN RÊVE N'EST PAS QUELQUE CHOSE QUE L'ON REGARDE. C'EST QUELQUE CHOSE POUR LEQUEL ON SAIGNE.",
+    id: "MIMPI BUKANLAH SESUATU YANG KAU LIHAT. TAPI SESUATU YANG KAU PERJUANGKAN DENGAN DARAH."
   },
   {
     charId: "KISHIBE",
@@ -359,6 +396,7 @@ export const mappaQuotesList: QuoteEntry[] = [
     ko: "아무것도 두려워하지 마라. 공포 그 자체조차도.",
     "zh-tw": "無所畏懼। 哪怕 है恐懼本身।",
     hi: "किसी चीज़ से मत डरो। यहाँ तक कि डर से भी नहीं।",
-    fr: "NE CRAINS RIEN. PAS MÊME LA PEUR ELLE-MÊME."
+    fr: "NE CRAINS RIEN. PAS MÊME LA PEUR ELLE-MÊME.",
+    id: "JANGAN TAKUT PADA APA PUN. BAHKAN PADA KETAKUTAN ITU SENDIRI."
   }
 ];

@@ -250,5 +250,47 @@ export const profile = {
       { name: "Python / IA", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  id: {
+    name: "Harshal Patel",
+    title: "Insinyur Perangkat Lunak",
+    tagline: "Membangun sistem berperformansi tinggi dengan Go, TypeScript & WebAssembly",
+    bio: "Mahasiswa teknik perangkat lunak tahap awal dengan pengalaman praktis mengimplementasikan sistem perangkat lunak di tiga tumpukan teknologi (Go, WebAssembly, TypeScript) dan menyelesaikan 300+ masalah algoritma. Spesialisasi dalam optimasi runtime dan memori di bawah kendala sub-200ms.",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
+    location: "Varanasi, India",
+    
+    education: {
+      school: "Universitas Chandigarh",
+      degree: "B.E. CSE (AIML)",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "Magang Pengembang Front-End",
+        period: "Mei 2025 – Okt 2025",
+        description: "Mengembangkan 15+ komponen React yang dapat digunakan kembali untuk dasbor; Mengintegrasikan API Shazam untuk catatan musik; Merancang pelacakan alur kerja Kanban 5+ tahap; Mengimplementasikan 10+ fitur interaktif menggunakan Syncfusion.",
+      },
+      {
+        company: "Internshala",
+        role: "Magang Ilmu Data",
+        period: "Jun 2024 – Agu 2024",
+        description: "Memproses 5000+ catatan penjualan melalui Tableau; Membangun model regresi logistik akurasi 85%; Meningkatkan perencanaan inventaris sebesar 20% menggunakan peramalan moving average; Mengoptimalkan efisiensi pelatihan sebesar 25%.",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / Sistem", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / AI", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

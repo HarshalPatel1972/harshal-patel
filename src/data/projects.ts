@@ -9,7 +9,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[] } = {
   en: [
     {
       title: "Aero",
@@ -85,8 +85,8 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
   ja: [
     {
       title: "Aero (エアロ)",
-      description: "LAN経由で100MB/s+に達する次世代のローカルファイル転送。E2EE（AES-256-CTR）とゼロトラスト光学的ハンドシェイクを備えた、機能豊かなデスクトップアプリ。",
-      tags: ["Go", "Wails", "React", "暗号"],
+      description: "LAN経由で100MB/s+に達する次世代のローカルファイル転送. E2EE（AES-256-CTR）とゼロトラスト光学的ハンドシェイクを備えた、機能豊かなデスクトップアプリ.",
+      tags: ["Go", "Wails", "React", "Crypto"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
       slug: "aero",
@@ -95,7 +95,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "RIFT (リフト)",
-      description: "摩擦ゼロのエアタイピングブリッジ。アプリのインストールなしで、WebSocketsとWin32 APIを介してあらゆるスマートフォンを高性能なPC入力デバイスに変えます。",
+      description: "摩擦ゼロのエアタイピングブリッジ. アプリのインストールなしで, WebSocketsとWin32 APIを介してあらゆるスマートフォンを高性能なPC入力デバイスに変えます.",
       tags: ["Go", "WebSocket", "Win32 API"],
       color: "#8b5cf6",
       link: "https://github.com/HarshalPatel1972/rift",
@@ -105,7 +105,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "Momentum (モメンタム)",
-      description: "AIエージェントとあなたのポケットをつなぐ架け橋。Telegramを介した Cursor/Windsurf用のリモート承認システムにより、リスクの高い実行を安全に保ちます。",
+      description: "AIエージェントとあなたのポケットをつなぐ架け橋. Telegramを介した Cursor/Windsurf用のリモート承認システムにより, リスクの高い実行を安全に保ちます.",
       tags: ["MCP", "Node.js", "Telegram", "Go"],
       color: "#f97316",
       link: "https://github.com/HarshalPatel1972/momentum",
@@ -115,7 +115,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "GoSync (ゴー・シンク)",
-      description: "デルタ同期にマークルツリーを使用するオフラインファーストの同期エンジン。IndexedDBコールドストレージによりデータ転送を最大70%削減。",
+      description: "デルタ同期にマークルツリーを使用するオフラインファーストの同期エンジン. IndexedDBコールドストレージによりデータ転送を最大70%削減.",
       tags: ["Go", "WASM", "Next.js", "IndexedDB"],
       color: "#10b981",
       link: "https://github.com/HarshalPatel1972/gosync",
@@ -125,8 +125,8 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "Velocity (ベロシティ)",
-      description: "WhatsAppのデスクトップRAMを370MBから90MBに削減するWindowsシステムトレイ最適化ツール。EcoQoS CPUガバナーと自動メモリトリミングを実装。",
-      tags: ["C++", "Win32", "最適化"],
+      description: "WhatsAppのデスクトップRAMを370MBから90MBに削減するWindowsシステムトレイ最適化ツール. EcoQoS CPUガバナーと自動メモリトリミングを実装.",
+      tags: ["C++", "Win32", "Optimization"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
       slug: "velocity",
@@ -135,8 +135,8 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "WinLight (ウィン・ライト)",
-      description: "50,000以上のファイルをインデックス化する、Rust駆動のSpotlight風検索。100ms未満で結果を返すマルチ戦略のランク付けマッチング。",
-      tags: ["Rust", "Tauri", "アルゴリズム"],
+      description: "50,000以上のファイルをインデックス化する, Rust駆動のSpotlight風検索. 100ms未満で結果を返すマルチ戦略のランク付けマッチング.",
+      tags: ["Rust", "Tauri", "Algorithms"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
       slug: "win-light",
@@ -145,7 +145,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "A1 Tantra (A1タントラ)",
-      description: "高性能な精神的ガイダンスプラットフォーム。サーバーレスリードジェネレーションアーキテクチャにより、1秒未満のマルチページナビゲーションを実現。",
+      description: "高性能な精神的ガイダンスプラットフォーム. サーバーレスリードジェネレーションアーキテクチャにより, 1秒未満のマルチページナビゲーションを実現.",
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
@@ -158,7 +158,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     {
       title: "Aero (에어로)",
       description: "LAN을 통해 100MB/s 이상의 속도에 도달하는 차세대 로컬 파일 전송 시스템입니다. E2EE(AES-256-CTR)와 제로 트러스트 광학 핸드쉐이크 기능을 갖춘 풍부한 기능의 데스크톱 앱입니다.",
-      tags: ["Go", "Wails", "React", "암호화"],
+      tags: ["Go", "Wails", "React", "Crypto"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
       slug: "aero",
@@ -198,7 +198,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     {
       title: "Velocity (벨로시티)",
       description: "WhatsApp의 RAM 사용량을 370MB에서 90MB로 줄이는 Windows 시스템 트레이 최적화 도구입니다. EcoQoS CPU 거버너 및 자동 메모리 트리밍을 구현합니다.",
-      tags: ["C++", "Win32", "최적화"],
+      tags: ["C++", "Win32", "Optimization"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
       slug: "velocity",
@@ -208,7 +208,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     {
       title: "WinLight (윈라이트)",
       description: "50,000개 이상의 파일을 인덱싱하는 Rust 기반의 Spotlight 유사 검색 엔진입니다. 100ms 미만의 결과 반환을 위한 다중 전략 랭킹 매칭을 사용합니다.",
-      tags: ["Rust", "Tauri", "알고리즘"],
+      tags: ["Rust", "Tauri", "Algorithms"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
       slug: "win-light",
@@ -230,7 +230,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     {
       title: "Aero (飛航)",
       description: "下一代本地文件傳輸系統，在 LAN 環境下可達 100MB/s+。功能豐富的桌面應用程，具備 E2EE (AES-256-CTR) 與零信任光學握手。",
-      tags: ["Go", "Wails", "React", "加密"],
+      tags: ["Go", "Wails", "React", "Crypto"],
       color: "#06b6d4",
       link: "https://github.com/HarshalPatel1972/aero",
       slug: "aero",
@@ -259,7 +259,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "GoSync (同步代碼)",
-      description: "離線優先的同步引擎，使用默克爾樹進行增量同步。通過 IndexedDB 冷儲存將數據傳輸效率提升高達 70%。",
+      description: "離線優先的同步引擎，使用默克爾樹進行增量同步. 通過 IndexedDB 冷儲存將數據傳輸效率提升高達 70%.",
       tags: ["Go", "WASM", "Next.js", "IndexedDB"],
       color: "#10b981",
       link: "https://github.com/HarshalPatel1972/gosync",
@@ -269,8 +269,8 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "Velocity (速度)",
-      description: "Windows 系統託盤優化工具，將 WhatsApp 的 RAM 佔用從 370MB 降至 90MB。實現了 EcoQoS CPU 調度器和自動化內存修剪。",
-      tags: ["C++", "Win32", "優化"],
+      description: "Windows 系統託盤優化工具，將 WhatsApp 的 RAM 佔用從 370MB 降至 90MB. 實現了 EcoQoS CPU 調度器 and 自動化內存修剪.",
+      tags: ["C++", "Win32", "Optimization"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
       slug: "velocity",
@@ -279,8 +279,8 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "WinLight (窗光)",
-      description: "Rust 驅動的 Spotlight 風格搜索，索引超過 50,000 個文件。多策略排名匹配，可在 100ms 內返回結果。",
-      tags: ["Rust", "Tauri", "算法"],
+      description: "Rust 驅動的 Spotlight 風格搜索，索引超過 50,000 個文件. 多策略排名匹配，可在 100ms 內返回結果.",
+      tags: ["Rust", "Tauri", "Algorithms"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
       slug: "win-light",
@@ -289,7 +289,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "A1 Tantra (A1 密乘)",
-      description: "高性能精神導航平台。通過無伺服器潛在客戶生成架構，實現了秒級以下的多頁面導航。",
+      description: "高性能精神導航平台. 通過無伺服器潛在客戶生成架構，實現了秒級以下的多頁面導航.",
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
@@ -361,13 +361,13 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     },
     {
       title: "A1 Tantra",
-      description: "उच्च-प्रदर्शन आध्यात्मिक मार्गदर्शन मंच। सर्वरलेस लीड-जेनरेशन आर्किटेक्चर के साथ उप-सेकंड मल्टी-पेज नेविगेशन प्राप्त किया।",
+      description: "उच्च-प्रदर्शन आध्यात्मिक मार्गदर्शन मंच। सर्वरलेस लीड-जेनरेशन आर्किটেक्चर के साथ उप-सेकंड मल्टी-पेज नेविगेशन प्राप्त किया।",
       tags: ["Next.js", "Tailwind", "SEO"],
       color: "#eab308",
       link: "https://a1-tantra.vercel.app/",
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
-      specs: ["// उप_सेकंड_नेविगेशन", "// सर्वरलेस_लीड्स", "// अनुकूलित_सौंदर्यशास्त्र_"]
+      specs: ["// उप_सेकند_नेविगेशन", "// सर्वरलेस_लीड्स", "// अनुकूलित_सौंदर्यशास्त्र_"]
     }
   ],
   fr: [
@@ -414,7 +414,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     {
       title: "Velocity",
       description: "Optimiseur de barre d'état système Windows réduisant la RAM de WhatsApp de 370 Mo à 90 Mo. Implémente le gouverneur CPU EcoQoS et la réduction automatique de la mémoire.",
-      tags: ["C++", "Win32", "Optimisation"],
+      tags: ["C++", "Win32", "Optimization"],
       color: "#f43f5e",
       link: "https://github.com/HarshalPatel1972/velocity",
       slug: "velocity",
@@ -424,7 +424,7 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
     {
       title: "WinLight",
       description: "Recherche de type Spotlight alimentée par Rust indexant plus de 50 000 fichiers. Correspondance classée multi-stratégies renvoyant des résultats en moins de 100 ms.",
-      tags: ["Rust", "Tauri", "Algorithmes"],
+      tags: ["Rust", "Tauri", "Algorithms"],
       color: "#3b82f6",
       link: "https://github.com/HarshalPatel1972/win-light",
       slug: "win-light",
@@ -440,6 +440,78 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
       specs: ["// NAV_INF_SECONDE", "// PROSPECTS_SERVERLESS", "// ESTHÉTIQUE_OPTIMISÉE"]
+    }
+  ],
+  id: [
+    {
+      title: "Aero",
+      description: "Transfer file lokal generasi berikutnya yang mencapai 100MB/s+ melalui LAN. Aplikasi desktop kaya fitur dengan E2EE (AES-256-CTR) dan jabat tangan optik zero-trust.",
+      tags: ["Go", "Wails", "React", "Crypto"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
+      mobileScreenshot: "/screenshots_phone/Aero.jpg",
+      specs: ["// KECEPATAN_100MBPS+", "// E2EE_AES_256", "// TANPA_PROTOKOL_CLOUD"]
+    },
+    {
+      title: "RIFT",
+      description: "Jembatan pengetikan udara tanpa gesekan. Mengubah ponsel cerdas apa pun menjadi perangkat input PC berperformansi tinggi melalui WebSockets dan Win32 API tanpa pemasangan aplikasi.",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
+      mobileScreenshot: "/screenshots_phone/Rift.jpg",
+      specs: ["// LATENSI_SUB_50MS", "// AUTH_TANPA_GESEKAN", "// WRAPPER_HEADLESS"]
+    },
+    {
+      title: "Momentum",
+      description: "Jembatan antara Agen AI dan saku Anda. Sistem persetujuan jarak jauh untuk Cursor/Windsurf melalui Telegram, menjaga eksekusi berisiko tinggi tetap aman.",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
+      mobileScreenshot: "/screenshots_phone/Momentum.jpg",
+      specs: ["// SIAP_MCP", "// JEMBATAN_TELEGRAM", "// EKSEKUSI_JARAK_JAUH_AMAN"]
+    },
+    {
+      title: "GoSync",
+      description: "Mesin sinkronisasi offline-first menggunakan Merkle Trees untuk sinkronisasi delta. Mengoptimalkan transfer data hingga 70% dengan penyimpanan dingin IndexedDB.",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
+      mobileScreenshot: "/screenshots_phone/GoSync.jpg",
+      specs: ["// SYNC_DELTA_70%", "// VALIDASI_MERKLE_TREE", "// OFFLINE_FIRST"]
+    },
+    {
+      title: "Velocity",
+      description: "Pengoptimal sistem tray Windows yang mengurangi RAM WhatsApp dari 370MB menjadi 90MB. Mengimplementasikan pengatur CPU EcoQoS dan pemangkasan memori otomatis.",
+      tags: ["C++", "Win32", "Optimization"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
+      mobileScreenshot: "/screenshots_phone/Velocity.jpg",
+      specs: ["// PENGHEMATAN_RAM_75%", "// PRIORITAS_ECO_QOS", "// MESIN_PEMANGKAS_MEMORI"]
+    },
+    {
+      title: "WinLight",
+      description: "Pencarian mirip Spotlight bertenaga Rust yang mengindeks 50.000+ berkas. Pencocokan peringkat multi-strategi yang mengembalikan hasil dalam waktu kurang dari 100ms.",
+      tags: ["Rust", "Tauri", "Algorithms"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
+      mobileScreenshot: "/screenshots_phone/Win-light.jpg",
+      specs: ["// INDEKS_50RB_BERKAS", "// LATENSI_SUB_100MS", "// KONKURENSI_RUST"]
+    },
+    {
+      title: "A1 Tantra",
+      description: "Platform bimbingan spiritual berperformansi tinggi. Mencapai navigasi multi-halaman dalam waktu kurang dari sedetik dengan arsitektur serverless pembangkit prospek.",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
+      mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
+      specs: ["// NAV_SUB_DETIK", "// PROSPEK_SERVERLESS", "// ESTETIKA_TEROPTIMALASI"]
     }
   ]
 };

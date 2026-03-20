@@ -14,7 +14,8 @@ export function LanguageSelector() {
     { code: 'ko', label: '한국어' },
     { code: 'zh-tw', label: '繁體中文' },
     { code: 'hi', label: 'हिन्दी' },
-    { code: 'fr', label: 'Français' }
+    { code: 'fr', label: 'Français' },
+    { code: 'id', label: 'Indonesia' }
   ] as const;
 
   // Close when clicking outside

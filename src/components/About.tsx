@@ -215,7 +215,7 @@ export function About() {
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`} style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-             {language === 'en' ? "ORIGIN" : language === 'ja' ? "起源" : language === 'ko' ? "기원" : language === 'zh-tw' ? "起源" : language === 'fr' ? "ORIGINE" : "मूल"}
+             {language === 'en' ? 'ORIGIN' : language === 'ja' ? '源' : language === 'ko' ? '기원' : language === 'zh-tw' ? '關於' : language === 'fr' ? 'ORIGINE' : language === 'id' ? 'ASAL' : 'मूल'}
           </h2>
       </div>
 
@@ -224,13 +224,13 @@ export function About() {
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className={`absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-              {language === 'en' ? 'CHAPTER 02' : language === 'ja' ? '第二章' : language === 'ko' ? '제 2 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 02' : 'अध्याय 02'}
+              {language === 'en' ? 'CHAPTER 02' : language === 'ja' ? '第二章' : language === 'ko' ? '제 2 장' : language === 'zh-tw' ? '第二章' : language === 'fr' ? 'CHAPITRE 02' : language === 'id' ? 'BAB 02' : 'अध्याय 02'}
             </div>
             
             <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
                <div>
                  <h3 className={`text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-[-0.02em] leading-[0.85] mb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                   {language === 'en' ? "Software" : language === 'ja' ? "ソフトウェア" : language === 'ko' ? "소프트웨어" : language === 'zh-tw' ? "軟體" : language === 'fr' ? "Ingénieur" : "सॉफ्टवेयर"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : language === 'ja' ? "エンジニア" : language === 'ko' ? "엔지니어" : language === 'zh-tw' ? "工程師" : language === 'fr' ? "Logiciel" : "इंजीनियर"}</span>
+                   {language === 'en' ? "Software" : language === 'ja' ? "ソフトウェア" : language === 'ko' ? "소프트웨어" : language === 'zh-tw' ? "軟體" : language === 'fr' ? "Ingénieur" : language === 'id' ? "Insinyur" : "सॉफ्टवेयर"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : language === 'ja' ? "エンジニア" : language === 'ko' ? "엔지니어" : language === 'zh-tw' ? "工程師" : language === 'fr' ? "Logiciel" : language === 'id' ? "Perangkat Lunak" : "इंजीनियर"}</span>
                  </h3>
                  <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
                    {currentProfile.bio}
@@ -252,7 +252,7 @@ export function About() {
                          {currentProfile.education.gpa}
                        </div>
                        <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
-                          {language === 'en' ? "Academic Topper" : language === 'ja' ? "成績優秀者" : language === 'ko' ? "성적 우수자" : language === 'zh-tw' ? "成績優秀者" : language === 'fr' ? "Major de Promotion" : "अकादमिक टॉपर"}
+                          {language === 'en' ? "Academic Topper" : language === 'ja' ? "成績優秀者" : language === 'ko' ? "성적 우수자" : language === 'zh-tw' ? "成績優秀者" : language === 'fr' ? "Major de Promotion" : language === 'id' ? "Lulusan Terbaik" : "अकादमिक टॉपर"}
                        </div>
                     </div>
                  </div>
@@ -260,7 +260,7 @@ export function About() {
                
                <div className="hidden lg:flex justify-end items-center relative h-full">
                   <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
-                     {language === 'en' ? "DEVELOPER" : language === 'ja' ? "開発者" : language === 'ko' ? "개발자" : language === 'zh-tw' ? "開發者" : language === 'fr' ? "DÉVELOPPEUR" : "डेवलपर"}
+                          {language === "en" ? "DESCRIPTION" : language === "ja" ? "説明" : language === "ko" ? "설명" : language === "zh-tw" ? "描述" : language === "fr" ? "DESCRIPTION" : language === "id" ? "DESKRIPSI" : "विवरण"}
                   </div>
                </div>
             </div>

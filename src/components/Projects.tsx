@@ -52,10 +52,10 @@ export function Projects() {
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
-             {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : language === 'ko' ? '제 1 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 01' : 'अध्याय 01'}
+             {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : language === 'ko' ? '제 1 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 01' : language === 'id' ? 'BAB 01' : 'अध्याय 01'}
            </div>
            <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
-             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : language === 'ko' ? <>선정된<br/>작품</> : language === 'zh-tw' ? <>精選<br/>作品集</> : language === 'fr' ? <>TRAVAUX <br/> SÉLECTIONNÉS</> : <>चुनिंदा <br/> कार्य</>}
+             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : language === 'ko' ? <>선정된<br/>작품</> : language === 'zh-tw' ? <>精選<br/>作品集</> : language === 'fr' ? <>TRAVAUX <br/> SÉLECTIONNÉS</> : language === 'id' ? <>KARYA <br/> TERPILIH</> : <>चुनिंदा <br/> कार्य</>}
            </h2>
         </div>
         <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">

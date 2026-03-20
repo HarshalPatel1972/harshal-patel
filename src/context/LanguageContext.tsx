@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type Language = "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr";
+type Language = "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr" | "id";
 
 interface LanguageContextType {
   language: Language;
@@ -18,7 +18,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("mappa-lang") as Language;
-    if (saved === "ja" || saved === "en" || saved === "ko" || saved === "zh-tw" || saved === "hi" || saved === "fr") {
+    if (saved === "ja" || saved === "en" || saved === "ko" || saved === "zh-tw" || saved === "hi" || saved === "fr" || saved === "id") {
       setLanguageState(saved);
     }
   }, []);
