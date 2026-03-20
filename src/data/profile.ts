@@ -208,5 +208,47 @@ export const profile = {
       { name: "Python / AI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  fr: {
+    name: "Harshal Patel",
+    title: "Ingénieur Logiciel",
+    tagline: "Construction de systèmes haute performance avec Go, TypeScript & WebAssembly",
+    bio: "Étudiant ingénieur logiciel en début de carrière avec une expérience pratique de la mise en œuvre de systèmes logiciels sur trois piles technologiques (Go, WebAssembly, TypeScript) et la résolution de plus de 300 problèmes algorithmiques. Spécialisé dans l'optimisation du runtime et de la mémoire sous des contraintes inférieures à 200 ms.",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
+    location: "Varanasi, Inde",
+    
+    education: {
+      school: "Université de Chandigarh",
+      degree: "B.E. CSE (AIML)",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "Stagiaire Développeur Front-End",
+        period: "Mai 2025 – Oct 2025",
+        description: "Développement de plus de 15 composants React réutilisables pour des tableaux de bord ; Intégration de l'API Shazam pour les archives musicales ; Conception d'un suivi de flux de travail Kanban en 5 étapes et plus ; Mise en œuvre de plus de 10 fonctionnalités interactives à l'aide de Syncfusion.",
+      },
+      {
+        company: "Internshala",
+        role: "Stagiaire en Science des Données",
+        period: "Juin 2024 – Août 2024",
+        description: "Traitement de plus de 5000 fiches de vente via Tableau ; Construction d'un modèle de régression logistique avec une précision de 85 % ; Amélioration de la planification des stocks de 20 % grâce à la prévision par moyenne mobile ; Optimisation de l'efficacité de la formation de 25 %.",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / Systèmes", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / IA", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

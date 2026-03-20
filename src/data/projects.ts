@@ -9,7 +9,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[] } = {
   en: [
     {
       title: "Aero",
@@ -368,6 +368,78 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
       specs: ["// उप_सेकंड_नेविगेशन", "// सर्वरलेस_लीड्स", "// अनुकूलित_सौंदर्यशास्त्र_"]
+    }
+  ],
+  fr: [
+    {
+      title: "Aero",
+      description: "Transfert de fichiers locaux de nouvelle génération atteignant plus de 100 Mo/s sur LAN. Application de bureau riche en fonctionnalités avec E2EE (AES-256-CTR) et poignée de main optique zéro confiance.",
+      tags: ["Go", "Wails", "React", "Crypto"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
+      mobileScreenshot: "/screenshots_phone/Aero.jpg",
+      specs: ["// VITESSE_100MO/S+", "// E2EE_AES_256", "// SANS_PROTOCOLE_CLOUD"]
+    },
+    {
+      title: "RIFT",
+      description: "Pont de saisie aérienne sans friction. Transforme n'importe quel smartphone en un périphérique d'entrée PC haute performance via WebSockets et l'API Win32 sans installation d'application.",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
+      mobileScreenshot: "/screenshots_phone/Rift.jpg",
+      specs: ["// LATENCE_INF_50MS", "// AUTH_SANS_FRICTION", "// WRAPPER_HEADLESS"]
+    },
+    {
+      title: "Momentum",
+      description: "Le pont entre les agents IA et votre poche. Système d'approbation à distance pour Cursor/Windsurf via Telegram, sécurisant les exécutions à haut risque.",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
+      mobileScreenshot: "/screenshots_phone/Momentum.jpg",
+      specs: ["// PRÊT_MCP", "// PONT_TELEGRAM", "// EXEC_DISTANTE_SÉCURISÉE"]
+    },
+    {
+      title: "GoSync",
+      description: "Moteur de synchronisation offline-first utilisant des arbres de Merkle pour la synchronisation différentielle. Accélération du transfert de données jusqu'à 70 % avec le stockage à froid IndexedDB.",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
+      mobileScreenshot: "/screenshots_phone/GoSync.jpg",
+      specs: ["// SYNC_DIFF_70%", "// VALIDATION_MERKLE", "// OFFLINE_FIRST"]
+    },
+    {
+      title: "Velocity",
+      description: "Optimiseur de barre d'état système Windows réduisant la RAM de WhatsApp de 370 Mo à 90 Mo. Implémente le gouverneur CPU EcoQoS et la réduction automatique de la mémoire.",
+      tags: ["C++", "Win32", "Optimisation"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
+      mobileScreenshot: "/screenshots_phone/Velocity.jpg",
+      specs: ["// ÉCONOMIE_RAM_75%", "// PRIORITÉ_ECO_QOS", "// MOTEUR_RÉDUCTION_MÉMOIRE"]
+    },
+    {
+      title: "WinLight",
+      description: "Recherche de type Spotlight alimentée par Rust indexant plus de 50 000 fichiers. Correspondance classée multi-stratégies renvoyant des résultats en moins de 100 ms.",
+      tags: ["Rust", "Tauri", "Algorithmes"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
+      mobileScreenshot: "/screenshots_phone/Win-light.jpg",
+      specs: ["// INDEX_50K_FICHIERS", "// LATENCE_INF_100MS", "// CONCURRENCE_RUST"]
+    },
+    {
+      title: "A1 Tantra",
+      description: "Plateforme de guidance spirituelle haute performance. Navigation multipage en moins d'une seconde avec une architecture serverless de génération de prospects.",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
+      mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
+      specs: ["// NAV_INF_SECONDE", "// PROSPECTS_SERVERLESS", "// ESTHÉTIQUE_OPTIMISÉE"]
     }
   ]
 };

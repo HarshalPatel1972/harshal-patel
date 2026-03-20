@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useLanguage } from '@/context/LanguageContext';
 import { OFUDA_FACTS } from '@/lib/ofudaFacts';
 import { getNextFact } from '@/lib/ofudaMemory';
 import { animate as anime, stagger } from 'animejs';
@@ -46,6 +47,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
 };
  
 const ExorcistsScroll: React.FC = () => {
+  const { language } = useLanguage();
   const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
   const [mounted, setMounted] = useState(false);
   const [showShutters, setShowShutters] = useState(false);
@@ -54,7 +56,8 @@ const ExorcistsScroll: React.FC = () => {
  
   const handleCardClick = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const { fact } = getNextFact(OFUDA_FACTS);
+    const currentFacts = OFUDA_FACTS[language] || OFUDA_FACTS['en'];
+    const { fact } = getNextFact(currentFacts);
     setActiveCard({ id, fact, isAssembled: false, rect });
     setTimeout(() => setShowShutters(true), 50);
     setTimeout(() => {

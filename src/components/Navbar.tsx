@@ -12,7 +12,7 @@ type NavItem = {
 };
 
 type NavItems = {
-  [key in "en" | "ja" | "ko" | "zh-tw" | "hi"]: NavItem[];
+  [key in "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr"]: NavItem[];
 };
 
 const NAV_ITEMS: NavItems = {
@@ -45,6 +45,12 @@ const NAV_ITEMS: NavItems = {
     { id: "projects", label: "कार्य", percent: 33 },
     { id: "about", label: "मूल", percent: 65 },
     { id: "contact", label: "संपर्क", percent: 95 },
+  ],
+  fr: [
+    { id: "hero", label: "ACCUEIL", percent: 5 },
+    { id: "projects", label: "TRAVAUX", percent: 33 },
+    { id: "about", label: "ORIGINE", percent: 65 },
+    { id: "contact", label: "CONTACT", percent: 95 },
   ]
 };
 

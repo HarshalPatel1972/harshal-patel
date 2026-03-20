@@ -55,11 +55,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             language === 'ko' ? selectedQuote.ko : 
             language === 'zh-tw' ? selectedQuote["zh-tw"] : 
             language === 'hi' ? (selectedQuote.hi || selectedQuote.en) :
+            language === 'fr' ? selectedQuote.fr :
             selectedQuote.en,
       author: language === 'ja' ? character.ja.name : 
               language === 'ko' ? character.ko.name : 
               language === 'zh-tw' ? character["zh-tw"].name : 
               language === 'hi' ? (character.hi?.name || character.en.name) :
+              language === 'fr' ? character.fr.name :
               character.en.name,
       image: character.image,
       overrideOpacity: character.opacity

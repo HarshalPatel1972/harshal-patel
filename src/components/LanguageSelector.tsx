@@ -13,7 +13,8 @@ export function LanguageSelector() {
     { code: 'ja', label: '日本語' },
     { code: 'ko', label: '한국어' },
     { code: 'zh-tw', label: '繁體中文' },
-    { code: 'hi', label: 'हिन्दी' }
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'fr', label: 'Français' }
   ] as const;
 
   // Close when clicking outside
