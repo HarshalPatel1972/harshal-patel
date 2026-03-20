@@ -102,11 +102,7 @@ const ExorcistsScroll: React.FC = () => {
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
       
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-90 pointer-events-none z-0 opacity-10 select-none">
-            <h2 className="text-[12rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter font-display text-red-600">
-               {language === 'en' ? 'CHRONICLES' : language === 'ja' ? '年代記' : language === 'ko' ? '연대기' : language === 'zh-tw' ? '編年史' : language === 'fr' ? 'CHRONIQUES' : language === 'id' ? 'KRONIK' : 'इतिहास'}
-            </h2>
-        </div>
+        {/* Simplified: Removed background Chronicles header */}
 
         {segments.map((s) => (
           <div 
@@ -153,12 +149,7 @@ const ExorcistsScroll: React.FC = () => {
           </div>
         ))}
 
-        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-red-600">
-                {language === 'en' ? 'SCROLL TO UNSEAL' : language === 'ja' ? 'スクロールで解印' : language === 'ko' ? '스크롤하여 봉인 해제' : language === 'zh-tw' ? '捲動解封' : language === 'fr' ? 'DÉROLLER POUR DÉSCELLER' : language === 'id' ? 'GULIR UNTUK MEMBUKA SEGEL' : 'सील खोलने के लिए स्क्रॉल करें'}
-            </span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-red-600 to-transparent" />
-        </div>
+        {/* Simplified: Removed Scroll Flow indicator */}
       </div>
 
       {mounted && activeCard && createPortal(
@@ -191,9 +182,7 @@ const ExorcistsScroll: React.FC = () => {
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
-                         <div className="text-red-600/20 font-bold text-xl md:text-2xl lg:text-3xl whitespace-nowrap rotate-[-90deg] origin-center uppercase tracking-tighter">
-                            {language === 'en' ? 'VOID FRAGMENTS' : language === 'ja' ? '虚無の断片' : language === 'ko' ? '공허의 파편' : language === 'zh-tw' ? '虛空碎片' : language === 'fr' ? 'FRAGMENTS DU VIDE' : language === 'id' ? 'FRAGMEN HAMPA' : 'शून्य के अंश'}
-                         </div>
+                         {/* Simplified: Removed Void Fragments text from shutter */}
                       </div>
                    );
                 })}
