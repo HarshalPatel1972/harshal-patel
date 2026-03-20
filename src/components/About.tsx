@@ -219,7 +219,7 @@ export function About() {
           </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-[10px] md:mt-[98px]">
+      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-[10px] md:mt-32">
         
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">

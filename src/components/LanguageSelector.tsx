@@ -32,7 +32,7 @@ export function LanguageSelector() {
   return (
     <div 
       ref={containerRef}
-      className="fixed left-[11px] top-[52px] z-[70] flex flex-col group"
+      className="fixed left-[11px] top-[52px] md:top-14 z-[70] flex flex-col group"
     >
       {/* Trigger Icon */}
       <button
