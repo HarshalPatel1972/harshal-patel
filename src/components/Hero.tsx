@@ -1,9 +1,84 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import ExorcistsScroll from './ui/ExorcistsScroll';
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
+
+// ─── Sub-Component: Build Animation (Hammer Strike) ──────────────────────────
+function BuildAnimation({ activeProgress, word }: { activeProgress: number; word: string }) {
+  const [hits, setHits] = useState<boolean[]>(new Array(word.length).fill(false));
+  const [hammerPos, setHammerPos] = useState({ x: 0, y: -40, rotation: -45, opacity: 0 });
+  const [hasTriggered, setHasTriggered] = useState(false);
+  const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    if (activeProgress >= 0.85 && !hasTriggered) {
+      setHasTriggered(true);
+      let p = 0;
+      const strike = async () => {
+        for (let i = 0; i < word.length; i++) {
+          const el = letterRefs.current[i];
+          if (!el) continue;
+          
+          // Move to letter
+          setHammerPos((prev: any) => ({ ...prev, x: el.offsetLeft + el.offsetWidth/2 - 10, rotation: -45, opacity: 1 }));
+          await new Promise(r => setTimeout(r, 100));
+          
+          // Swing Down
+          setHammerPos((prev: any) => ({ ...prev, y: -5, rotation: 0 }));
+          await new Promise(r => setTimeout(r, 120));
+          
+          // Hit!
+          setHits((prev: boolean[]) => { const next = [...prev]; next[i] = true; return next; });
+          
+          // Bounce Up
+          setHammerPos((prev: any) => ({ ...prev, y: -20, rotation: -30 }));
+          await new Promise(r => setTimeout(r, 80));
+          
+          setHammerPos((prev: any) => ({ ...prev, y: -40 }));
+          await new Promise(r => setTimeout(r, 60));
+        }
+        // Exit
+        setHammerPos((prev: any) => ({ ...prev, y: -80, opacity: 0 }));
+      };
+      strike();
+    }
+  }, [activeProgress, hasTriggered, word.length]);
+
+  return (
+    <span className="relative inline-block">
+      {word.split('').map((char, i) => (
+        <span 
+          key={i} 
+          ref={el => { letterRefs.current[i] = el; }}
+          className="inline-block transition-opacity duration-100"
+          style={{ 
+            opacity: hits[i] ? 1 : 0,
+            transformOrigin: 'bottom',
+            animation: hits[i] ? 'hero-hammer-squish 150ms ease-out' : 'none'
+          }}
+        >
+          {char}
+        </span>
+      ))}
+      <div 
+        className="absolute pointer-events-none transition-all duration-100 ease-out"
+        style={{ 
+          left: 0, 
+          top: 0, 
+          opacity: hammerPos.opacity,
+          transform: `translate(${hammerPos.x}px, ${hammerPos.y}px) rotate(${hammerPos.rotation}deg)`
+        }}
+      >
+        <svg width="20" height="28" viewBox="0 0 20 28" className="text-[var(--accent-blood)]">
+          <rect x="2" y="0" width="16" height="10" rx="2" fill="currentColor"/>
+          <rect x="8" y="10" width="4" height="18" rx="1" fill="currentColor"/>
+        </svg>
+      </div>
+    </span>
+  );
+}
 
 export function Hero() {
   const { language } = useLanguage();
@@ -163,6 +238,8 @@ export function Hero() {
                               </span>
                             );
                           })
+                        ) : isBuild ? (
+                          <BuildAnimation activeProgress={activeProgress} word={word} />
                         ) : word}
 
                         {/* Special Effect: Finding Glass */}
@@ -183,7 +260,7 @@ export function Hero() {
                         {/* Special Effect: Build Underline */}
                         {isBuild && (
                           <span 
-                            className="absolute bottom-0 left-0 h-[1.5px] bg-[var(--accent-blood)] pointer-events-none transition-all duration-500 ease-out"
+                            className="absolute bottom-[-4px] left-0 h-[1.5px] bg-[var(--accent-blood)] pointer-events-none transition-all duration-500 ease-out underline-spacer"
                             style={{ width: showSpecial ? '100%' : '0%' }}
                           />
                         )}
@@ -281,6 +358,11 @@ export function Hero() {
           50% { transform: translateX(-1px); }
           75% { transform: translateX(1px); }
           100% { transform: translateX(0); }
+        }
+        @keyframes hero-hammer-squish {
+          0% { transform: scaleY(1); }
+          30% { transform: scaleY(0.75); }
+          100% { transform: scaleY(1); }
         }
         @keyframes hero-scan {
           0% { transform: translateX(-100%) scale(1); opacity: 0; }
