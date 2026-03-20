@@ -362,7 +362,8 @@ export default function HeroLights({ chargeLevel }: HeroLightsProps) {
           }
         }
         if (line.linePhase === 'seeking') {
-          line.speed = 3.5;
+          // Gradually ramp up speed — no instant jump
+          line.speed = Math.min(3.2, line.speed + 0.04);
           if (Math.hypot(line.x - curPosRef.current.x, line.y - curPosRef.current.y) < 10) {
             line.linePhase = 'absorbed';
             chargeLevel.current = Math.min(LINE_COUNT, chargeLevel.current + 1);
@@ -384,7 +385,17 @@ export default function HeroLights({ chargeLevel }: HeroLightsProps) {
     // ── Events ───────────────────────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
       curPosRef.current = { x: e.clientX, y: e.clientY };
-      if (phaseRef.current === 'idle') { phaseRef.current = 'absorption'; for (const l of linesRef.current) l.linePhase = 'seeking'; }
+      // Only switch to absorption if cursor is inside the hero section viewport
+      if (phaseRef.current === 'idle') {
+        const heroEl = document.getElementById('hero');
+        if (heroEl) {
+          const r = heroEl.getBoundingClientRect();
+          if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+            phaseRef.current = 'absorption';
+            for (const l of linesRef.current) l.linePhase = 'seeking';
+          }
+        }
+      }
     };
     const onClick = (e: MouseEvent) => {
       if (phaseRef.current === 'absorption' && chargeLevel.current >= LINE_COUNT) doRelease(e.clientX, e.clientY);
