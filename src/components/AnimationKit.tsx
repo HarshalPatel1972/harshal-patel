@@ -6,8 +6,8 @@ import { animate as anime } from "animejs";
 /**
  * 🧲 Magnetic Cursor — Elements gently pull toward the mouse on hover
  */
-export function useMagnetic(strength: number = 0.3) {
-  const ref = useRef<HTMLElement>(null);
+export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: number = 0.3) {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const el = ref.current;
