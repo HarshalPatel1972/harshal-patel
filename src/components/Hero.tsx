@@ -55,19 +55,47 @@ export function Hero() {
 
   // ─── SCROLL TRACKER ENGINE ───
   useEffect(() => {
+    let ticking = false;
+    let animationFrameId: number;
+
     const handleScroll = () => {
-      if (!trackRef.current) return;
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      setScrollProgress(progress);
+      if (!ticking) {
+        animationFrameId = window.requestAnimationFrame(() => {
+          if (!trackRef.current) {
+            ticking = false;
+            return;
+          }
+          // ⚡ Bolt Performance Optimization:
+          // Batching DOM reads (window.scrollY, trackRef.current.offsetTop, trackRef.current.offsetHeight)
+          // inside requestAnimationFrame to prevent layout thrashing on high-frequency scroll events.
+          const st = window.scrollY;
+          const sectionOffset = trackRef.current.offsetTop;
+          const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+
+          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+          setScrollProgress(progress);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Initial call to set correct progress, we invoke directly since we know we aren't ticking yet
+    if (trackRef.current) {
+      const st = window.scrollY;
+      const sectionOffset = trackRef.current.offsetTop;
+      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+      setScrollProgress(progress);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, []);
 
   // Compute transform values based on scroll progress
