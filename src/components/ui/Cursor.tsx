@@ -6,11 +6,7 @@ export interface CursorHandle {
   getSpherePositions: () => { x: number; y: number }[];
 }
 
-interface CursorProps {
-  chargeLevel: React.MutableRefObject<number>;
-}
-
-const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
+const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const [isTouch, setIsTouch] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -129,30 +125,9 @@ const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      // ── chargeLevel-based color + glow (13 lines total) ──────────────────
-      const cl = Math.min(chargeLevel.current, 13);
-      const ratio = cl / 13;
-      const cg = Math.round(255 - ratio * 155);
-      const cb = Math.round(255 - ratio * 155);
-      const chargeColor = cl > 0 ? `rgb(255,${cg},${cb})` : BONE;
-      const charging = cl > 0 && hoverType.current === 'none' && burstFlash.current === 0;
+      // ── Sphere color ──────────────────────────────────────────────────────
+      const currentColor = burstFlash.current > 0 ? BLOOD : hoverType.current !== "none" ? CYAN : BONE;
 
-      // Outer glow ring at full charge
-      if (cl >= 13 && hoverType.current === 'none') {
-        // Mean position of all spheres
-        let mx = 0, my = 0;
-        for (let i = 0; i < 20; i++) { mx += px.current[i]; my += py.current[i]; }
-        mx /= 20; my /= 20;
-        const pulse = (Math.sin(Date.now() * 0.008) + 1) / 2;
-        ctx.save();
-        ctx.beginPath(); ctx.arc(mx, my, 18, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255,80,80,${0.2 + pulse * 0.3})`;
-        ctx.lineWidth = 1.5; ctx.shadowBlur = 12; ctx.shadowColor = '#ff4444';
-        ctx.stroke(); ctx.restore();
-      }
-
-      // Base sphere color
-      const currentColor = burstFlash.current > 0 ? BLOOD : hoverType.current !== "none" ? CYAN : chargeColor;
 
       for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
@@ -195,15 +170,6 @@ const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
         if (i === 0 && hoverType.current === "play") continue;
         const x = px.current[i], y = py.current[i];
 
-        // Apply charge glow
-        if (charging) {
-          const pulse = cl >= 13 ? (Math.sin(Date.now() * 0.008) + 1) / 2 : 0;
-          ctx.shadowBlur = cl >= 13 ? 35 + pulse * 12 : ratio * 35;
-          ctx.shadowColor = '#ff4444';
-        } else {
-          ctx.shadowBlur = 0;
-        }
-
         ctx.beginPath(); ctx.arc(x, y, PSIZE, 0, Math.PI * 2); ctx.fillStyle = currentColor; ctx.fill();
 
         if (burstFlash.current === 0) {
@@ -231,7 +197,7 @@ const Cursor = forwardRef<CursorHandle, CursorProps>(({ chargeLevel }, ref) => {
       document.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("mousedown", onMouseDown);
     };
-  }, [isTouch, chargeLevel]);
+  }, [isTouch]);
 
   if (isTouch) return null;
 

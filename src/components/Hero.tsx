@@ -4,13 +4,8 @@ import { useMagnetic } from "./AnimationKit";
 import ExorcistsScroll from './ui/ExorcistsScroll';
 import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
-import HeroLights from "./ui/HeroLights";
 
-interface HeroProps {
-  chargeLevel: React.MutableRefObject<number>;
-}
-
-export function Hero({ chargeLevel }: HeroProps) {
+export function Hero() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
   const containerRef = useRef<HTMLDivElement>(null);
@@ -166,9 +161,6 @@ export function Hero({ chargeLevel }: HeroProps) {
           </div>
 
         <div style={heroRecedeStyle} className="w-full h-full flex items-center justify-center">
-          {/* HeroLights — fixed canvas at z-[10] */}
-          <HeroLights chargeLevel={chargeLevel} />
-
           {/* Halftone / Grain Texture Base */}
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
