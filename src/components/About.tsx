@@ -209,8 +209,8 @@ export function About() {
       {/* Background Halftone Drop */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
-      {/* Vertical Kanji Watermark */}
-      <SubliminalKanji kanji="経験" position="right" />
+      {/* Vertical Watermark */}
+      <SubliminalKanji kanji={language === 'ja' || language === 'zh-tw' ? "経験" : language === 'ko' ? "경험" : language === 'hi' ? "अनुभव" : "EXPERIENCE"} position="right" />
 
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
@@ -251,17 +251,17 @@ export function About() {
                        <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
                          {currentProfile.education.gpa}
                        </div>
-                       <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
-                          {language === 'en' ? "Academic Topper" : language === 'ja' ? "成績優秀者" : language === 'ko' ? "성적 우수자" : language === 'zh-tw' ? "成績優秀者" : language === 'fr' ? "Major de Promotion" : language === 'id' ? "Lulusan Terbaik" : "अकादमिक टॉपर"}
-                       </div>
+                        <div className="text-[10px] font-bold font-sans uppercase tracking-[0.1em] opacity-60">
+                           {language === 'en' ? "Academic Topper" : language === 'ja' ? "成績優秀者" : language === 'ko' ? "성적 우수자" : language === 'zh-tw' ? "成績優秀者" : language === 'fr' ? "Major de Promotion" : language === 'id' ? "Lulusan Terbaik" : "अकादमिक टॉपर"}
+                        </div>
                     </div>
                  </div>
                </div>
                
                <div className="hidden lg:flex justify-end items-center relative h-full">
-                  <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
-                          {language === "en" ? "DESCRIPTION" : language === "ja" ? "説明" : language === "ko" ? "설명" : language === "zh-tw" ? "描述" : language === "fr" ? "DESCRIPTION" : language === "id" ? "DESKRIPSI" : "विवरण"}
-                  </div>
+                   <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
+                           {language === "en" ? "DESCRIPTION" : language === "ja" ? "説明" : language === "ko" ? "설명" : language === "zh-tw" ? "描述" : language === "fr" ? "DESCRIPTION" : language === "id" ? "DESKRIPSI" : "विवरण"}
+                   </div>
                </div>
             </div>
           </div>
@@ -271,7 +271,7 @@ export function About() {
           <ScrollReveal duration={1200} delay={200} className="w-full">
             <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
                <div className={`bg-black text-[var(--text-bone)] font-black uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-                  {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : language === 'ko' ? <>기록된<br/>경험</> : language === 'zh-tw' ? <>已記錄的<br/>工作經驗</> : language === 'fr' ? <>EXPÉRIENCE <br/> ENREGISTRÉE</> : <>दर्ज <br/> अनुभव</>}
+                   {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : language === 'ko' ? <>기록된<br/>경험</> : language === 'zh-tw' ? <>已記錄的<br/>工作經驗</> : language === 'fr' ? <>EXPÉRIENCE <br/> ENREGISTRÉE</> : language === 'id' ? <>DOKUMENTASI <br/> PENGALAMAN</> : <>दर्ज <br/> अनुभव</>}
                </div>
                
                <div className="flex flex-col bg-white">
@@ -303,13 +303,13 @@ export function About() {
             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
               
               <div className="grid grid-cols-2 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                 <MangaStat value={350} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : "एल्गोरिदम"} prefix=">" />
-                 <MangaStat value={11} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : language === 'fr' ? "Systèmes Construits" : "सिस्टम बनाए"} prefix="" />
+                  <MangaStat value={306} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : language === 'id' ? "Algoritma" : "एल्गोरिदम"} prefix=">" />
+                  <MangaStat value={11} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : language === 'fr' ? "Systèmes Construits" : language === 'id' ? "Sistem Dibangun" : "सिस्टम बनाए"} prefix="" />
               </div>
 
               <div ref={skillsRef} className="flex flex-col gap-6">
                  <h4 className={`text-[var(--text-bone)] font-black text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : language === 'zh-tw' ? "核心專業領域" : language === 'fr' ? "Expertise Fondamentale" : "मुख्य विशेषज्ञता"}
+                     {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : language === 'zh-tw' ? "核心專業領域" : language === 'fr' ? "Expertise Fondamentale" : language === 'id' ? "Keahlian Inti" : "मुख्य विशेषज्ञता"}
                     <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
                  </h4>
                  <div className="space-y-6">

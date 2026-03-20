@@ -47,7 +47,7 @@ export function Projects() {
                  before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-white before:pointer-events-none"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
-      <SubliminalKanji kanji="作品" position="left" />
+      <SubliminalKanji kanji={language === 'ja' || language === 'zh-tw' ? "作品" : language === 'ko' ? "작품" : language === 'hi' ? "कार्य" : "WORKS"} position="left" />
 
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>
@@ -69,6 +69,8 @@ export function Projects() {
               ? "展示已構建的系統及解決的技術難題。"
               : language === 'fr'
               ? "Une vitrine de systèmes construits et de problèmes techniques résolus."
+              : language === 'id'
+              ? "Kumpulan sistem yang dibangun dan masalah teknis yang diselesaikan."
               : "तैयार किए गए सिस्टम और हल की गई तकनीकी समस्याओं का एक प्रदर्शन।"}
         </p>
       </div>
@@ -100,6 +102,8 @@ export function Projects() {
                     ? "展開"
                     : language === 'fr'
                     ? "DÉPLOYER"
+                    : language === 'id'
+                    ? "EXPAND"
                     : "विस्तार"
                   ).split("_").map((word, wIdx) => (
                     <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>
@@ -182,7 +186,7 @@ export function Projects() {
                          </svg>
                        </div>
                        <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                          {language === 'en' ? (isLoading ? "Loading..." : "View Project") : language === 'ja' ? (isLoading ? "読み込み中..." : "プロジェクトを見る") : language === 'ko' ? (isLoading ? "로딩 중..." : "프로젝트 보기") : language === 'zh-tw' ? (isLoading ? "載入中..." : "查看項目") : language === 'fr' ? (isLoading ? "Chargement..." : "Voir le Projet") : (isLoading ? "लोड हो रहा है..." : "परियोजना देखें")}
+                           {language === 'en' ? (isLoading ? "Loading..." : "View Project") : language === 'ja' ? (isLoading ? "読み込み中..." : "プロジェクトを見る") : language === 'ko' ? (isLoading ? "로딩 중..." : "프로젝트 보기") : language === 'zh-tw' ? (isLoading ? "載入中..." : "查看項目") : language === 'fr' ? (isLoading ? "Chargement..." : "Voir le Projet") : language === 'id' ? (isLoading ? "Memuat..." : "Lihat Proyek") : (isLoading ? "लोड हो रहा है..." : "परियोजना देखें")}
                        </span>
                     </div>
                   </div>

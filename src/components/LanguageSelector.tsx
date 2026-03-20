@@ -9,13 +9,13 @@ export function LanguageSelector() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const languages = [
-    { code: 'en', label: 'English' },
-    { code: 'ja', label: '日本語' },
-    { code: 'ko', label: '한국어' },
-    { code: 'zh-tw', label: '繁體中文' },
-    { code: 'hi', label: 'हिन्दी' },
-    { code: 'fr', label: 'Français' },
-    { code: 'id', label: 'Indonesia' }
+    { code: 'en', label: 'ENG' },
+    { code: 'ja', label: 'JPN' },
+    { code: 'ko', label: 'KOR' },
+    { code: 'zh-tw', label: 'TWC' },
+    { code: 'hi', label: 'HIN' },
+    { code: 'fr', label: 'FRA' },
+    { code: 'id', label: 'IND' }
   ] as const;
 
   // Close when clicking outside
@@ -32,7 +32,7 @@ export function LanguageSelector() {
   return (
     <div 
       ref={containerRef}
-      className="fixed left-[11px] top-14 z-[70] flex flex-col group"
+      className="fixed left-[11px] top-[52px] z-[70] flex flex-col group"
     >
       {/* Trigger Icon */}
       <button

@@ -96,7 +96,7 @@ export function Contact() {
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />
 
       {/* Vertical Kanji Watermark */}
-      <SubliminalKanji kanji="連絡" position="left" />
+      <SubliminalKanji kanji={language === 'ja' ? "連絡" : language === 'zh-tw' ? "聯繫" : language === 'ko' ? "연락" : language === 'hi' ? "संपर्क" : "CONTACT"} position="left" />
 
       {/* Massive Background Typography */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
