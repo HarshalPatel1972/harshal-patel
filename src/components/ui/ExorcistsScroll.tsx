@@ -102,8 +102,6 @@ const ExorcistsScroll: React.FC = () => {
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden">
       
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
-        {/* Simplified: Removed background Chronicles header */}
-
         {segments.map((s) => (
           <div 
             key={s.id}
@@ -117,7 +115,7 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 border-red-600/60 bg-black flex flex-col items-center justify-between py-4 shadow-2xl transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_15px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
+              className="group ofuda-talisman pointer-events-auto relative w-12 md:w-20 h-32 md:h-48 border-2 border-red-600/60 bg-black flex flex-col items-center justify-between py-4 shadow-[0_0_15px_rgba(217,17,17,0.3)] transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_25px_rgba(217,17,17,0.6)] hover:scale-[1.05] cursor-pointer"
             >
                <div className="flex gap-1 opacity-80">
                   {[1,2,3].map(j => (
@@ -148,8 +146,6 @@ const ExorcistsScroll: React.FC = () => {
             </button>
           </div>
         ))}
-
-        {/* Simplified: Removed Scroll Flow indicator */}
       </div>
 
       {mounted && activeCard && createPortal(
@@ -160,7 +156,7 @@ const ExorcistsScroll: React.FC = () => {
           />
 
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-black border border-red-600/30 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`}>
+             <div className={`absolute inset-0 bg-black border border-red-600/30 flex items-center justify-center overflow-hidden transition-all duration-1000 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_50px_rgba(217,17,17,0.4)]' : 'opacity-0 scale-102'}`}>
                 <div className="absolute inset-0 blood-grid opacity-10" />
                 <div className="absolute inset-0 red-halftone opacity-5" />
                 <SystemNodes />
@@ -181,9 +177,7 @@ const ExorcistsScroll: React.FC = () => {
                            transitionDelay: showShutters ? `${i * 100}ms` : `${(3-i) * 60}ms`,
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
-                      >
-                         {/* Simplified: Removed Void Fragments text from shutter */}
-                      </div>
+                      />
                    );
                 })}
              </div>
@@ -195,7 +189,7 @@ const ExorcistsScroll: React.FC = () => {
       <style>{`
         @keyframes scroll-flow {
           0% { transform: translate3d(100vw, 20vh, 0) rotateZ(15deg) scale(0.6); opacity: 0; }
-          45%, 55% { opacity: 1; }
+          45%, 55% { opacity: 1; text-shadow: 0 0 10px rgba(217,17,17,0.5); }
           50% { transform: translate3d(0vw, 5vh, 0) rotateZ(0deg) scale(1.1); }
           100% { transform: translate3d(-100vw, -20vh, 0) rotateZ(-15deg) scale(0.6); opacity: 0; }
         }
