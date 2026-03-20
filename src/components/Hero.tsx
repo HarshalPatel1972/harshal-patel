@@ -17,32 +17,32 @@ export function Hero() {
 
   const introStages = {
     en: [
-      "Searching for speed? Facing scale's need?",
-      "A fresh eye for the win? You've reached the source. Let the building begin."
+      "I find what's broken",
+      "and build what's missing."
     ],
     ja: [
-      "速さを求めるか？ 規模に挑むか？",
-      "勝利への新たな眼差し。 ならば、ここが構築の『起源』だ。"
+      "壊れたものを見つけ、",
+      "足りないものを創る。"
     ],
     ko: [
-      "속도를 찾고 계신가요? 규모의 필요성에 직面해 계신가요?",
-      "승리를 위한 새로운 시각? 당신은 그 기원에 도달했습니다. 이제 구축을 시작합시다。"
+      "망가진 것을 찾아내어",
+      "부족한 것을 채웁니다."
     ],
     "zh-tw": [
-      "正在追求速度？需要擴展規模？",
-      "為勝利尋找新眼光？你已到達起源。現在，開始構築吧。"
+      "找出破碎之處，",
+      "構築缺失之事。"
     ],
     hi: [
-      "गति की तलाश है? स्केल की ज़रूरत है?",
-      "जीत के लिए एक नई नज़र? आप स्रोत तक पहुँच गए हैं। निर्माण शुरू करें।"
+      "मैं ढूंढता हूँ जो टूटा है,",
+      "और बनाता हूँ जो गायब है।"
     ],
     fr: [
-      "À la recherche de vitesse ? Face aux besoins d'échelle ?",
-      "Un regard neuf pour la victoire ? Vous avez atteint la source. Que la construction commence."
+      "Je trouve ce qui est brisé",
+      "et je construis ce qui manque."
     ],
     id: [
-      "Mencari kecepatan? Butuh skala?",
-      "Perspektif baru untuk kemenangan? Anda telah mencapai sumbernya. Mari mulai membangun."
+      "Saya menemukan apa yang rusak",
+      "dan membangun apa yang hilang."
     ]
   };
 
@@ -97,17 +97,16 @@ export function Hero() {
                 const end = start + 0.2;
                 const activeProgress = Math.max(0, Math.min(1, (scrollProgress - start) / (end - start)));
                 
-                const isSpecial = word.toLowerCase().includes('speed') || word.toLowerCase().includes('scale') || 
-                                  word.toLowerCase().includes('win') || word.toLowerCase().includes('source') || 
-                                  word.toLowerCase().includes('begin') ||
-                                  word.includes('速さ') || word.includes('規模') || word.includes('勝利') || 
-                                  word.includes('起源') || word.includes('構築') ||
-                                  word.includes('속도') || word.includes('규모') || word.includes('승리') || 
-                                  word.includes('기원') || word.includes('구축') ||
-                                  word.includes('速度') || word.includes('規模') || word.includes('勝利') || 
-                                  word.includes('起源') || word.includes('構築') ||
-                                  word.includes('गति') || word.includes('स्केल') || word.includes('जीत') ||
-                                  word.includes('स्रोत') || word.includes('निर्माण');
+                const cleanWord = word.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+                const isSpecial = cleanWord === 'broken' || cleanWord === 'build' || cleanWord === 'missing' ||
+                                  cleanWord === '壊れた' || cleanWord === '創る' || cleanWord === '足りない' ||
+                                  cleanWord === '망가진' || cleanWord === '부족한' || 
+                                  cleanWord === '破碎' || cleanWord === '缺失' ||
+                                  cleanWord === 'टूटा' || cleanWord === 'बनाता' || cleanWord === 'गायब' ||
+                                  cleanWord === 'brisé' || cleanWord === 'construit' || cleanWord === 'manque' ||
+                                  cleanWord === 'rusak' || cleanWord === 'membangun';
+                
+                const isBuild = cleanWord === 'build' || cleanWord === '創る' || cleanWord === 'बनाता' || cleanWord === 'membangun';
                 
                 return (
                     <span 
@@ -125,6 +124,9 @@ export function Hero() {
                           ${isSpecial ? 
                             `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
                             `text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] ${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
+                        style={{
+                          fontSize: isBuild ? '1.1em' : undefined
+                        }}
                       >
                         {word}
                       </span>
