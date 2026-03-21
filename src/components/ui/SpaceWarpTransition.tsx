@@ -6,7 +6,10 @@ import { useFlipTransition } from "@/context/FlipContext";
 export function SpaceWarpTransition() {
   const { isActive, redirectUrl } = useFlipTransition();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hasTriggeredRedirect, setHasTriggeredRedirect] = useState(false);
+  
+  // Timing state
+  const startTimeRef = useRef<number | null>(null);
+  const DURATION = 2500; // Strictly 2.5 seconds
 
   useEffect(() => {
     if (!isActive) return;
@@ -23,15 +26,11 @@ export function SpaceWarpTransition() {
 
     const stars: Star[] = [];
     const numStars = 600;
-    const speed = { val: 2.0 }; 
-    const warpProgress = { val: 0.1 }; 
-
+    
     const palette = ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
 
     class Star {
-      x: number;
-      y: number;
-      z: number;
+      x: number; y: number; z: number;
       px: number; py: number; pz: number;
       color: string;
 
@@ -42,9 +41,9 @@ export function SpaceWarpTransition() {
         this.color = palette[Math.floor(Math.random() * palette.length)];
       }
 
-      update() {
+      update(speed: number) {
         this.px = this.x; this.py = this.y; this.pz = this.z;
-        this.z -= speed.val;
+        this.z -= speed;
 
         if (this.z < 1) {
           this.z = w;
@@ -54,7 +53,7 @@ export function SpaceWarpTransition() {
         }
       }
 
-      draw() {
+      draw(progress: number) {
         const sx = (this.x / this.z) * w + w / 2;
         const sy = (this.y / this.z) * h + h / 2;
         const psx = (this.px / this.pz) * w + w / 2;
@@ -62,7 +61,8 @@ export function SpaceWarpTransition() {
 
         const alpha = Math.min(1, 1 - this.z / w);
         ctx!.strokeStyle = this.color;
-        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 3);
+        // Fade in alpha over initial progress
+        ctx!.globalAlpha = alpha * Math.min(1, progress * 4);
         ctx!.lineWidth = 1;
         
         ctx!.beginPath();
@@ -74,28 +74,30 @@ export function SpaceWarpTransition() {
 
     for (let i = 0; i < numStars; i++) stars.push(new Star());
 
-    const animate = () => {
+    const animate = (time: number) => {
+      if (!startTimeRef.current) startTimeRef.current = time;
+      const elapsed = time - startTimeRef.current;
+      const progress = Math.min(1, elapsed / DURATION);
+
+      // Black clear with slight trail
       ctx.globalAlpha = 1;
-      ctx.fillStyle = `rgba(10, 10, 10, ${0.15 + (warpProgress.val * 0.1)})`;
+      ctx.fillStyle = `rgba(10, 10, 10, ${0.15 + (progress * 0.1)})`;
       ctx.fillRect(0, 0, w, h);
 
-      if (warpProgress.val < 2.5) {
-          warpProgress.val += 0.005; 
-          speed.val = 2.0 + Math.pow(warpProgress.val, 5) * 60;
-      }
+      // Velocity curve: 2.5s strictly
+      const speed = 2.0 + Math.pow(progress, 5) * 150;
 
       stars.forEach(star => {
-        star.update();
-        star.draw();
+        star.update(speed);
+        star.draw(progress);
       });
 
-      // TRIGGER: Higher threshold, and we keep the animation running until the page unloads
-      if (warpProgress.val >= 1.8 && !hasTriggeredRedirect) {
-        setHasTriggeredRedirect(true);
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        // EXACTLY AT 2.5s -> Jump
         window.location.href = redirectUrl;
       }
-
-      animationFrameId = requestAnimationFrame(animate);
     };
 
     animationFrameId = requestAnimationFrame(animate);
@@ -109,24 +111,22 @@ export function SpaceWarpTransition() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      startTimeRef.current = null;
     };
-  }, [isActive, redirectUrl, hasTriggeredRedirect]);
+  }, [isActive, redirectUrl]);
 
   if (!isActive) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000000] bg-[#0A0A0A] overflow-hidden pointer-events-auto flex items-center justify-center">
+    <div className="fixed inset-0 z-[1000000] bg-[#0A0A0A] overflow-hidden pointer-events-none flex items-center justify-center">
       <canvas ref={canvasRef} className="w-full h-full" />
       
-      {/* Central Shine */}
+      {/* Central Shine core */}
       <div 
-        className={`absolute w-[45vw] h-[45vw] bg-white rounded-full blur-[130px] transition-all duration-3000 pointer-events-none mix-blend-screen opacity-10 ${isActive ? 'scale-150' : 'scale-0'}`} 
+        className={`absolute w-[45vw] h-[45vw] bg-white rounded-full blur-[140px] pointer-events-none mix-blend-screen opacity-10 transition-transform duration-[2.5s] ${isActive ? 'scale-[2.5]' : 'scale-0'}`} 
       />
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80 pointer-events-none" />
-      
-      {/* FINAL MASK: Subtle black-out to hide the portfolio while we wait for browser redirect */}
-      <div className={`fixed inset-0 bg-[#0A0A0A] transition-opacity duration-1000 pointer-events-none ${hasTriggeredRedirect ? 'opacity-100' : 'opacity-0'}`} style={{ zIndex: 1000001 }} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-60 pointer-events-none" />
     </div>
   );
 }
