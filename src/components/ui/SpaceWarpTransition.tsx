@@ -22,9 +22,9 @@ export function SpaceWarpTransition() {
     let h = (canvas.height = window.innerHeight);
 
     const stars: Star[] = [];
-    const numStars = 500;
-    const speed = { val: 3.0 }; // Fast start
-    const warpProgress = { val: 0.2 }; 
+    const numStars = 600;
+    const speed = { val: 2.5 }; 
+    const warpProgress = { val: 0.1 }; 
 
     // PALETTE: Blood Red, Cursed Cyan, Bone White, Pure White Flash
     const palette = ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
@@ -69,9 +69,10 @@ export function SpaceWarpTransition() {
 
         const alpha = Math.min(1, 1 - this.z / w);
         ctx!.strokeStyle = this.color;
-        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 2.5);
+        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 3);
         
-        ctx!.lineWidth = (1 + speed.val / 25) * (1 - this.z / w);
+        // NO THICKNESS INCREASE: Constant 1px for clean streaks
+        ctx!.lineWidth = 1;
         
         ctx!.beginPath();
         ctx!.moveTo(psx, psy);
@@ -84,13 +85,13 @@ export function SpaceWarpTransition() {
 
     const animate = () => {
       ctx.globalAlpha = 1;
-      ctx.fillStyle = "rgba(10, 10, 10, 0.18)"; // Ink background
+      ctx.fillStyle = "rgba(10, 10, 10, 0.2)"; // Ink background with slight trail
       ctx.fillRect(0, 0, w, h);
 
-      // Violent acceleration
+      // Controlled acceleration (Slower surge)
       if (warpProgress.val < 1.6) {
-          warpProgress.val += 0.025; 
-          speed.val = 3.0 + Math.pow(warpProgress.val, 4.5) * 200;
+          warpProgress.val += 0.012; 
+          speed.val = 2.5 + Math.pow(warpProgress.val, 4) * 120;
       }
 
       stars.forEach(star => {
@@ -99,11 +100,11 @@ export function SpaceWarpTransition() {
       });
 
       // Jump peak
-      if (warpProgress.val >= 1.25 && !isWarpingOut) {
+      if (warpProgress.val >= 1.2 && !isWarpingOut) {
         setIsWarpingOut(true);
         setTimeout(() => {
           window.location.href = redirectUrl;
-        }, 300);
+        }, 350);
       }
 
       animationFrameId = requestAnimationFrame(animate);
@@ -129,14 +130,14 @@ export function SpaceWarpTransition() {
     <div className="fixed inset-0 z-[1000000] bg-[#0A0A0A] overflow-hidden pointer-events-auto flex items-center justify-center">
       <canvas ref={canvasRef} className="w-full h-full" />
       
-      {/* Chromatic Center core */}
+      {/* Subtle chromatic center glow */}
       <div 
-        className={`absolute w-[50vw] h-[50vw] bg-white rounded-full blur-[120px] transition-all duration-700 pointer-events-none mix-blend-screen opacity-15 ${isActive ? 'scale-150' : 'scale-0'}`} 
+        className={`absolute w-[40vw] h-[40vw] bg-white rounded-full blur-[100px] transition-all duration-1000 pointer-events-none mix-blend-screen opacity-10 ${isActive ? 'scale-150' : 'scale-0'}`} 
       />
 
-      {/* Screen White-Out Flash */}
+      {/* Radial Flash-bang Bloom */}
       <div 
-        className={`fixed inset-0 bg-white transition-opacity duration-300 pointer-events-none ${isWarpingOut ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 bg-white transition-opacity duration-400 pointer-events-none ${isWarpingOut ? 'opacity-100' : 'opacity-0'}`}
         style={{ mixBlendMode: 'screen', zIndex: 1000001 }}
       />
 
