@@ -138,7 +138,7 @@ export function Projects() {
                     e.preventDefault();
                     e.stopPropagation();
                     setPreloading(true, project.slug);
-                    triggerTransition(project.slug, project.link);
+                    triggerTransition(project.slug, project.link, 'WARP');
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}

@@ -9,7 +9,8 @@ interface FlipContextType {
   screenshotSrc: string;
   gridConfig: { cols: number; rows: number };
   redirectUrl: string;
-  triggerTransition: (slug: string, redirectUrl: string) => void;
+  type: 'FLIP' | 'WARP';
+  triggerTransition: (slug: string, redirectUrl: string, type?: 'FLIP' | 'WARP') => void;
   resetTransition: () => void;
   setPreloading: (loading: boolean, slug: string | null) => void;
 }
@@ -23,6 +24,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
   const [screenshotSrc, setScreenshotSrc] = useState("");
   const [gridConfig, setGridConfig] = useState({ cols: 16, rows: 9 });
   const [redirectUrl, setRedirectUrl] = useState("");
+  const [type, setType] = useState<'FLIP' | 'WARP'>('FLIP');
 
   const resetTransition = useCallback(() => {
     setIsActive(false);
@@ -31,6 +33,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
     setScreenshotSrc("");
     setGridConfig({ cols: 16, rows: 9 });
     setRedirectUrl("");
+    setType('FLIP');
   }, []);
 
   const setPreloading = useCallback((loading: boolean, slug: string | null) => {
@@ -38,7 +41,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
     setLoadingSlug(slug);
   }, []);
 
-  const triggerTransition = useCallback((slug: string, url: string) => {
+  const triggerTransition = useCallback((slug: string, url: string, transitionType: 'FLIP' | 'WARP' = 'FLIP') => {
     const isMobile = window.innerWidth < 768;
     const normalizedSlug = slug.toLowerCase();
 
@@ -52,6 +55,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
     setScreenshotSrc(resolvedSrc);
     setGridConfig({ cols: resolvedCols, rows: resolvedRows });
     setRedirectUrl(url);
+    setType(transitionType);
     setIsActive(true);
   }, []);
 
@@ -74,6 +78,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
       screenshotSrc, 
       gridConfig, 
       redirectUrl, 
+      type,
       triggerTransition, 
       resetTransition,
       setPreloading 
