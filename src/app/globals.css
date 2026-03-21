@@ -177,6 +177,19 @@ body::before {
   animation: arrow-flow 2s linear infinite;
 }
 
+/* ─── TICKER / MARQUEE ─── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+  padding-left: 2rem;
+}
+
 /* ─── SCROLLBAR ─── */
 ::-webkit-scrollbar {
   width: 6px;
