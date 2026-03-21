@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
 
 export function SpaceWarpTransition() {
-  const { isActive, redirectUrl, resetTransition } = useFlipTransition();
+  const { isActive, redirectUrl } = useFlipTransition();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isWarpingOut, setIsWarpingOut] = useState(false);
 
@@ -22,9 +22,9 @@ export function SpaceWarpTransition() {
     let h = (canvas.height = window.innerHeight);
 
     const stars: Star[] = [];
-    const numStars = 1000;
-    const speed = { val: 0.5 };
-    const warpProgress = { val: 0 };
+    const numStars = 600;
+    const speed = { val: 2.0 }; // Faster initial speed
+    const warpProgress = { val: 0.1 }; // Start already moving
 
     class Star {
       x: number;
@@ -33,11 +33,16 @@ export function SpaceWarpTransition() {
       px: number;
       py: number;
       pz: number;
+      color: string;
 
       constructor() {
         this.px = this.x = Math.random() * w - w / 2;
         this.py = this.y = Math.random() * h - h / 2;
         this.pz = this.z = Math.random() * w;
+        
+        // Slight tinting
+        const tints = ["#ffffff", "#e0f2fe", "#f0f9ff"];
+        this.color = tints[Math.floor(Math.random() * tints.length)];
       }
 
       update() {
@@ -45,10 +50,8 @@ export function SpaceWarpTransition() {
         this.py = this.y;
         this.pz = this.z;
 
-        // Move closer
         this.z -= speed.val;
 
-        // Reset if passed camera
         if (this.z < 1) {
           this.z = w;
           this.px = this.x = Math.random() * w - w / 2;
@@ -58,18 +61,19 @@ export function SpaceWarpTransition() {
       }
 
       draw() {
-        // Perspective Projection
         const sx = (this.x / this.z) * w + w / 2;
         const sy = (this.y / this.z) * h + h / 2;
 
         const psx = (this.px / this.pz) * w + w / 2;
         const psy = (this.py / this.pz) * h + h / 2;
 
-        // Brightness based on depth
         const alpha = Math.min(1, 1 - this.z / w);
+        ctx!.strokeStyle = this.color;
+        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 2);
         
-        ctx!.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx!.lineWidth = Math.min(2, 2 * (1 - this.z / w)) * (speed.val / 5);
+        // Width increases with speed
+        ctx!.lineWidth = (1 + speed.val / 20) * (1 - this.z / w);
+        
         ctx!.beginPath();
         ctx!.moveTo(psx, psy);
         ctx!.lineTo(sx, sy);
@@ -79,15 +83,16 @@ export function SpaceWarpTransition() {
 
     for (let i = 0; i < numStars; i++) stars.push(new Star());
 
-    const animate = (time: number) => {
-      // Clear with trail effect
-      ctx.fillStyle = `rgba(0, 0, 0, ${0.1 + (warpProgress.val * 0.4)})`;
+    const animate = () => {
+      // Darker clear with heavy motion trail
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
       ctx.fillRect(0, 0, w, h);
 
-      // Increase speed over time
-      if (warpProgress.val < 1) {
-          warpProgress.val += 0.003;
-          speed.val = 0.5 + Math.pow(warpProgress.val, 5) * 400; // Exponential surge
+      // Rapid acceleration (shorter duration feel)
+      if (warpProgress.val < 1.5) {
+          warpProgress.val += 0.02; 
+          speed.val = 2.0 + Math.pow(warpProgress.val, 4) * 180;
       }
 
       stars.forEach(star => {
@@ -95,12 +100,12 @@ export function SpaceWarpTransition() {
         star.draw();
       });
 
-      // Handle redirect at peak speed
-      if (warpProgress.val >= 0.99 && !isWarpingOut) {
+      // Redirect peak
+      if (warpProgress.val >= 1.2 && !isWarpingOut) {
         setIsWarpingOut(true);
         setTimeout(() => {
           window.location.href = redirectUrl;
-        }, 300);
+        }, 350);
       }
 
       animationFrameId = requestAnimationFrame(animate);
@@ -123,27 +128,22 @@ export function SpaceWarpTransition() {
   if (!isActive) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000000] bg-black overflow-hidden pointer-events-auto">
-      <canvas 
-        ref={canvasRef} 
-        className="w-full h-full"
-      />
-      {/* Radial Bloom Overlay */}
-      <div 
-        className={`absolute inset-0 bg-white transition-opacity duration-500 pointer-events-none ${isWarpingOut ? 'opacity-100' : 'opacity-0'}`}
-        style={{ mixBlendMode: 'screen' }}
-      />
+    <div className="fixed inset-0 z-[1000000] bg-black overflow-hidden pointer-events-auto flex items-center justify-center">
+      <canvas ref={canvasRef} className="w-full h-full" />
       
-      {/* Technical HUD elements for "Pro" feel */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-          <div className={`border border-white/20 w-32 h-32 rounded-full flex items-center justify-center transition-all duration-1000 ${isActive ? 'scale-[20] opacity-0' : 'scale-1 opacity-100'}`}>
-             <div className="w-1 h-1 bg-white rounded-full animate-ping" />
-          </div>
-      </div>
+      {/* Central Glow Core */}
+      <div 
+        className={`absolute w-[60vw] h-[60vw] bg-white rounded-full blur-[100px] transition-all duration-700 pointer-events-none mix-blend-screen opacity-10 ${isActive ? 'scale-150' : 'scale-0'}`} 
+      />
 
-      <div className="absolute bottom-10 left-10 font-mono text-[10px] text-white/40 tracking-[0.5em] uppercase">
-        Engaging_Warp_Drive // Destination: {redirectUrl.split('/').pop() || 'PROJECT'}
-      </div>
+      {/* Screen White-Out Flash */}
+      <div 
+        className={`fixed inset-0 bg-white transition-opacity duration-400 pointer-events-none ${isWarpingOut ? 'opacity-100' : 'opacity-0'}`}
+        style={{ mixBlendMode: 'screen', zIndex: 1000001 }}
+      />
+
+      {/* Extreme Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80 pointer-events-none" />
     </div>
   );
 }
