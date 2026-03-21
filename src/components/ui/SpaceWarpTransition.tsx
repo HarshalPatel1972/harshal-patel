@@ -9,7 +9,7 @@ export function SpaceWarpTransition() {
   
   // Timing state
   const startTimeRef = useRef<number | null>(null);
-  const DURATION = 2500; // Strictly 2.5 seconds
+  const DURATION = 3200; // Strictly 3.2 seconds
 
   useEffect(() => {
     if (!isActive) return;
@@ -123,7 +123,7 @@ export function SpaceWarpTransition() {
       
       {/* Central Shine core */}
       <div 
-        className={`absolute w-[45vw] h-[45vw] bg-white rounded-full blur-[140px] pointer-events-none mix-blend-screen opacity-10 transition-transform duration-[2.5s] ${isActive ? 'scale-[2.5]' : 'scale-0'}`} 
+        className={`absolute w-[45vw] h-[45vw] bg-white rounded-full blur-[140px] pointer-events-none mix-blend-screen opacity-10 transition-transform duration-[3.2s] ${isActive ? 'scale-[2.5]' : 'scale-0'}`} 
       />
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-60 pointer-events-none" />
