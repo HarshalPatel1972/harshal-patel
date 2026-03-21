@@ -22,9 +22,12 @@ export function SpaceWarpTransition() {
     let h = (canvas.height = window.innerHeight);
 
     const stars: Star[] = [];
-    const numStars = 600;
-    const speed = { val: 2.0 }; // Faster initial speed
-    const warpProgress = { val: 0.1 }; // Start already moving
+    const numStars = 500;
+    const speed = { val: 3.0 }; // Fast start
+    const warpProgress = { val: 0.2 }; 
+
+    // PALETTE: Blood Red, Cursed Cyan, Bone White, Pure White Flash
+    const palette = ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
 
     class Star {
       x: number;
@@ -39,10 +42,7 @@ export function SpaceWarpTransition() {
         this.px = this.x = Math.random() * w - w / 2;
         this.py = this.y = Math.random() * h - h / 2;
         this.pz = this.z = Math.random() * w;
-        
-        // Slight tinting
-        const tints = ["#ffffff", "#e0f2fe", "#f0f9ff"];
-        this.color = tints[Math.floor(Math.random() * tints.length)];
+        this.color = palette[Math.floor(Math.random() * palette.length)];
       }
 
       update() {
@@ -69,10 +69,9 @@ export function SpaceWarpTransition() {
 
         const alpha = Math.min(1, 1 - this.z / w);
         ctx!.strokeStyle = this.color;
-        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 2);
+        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 2.5);
         
-        // Width increases with speed
-        ctx!.lineWidth = (1 + speed.val / 20) * (1 - this.z / w);
+        ctx!.lineWidth = (1 + speed.val / 25) * (1 - this.z / w);
         
         ctx!.beginPath();
         ctx!.moveTo(psx, psy);
@@ -84,15 +83,14 @@ export function SpaceWarpTransition() {
     for (let i = 0; i < numStars; i++) stars.push(new Star());
 
     const animate = () => {
-      // Darker clear with heavy motion trail
       ctx.globalAlpha = 1;
-      ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+      ctx.fillStyle = "rgba(10, 10, 10, 0.18)"; // Ink background
       ctx.fillRect(0, 0, w, h);
 
-      // Rapid acceleration (shorter duration feel)
-      if (warpProgress.val < 1.5) {
-          warpProgress.val += 0.02; 
-          speed.val = 2.0 + Math.pow(warpProgress.val, 4) * 180;
+      // Violent acceleration
+      if (warpProgress.val < 1.6) {
+          warpProgress.val += 0.025; 
+          speed.val = 3.0 + Math.pow(warpProgress.val, 4.5) * 200;
       }
 
       stars.forEach(star => {
@@ -100,12 +98,12 @@ export function SpaceWarpTransition() {
         star.draw();
       });
 
-      // Redirect peak
-      if (warpProgress.val >= 1.2 && !isWarpingOut) {
+      // Jump peak
+      if (warpProgress.val >= 1.25 && !isWarpingOut) {
         setIsWarpingOut(true);
         setTimeout(() => {
           window.location.href = redirectUrl;
-        }, 350);
+        }, 300);
       }
 
       animationFrameId = requestAnimationFrame(animate);
@@ -128,21 +126,20 @@ export function SpaceWarpTransition() {
   if (!isActive) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000000] bg-black overflow-hidden pointer-events-auto flex items-center justify-center">
+    <div className="fixed inset-0 z-[1000000] bg-[#0A0A0A] overflow-hidden pointer-events-auto flex items-center justify-center">
       <canvas ref={canvasRef} className="w-full h-full" />
       
-      {/* Central Glow Core */}
+      {/* Chromatic Center core */}
       <div 
-        className={`absolute w-[60vw] h-[60vw] bg-white rounded-full blur-[100px] transition-all duration-700 pointer-events-none mix-blend-screen opacity-10 ${isActive ? 'scale-150' : 'scale-0'}`} 
+        className={`absolute w-[50vw] h-[50vw] bg-white rounded-full blur-[120px] transition-all duration-700 pointer-events-none mix-blend-screen opacity-15 ${isActive ? 'scale-150' : 'scale-0'}`} 
       />
 
       {/* Screen White-Out Flash */}
       <div 
-        className={`fixed inset-0 bg-white transition-opacity duration-400 pointer-events-none ${isWarpingOut ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 bg-white transition-opacity duration-300 pointer-events-none ${isWarpingOut ? 'opacity-100' : 'opacity-0'}`}
         style={{ mixBlendMode: 'screen', zIndex: 1000001 }}
       />
 
-      {/* Extreme Vignette */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80 pointer-events-none" />
     </div>
   );
