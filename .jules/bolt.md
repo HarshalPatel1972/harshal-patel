@@ -1,0 +1,4 @@
+
+## 2024-05-18 - High-Frequency DOM Reads & State Updates in Scroll/Mouse Events
+**Learning:** Found an anti-pattern specific to the `AnimationKit.tsx` hooks (`useMagnetic`, `useTilt`, `useParallax`) and `Hero.tsx` scroll tracker. Calling `getBoundingClientRect()` or `setState()` synchronously inside `mousemove` and `scroll` event listeners causes severe layout thrashing and main thread blocking, as React queues renders or the browser recalculates style on every micro-movement.
+**Action:** Next time, always wrap synchronous DOM reads/writes and React state updates originating from high-frequency events inside `requestAnimationFrame` and track dispatch status using a `ticking` boolean flag to batch them up. Make sure to store event coordinates (`e.clientX`) outside the rAF callback to avoid stale closures.
