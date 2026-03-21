@@ -1,7 +1,9 @@
+import stats from "@/data/stats.json";
+
 export const OFUDA_FACTS: Record<string, string[]> = {
   en: [
     "I’ve spent more than half my life today inside a code editor. I’m starting to see the syntax when I close my eyes.",
-    "705 commits on this portfolio alone. Every single one was a battle with my own perfectionism.",
+    `${stats.commitCount} commits on this portfolio alone. Every single one was a battle with my own perfectionism.`,
     "I’ve watched Jujutsu Kaisen more than three times. Honestly, I’m still not over it.",
     "I’m currently watching the Jujutsu Kaisen Culling Game. If I'm slow to reply, you know why.",
     "Most people think I’m just a student, but actually, I’ve been building real systems while they were still learning loops.",
@@ -40,7 +42,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "I have a minor in Data Science. I like finding the patterns in the noise.",
     "I’ve seen every episode of Breaking Bad. Walter White is a lesson in what happens when you let your ego lead.",
     "I don’t just write code; I ideate. 50% of my day is just thinking about the 'why' before the 'how'.",
-    "I’ve made 889 commits to this very website. And I’m still not done.",
+    `I’ve made ${stats.commitCount} commits to this very website. And I’m still not done.`,
     "I once built a sync engine using Merkle Trees. That was a long week.",
     "The Culling Game arc in Jujutsu Kaisen is peak fiction. Change my mind.",
     "I sang 'Shape of You' for a whole hour once just to get the vocal runs right.",
@@ -52,7 +54,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
   ],
   fr: [
     "J’ai passé plus de la moitié de ma vie aujourd’hui dans un éditeur de code. Je commence à voir la syntaxe quand je ferme les yeux.",
-    "705 commits sur ce seul portfolio. Chacun était une bataille contre mon propre perfectionnisme.",
+    `${stats.commitCount} commits sur ce seul portfolio. Chacun était une bataille contre mon propre perfectionnisme.`,
     "J’ai regardé Jujutsu Kaisen plus de trois fois. Honnêtement, je ne m’en suis toujours pas remis.",
     "Je regarde actuellement le Jujutsu Kaisen Culling Game. Si je tarde à répondre, vous savez pourquoi.",
     "La plupart des gens pensent que je ne suis qu'un étudiant, mais en fait, je construisais de vrais systèmes alors qu'ils apprenaient encore les boucles.",
@@ -88,10 +90,10 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "La plupart des gens pensent que je suis calme, mais en fait, je pense juste à un projet que je n'ai pas encore commencé.",
     "Ed Sheeran est mon artiste préféré depuis des années. Son écriture est juste... efficace.",
     "J'ai utilisé Python pour la science des données, mais mon cœur reste avec Go et Rust.",
-    "J'ai une mineure en science des données. J'aime trouver des motifs dans le bruit.",
+    "J’ai une mineure en science des données. J’aime trouver des motifs dans le bruit.",
     "J’ai vu tous les épisodes de Breaking Bad. Walter White est une leçon sur ce qui arrive quand on laisse son ego diriger.",
     "Je ne me contente pas d'écrire du code ; j'idéalise. 50 % de ma journée consistent à réfléchir au 'pourquoi' avant le 'comment'.",
-    "J’ai fait 747 commits sur ce site web. Et je n’ai pas encore fini.",
+    `J’ai fait ${stats.commitCount} commits sur ce site web. Et je n’ai pas encore fini.`,
     "J'ai construit une fois un moteur de synchronisation utilisant des arbres de Merkle. C'était une longue semaine.",
     "L'arc Culling Game dans Jujutsu Kaisen est le sommet de la fiction. Dites-moi le contraire.",
     "J'ai chanté 'Shape of You' pendant une heure entière juste pour maîtriser les envolées vocales.",
@@ -103,7 +105,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
   ],
   id: [
     "Saya telah menghabiskan lebih dari separuh hidup saya hari ini di dalam editor kode. Saya mulai melihat sintaks saat saya memejamkan mata.",
-    "705 commit pada portofolio ini saja. Setiap satu commit adalah pertarungan dengan perfeksionisme saya sendiri.",
+    `${stats.commitCount} commit pada portofolio ini saja. Setiap satu commit adalah pertarungan dengan perfeksionisme saya sendiri.`,
     "Saya telah menonton Jujutsu Kaisen lebih dari tiga kali. Sejujurnya, saya masih belum bisa melupakannya.",
     "Saat ini saya sedang menonton Jujutsu Kaisen Culling Game. Jika saya lambat membalas, Anda tahu alasannya.",
     "Kebanyakan orang mengira saya hanyalah seorang pelajar, padahal sebenarnya, saya telah membangun sistem nyata saat mereka masih belajar tentang perulangan.",
@@ -142,7 +144,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "Saya memiliki minor dalam Ilmu Data. Saya suka mencari pola di tengah kebisingan.",
     "Saya telah menonton setiap episode Breaking Bad. Walter White adalah pelajaran tentang apa yang terjadi jika Anda membiarkan ego memimpin.",
     "Saya tidak hanya menulis kode; saya berideasi. 50% hari saya hanya memikirkan 'mengapa' sebelum 'bagaimana'.",
-    "Saya telah membuat 747 commit ke situs web ini. Dan saya masih belum selesai.",
+    `Saya telah membuat ${stats.commitCount} commit ke situs web ini. Dan saya masih belum selesai.`,
     "Saya pernah membangun mesin sinkronisasi menggunakan Merkle Trees. Itu minggu yang panjang.",
     "Arc Culling Game di Jujutsu Kaisen adalah puncak fiksi. Ubah pikiran saya.",
     "Saya pernah menyanyikan 'Shape of You' selama satu jam penuh hanya untuk mendapatkan vokal yang tepat.",
