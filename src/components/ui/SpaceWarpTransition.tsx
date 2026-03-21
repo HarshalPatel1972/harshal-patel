@@ -6,7 +6,7 @@ import { useFlipTransition } from "@/context/FlipContext";
 export function SpaceWarpTransition() {
   const { isActive, redirectUrl } = useFlipTransition();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isWarpingOut, setIsWarpingOut] = useState(false);
+  const [hasTriggeredRedirect, setHasTriggeredRedirect] = useState(false);
 
   useEffect(() => {
     if (!isActive) return;
@@ -32,9 +32,7 @@ export function SpaceWarpTransition() {
       x: number;
       y: number;
       z: number;
-      px: number;
-      py: number;
-      pz: number;
+      px: number; py: number; pz: number;
       color: string;
 
       constructor() {
@@ -45,10 +43,7 @@ export function SpaceWarpTransition() {
       }
 
       update() {
-        this.px = this.x;
-        this.py = this.y;
-        this.pz = this.z;
-
+        this.px = this.x; this.py = this.y; this.pz = this.z;
         this.z -= speed.val;
 
         if (this.z < 1) {
@@ -62,13 +57,12 @@ export function SpaceWarpTransition() {
       draw() {
         const sx = (this.x / this.z) * w + w / 2;
         const sy = (this.y / this.z) * h + h / 2;
-
         const psx = (this.px / this.pz) * w + w / 2;
         const psy = (this.py / this.pz) * h + h / 2;
 
         const alpha = Math.min(1, 1 - this.z / w);
         ctx!.strokeStyle = this.color;
-        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 2.5);
+        ctx!.globalAlpha = alpha * Math.min(1, warpProgress.val * 3);
         ctx!.lineWidth = 1;
         
         ctx!.beginPath();
@@ -82,15 +76,12 @@ export function SpaceWarpTransition() {
 
     const animate = () => {
       ctx.globalAlpha = 1;
-      
-      // Increased decay for longer streaks in longer duration
       ctx.fillStyle = `rgba(10, 10, 10, ${0.15 + (warpProgress.val * 0.1)})`;
       ctx.fillRect(0, 0, w, h);
 
-      // EXTENDED DURATION: Slower progress (0.005 instead of 0.012)
-      if (warpProgress.val < 2.0) {
+      if (warpProgress.val < 2.5) {
           warpProgress.val += 0.005; 
-          speed.val = 2.0 + Math.pow(warpProgress.val, 5) * 80;
+          speed.val = 2.0 + Math.pow(warpProgress.val, 5) * 60;
       }
 
       stars.forEach(star => {
@@ -98,12 +89,10 @@ export function SpaceWarpTransition() {
         star.draw();
       });
 
-      // NO WHITE FLASH: Simply redirect at the end of the speed surge
-      if (warpProgress.val >= 1.6 && !isWarpingOut) {
-        setIsWarpingOut(true);
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 100);
+      // TRIGGER: Higher threshold, and we keep the animation running until the page unloads
+      if (warpProgress.val >= 1.8 && !hasTriggeredRedirect) {
+        setHasTriggeredRedirect(true);
+        window.location.href = redirectUrl;
       }
 
       animationFrameId = requestAnimationFrame(animate);
@@ -121,22 +110,23 @@ export function SpaceWarpTransition() {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isActive, redirectUrl, isWarpingOut]);
+  }, [isActive, redirectUrl, hasTriggeredRedirect]);
 
   if (!isActive) return null;
 
   return (
-    <div 
-      className={`fixed inset-0 z-[1000000] bg-[#0A0A0A] overflow-hidden pointer-events-auto flex items-center justify-center transition-opacity duration-1000 ${isWarpingOut ? 'opacity-0' : 'opacity-100'}`}
-    >
+    <div className="fixed inset-0 z-[1000000] bg-[#0A0A0A] overflow-hidden pointer-events-auto flex items-center justify-center">
       <canvas ref={canvasRef} className="w-full h-full" />
       
-      {/* Central Glow Core */}
+      {/* Central Shine */}
       <div 
-        className={`absolute w-[40vw] h-[40vw] bg-white rounded-full blur-[100px] transition-all duration-3000 pointer-events-none mix-blend-screen opacity-10 ${isActive ? 'scale-150' : 'scale-0'}`} 
+        className={`absolute w-[45vw] h-[45vw] bg-white rounded-full blur-[130px] transition-all duration-3000 pointer-events-none mix-blend-screen opacity-10 ${isActive ? 'scale-150' : 'scale-0'}`} 
       />
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-80 pointer-events-none" />
+      
+      {/* FINAL MASK: Subtle black-out to hide the portfolio while we wait for browser redirect */}
+      <div className={`fixed inset-0 bg-[#0A0A0A] transition-opacity duration-1000 pointer-events-none ${hasTriggeredRedirect ? 'opacity-100' : 'opacity-0'}`} style={{ zIndex: 1000001 }} />
     </div>
   );
 }
