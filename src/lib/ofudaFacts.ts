@@ -40,7 +40,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "I have a minor in Data Science. I like finding the patterns in the noise.",
     "I’ve seen every episode of Breaking Bad. Walter White is a lesson in what happens when you let your ego lead.",
     "I don’t just write code; I ideate. 50% of my day is just thinking about the 'why' before the 'how'.",
-    "I’ve made 747 commits to this very website. And I’m still not done.",
+    "I’ve made 889 commits to this very website. And I’m still not done.",
     "I once built a sync engine using Merkle Trees. That was a long week.",
     "The Culling Game arc in Jujutsu Kaisen is peak fiction. Change my mind.",
     "I sang 'Shape of You' for a whole hour once just to get the vocal runs right.",
