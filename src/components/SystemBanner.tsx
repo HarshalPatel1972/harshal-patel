@@ -20,6 +20,7 @@ export function SystemBanner() {
       case 'de': return "Dieses Portfolio wird derzeit einer umfassenden Neugestaltung unterzogen. Einige Funktionen können vorübergehend nicht verfügbar sein. Vielen Dank für Ihre Geduld.";
       case 'it': return "Questo portfolio è attualmente in fase di restyling dal vivo. Alcune funzioni potrebbero essere temporaneamente non disponibili. Grazie per la vostra pazienza.";
       case 'pt-br': return "Este portfólio está passando por uma reformulação ao vivo. Algumas funcionalidades podem estar temporariamente indisponíveis. Obrigado pela sua paciência.";
+      case 'es-419': return "Este portafolio está pasando por un rediseño en vivo. Algunas funciones podrían no estar disponibles temporalmente. Gracias por su paciencia.";
       default: return "This portfolio is currently undergoing a live redesign. Some features may be temporarily unavailable. Thank you for your patience.";
     }
   };
@@ -32,7 +33,7 @@ export function SystemBanner() {
          {/* Brutalist Warning Label */}
          <div className="bg-white text-[var(--accent-blood)] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5 z-10 shadow-lg">
            <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] animate-pulse" />
-            {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'it' || language === 'pt-br') ? "AVISO" : "सूचना"}
+            {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'it' || language === 'pt-br' || language === 'es-419') ? "AVISO" : "सूचना"}
          </div>
          
          {/* Ticker Container */}

@@ -9,7 +9,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[]; de: Project[]; it: Project[]; "pt-br": Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[]; de: Project[]; it: Project[]; "pt-br": Project[]; "es-419": Project[] } = {
   en: [
     {
       title: "Aero",
@@ -728,6 +728,78 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
       specs: ["// NAV_SUB_SEGUNDO", "// LEADS_SERVERLESS", "// ESTÉTICA_OTIMIZADA"]
+    }
+  ],
+  "es-419": [
+    {
+      title: "Aero",
+      description: "Transferencia de archivos local de próxima generación con velocidades de 100MB/s+ en la LAN. App de escritorio repleta de funciones con E2EE (AES-256-CTR) y handshake óptico zero-trust.",
+      tags: ["Go", "Wails", "React", "Crypto"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
+      mobileScreenshot: "/screenshots_phone/Aero.jpg",
+      specs: ["// VELOCIDAD_100MBPS+", "// E2EE_AES_256", "// SIN_PROTOCOLO_NUBE"]
+    },
+    {
+      title: "RIFT",
+      description: "Puente de escritura aérea sin fricción. Convierte cualquier smartphone en un dispositivo de entrada de PC de alto rendimiento a través de WebSockets y API de Win32 sin instalación de apps.",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
+      mobileScreenshot: "/screenshots_phone/Rift.jpg",
+      specs: ["// LATENCIA_SUB_50MS", "// AUTH_SIN_FRICCIÓN", "// WRAPPER_HEADLESS"]
+    },
+    {
+      title: "Momentum",
+      description: "El puente entre los Agentes de IA y tu bolsillo. Sistema de aprobación remota para Cursor/Windsurf a través de Telegram, manteniendo seguras las ejecuciones de alto riesgo.",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
+      mobileScreenshot: "/screenshots_phone/Momentum.jpg",
+      specs: ["// MCP_LISTO", "// PUENTE_TELEGRAM", "// EJECUCIÓN_REMOTA_SEGURA"]
+    },
+    {
+      title: "GoSync",
+      description: "Motor de sincronización offline-first que utiliza Merkle Trees para sincronización delta. Reduce la transferencia de datos en hasta un 70% con el almacenamiento en frío de IndexedDB.",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
+      mobileScreenshot: "/screenshots_phone/GoSync.jpg",
+      specs: ["// SYNC_DELTA_70%", "// VALIDACIÓN_MERKLE_TREE", "// OFFLINE_FIRST"]
+    },
+    {
+      title: "Velocity",
+      description: "Optimizador de la bandeja de Windows que reduce la RAM de WhatsApp de 370MB a 90MB. Implementa el gobernador de CPU EcoQoS y la limpieza automática de memoria.",
+      tags: ["C++", "Win32", "Optimization"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
+      mobileScreenshot: "/screenshots_phone/Velocity.jpg",
+      specs: ["// AHORRO_RAM_75%", "// PRIORIDAD_ECO_QOS", "// MOTOR_TRIM_MEMORIA"]
+    },
+    {
+      title: "WinLight",
+      description: "Búsqueda estilo Spotlight potenciada por Rust que indexa más de 50,000 archivos. Clasificación multi-estrategia que entrega resultados en menos de 100 ms.",
+      tags: ["Rust", "Tauri", "Algorithms"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
+      mobileScreenshot: "/screenshots_phone/Win-light.jpg",
+      specs: ["// INDEXA_50K_ARCHIVOS", "// LATENCIA_SUB_100MS", "// CONCURRENCIA_RUST"]
+    },
+    {
+      title: "A1 Tantra",
+      description: "Plataforma de orientación espiritual de alto rendimiento. Logró navegación multi-página en menos de un segundo con arquitectura serverless para la generación de prospectos.",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
+      mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
+      specs: ["// NAV_SUB_SEGUNDO", "// CLIENTES_SERVERLESS", "// ESTÉTICA_OPTIMIZADA"]
     }
   ]
 };

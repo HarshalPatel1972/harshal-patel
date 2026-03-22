@@ -18,7 +18,8 @@ export function LanguageSelector() {
     { code: 'id', label: 'Indonesia' },
     { code: 'de', label: 'Deutsch' },
     { code: 'it', label: 'Italiano' },
-    { code: 'pt-br', label: 'Português' }
+    { code: 'pt-br', label: 'Português' },
+    { code: 'es-419', label: 'Español (LatAm)' }
   ] as const;
 
   // Close when clicking outside
