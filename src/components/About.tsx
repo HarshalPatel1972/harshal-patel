@@ -264,7 +264,7 @@ export function About() {
           <ScrollReveal duration={1200} delay={200} className="w-full">
             <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
                <div className={`bg-black text-[var(--text-bone)] font-black uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)' }}>
-                   {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : language === 'ko' ? <>기록된<br/>경험</> : language === 'zh-tw' ? <>已記錄的<br/>工作經驗</> : language === 'fr' ? <>EXPÉRIENCE <br/> ENREGISTRÉE</> : language === 'id' ? <>DOKUMENTASI <br/> PENGALAMAN</> : language === 'de' ? <>ERFASSTE <br/> ERFAHRUNG</> : language === 'it' ? <>ESPERIENZA <br/> REGISTRATA</> : (language === 'pt-br' || language === 'es-419' || language === 'es') ? <>EXPERIÊNCIA <br/> REGISTRADA</> : <>दर्ज <br/> अनुभव</>}
+                   {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : language === 'ko' ? <>기록된<br/>경험</> : language === 'zh-tw' ? <>已記錄的<br/>工作經驗</> : language === 'fr' ? <>EXPÉRIENCE <br/> ENREGISTRÉE</> : language === 'id' ? <>DOKUMENTASI <br/> PENGALAMAN</> : language === 'de' ? <>ERFASSTE <br/> ERFAHRUNG</> : language === 'it' ? <>ESPERIENZA <br/> REGISTRATA</> : language === 'pt-br' ? <>EXPERIÊNCIA <br/> REGISTRADA</> : (language === 'es-419' || language === 'es') ? <>EXPERIENCIA <br/> REGISTRADA</> : <>दर्ज <br/> अनुभव</>}
                </div>
                
                <div className="flex flex-col bg-white">

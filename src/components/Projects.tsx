@@ -53,7 +53,7 @@ export function Projects() {
              {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : language === 'ko' ? '제 1 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 01' : language === 'id' ? 'BAB 01' : language === 'de' ? 'KAPITEL 01' : language === 'it' ? 'CAPITOLO 01' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 01' : 'अध्याय 01'}
            </div>
            <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
-             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : language === 'ko' ? <>선정된<br/>작품</> : language === 'zh-tw' ? <>精選<br/>作品集</> : language === 'fr' ? <>TRAVAUX <br/> SÉLECTIONNÉS</> : language === 'id' ? <>KARYA <br/> TERPILIH</> : language === 'de' ? <>AUSGEWÄHLTE <br/> WERKE</> : language === 'it' ? <>OPERE <br/> SELEZIONATE</> : (language === 'pt-br' || language === 'es-419' || language === 'es') ? <>TRABALHOS <br/> SELECIONADOS</> : <>चुनिंदा <br/> कार्य</>}
+             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : language === 'ko' ? <>선정된<br/>작품</> : language === 'zh-tw' ? <>精選<br/>作品集</> : language === 'fr' ? <>TRAVAUX <br/> SÉLECTIONNÉS</> : language === 'id' ? <>KARYA <br/> TERPILIH</> : language === 'de' ? <>AUSGEWÄHLTE <br/> WERKE</> : language === 'it' ? <>OPERE <br/> SELEZIONATE</> : language === 'pt-br' ? <>TRABALHOS <br/> SELECIONADOS</> : (language === 'es-419' || language === 'es') ? <>TRABAJOS <br/> SELECCIONADOS</> : <>चुनिंदा <br/> कार्य</>}
            </h2>
         </div>
         <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
@@ -107,7 +107,7 @@ export function Projects() {
                     : language === 'fr'
                     ? "DÉPLOYER"
                     : language === 'id'
-                    ? "EXPAND"
+                    ? "PERLUAS"
                     : language === 'de'
                     ? "ERWEITERN"
                     : language === 'it'

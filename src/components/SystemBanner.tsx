@@ -34,7 +34,7 @@ export function SystemBanner() {
          {/* Brutalist Warning Label */}
          <div className="bg-white text-[var(--accent-blood)] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5 z-10 shadow-lg">
            <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] animate-pulse" />
-            {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'it' || language === 'pt-br' || language === 'es-419' || language === 'es') ? "AVISO" : "सूचना"}
+            {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "AVISO" : language === 'it' ? "AVVISO" : "सूचना"}
          </div>
          
          {/* Ticker Container */}
