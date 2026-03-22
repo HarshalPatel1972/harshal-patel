@@ -29,7 +29,7 @@ export function SystemBanner() {
   const notice = getNoticeText();
 
   return (
-    <div className="fixed top-0 left-0 right-12 md:right-16 z-[60] bg-[#9e1b1b] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_30px_rgba(158,27,27,0.4)] overflow-hidden">
+    <div className="fixed top-0 left-0 right-12 md:right-16 z-[60] bg-[#9e1b1b] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_12px_rgba(158,27,27,0.3)] overflow-hidden">
       <div className="flex items-center gap-3 md:gap-4 flex-1 overflow-hidden h-full">
          {/* Brutalist Warning Label */}
          <div className="bg-white text-[#9e1b1b] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5 z-10 shadow-lg">
