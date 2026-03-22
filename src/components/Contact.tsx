@@ -52,6 +52,11 @@ const LINKS = {
     { id: "email", label: "01 // E-MAIL", value: "INVIA MESSAGGIO", href: `mailto:${profile.it.email}` },
     { id: "github", label: "02 // GITHUB", value: "VEDI REPOSITORY", href: profile.it.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "VISITA PROFILO", href: profile.it.linkedin },
+  ],
+  "pt-br": [
+    { id: "email", label: "01 // E-MAIL", value: "ENVIAR MENSAGEM", href: `mailto:${profile["pt-br"].email}` },
+    { id: "github", label: "02 // GITHUB", value: "VER REPOSITÓRIO", href: profile["pt-br"].github },
+    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile["pt-br"].linkedin },
   ]
 };
 

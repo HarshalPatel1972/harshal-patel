@@ -17,7 +17,8 @@ export function LanguageSelector() {
     { code: 'fr', label: 'Français' },
     { code: 'id', label: 'Indonesia' },
     { code: 'de', label: 'Deutsch' },
-    { code: 'it', label: 'Italiano' }
+    { code: 'it', label: 'Italiano' },
+    { code: 'pt-br', label: 'Português' }
   ] as const;
 
   // Close when clicking outside
