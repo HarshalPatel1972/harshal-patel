@@ -124,7 +124,7 @@ export function Contact() {
       {/* Massive Background Typography */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
          <h2 className={`text-[6rem] md:text-[25rem] font-black whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--bg-ink)]`}>
-            {language === 'en' ? "CONTACT" : language === 'ja' ? "連絡先" : language === 'ko' ? "연락처" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "CONTACT" : language === 'id' ? "KONTAK" : "संपर्क"}
+            {language === 'en' ? "CONTACT" : language === 'ja' ? "連絡先" : language === 'ko' ? "연락처" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "CONTACT" : language === 'id' ? "KONTAK" : language === 'de' ? "KONTAKT" : language === 'it' ? "CONTATTO" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "CONTATO" : "संपर्क"}
          </h2>
       </div>
 
@@ -133,10 +133,10 @@ export function Contact() {
         {/* Header Block */}
         <ScrollReveal duration={1000}>
            <div className={`bg-black text-white font-black text-xs tracking-widest px-3 py-1 inline-block mb-4 ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
-             {language === 'en' ? 'CHAPTER 03' : language === 'ja' ? '第三章' : language === 'ko' ? '제 3 장' : language === 'zh-tw' ? '第三章' : language === 'fr' ? 'CHAPITRE 03' : language === 'id' ? 'BAB 03' : 'अध्याय 03'}
+             {language === 'en' ? 'CHAPTER 03' : language === 'ja' ? '第三章' : language === 'ko' ? '제 3 장' : language === 'zh-tw' ? '第三章' : language === 'fr' ? 'CHAPITRE 03' : language === 'id' ? 'BAB 03' : language === 'de' ? 'KAPITEL 03' : language === 'it' ? 'CAPITOLO 03' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 03' : 'अध्याय 03'}
            </div>
            <h2 className={`text-4xl md:text-8xl lg:text-9xl font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'ja' ? <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></> : language === 'ko' ? <>통신을<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>시작하기</span></> : language === 'zh-tw' ? <>發起<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>通信</span></> : language === 'fr' ? <>INITIER LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'id' ? <>MULAI <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>KOMUNIKASI</span></> : <>संपर्क <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>शुरू करें</span></>}
+             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'ja' ? <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></> : language === 'ko' ? <>통신을<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>시작하기</span></> : language === 'zh-tw' ? <>發起<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>通信</span></> : language === 'fr' ? <>INITIER LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'id' ? <>MULAI <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>KOMUNIKASI</span></> : language === 'de' ? <>KOMMUNIKATION <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>EINLEITEN</span></> : language === 'it' ? <>AVVIARE LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAZIONE</span></> : (language === 'pt-br' || language === 'es-419' || language === 'es') ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAÇÃO</span></> : <>संपर्क <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>शुरू करें</span></>}
            </h2>
         </ScrollReveal>
 
@@ -144,7 +144,7 @@ export function Contact() {
         <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
           {currentLinks.map((link: LinkItem, i: number) => {
             const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : language === 'ja' ? "コピー完了" : language === 'ko' ? "이메일 복사됨" : language === 'zh-tw' ? "電子郵件已複製" : language === 'fr' ? "E-MAIL COPIÉ" : language === 'id' ? "EMAIL DISALIN" : "ईमेल कॉपी किया गया") : link.value;
+            const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : language === 'ja' ? "コピー完了" : language === 'ko' ? "이메일 복사됨" : language === 'zh-tw' ? "電子郵件已複製" : language === 'fr' ? "E-MAIL COPIÉ" : language === 'id' ? "EMAIL DISALIN" : language === 'de' ? "E-MAIL KOPIERT" : language === 'it' ? "E-MAIL COPIATA" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "E-MAIL COPIADO" : "ईमेल कॉपी किया गया") : link.value;
 
             return (
               <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">

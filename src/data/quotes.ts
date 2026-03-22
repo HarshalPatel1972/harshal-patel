@@ -6,6 +6,11 @@ export interface CharacterData {
   hi?: { name: string };
   fr: { name: string };
   id: { name: string };
+  de: { name: string };
+  it: { name: string };
+  "pt-br": { name: string };
+  "es-419": { name: string };
+  es: { name: string };
   image: string;
   opacity?: number;
 }
@@ -19,6 +24,11 @@ export interface QuoteEntry {
   hi?: string;
   fr: string;
   id: string;
+  de: string;
+  it: string;
+  "pt-br": string;
+  "es-419": string;
+  es: string;
 }
 
 export const characterRegistry: Record<string, CharacterData> = {
@@ -30,6 +40,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "एरेन येजर" },
     fr: { name: "EREN JÄGER" },
     id: { name: "EREN YEAGER" },
+    de: { name: "EREN JÄGER" },
+    it: { name: "EREN YEAGER" },
+    "pt-br": { name: "EREN YEAGER" },
+    "es-419": { name: "EREN YEAGER" },
+    es: { name: "EREN YEAGER" },
     image: "/Eren Yeager.jpg",
     opacity: 0.35
   },
@@ -41,6 +56,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "थोर्स स्नोरेसन" },
     fr: { name: "THORS SNORESSON" },
     id: { name: "THORS SNORESSON" },
+    de: { name: "THORS SNORESSON" },
+    it: { name: "THORS SNORESSON" },
+    "pt-br": { name: "THORS SNORESSON" },
+    "es-419": { name: "THORS SNORESSON" },
+    es: { name: "THORS SNORESSON" },
     image: "/THORS SNORESSON.png"
   },
   SUKUNA: {
@@ -51,6 +71,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "र्योमेन सुकु나" },
     fr: { name: "RYOMEN SUKUNA" },
     id: { name: "RYOMEN SUKUNA" },
+    de: { name: "RYOMEN SUKUNA" },
+    it: { name: "RYOMEN SUKUNA" },
+    "pt-br": { name: "RYOMEN SUKUNA" },
+    "es-419": { name: "RYOMEN SUKUNA" },
+    es: { name: "RYOMEN SUKUNA" },
     image: "/RYOMEN SUKUNA.jpg",
     opacity: 0.25
   },
@@ -62,6 +87,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "लेवी एकरमैन" },
     fr: { name: "LEVI ACKERMAN" },
     id: { name: "LEVI ACKERMAN" },
+    de: { name: "LEVI ACKERMAN" },
+    it: { name: "LEVI ACKERMAN" },
+    "pt-br": { name: "LEVI ACKERMAN" },
+    "es-419": { name: "LEVI ACKERMAN" },
+    es: { name: "LEVI ACKERMAN" },
     image: "/Levi Ackerman.png",
     opacity: 0.3
   },
@@ -73,6 +103,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "सटोरू गोजो" },
     fr: { name: "SATORU GOJO" },
     id: { name: "SATORU GOJO" },
+    de: { name: "SATORU GOJO" },
+    it: { name: "SATORU GOJO" },
+    "pt-br": { name: "SATORU GOJO" },
+    "es-419": { name: "SATORU GOJO" },
+    es: { name: "SATORU GOJO" },
     image: "/Saturo Gojo.png",
     opacity: 0.3
   },
@@ -84,6 +119,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "मिकासा एकरमैन" },
     fr: { name: "MIKASA ACKERMAN" },
     id: { name: "MIKASA ACKERMAN" },
+    de: { name: "MIKASA ACKERMAN" },
+    it: { name: "MIKASA ACKERMAN" },
+    "pt-br": { name: "MIKASA ACKERMAN" },
+    "es-419": { name: "MIKASA ACKERMAN" },
+    es: { name: "MIKASA ACKERMAN" },
     image: "/Mikasa Ackerman.jpg"
   },
   YUJI: {
@@ -94,6 +134,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "यूजी इतादोरी" },
     fr: { name: "YUJI ITADORI" },
     id: { name: "YUJI ITADORI" },
+    de: { name: "YUJI ITADORI" },
+    it: { name: "YUJI ITADORI" },
+    "pt-br": { name: "YUJI ITADORI" },
+    "es-419": { name: "YUJI ITADORI" },
+    es: { name: "YUJI ITADORI" },
     image: "/Yuji Itadori.png"
   },
   ARMIN: {
@@ -104,6 +149,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "अर्मिन अर्लर्ट" },
     fr: { name: "ARMIN ARLERT" },
     id: { name: "ARMIN ARLERT" },
+    de: { name: "ARMIN ARLERT" },
+    it: { name: "ARMIN ARLERT" },
+    "pt-br": { name: "ARMIN ARLERT" },
+    "es-419": { name: "ARMIN ARLERT" },
+    es: { name: "ARMIN ARLERT" },
     image: "/ARMIN ARLERT.jpg",
     opacity: 0.3
   },
@@ -115,6 +165,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "इरविन स्मिथ" },
     fr: { name: "ERWIN SMITH" },
     id: { name: "ERWIN SMITH" },
+    de: { name: "ERWIN SMITH" },
+    it: { name: "ERWIN SMITH" },
+    "pt-br": { name: "ERWIN SMITH" },
+    "es-419": { name: "ERWIN SMITH" },
+    es: { name: "ERWIN SMITH" },
     image: "/ERWIN SMITH.jpg",
     opacity: 0.3
   },
@@ -126,6 +181,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "थोरफिन" },
     fr: { name: "THORFINN" },
     id: { name: "THORFINN" },
+    de: { name: "THORFINN" },
+    it: { name: "THORFINN" },
+    "pt-br": { name: "THORFINN" },
+    "es-419": { name: "THORFINN" },
+    es: { name: "THORFINN" },
     image: "/THORFINN.png",
     opacity: 0.3
   },
@@ -137,6 +197,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "एस्केलाड" },
     fr: { name: "ASKELADD" },
     id: { name: "ASKELADD" },
+    de: { name: "ASKELADD" },
+    it: { name: "ASKELADD" },
+    "pt-br": { name: "ASKELADD" },
+    "es-419": { name: "ASKELADD" },
+    es: { name: "ASKELADD" },
     image: "/ASKELADD.jpg",
     opacity: 0.3
   },
@@ -148,6 +213,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "नानामी केंटो" },
     fr: { name: "NANAMI KENTO" },
     id: { name: "NANAMI KENTO" },
+    de: { name: "NANAMI KENTO" },
+    it: { name: "NANAMI KENTO" },
+    "pt-br": { name: "NANAMI KENTO" },
+    "es-419": { name: "NANAMI KENTO" },
+    es: { name: "NANAMI KENTO" },
     image: "/NANAMI KENTO.png",
     opacity: 0.3
   },
@@ -159,6 +229,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "यामी सुकेहिरो" },
     fr: { name: "YAMI SUKEHIRO" },
     id: { name: "YAMI SUKEHIRO" },
+    de: { name: "YAMI SUKEHIRO" },
+    it: { name: "YAMI SUKEHIRO" },
+    "pt-br": { name: "YAMI SUKEHIRO" },
+    "es-419": { name: "YAMI SUKEHIRO" },
+    es: { name: "YAMI SUKEHIRO" },
     image: "/YAMI SUKEHIRO.png",
     opacity: 0.3
   },
@@ -170,6 +245,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "नोबारा कुगिसाकी" },
     fr: { name: "NOBARA KUGISAKI" },
     id: { name: "NOBARA KUGISAKI" },
+    de: { name: "NOBARA KUGISAKI" },
+    it: { name: "NOBARA KUGISAKI" },
+    "pt-br": { name: "NOBARA KUGISAKI" },
+    "es-419": { name: "NOBARA KUGISAKI" },
+    es: { name: "NOBARA KUGISAKI" },
     image: "/NOBARA KUGISAKI.jpeg",
     opacity: 0.3
   },
@@ -181,6 +261,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "तोजी फुशिगुरो" },
     fr: { name: "TOJI FUSHIGURO" },
     id: { name: "TOJI FUSHIGURO" },
+    de: { name: "TOJI FUSHIGURO" },
+    it: { name: "TOJI FUSHIGURO" },
+    "pt-br": { name: "TOJI FUSHIGURO" },
+    "es-419": { name: "TOJI FUSHIGURO" },
+    es: { name: "TOJI FUSHIGURO" },
     image: "/TOJI FUSHIGURO.png",
     opacity: 0.3
   },
@@ -192,6 +277,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "डेंजी" },
     fr: { name: "DENJI" },
     id: { name: "DENJI" },
+    de: { name: "DENJI" },
+    it: { name: "DENJI" },
+    "pt-br": { name: "DENJI" },
+    "es-419": { name: "DENJI" },
+    es: { name: "DENJI" },
     image: "/DENJI.png",
     opacity: 0.3
   },
@@ -203,6 +293,11 @@ export const characterRegistry: Record<string, CharacterData> = {
     hi: { name: "किशिबे" },
     fr: { name: "KISHIBE" },
     id: { name: "KISHIBE" },
+    de: { name: "KISHIBE" },
+    it: { name: "KISHIBE" },
+    "pt-br": { name: "KISHIBE" },
+    "es-419": { name: "KISHIBE" },
+    es: { name: "KISHIBE" },
     image: "/KISHIBE.jpg",
     opacity: 0.3
   }
@@ -217,7 +312,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "如果不戰鬥，就無法贏也。",
     hi: "यदि आप नहीं लड़ते हैं, तो आप जीत नहीं सकते।",
     fr: "SI TU NE TE BATS PAS, TU NE PEUX PAS GAGNER.",
-    id: "JIKA KAU TIDAK BERTARUNG, KAU TIDAK BISA MENANG."
+    id: "JIKA KAU TIDAK BERTARUNG, KAU TIDAK BISA MENANG.",
+    de: "WENN DU NICHT KÄMPFST, KANNST DU NICHT GEWINNEN.",
+    it: "SE NON COMBATTI, NON PUOI VINCERE.",
+    "pt-br": "SE VOCÊ NÃO LUTAR, NÃO PODE VENCER.",
+    "es-419": "SI NO PELEAS, NO PUEDES GANAR.",
+    es: "SI NO PELEAS, NO PUEDES GANAR."
   },
   {
     charId: "THORS",
@@ -227,7 +327,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "你沒有敵人。任何人都沒有敵人。這世界上沒有任何一個人是可以被隨意傷害의。",
     hi: "तुम्हारा कोई दुश्मन नहीं है। किसी का कोई दुश्मन नहीं होता। ऐसा कोई नहीं है जिसे चोट पहुँचाना ठीक हो।",
     fr: "TU N'AS PAS D'ENNEMIS. PERSONNE N'EN A. IL N'Y A PERSONNE QU'IL SOIT JUSTE DE BLESSER.",
-    id: "KAU TIDAK PUNYA MUSUH. TIDAK ADA ORANG YANG PUNYA MUSUH. TIDAK ADA SEORANG PUN YANG BOLEH DISAKITI."
+    id: "KAU TIDAK PUNYA MUSUH. TIDAK ADA ORANG YANG PUNYA MUSUH. TIDAK ADA SEORANG PUN YANG BOLEH DISAKITI.",
+    de: "DU HAST KEINE FEINDE. NIEMAND HAT FEINDE. ES GIBT NIEMANDEN, DEN MAN VERLETZEN DARF.",
+    it: "NON HAI NEMICI. NESSUNO HA NEMICI. NON C'È NESSUNO CHE SIA GIUSTO FERIRE.",
+    "pt-br": "VOCÊ NÃO TEM INIMIGOS. NINGUÉM TEM INIMIGOS. NÃO HÁ NINGUÉM QUE SEJA CERTO FERIR.",
+    "es-419": "NO TIENES ENEMIGOS. NADIE TIENE ENEMIGOS. NO HAY NADIE A QUIEN ESTÉ BIEN HERIR.",
+    es: "NO TIENES ENEMIGOS. NADIE TIENE ENEMIGOS. NO HAY NADIE A QUIEN ESTÉ BIEN HERIR."
   },
   {
     charId: "SUKUNA",
@@ -237,7 +342,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "挺起胸膛吧। 你很強。",
     hi: "गर्व करो। तुम शक्तिशाली हो।",
     fr: "SOIS FIER. TU ES PUISSANT.",
-    id: "BERDIRILAH DENGAN BANGGA. KAU KUAT."
+    id: "BERDIRILAH DENGAN BANGGA. KAU KUAT.",
+    de: "SEI STOLZ. DU BIST STARK.",
+    it: "SII ORGOGLIOSO. SEI FORTE.",
+    "pt-br": "ORGULHE-SE. VOCÊ É FORTE.",
+    "es-419": "SIÉNTETE ORGULLOSO. ERES FUERTE.",
+    es: "MANTENTE ORGULLOSO. ERES FUERTE."
   },
   {
     charId: "LEVI",
@@ -247,7 +357,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "我們唯一被允許做的事，就是相信自己不會後悔所做的選擇。",
     hi: "हमें केवल यह विश्वास करने की अनुमति है कि हम अपने द्वारा किए गए चुनाव पर पछतावा नहीं करेंगे।",
     fr: "LA SEULE CHOSE QU'IL NOUS EST PERMIS DE FAIRE EST DE CROIRE QUE NOUS NE REGRETTERONS PAS NOTRE CHOIX.",
-    id: "SATU-SATUNYA HAL YANG BOLEH KITA LAKUKAN ADALAH PERCAYA BAHWA KITA TIDAK AKAN MENYESALI PILIHAN YANG KITA BUAT."
+    id: "SATU-SATUNYA HAL YANG BOLEH KITA LAKUKAN ADALAH PERCAYA BAHWA KITA TIDAK AKAN MENYESALI PILIHAN YANG KITA BUAT.",
+    de: "DAS EINZIGE, WAS WIR TUN DÜRFEN, IST ZU GLAUBEN, DASS WIR DIE WAHL, DIE WIR GETROFFEN HABEN, NICHT BEREUEN WERDEN.",
+    it: "L'UNICA COSA CHE CI È CONCESSO FARE È CREDERE CHE NON CI PENTIREMO DELLA SCELTA CHE ABBIAMO FATTO.",
+    "pt-br": "A ÚNICA COISA QUE PODEMOS FAZER É ACREDITAR QUE NÃO NOS ARREPENDEREMOS DA ESCOLHA QUE FIZEMOS.",
+    "es-419": "LO ÚNICO QUE SE NOS PERMITE HACER ES CREER QUE NO NOS ARREPENTIREMOS DE LA ELECCIÓN QUE TOMAMOS.",
+    es: "LO ÚNICO QUE SE NOS PERMITE HACER ES CREER QUE NO NOS ARREPENTIREMOS DE LA ELECCIÓN QUE TOMAMOS."
   },
   {
     charId: "GOJO",
@@ -257,7 +372,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "「以死求勝」與「拼死奪勝」，是完全不同的兩回事。",
     hi: "जीतने के लिए मरना और जीतने के लिए जोखिम उठाना दो अलग चीजें हैं।",
     fr: "MOURIR POUR GAGNER ET RISQUER LA MORT POUR GAGNER SONT DEUX CHOSES BIEN DIFFÉRENTES.",
-    id: "MATI UNTUK MENANG DAN MEMPERTARUHKAN NYAWA UNTUK MENANG ADALAH DUA HAL YANG BERBEDA."
+    id: "MATI UNTUK MENANG DAN MEMPERTARUHKAN NYAWA UNTUK MENANG ADALAH DUA HAL YANG BERBEDA.",
+    de: "STERBEN, UM ZU GEWINNEN, UND DEN TOD RISKIEREN, UM ZU GEWINNEN, SIND ZWEI VERSCHIEDENE DINGE.",
+    it: "MORIRE PER VINCERE E RISCHIARE LA MORTE PER VINCERE SONO DUE COSE DIVERSE.",
+    "pt-br": "MORRER PARA VENCER E ARRISCAR A MORTE PARA VENCER SÃO DUAS COISAS DIFERENTES.",
+    "es-419": "MORIR PARA GANAR Y ARRIESGAR LA MUERTE PARA GANAR SON DOS COSAS DIFERENTES.",
+    es: "MORIR PARA GANAR Y ARRIESGAR LA MUERTE PARA GANAR SON DOS COSAS DIFERENTES."
   },
   {
     charId: "MIKASA",
@@ -267,7 +387,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "這世界是殘酷的……但同時……也非常美麗。",
     hi: "दुनिया क्रूर है, लेकिन बहुत सुंदर भी है।",
     fr: "LE MONDE EST CRUEL, MAIS AUSSI TRÈS BEAU.",
-    id: "DUNIA INI KEJAM, TAPI JUGA SANGAT INDAH."
+    id: "DUNIA INI KEJAM, TAPI JUGA SANGAT INDAH.",
+    de: "DIE WELT IST GRAUSAM, ABER AUCH SEHR SCHÖN.",
+    it: "IL MONDO È CRUDELE, MA ANCHE MOLTO BELLO.",
+    "pt-br": "O MUNDO É CRUEL, MAS TAMBÉM MUITO BONITO.",
+    "es-419": "EL MUNDO ES CRUEL, PERO TAMBIÉN MUY HERMOSO.",
+    es: "EL MUNDO ES CRUEL, PERO TAMBIÉN MUY HERMOSO."
   },
   {
     charId: "YUJI",
@@ -277,7 +402,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "我不知道自己死的時候會怎樣，但我不想為自己的活法感到後悔。",
     hi: "मैं ऐसा जीवन जीना चाहता हूँ जिस पर मुझे गर्व हो।",
     fr: "JE VEUX MENER UNE VIE DONT JE PEUX ÊTRE FIER.",
-    id: "AKU INGIN MENJALANI HIDUP YANG BISA AKU BANGGAKAN."
+    id: "AKU INGIN MENJALANI HIDUP YANG BISA AKU BANGGAKAN.",
+    de: "ICH WILL EIN LEBEN FÜHREN, AUF DAS ICH STOLZ SEIN KANN.",
+    it: "VOGLIO VIVERE UNA VITA DI CUI POSSO ESSERE ORGOGLIOSO.",
+    "pt-br": "EU QUERO VIVER UMA VIDA DA QUAL POSSA ME ORGULHAR.",
+    "es-419": "QUIERO VIVIR UNA VIDA DE LA QUE PUEDA ESTAR ORGULLOSO.",
+    es: "QUIERO VIVIR UNA VIDA DE LA QUE PUEDA ESTAR ORGULLOSO."
   },
   {
     charId: "EREN",
@@ -287,7 +417,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "我會繼續前進। 直到將敵人驅逐殆盡為止。",
     hi: "मैं आगे बढ़ता रहूँगा। जब तक मेरे दुश्मन नष्ट नहीं हो जाते।",
     fr: "JE CONTINUERAI D'AVANCER. JUSQU'À CE QUE MES ENNEMIS SOIENT DÉTRUITS.",
-    id: "AKU AKAN TERUS MELANGKAH MAJU. SAMPAI MUSUHKU HANCUR."
+    id: "AKU AKAN TERUS MELANGKAH MAJU. SAMPAI MUSUHKU HANCUR.",
+    de: "ICH WERDE WEITER VORWÄRTS GEHEN. BIS MEINE FEINDE VERNICHTET SIND.",
+    it: "CONTINUERÒ AD ANDARE AVANTI. FINCHÉ I MIEI NEMICI NON SARANNO DISTRUTTI.",
+    "pt-br": "EU VOU CONTINUAR SEGUINDO EM FRENTE. ATÉ QUE MEUS INIMIGOS SEJAM DESTRUÍDOS.",
+    "es-419": "SEGUIRÉ AVANZANDO. HASTA QUE MIS ENEMIGOS SEAN DESTRUIDOS.",
+    es: "SEGUIRÉ AVANZANDO. HASTA QUE MIS ENEMIGOS SEAN DESTRUIDOS."
   },
   {
     charId: "GOJO",
@@ -297,7 +432,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "天上天下，唯我獨尊。",
     hi: "आकाश और पृथ्वी के बीच, मैं अकेला ही सम्मानित हूँ।",
     fr: "À TRAVERS LE CIEL ET LA TERRE, MOI SEUL SUIS L'HONORÉ.",
-    id: "DI SELURUH LANGIT DAN BUMI, HANYA AKU YANG TERHORMAT."
+    id: "DI SELURUH LANGIT DAN BUMI, HANYA AKU YANG TERHORMAT.",
+    de: "ÜBERALL AM HIMMEL UND AUF ERDEN BIN ICH ALLEIN DER GEEHRTE.",
+    it: "TRA CIELO E TERRA, SOLO IO SONO L'ONORATO.",
+    "pt-br": "ENTRE O CÉU E A TERRA, EU SOZINHO SOU O HONRADO.",
+    "es-419": "ENTRE EL CIELO Y LA TIERRA, YO SOLO SOY EL HONRADO.",
+    es: "ENTRE EL CIELO Y LA TIERRA, YO SOLO SOY EL HONRADO."
   },
   {
     charId: "ARMIN",
@@ -307,7 +447,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "什麼都無法捨棄的人，肯定什麼也改變不了。",
     hi: "जो कुछ भी त्याग नहीं सकता, वह कुछ भी नहीं बदल सकता।",
     fr: "CELUI QUI NE PEUT RIEN SACRIFIER NE POURRA JAMAIS RIEN CHANGER.",
-    id: "SESEORANG YANG TIDAK BISA MENGORBANKAN APA PUN TIDAK AKAN BISA MENGUBAH APA PUN."
+    id: "SESEORANG YANG TIDAK BISA MENGORBANKAN APA PUN TIDAK AKAN BISA MENGUBAH APA PUN.",
+    de: "JEMAND, DER NICHTS OPFERN KANN, KANN NICHTS VERÄNDERN.",
+    it: "CHI NON PUÒ SACRIFICARE NULLA NON PUÒ CAMBIARE NULLA.",
+    "pt-br": "ALGUÉM QUE NÃO PODE SACRIFICAR NADA NÃO PODE MUDAR NADA.",
+    "es-419": "ALGUIEN QUE NO PUEDE SACRIFICAR NADA NO PUEDE CAMBIAR NADA.",
+    es: "ALGUIEN QUE NO PUEDE SACRIFICAR NADA NO PUEDE CAMBIAR NADA."
   },
   {
     charId: "ERWIN",
@@ -317,7 +462,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "後悔會讓下一次的決斷變得遲鈍। 然後會把選擇權拱手讓給他人。",
     hi: "यदि आप पछताना शुरू करते हैं, तो आप अपने भविष्य के निर्णयों को सुस्त कर देंगे।",
     fr: "SI TU COMMENCES À REGRETTER, TU ÉMOUSSERAS TES DÉCISIONS FUTURES ET LAISSERAS LES AUTRES CHOISIR POUR TOI.",
-    id: "JIKA KAU MULAI MENYESAL, KAU AKAN MENUMPULKAN KEPUTUSANMU DI MASA DEPAN DAN MEMBIARKAN ORANG LAIN MEMBUAT PILIHAN UNTUKMU."
+    id: "JIKA KAU MULAI MENYESAL, KAU AKAN MENUMPULKAN KEPUTUSANMU DI MASA DEPAN DAN MEMBIARKAN ORANG LAIN MEMBUAT PILIHAN UNTUKMU.",
+    de: "WENN DU ANFÄNGST ZU BEREUEN, WIRST DU DEINE ZUKÜNFTIGEN ENTSCHEIDUNGEN TRÜBEN UND ANDERE FÜR DICH ENTSCHEIDEN LASSEN.",
+    it: "SE INIZI A PENTIRTI, OFUSCHERAI LE TUE DECISIONI FUTURE E LASCERAI CHE ALTRI SCELGANO PER TE.",
+    "pt-br": "SE VOCÊ COMEÇAR A SE ARREPENDER, EMBAÇARÁ SUAS DECISÕES FUTURAS E DEIXARÁ QUE OUTROS FAÇAM SUAS ESCOLHAS POR VOCÊ.",
+    "es-419": "SI EMPIEZAS A ARREPENTIRTE, EMBOTARÁS TUS DECISIONES FUTURAS Y DEJARÁS QUE OTROS TOMEN TUS DECISIONES POR TI.",
+    es: "SI EMPIEZAS A ARREPENTIRTE, EMBOTARÁS TUS DECISIONES FUTURAS Y DEJARÁS QUE OTROS TOMEN TUS DECISIONES POR TI."
   },
   {
     charId: "THORFINN",
@@ -327,7 +477,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "不要把人生浪費ใน復仇這種小事上। 去尋找屬於你自己的文蘭吧。",
     hi: "अपना जीवन बदले जैसी छोटी चीज़ पर बर्बाद न करें। अपना खुद का विनलैंड खोजें।",
     fr: "NE GASPILLE PAS TA VIE POUR QUELQUE CHOSE D'AUSSI PETIT QUE LA VENGEANCE. TROUVE TON PROPRE VINLAND.",
-    id: "JANGAN SIA-SIAKAN HIDUPMU UNTUK SESUATU YANG KECIL SEPERTI BALAS DENDAM. TEMUKAN VINLAND-MU SENDIRI."
+    id: "JANGAN SIA-SIAKAN HIDUPMU UNTUK SESUATU YANG KECIL SEPERTI BALAS DENDAM. TEMUKAN VINLAND-MU SENDIRI.",
+    de: "VERSCHWENDE DEIN LEBEN NICHT MIT ETWAS SO KLEINEM WIE RACHE. FINDE DEIN EIGENES VINLAND.",
+    it: "NON SPRECARE LA TUA VITA PER QUALCOSA DI COSÌ PICCOLO COME LA VENDETTA. TROVA IL TUO VINLAND.",
+    "pt-br": "NÃO DESPERDICE SUA VIDA EM ALGO TÃO PEQUENO QUANTO VINGANÇA. ENCONTRE SUA PRÓPRIA VINLAND.",
+    "es-419": "NO DESPERDICIES TU VIDA EN ALGO TAN PEQUEÑO COMO LA VENGANZA. ENCUENTRA TU PROPIO VINLAND.",
+    es: "NO DESPERDICIES TU VIDA EN ALGO TAN PEQUEÑO COMO LA VENGANZA. ENCUENTRA TU PROPIO VINLAND."
   },
   {
     charId: "ASKELADD",
@@ -337,7 +492,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "只有戰士才能選擇自己的死亡方式。",
     hi: "केवल एक योद्धा ही अपनी मृत्यु का तरीका चुन सकता है।",
     fr: "SEUL UN GUERRIER A LE PRIVILÈGE DE CHOISIR SA MORT.",
-    id: "HANYA SEORANG PEJUANG YANG BISA MEMILIH CARA KEMATIANNYA."
+    id: "HANYA SEORANG PEJUANG YANG BISA MEMILIH CARA KEMATIANNYA.",
+    de: "NUR EIN KRIEGER DARF DIE ART SEINES TODES WÄHLEN.",
+    it: "SOLO UN GUERRIERO PUÒ SCEGLIERE IL MODO IN CUI MORIRE.",
+    "pt-br": "APENAS UM GUERREIRO PODE ESCOLHER A MANEIRA DE SUA MORTE.",
+    "es-419": "SOLO UN GUERRERO PUEDE ELEGIR LA FORMA DE SU MUERTE.",
+    es: "SOLO UN GUERRERO PUEDE ELEGIR LA FORMA DE SU MUERTE."
   },
   {
     charId: "NANAMI",
@@ -347,7 +507,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "強大的不是不會死的人। 而是那些選擇了為何而活的人。",
     hi: "वे शक्तिशाली नहीं हैं जो मर नहीं सकते। वे शक्तिशाली हैं जिन्होंने चुना है कि किसके लिए जीना है।",
     fr: "CE NE SONT PAS CEUX QUI NE PEUVENT PAS MOURIR QUI SONT FORTS. CE SONT CEUX QUI ONT CHOISI POUR QUOI VIVRE.",
-    id: "BUKAN MEREKA YANG TIDAK BISA MATI YANG KUAT. TAPI MEREKA YANG TELAH MEMILIH UNTUK APA MEREKA HIDUP."
+    id: "BUKAN MEREKA YANG TIDAK BISA MATI YANG KUAT. TAPI MEREKA YANG TELAH MEMILIH UNTUK APA MEREKA HIDUP.",
+    de: "NICHT DIEJENIGEN SIND STARK, DIE NICHT STERBEN KÖNNEN. ES SIND DIEJENIGEN, DIE GEWÄHLT HABEN, WOFÜR SIE LEBEN.",
+    it: "NON SONO FORTI COLORO CHE NON POSSONO MORIRE. SONO FORTI COLORO CHE HANNO SCELTO PER COSA VIVERE.",
+    "pt-br": "NÃO SÃO FORTES AQUELES QUE NÃO PODEM MORRER. SÃO FORTES AQUELES QUE ESCOLHERAM PELO QUE VIVER.",
+    "es-419": "NO SON FUERTES LOS QUE NO PUEDEN MORIR. SON FUERTES LOS QUE HAN ELEGIDO POR QUÉ VIVIR.",
+    es: "NO SON FUERTES LOS QUE NO PUEDEN MORIR. SON FUERTES LOS QUE HAN ELEGIDO POR QUÉ VIVIR."
   },
   {
     charId: "YAMI",
@@ -357,7 +522,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "在這裡，超越你的極限吧। 這才是創造新極限的唯一途徑。",
     hi: "अपनी सीमाओं से आगे बढ़ें। इसी तरह नई सीमाएँ तय होती हैं।",
     fr: "DÉPASSE TES LIMITES. C'EST AINSI QUE DE NOUVELLES SONT ÉTABLIES.",
-    id: "LAMPAUI BATASMU. ITULAH CARA BATAS BARU DITETAPKAN."
+    id: "LAMPAUI BATASMU. ITULAH CARA BATAS BARU DITETAPKAN.",
+    de: "GEH ÜBER DEINE GRENZEN HINAUS. SO WERDEN NEUE GESETZT.",
+    it: "SUPERA I TUOI LIMITI. È COSÌ CHE SE NE DEFINISCONO DI NUOVI.",
+    "pt-br": "SUPERE SEUS LIMITES. É ASSIM QUE NOVOS SÃO ESTABELECIDOS.",
+    "es-419": "SUPERA TUS LÍMITES. ASÍ ES COMO SE ESTABLECEN LOS NUEVOS.",
+    es: "SUPERA TUS LÍMITES. ASÍ ES COMO SE ESTABLECEN LOS NUEVOS."
   },
   {
     charId: "NOBARA",
@@ -367,7 +537,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "我絕不後悔। 這是我自己選擇的道路。",
     hi: "मुझे अपने रास्ते पर कोई पछतावा नहीं है। मैंने इसे चुना है।",
     fr: "JE N'AI AUCUN REGRET SUR MON CHEMIN. JE L'AI CHOISI. JE L'ASSUME.",
-    id: "AKU TIDAK MENYESAL DENGAN JALANKU. AKU MEMILIHNYA. AKU MENJALANINYA."
+    id: "AKU TIDAK MENYESAL DENGAN JALANKU. AKU MEMILIHNYA. AKU MENJALANINYA.",
+    de: "ICH BEREUE MEINEN WEG NICHT. ICH HABE IHN GEWÄHLT. ICH STEHE DAZU.",
+    it: "NON HO RIMPIANTI SUL MIO PERCORSO. L'HO SCELTO. L'HO FATTO MIO.",
+    "pt-br": "NÃO TENHO ARREPENDIMENTOS SOBRE O MEU CAMINHO. EU O ESCOLHI. EU O ASSUMO.",
+    "es-419": "NO TENGO ARREPENTIMIENTOS SOBRE MI CAMINO. LO ELEGÍ. ES MÍO.",
+    es: "NO TENGO ARREPENTIMIENTOS SOBRE MI CAMINO. LO ELEGÍ. ES MÍO."
   },
   {
     charId: "TOJI",
@@ -377,7 +552,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "才能僅僅是起點। 意志才是將其完成的動力。",
     hi: "प्रतिभा सिर्फ शुरुआत है। इच्छाशक्ति ही इसे पूरा करती है।",
     fr: "LE TALENT N'EST QUE LE POINT DE DÉPART. LA VOLONTÉ EST CE QUI L'ACHÈVE.",
-    id: "BAKAT HANYALAH TITIK AWAL. KEHENDAKLAH YANG MENYELESAIKANNYA."
+    id: "BAKAT HANYALAH TITIK AWAL. KEHENDAKLAH YANG MENYELESAIKANNYA.",
+    de: "TALENT IST NUR DER AUSGANGSPUNKT. DER WILLE IST DAS, WAS ES ZU ENDE BRINGT.",
+    it: "IL TALENTO È SOLO IL PUNTO DI PARTENZA. LA VOLONTÀ È CIÒ QUE LO COMPLETA.",
+    "pt-br": "TALENTO É APENAS O PONTO DE PARTIDA. A VONTADE É O QUE O FINALIZA.",
+    "es-419": "EL TALENTO ES SOLO EL PUNTO DE PARTIDA. LA VOLUNTAD ES LO QUE LO TERMINA.",
+    es: "EL TALENTO ES SOLO EL PUNTO DE PARTIDA. LA VOLUNTAD ES LO QUE LO TERMINA."
   },
   {
     charId: "DENJI",
@@ -387,7 +567,12 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "夢想不是用來看的，而是要流血去實現的。",
     hi: "सपना वह नहीं है जिसे आप देखते हैं। यह वह है जिसके लिए आप खून बहाते हैं।",
     fr: "UN RÊVE N'EST PAS QUELQUE CHOSE QUE L'ON REGARDE. C'EST QUELQUE CHOSE POUR LEQUEL ON SAIGNE.",
-    id: "MIMPI BUKANLAH SESUATU YANG KAU LIHAT. TAPI SESUATU YANG KAU PERJUANGKAN DENGAN DARAH."
+    id: "MIMPI BUKANLAH SESUATU YANG KAU LIHAT. TAPI SESUATU YANG KAU PERJUANGKAN DENGAN DARAH.",
+    de: "EIN TRAUM IST NICHT ETWAS, DAS MAN BEOBACHTET. ES IST ETWAS, FÜR DAS MAN BLUTET.",
+    it: "UN SOGNO NON È QUALCOSA CHE SI GUARDA. È QUALCOSA PER CUI SI SANGUINA.",
+    "pt-br": "UM SONHO NÃO É ALGO QUE VOCÊ ASSISTE. É ALGO PELO QUAL VOCÊ SANGRA.",
+    "es-419": "UN SUEÑO NO ES ALGO QUE MIRAS. ES ALGO POR LO QUE SANGRAS.",
+    es: "UN SUEÑO NO ES ALGO QUE MIRAS. ES ALGO POR LO QUE SANGRAS."
   },
   {
     charId: "KISHIBE",
@@ -397,6 +582,11 @@ export const mappaQuotesList: QuoteEntry[] = [
     "zh-tw": "無所畏懼। 哪怕 है恐懼本身।",
     hi: "किसी चीज़ से मत डरो। यहाँ तक कि डर से भी नहीं।",
     fr: "NE CRAINS RIEN. PAS MÊME LA PEUR ELLE-MÊME.",
-    id: "JANGAN TAKUT PADA APA PUN. BAHKAN PADA KETAKUTAN ITU SENDIRI."
+    id: "JANGAN TAKUT PADA APA PUN. BAHKAN PADA KETAKUTAN ITU SENDIRI.",
+    de: "FÜRCHTE NICHTS. NICHT EINMAL DIE FURCHT SELBST.",
+    it: "NON TEMERE NULLA. NEMMENO LA PAURA STESSA.",
+    "pt-br": "NÃO TEMA NADA. NEM MESMO O PRÓPRIO MEDO.",
+    "es-419": "NO TEMAS A NADA. INCLUSO AL MIEDO MISMO.",
+    es: "NO TEMAS A NADA. INCLUSO AL MIEDO MISMO."
   }
 ];

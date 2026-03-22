@@ -509,7 +509,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "Eu construí uma plataforma de orientação espiritual. É engraçado como um programador pode ajudar as pessoas a encontrar a paz.",
     "Atualmente estou trabalhando em um projeto chamado EyesOn. É a coisa mais ambiciosa que já tentei.",
     "Você está lendo isso porque eu passei três horas aperfeiçoando a animação deste cartão específico.",
-    "He construido todo esto. Todo. Desde la primera línea de Go hasta el último fotograma clave de CSS. Bienvenido a mi mente."
+    "Eu construí tudo isso. Tudo. Desde a primeira linha de Go até o último keyframe de CSS. Bem-vindo à minha mente."
   ],
   "es-419": [
     "A estas alturas he pasado más de la mitad de mi vida en un editor de código. Empiezo a ver la sintaxis cuando cierro los ojos.",

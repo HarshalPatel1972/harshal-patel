@@ -57,6 +57,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             language === 'hi' ? (selectedQuote.hi || selectedQuote.en) :
             language === 'fr' ? selectedQuote.fr :
             language === 'id' ? selectedQuote.id :
+            language === 'de' ? selectedQuote.de :
+            language === 'it' ? selectedQuote.it :
+            language === 'pt-br' ? selectedQuote["pt-br"] :
+            language === 'es-419' ? selectedQuote["es-419"] :
+            language === 'es' ? selectedQuote.es :
             selectedQuote.en,
       author: language === 'ja' ? character.ja.name : 
               language === 'ko' ? character.ko.name : 
@@ -64,6 +69,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
               language === 'hi' ? (character.hi?.name || character.en.name) :
               language === 'fr' ? character.fr.name :
               language === 'id' ? character.id.name :
+              language === 'de' ? character.de.name :
+              language === 'it' ? character.it.name :
+              language === 'pt-br' ? character["pt-br"].name :
+              language === 'es-419' ? character["es-419"].name :
+              language === 'es' ? character.es.name :
               character.en.name,
       image: character.image,
       overrideOpacity: character.opacity
