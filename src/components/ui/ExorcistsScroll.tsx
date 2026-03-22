@@ -107,27 +107,45 @@ const ExorcistsScroll: React.FC = () => {
     </>
   );
 
+  const [isInView, setIsInView] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsInView(entry.isIntersecting);
+    }, { threshold: 0.1 });
+    
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   if (mounted && typeof window !== 'undefined' && window.innerWidth >= 1024) return null;
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden contain-strict">
-      
+    <div 
+      ref={containerRef}
+      className={`absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden contain-strict`}
+      style={{
+        animationPlayState: isInView ? 'running' : 'paused'
+      }}
+    >
       <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
         {segments.map((s) => (
           <div 
             key={s.id}
-            className="absolute flex flex-col items-center justify-center pointer-events-none will-change-transform"
+            className="absolute flex flex-col items-center justify-center pointer-events-none"
             style={{ 
               animation: `scroll-flow 15s linear infinite`, 
               animationDelay: `${s.delay}s`,
-              backfaceVisibility: 'hidden'
+              backfaceVisibility: 'hidden',
+              animationPlayState: isInView ? 'running' : 'paused'
             }}
           >
             <button 
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 h-32 border-2 border-red-600/40 bg-black flex flex-col items-center justify-between py-4 shadow-[0_0_10px_rgba(217,17,17,0.2)] transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_20px_rgba(217,17,17,0.4)] hover:scale-[1.05] cursor-pointer"
+              className="group ofuda-talisman pointer-events-auto relative w-12 h-32 border-2 border-red-600/40 bg-black flex flex-col items-center justify-between py-4 shadow-[0_0_8px_rgba(217,17,17,0.15)] transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_15px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
               style={{ contain: 'content' }}
             >
                <div className="flex gap-1 opacity-60">
