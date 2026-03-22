@@ -1,4 +1,4 @@
-import stats from "./stats.json";
+import stats from "../data/stats.json";
 
 export const OFUDA_FACTS: Record<string, string[]> = {
   en: [
