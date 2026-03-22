@@ -256,11 +256,6 @@ export function About() {
                  </div>
                </div>
                
-               <div className="hidden lg:flex justify-end items-center relative h-full">
-                   <div className="absolute text-[8rem] font-black font-display leading-none text-black/5 rotate-90 whitespace-nowrap origin-center select-none">
-                           {language === "en" ? "DESCRIPTION" : language === "ja" ? "説明" : language === "ko" ? "설명" : language === "zh-tw" ? "描述" : language === "fr" ? "DESCRIPTION" : language === "id" ? "DESKRIPSI" : "विवरण"}
-                   </div>
-               </div>
             </div>
           </div>
         </ScrollReveal>
