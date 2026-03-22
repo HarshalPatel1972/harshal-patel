@@ -42,6 +42,26 @@ export function Hero() {
     id: [
       "Saya menemukan apa yang rusak",
       "dan membangun apa yang hilang."
+    ],
+    de: [
+      "Ich finde, was kaputt ist,",
+      "und baue, was fehlt."
+    ],
+    it: [
+      "Trovo ciò che è rotto",
+      "e costruisco ciò che manca."
+    ],
+    "pt-br": [
+      "Eu encontro o que está quebrado",
+      "e construo o que falta."
+    ],
+    "es-419": [
+      "Encuentro lo que está roto",
+      "y construyo lo que falta."
+    ],
+    es: [
+      "Encuentro lo que está roto",
+      "y construyo lo que falta."
     ]
   };
 
