@@ -50,19 +50,34 @@ export function Hero() {
 
   // ─── SCROLL TRACKER ENGINE ───────────────────────────────────────────────
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+    let rafId: number;
+
+    const updateScrollProgress = () => {
       if (!trackRef.current) return;
+      // ⚡ Bolt: Batch DOM reads (offsetTop, offsetHeight) and writes (setState) inside rAF
       const st = window.scrollY;
       const sectionOffset = trackRef.current.offsetTop;
       const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
       setScrollProgress(progress);
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateScrollProgress);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateScrollProgress(); // Initial state setup
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   // Compute transform values based on scroll progress
