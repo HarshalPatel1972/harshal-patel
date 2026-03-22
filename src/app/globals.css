@@ -38,15 +38,21 @@ html {
   scrollbar-width: none;     /* Firefox */
 }
 
-/* Force browser to stop "guessing" frames during fast scroll */
 section {
-  will-change: transform, opacity, contents;
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
-  contain: paint layout;
   position: relative;
-  /* Clip-path inset forces a clean, isolated paint layer and prevents composite leaks */
-  clip-path: inset(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-word {
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
 }
 html::-webkit-scrollbar {
   display: none;             /* Chrome, Safari and Opera */
