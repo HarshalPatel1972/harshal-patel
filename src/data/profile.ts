@@ -334,5 +334,47 @@ export const profile = {
       { name: "Python / KI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  it: {
+    name: "Harshal Patel",
+    title: "Ingegnere del Software",
+    tagline: "Costruzione di sistemi ad alte prestazioni con Go, TypeScript e WebAssembly",
+    bio: "Studente di ingegneria del software all'inizio della carriera con esperienza pratica nell'implementazione di sistemi software su tre stack tecnologici (Go, WebAssembly, TypeScript) e nella risoluzione di oltre 300 problemi algoritmici. Specializzato nell'ottimizzazione del runtime e della memoria sotto vincoli inferiori a 200 ms.",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
+    location: "Varanasi, India",
+    
+    education: {
+      school: "Chandigarh University",
+      degree: "B.E. CSE (AIML)",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "Stagista Sviluppatore Front-End",
+        period: "Maggio 2025 – Ott 2025",
+        description: "Sviluppato oltre 15 componenti React riutilizzabili per dashboard; Integrato l'API Shazam per i record musicali; Progettato il monitoraggio del flusso di lavoro Kanban a oltre 5 fasi; Implementato oltre 10 funzioni interattive utilizzando Syncfusion.",
+      },
+      {
+        company: "Internshala",
+        role: "Stagista in Data Science",
+        period: "Giu 2024 – Ago 2024",
+        description: "Elaborato oltre 5000 record di vendita tramite Tableau; Costruito un modello di regressione logistica con un'accuratezza dell'85%; Migliorato la pianificazione dell'inventario del 20% utilizzando previsioni a media mobile; Ottimizzato l'efficienza della formazione del 25%.",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / Sistemi", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / AI", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

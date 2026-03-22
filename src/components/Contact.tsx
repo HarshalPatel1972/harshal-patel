@@ -47,6 +47,11 @@ const LINKS = {
     { id: "email", label: "01 // E-MAIL", value: "NACHRICHT SENDEN", href: `mailto:${profile.de.email}` },
     { id: "github", label: "02 // GITHUB", value: "REPOSITORIUM ANSEHEN", href: profile.de.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "PROFIL BESUCHEN", href: profile.de.linkedin },
+  ],
+  it: [
+    { id: "email", label: "01 // E-MAIL", value: "INVIA MESSAGGIO", href: `mailto:${profile.it.email}` },
+    { id: "github", label: "02 // GITHUB", value: "VEDI REPOSITORY", href: profile.it.github },
+    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITA PROFILO", href: profile.it.linkedin },
   ]
 };
 
