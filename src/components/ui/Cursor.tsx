@@ -25,14 +25,16 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Color Cycling State
+  const PALETTE = ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
+  const colorIndexRef = useRef(0);
+  const holdStartTimeRef = useRef<number | null>(null);
+  const [holdProgress, setHoldProgress] = useState(0);
+
   const PSIZE = 2.2;
   const GAP = PSIZE * 2 + 1.2;
   const tipX = 4 * GAP;
   const tipY = -4 * GAP;
-
-  const BONE = "#FFFFFF";
-  const CYAN = "#0ee0c3";
-  const BLOOD = "#d91111";
 
   const arrowSlots = useRef<{ x: number; y: number }[]>([]);
   const playSlots = useRef<{ x: number; y: number }[]>([]);
@@ -88,11 +90,19 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       const t = e.target as HTMLElement;
       if (t.closest('a, button, [role="button"], [data-cursor]')) { hoverType.current = "none"; locked.current.fill(0); }
     };
+
     const onMouseDown = () => {
+      holdStartTimeRef.current = Date.now();
       totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
+
+    const onMouseUp = () => {
+      holdStartTimeRef.current = null;
+      setHoldProgress(0);
+    };
+
     const handleScroll = () => {
       if (!isScrolling.current) isScrolling.current = true;
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
@@ -104,6 +114,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     document.addEventListener("mouseover", onMouseOver);
     document.addEventListener("mouseout", onMouseOut);
     window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
 
     let rafId: number;
     const loop = () => {
@@ -115,6 +126,20 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       canvas.style.opacity = "1";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // ── Hold Progression Logic ──────────────────────────────────────────
+      if (holdStartTimeRef.current) {
+        const elapsed = Date.now() - holdStartTimeRef.current;
+        const progress = Math.min(1, elapsed / 3000);
+        setHoldProgress(progress);
+        
+        if (progress >= 1) {
+          // Change Color and Reset Timer (Cycle)
+          colorIndexRef.current = (colorIndexRef.current + 1) % PALETTE.length;
+          holdStartTimeRef.current = Date.now(); // Reset for next cycle if still held
+          burstFlash.current = 15; // Visual feedback for change
+        }
+      }
+
       // Core follows mouse
       vx.current[0] += (mouse.current.x - px.current[0]) * 0.2;
       vy.current[0] += (mouse.current.y - py.current[0]) * 0.2;
@@ -125,9 +150,9 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      // ── Sphere color ──────────────────────────────────────────────────────
-      const currentColor = burstFlash.current > 0 ? BLOOD : hoverType.current !== "none" ? CYAN : BONE;
-
+      // Current Particle Color
+      const baseColor = PALETTE[colorIndexRef.current];
+      const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? PALETTE[2] : PALETTE[1]) : hoverType.current !== "none" ? PALETTE[2] : baseColor;
 
       for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
@@ -161,9 +186,18 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
         }
       }
 
+      // Draw Hold Progress Ring
+      if (holdStartTimeRef.current) {
+        ctx.beginPath();
+        ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 3000));
+        ctx.strokeStyle = PALETTE[(colorIndexRef.current + 1) % PALETTE.length];
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
-        ctx.strokeStyle = "#E8E8E6"; ctx.globalAlpha = 0.04; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+        ctx.strokeStyle = baseColor; ctx.globalAlpha = 0.04; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
       }
 
       for (let i = 0; i < 20; i++) {
@@ -178,7 +212,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
           ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
           ctx.lineWidth = 0.6;
-          ctx.strokeStyle = hoverType.current !== "none" ? "rgba(14,224,195,0.30)" : `rgba(232,232,230,0.09)`;
+          ctx.strokeStyle = hoverType.current !== "none" ? PALETTE[2] : `${baseColor}15`;
           ctx.stroke();
         }
       }
@@ -196,6 +230,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
     };
   }, [isTouch]);
 
