@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import ExorcistsScroll from './ui/ExorcistsScroll';
-import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 
 export function Hero() {
@@ -165,7 +164,6 @@ export function Hero() {
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
 
           {/* Vertical Watermark */}
-          <SubliminalKanji kanji={language === 'ja' || language === 'zh-tw' ? "起源" : language === 'ko' ? "기원" : language === 'hi' ? "मूल" : "ORIGIN"} position="right" />
 
           {/* ─── EXORCIST'S SCROLL (Narrative Background 06) ─── */}
           <ExorcistsScroll />

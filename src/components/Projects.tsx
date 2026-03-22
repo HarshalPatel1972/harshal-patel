@@ -3,7 +3,6 @@
 import { projects } from "@/data/projects";
 import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
-import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 import { KineticLink } from "./ui/KineticLink";
 import { useFlipTransition } from "@/context/FlipContext";
@@ -47,7 +46,6 @@ export function Projects() {
                  before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-white before:pointer-events-none"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
-      <SubliminalKanji kanji={language === 'ja' || language === 'zh-tw' ? "作品" : language === 'ko' ? "작품" : language === 'hi' ? "कार्य" : "WORKS"} position="left" />
 
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>

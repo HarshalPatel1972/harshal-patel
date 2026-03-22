@@ -5,7 +5,6 @@ import { ScrollReveal } from "./ScrollReveal";
 import { useCounter } from "./AnimationKit";
 import { useEffect, useRef, useState } from "react";
 import { animate as anime, utils, createTimeline } from "animejs";
-import { SubliminalKanji } from "./ui/SubliminalKanji";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSignals } from "@/context/SignalContext";
 
@@ -210,7 +209,6 @@ export function About() {
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
       {/* Vertical Watermark */}
-      <SubliminalKanji kanji={language === 'ja' || language === 'zh-tw' ? "経験" : language === 'ko' ? "경험" : language === 'hi' ? "अनुभव" : "EXPERIENCE"} position="right" />
 
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
