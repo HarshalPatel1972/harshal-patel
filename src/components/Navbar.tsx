@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { useLanguage } from "@/context/LanguageContext";
+import { useLanguage, type Language } from "@/context/LanguageContext";
 import { animate as anime } from "animejs";
 
 type NavItem = {
@@ -11,9 +11,7 @@ type NavItem = {
   percent: number;
 };
 
-type NavItems = {
-  [key in "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr" | "id" | "de" | "it" | "pt-br" | "es-419" | "es"]: NavItem[];
-};
+type NavItems = Record<Language, NavItem[]>;
 
 const NAV_ITEMS: NavItems = {
   en: [
