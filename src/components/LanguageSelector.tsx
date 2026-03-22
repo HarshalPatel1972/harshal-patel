@@ -19,7 +19,8 @@ export function LanguageSelector() {
     { code: 'de', label: 'Deutsch' },
     { code: 'it', label: 'Italiano' },
     { code: 'pt-br', label: 'Português' },
-    { code: 'es-419', label: 'Español (LatAm)' }
+    { code: 'es-419', label: 'Español (LatAm)' },
+    { code: 'es', label: 'Español (España)' }
   ] as const;
 
   // Close when clicking outside
