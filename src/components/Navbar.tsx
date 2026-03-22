@@ -12,7 +12,7 @@ type NavItem = {
 };
 
 type NavItems = {
-  [key in "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr" | "id"]: NavItem[];
+  [key in "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr" | "id" | "de" | "it" | "pt-br" | "es-419" | "es"]: NavItem[];
 };
 
 const NAV_ITEMS: NavItems = {
@@ -57,6 +57,36 @@ const NAV_ITEMS: NavItems = {
     { id: "projects", label: "KARYA", percent: 33 },
     { id: "about", label: "ASAL", percent: 65 },
     { id: "contact", label: "KONTAK", percent: 95 },
+  ],
+  de: [
+    { id: "hero", label: "START", percent: 5 },
+    { id: "projects", label: "PROJEKTE", percent: 33 },
+    { id: "about", label: "HERKUNFT", percent: 65 },
+    { id: "contact", label: "KONTAKT", percent: 95 },
+  ],
+  it: [
+    { id: "hero", label: "HOME", percent: 5 },
+    { id: "projects", label: "LAVORO", percent: 33 },
+    { id: "about", label: "ORIGINE", percent: 65 },
+    { id: "contact", label: "CONTATTO", percent: 95 },
+  ],
+  "pt-br": [
+    { id: "hero", label: "INÍCIO", percent: 5 },
+    { id: "projects", label: "TRABALHO", percent: 33 },
+    { id: "about", label: "ORIGEM", percent: 65 },
+    { id: "contact", label: "CONTATO", percent: 95 },
+  ],
+  "es-419": [
+    { id: "hero", label: "INICIO", percent: 5 },
+    { id: "projects", label: "TRABAJO", percent: 33 },
+    { id: "about", label: "ORIGEN", percent: 65 },
+    { id: "contact", label: "CONTACTO", percent: 95 },
+  ],
+  es: [
+    { id: "hero", label: "INICIO", percent: 5 },
+    { id: "projects", label: "TRABAJO", percent: 33 },
+    { id: "about", label: "ORIGEN", percent: 65 },
+    { id: "contact", label: "CONTACTO", percent: 95 },
   ]
 };
 
