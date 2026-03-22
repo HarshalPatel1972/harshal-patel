@@ -9,7 +9,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[]; de: Project[] } = {
   en: [
     {
       title: "Aero",
@@ -512,6 +512,78 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
       specs: ["// NAV_SUB_DETIK", "// PROSPEK_SERVERLESS", "// ESTETIKA_TEROPTIMALASI"]
+    }
+  ],
+  de: [
+    {
+      title: "Aero",
+      description: "Lokale Dateiübertragung der nächsten Generation mit 100MB/s+ im LAN. Funktionsreiche Desktop-App mit E2EE (AES-256-CTR) und Zero-Trust-Handshake.",
+      tags: ["Go", "Wails", "React", "Crypto"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
+      mobileScreenshot: "/screenshots_phone/Aero.jpg",
+      specs: ["// SPEED_100MBPS+", "// E2EE_AES_256", "// NO_CLOUD_PROTOCOL_"]
+    },
+    {
+      title: "RIFT",
+      description: "Reibungslose Air-Typing-Brücke. Verwandelt jedes Smartphone in ein Hochleistungs-PC-Eingabegerät via WebSockets und Win32-API ohne App-Installation.",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
+      mobileScreenshot: "/screenshots_phone/Rift.jpg",
+      specs: ["// LATENCY_SUB_50MS", "// ZERO_FRICTION_AUTH", "// HEADLESS_WRAPPER_"]
+    },
+    {
+      title: "Momentum",
+      description: "Die Brücke zwischen KI-Agenten und deiner Tasche. Fernfreigabesystem für Cursor/Windsurf via Telegram, das riskante Ausführungen sicher macht.",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
+      mobileScreenshot: "/screenshots_phone/Momentum.jpg",
+      specs: ["// MCP_READY", "// TELEGRAM_BRIDGE", "// SECURE_REMOTE_EXEC_"]
+    },
+    {
+      title: "GoSync",
+      description: "Offline-First-Synchronisations-Engine mit Merkle-Trees für Delta-Synchronisation. Reduziert den Datentransfer mit IndexedDB-Cold-Storage um bis zu 70%.",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
+      mobileScreenshot: "/screenshots_phone/GoSync.jpg",
+      specs: ["// DELTA_SYNC_70%", "// MERKLE_TREE_VALIDATION", "// OFFLINE_FIRST_"]
+    },
+    {
+      title: "Velocity",
+      description: "Windows Tray-Optimierer, der WhatsApp-RAM von 370MB auf 90MB reduziert. Implementiert EcoQoS CPU-Governor und automatisierte Speicherbereinigung.",
+      tags: ["C++", "Win32", "Optimization"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
+      mobileScreenshot: "/screenshots_phone/Velocity.jpg",
+      specs: ["// RAM_SAVINGS_75%", "// ECO_QOS_PRIORITY", "// MEMORY_TRIM_ENGINE_"]
+    },
+    {
+      title: "WinLight",
+      description: "Rust-basierte Suche im Spotlight-Stil, die 50.000+ Dateien indiziert. Multi-Strategie-Ranking liefert Ergebnisse in unter 100ms.",
+      tags: ["Rust", "Tauri", "Algorithms"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
+      mobileScreenshot: "/screenshots_phone/Win-light.jpg",
+      specs: ["// INDEX_50K_FILES", "// LATENCY_SUB_100MS", "// RUST_CONCURRENCY_"]
+    },
+    {
+      title: "A1 Tantra",
+      description: "Leistungsstarke Plattform für spirituelle Führung. Erreichte Multi-Page-Navigation in unter einer Sekunde mit Serverless-Architektur.",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
+      mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
+      specs: ["// SUB_SECOND_NAV", "// SERVERLESS_LEADS", "// OPTIMIZED_AESTHETIC_"]
     }
   ]
 };

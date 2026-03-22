@@ -292,5 +292,47 @@ export const profile = {
       { name: "Python / AI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  de: {
+    name: "Harshal Patel",
+    title: "Softwareentwickler",
+    tagline: "Hochleistungssysteme mit Go, TypeScript & WebAssembly",
+    bio: "Software-Engineering-Student mit praktischer Erfahrung in der Implementierung von Systemen über drei Technologie-Stacks (Go, WebAssembly, TypeScript) und der Lösung von über 300 algorithmischen Problemen. Spezialisiert auf Laufzeit- und Speicheroptimierung unter 200ms-Constraints.",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
+    location: "Varanasi, Indien",
+    
+    education: {
+      school: "Chandigarh University",
+      degree: "B.E. CSE (AIML)",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "Celebal Technologies",
+        role: "Front-End-Entwickler Praktikant",
+        period: "Mai 2025 – Okt 2025",
+        description: "Entwickelte 15+ wiederverwendbare React-Komponenten; Integration der Shazam-API für Musikdatensätze; Design eines 5-stufigen Kanban-Workflows; Implementierung von 10+ interaktiven Features mit Syncfusion.",
+      },
+      {
+        company: "Internshala",
+        role: "Data Science Praktikant",
+        period: "Jun 2024 – Aug 2024",
+        description: "Verarbeitung von 5000+ Verkaufsdatensätzen via Tableau; Erstellung eines logistischen Regressionsmodells mit 85% Genauigkeit; Verbesserung der Bestandsplanung um 20% durch gleitende Durchschnittsprognosen.",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / Systeme", level: 95, color: "#f43f5e" },
+      { name: "Go (Golang)", level: 92, color: "#14b8a6" },
+      { name: "TypeScript / React", level: 90, color: "#3b82f6" },
+      { name: "Rust / WASM", level: 85, color: "#8b5cf6" },
+      { name: "Python / KI", level: 80, color: "#f59e0b" },
+      { name: "SQL / Bash", level: 75, color: "#10b981" },
+    ],
   }
 };

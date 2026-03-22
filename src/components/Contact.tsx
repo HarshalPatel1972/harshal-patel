@@ -42,6 +42,11 @@ const LINKS = {
     { id: "email", label: "01 // EMAIL", value: "KIRIM PESAN", href: `mailto:${profile.id.email}` },
     { id: "github", label: "02 // GITHUB", value: "LIHAT REPOSITORI", href: profile.id.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "KUNJUNGI PROFIL", href: profile.id.linkedin },
+  ],
+  de: [
+    { id: "email", label: "01 // E-MAIL", value: "NACHRICHT SENDEN", href: `mailto:${profile.de.email}` },
+    { id: "github", label: "02 // GITHUB", value: "REPOSITORIUM ANSEHEN", href: profile.de.github },
+    { id: "linkedin", label: "03 // LINKEDIN", value: "PROFIL BESUCHEN", href: profile.de.linkedin },
   ]
 };
 
