@@ -11,11 +11,14 @@ export function VisitorCounter() {
   const [status, setStatus] = useState<'SYNCING' | 'LIVE' | 'OFFLINE'>('SYNCING');
 
   useEffect(() => {
-    // 1. Fetch from our new API route
+    console.log("[HUD_SYSTEM] Initializing Uplink...");
+    
     const fetchStats = async () => {
       try {
         const res = await fetch('/api/visitor-count');
         const json = await res.json();
+        
+        console.log("[HUD_SYSTEM] Sync Data:", json);
         
         if (json.success) {
           setData({ 
@@ -27,20 +30,18 @@ export function VisitorCounter() {
           setStatus('OFFLINE');
         }
       } catch (e) {
+        console.error("[HUD_SYSTEM] Uplink Failed:", e);
         setStatus('OFFLINE');
       }
     };
 
     fetchStats();
-    // 2. Poll every 60 seconds to keep it live
     const interval = setInterval(fetchStats, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  if (status === 'OFFLINE' && !data) return null;
-
   return (
-    <div className="fixed bottom-6 left-6 z-[9999] pointer-events-none select-none">
+    <div className="fixed bottom-6 left-6 z-[99999] pointer-events-none select-none animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <div className="flex flex-col gap-1 items-start">
         {/* HUD Indicator */}
         <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md border border-[var(--text-bone)]/20 px-3 py-1.5 brutal-shadow-sm">
