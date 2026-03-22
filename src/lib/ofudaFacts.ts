@@ -13,7 +13,7 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "If I get stuck at 2 AM, I don't walk away. I stay right here, explaining the bug to an AI until the solution reveals itself.",
     "I write poetry with the same hands that write go-routines. Different languages, same intent.",
     "I sing when nobody is listening. Mostly Ed Sheeran. Mostly 'Shape of You'.",
-    "1,900 commits across all my projects. That's a lot of late nights and cold coffee.",
+    "2,200 commits across all my projects. That's a lot of late nights and cold coffee.",
     "I once reduced WhatsApp's desktop RAM from 370MB to 90MB. That feeling was better than any grade I've ever received.",
     "The Sixth Sense is my favorite movie. I love stories that make you question everything you've just seen.",
     "I grew up in Varanasi. The oldest city in the world. It gives you a different perspective on time.",
