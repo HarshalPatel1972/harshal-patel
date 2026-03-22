@@ -29,11 +29,11 @@ export function SystemBanner() {
   const notice = getNoticeText();
 
   return (
-    <div className="fixed top-0 left-0 right-12 md:right-16 z-[60] bg-[var(--accent-blood)] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_30px_rgba(217,17,17,0.4)] overflow-hidden">
+    <div className="fixed top-0 left-0 right-12 md:right-16 z-[60] bg-[#9e1b1b] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_30px_rgba(158,27,27,0.4)] overflow-hidden">
       <div className="flex items-center gap-3 md:gap-4 flex-1 overflow-hidden h-full">
          {/* Brutalist Warning Label */}
-         <div className="bg-white text-[var(--accent-blood)] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5 z-10 shadow-lg">
-           <span className="w-1.5 h-1.5 bg-[var(--accent-blood)] animate-pulse" />
+         <div className="bg-white text-[#9e1b1b] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5 z-10 shadow-lg">
+           <span className="w-1.5 h-1.5 bg-[#9e1b1b] animate-pulse" />
             {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "AVISO" : language === 'it' ? "AVVISO" : "सूचना"}
          </div>
          
@@ -54,7 +54,7 @@ export function SystemBanner() {
          </div>
       </div>
 
-      <div className="flex items-center pl-4 shrink-0 bg-[var(--accent-blood)] z-10">
+      <div className="flex items-center pl-4 shrink-0 bg-[#9e1b1b] z-10">
         {/* Dismiss Button */}
         <button 
           onClick={() => setVisible(false)} 
