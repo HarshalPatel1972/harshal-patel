@@ -28,7 +28,7 @@ function HomeContent() {
   return (
     <main className="relative">
       {type === 'FLIP' ? <FlipTransition /> : <SpaceWarpTransition />}
-      <Preloader onComplete={() => setShowContent(true)} />
+      {!showContent && <Preloader onComplete={() => setShowContent(true)} />}
       {showContent && <Cursor />}
 
       <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
@@ -40,9 +40,20 @@ function HomeContent() {
       <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
         <SystemBanner />
         <Hero />
-        <Projects />
-        <About />
-        <Contact />
+        
+        {/* Priority 5: High-Performance Off-Screen Rendering */}
+        <section style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' } as any}>
+          <Projects />
+        </section>
+        
+        <section style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' } as any}>
+          <About />
+        </section>
+        
+        <section style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' } as any}>
+          <Contact />
+        </section>
+        
         <Footer />
       </LanguageTransitionWrapper>
     </main>
