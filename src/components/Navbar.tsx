@@ -126,53 +126,49 @@ export function Navbar() {
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
 
+  // --- SCROLL TRACKER (OPTIMIZED) ---
   useEffect(() => {
+    let rafId: number;
     let lastScrollY = window.scrollY;
-    let ticking = false;
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
-          
-          setScrollProgress(progress);
-          
-          const speed = Math.abs(currentScrollY - lastScrollY);
-          setScrollSpeed(Math.min(speed, 99));
-          lastScrollY = currentScrollY;
+    const update = () => {
+      if (!navbarRef.current) return;
+      
+      const currentScrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
+      const speed = Math.abs(currentScrollY - lastScrollY);
+      
+      // Update CSS variables directly for hardware-accelerated dot motion
+      navbarRef.current.style.setProperty('--nav-scroll', `${progress}%`);
+      navbarRef.current.style.setProperty('--nav-speed', `${speed}`);
+      
+      // Handle active section (Infrequent update, okay for state)
+      const sections = currentNavItems.map((item) => ({
+        id: item.id,
+        el: document.getElementById(item.id),
+      }));
 
-          const sections = currentNavItems.map((item) => ({
-            id: item.id,
-            el: document.getElementById(item.id),
-          }));
-
-          for (let i = sections.length - 1; i >= 0; i--) {
-            const el = sections[i].el;
-            if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
-              setActive(sections[i].id);
-              break;
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = sections[i].el;
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
+          const targetId = sections[i].id;
+          setActive(prev => prev !== targetId ? targetId : prev);
+          break;
+        }
       }
+
+      lastScrollY = currentScrollY;
+      rafId = requestAnimationFrame(update);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    const speedInterval = setInterval(() => {
-      setScrollSpeed(prev => (prev > 0 ? Math.floor(prev * 0.8) : 0));
-    }, 100);
+    window.addEventListener("scroll", () => {}, { passive: true });
+    rafId = requestAnimationFrame(update);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearInterval(speedInterval);
+      cancelAnimationFrame(rafId);
     };
-  }, [pathname, currentNavItems]);
+  }, [currentNavItems, pathname]);
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
@@ -496,10 +492,12 @@ export function Navbar() {
               ref={dotRef}
               className="absolute left-0 right-0 flex items-center justify-center pointer-events-none"
               style={{ 
-                top: `${scrollProgress}%`,
+                top: `var(--nav-scroll)`,
                 transform: `translateY(-50%)`,
                 transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
-                height: `${8 + (scrollSpeed * 0.5)}px`,
+                // Approximate speed-based height via calc if we really want, 
+                // but local variable is better.
+                height: `calc(8px + (var(--nav-speed) * 0.4px))`,
                 width: '100%',
                 zIndex: 10,
               }}
@@ -507,7 +505,7 @@ export function Navbar() {
               <div 
                 className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300"
                 style={{
-                  width: `${ Math.max(4, 8 - (scrollSpeed * 0.05)) }px`,
+                  width: `calc(8px - (var(--nav-speed) * 0.04px))`,
                   height: '100%',
                 }}
               />
