@@ -206,11 +206,14 @@ export function About() {
 
       <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-10 md:mt-32">
         <ScrollReveal duration={1200} className="w-full">
-          <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
-            <div className={`absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+          {/* BRUTAL MANGA COMPOSITION */}
+          <div className="relative p-5 md:p-14 bg-white text-black border-[8px] border-black shadow-[15px_15px_0_rgba(0,0,0,1)] transform -rotate-1" style={{ clipPath: "polygon(0% 2%, 100% 0%, 98% 98%, 2% 100%)" }}>
+            <div className="absolute inset-0 ink-splatter opacity-10 pointer-events-none" />
+            
+            <div className={`absolute top-0 right-10 bg-[var(--accent-blood)] text-white font-black px-8 py-3 text-2xl tracking-widest border-x-4 border-b-4 border-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
               {language === 'en' ? 'CHAPTER 02' : language === 'ja' ? '第二章' : language === 'ko' ? '제 2 장' : language === 'zh-tw' ? '第二章' : language === 'fr' ? 'CHAPITRE 02' : language === 'id' ? 'BAB 02' : language === 'de' ? 'KAPITEL 02' : language === 'it' ? 'CAPITOLO 02' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 02' : 'अध्याय 02'}
             </div>
-            <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
+            <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-12 relative animate-float-slow">
                <div>
                  <h3 className={`text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-[-0.02em] leading-[0.85] mb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                    {language === 'en' ? "Software" : language === 'ja' ? "ソフトウェア" : language === 'ko' ? "소프트웨어" : language === 'zh-tw' ? "軟體" : language === 'fr' ? "Ingénieur" : language === 'id' ? "Insinyur" : language === 'de' ? "Software" : language === 'it' ? "Ingegnere" : language === 'pt-br' ? "Engenheiro de" : (language === 'es-419' || language === 'es') ? "Ingeniero de" : "सॉफ्टवेयर"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : language === 'ja' ? "エンジニア" : language === 'ko' ? "엔지니어" : language === 'zh-tw' ? "工程師" : language === 'fr' ? "Logiciel" : language === 'id' ? "Perangkat Lunak" : language === 'de' ? "Ingenieur" : language === 'it' ? "Software" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Software" : "इंजीनियर"}</span>

@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
-import { useMagnetic } from './AnimationKit';
 
 const TRANSLATIONS = {
   en: { tourists: 'Tourists', tours: 'Tours' },
@@ -22,107 +21,119 @@ const TRANSLATIONS = {
 
 export function VisitorCounter() {
   const { language } = useLanguage();
-  const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
-  const [status, setStatus] = useState<'SYNCING' | 'LIVE' | 'OFFLINE'>('SYNCING');
-  const [mounted, setMounted] = useState(false);
+  const [data, setData] = useState<{ uniqueCount: number; totalHits: number; activeNow?: number; totalCount?: number } | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  const magneticRef = useMagnetic<HTMLDivElement>(0.3);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const eyeRef = useRef<HTMLDivElement>(null);
   const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
 
   useEffect(() => {
-    setMounted(true);
-    
-    // 1. SOUL BINDING: Stable CID
     let cid = typeof window !== 'undefined' ? localStorage.getItem('visitor_soul_id') : null;
     if (!cid && typeof window !== 'undefined') {
-       cid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+       cid = Math.random().toString(36).substring(2, 15);
        localStorage.setItem('visitor_soul_id', cid);
     }
 
-    // 2. OBSERVATION (GET): Just see the numbers
     const fetchStats = async () => {
       try {
         const res = await fetch('/api/visitor-count');
         const json = await res.json();
-        if (json.success) {
-          setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits }); setStatus('LIVE');
-        }
-      } catch (e) { setStatus('OFFLINE'); }
+        if (json.success) setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits, activeNow: json.activeNow, totalCount: json.totalCount });
+      } catch (e) {}
     };
 
-    // 3. RITUAL (POST): Only for humans who stay 3+ seconds
     const incrementStats = async () => {
       try {
-        const res = await fetch('/api/visitor-count', {
+        await fetch('/api/visitor-count', {
            method: 'POST',
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify({ cid })
         });
-        const json = await res.json();
-        if (json.success && json.uniqueCount) {
-          setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits });
-        }
+        fetchStats();
       } catch (e) {}
     };
 
-    fetchStats(); // See immediately
-    
-    // Human check: only bound the soul if they stay for 3 seconds
+    fetchStats();
     const humanCheck = setTimeout(incrementStats, 3000);
-    
     const interval = setInterval(fetchStats, 60000);
+    
+    const handleMove = (e: MouseEvent) => {
+      if (!eyeRef.current) return;
+      const rect = eyeRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+      const dist = Math.min(8, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 50);
+      setMousePos({ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist });
+    };
+
+    window.addEventListener('mousemove', handleMove);
     return () => {
+      window.removeEventListener('mousemove', handleMove);
       clearTimeout(humanCheck);
       clearInterval(interval);
     };
   }, []);
 
-  // Removed hydration gate for LCP optimization
-
   return (
     <div className="relative flex items-center pointer-events-auto select-none group">
-      {/* Main Counter Button - Increased Size */}
+      {/* THE CURSED EYE - ACTIVE TRACKING */}
       <div 
-        ref={magneticRef}
+        ref={eyeRef}
         role="button"
         data-cursor="standard"
         onClick={() => setIsExpanded(!isExpanded)}
         onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
         onMouseLeave={() => window.innerWidth >= 768 && setIsExpanded(false)}
-        className="cursor-pointer min-w-[64px] h-[64px] bg-[#fdfaf0] flex flex-col items-center justify-center px-4 transition-all duration-500 hover:scale-105 shadow-[4px_4px_0_rgba(0,0,0,0.9)] relative group/button overflow-hidden"
+        className="cursor-pointer w-20 h-20 bg-white border-2 border-black flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 shadow-[8px_8px_0_rgba(0,0,0,1)] relative overflow-hidden"
         style={{ 
-          clipPath: "polygon(5% 0%, 100% 5%, 95% 95%, 0% 100%, 8% 50%)" /* Hand-torn paper effect */
+          borderRadius: "100% 0 100% 0", 
+          transform: `rotate(-45deg)`
         }}
       >
-        {/* Artifact Texture Layer */}
-        <div className="absolute inset-0 halftone-bg opacity-10 pointer-events-none" />
-        <div className="absolute -top-1 -right-1 w-6 h-6 border-2 border-[var(--accent-blood)]/20 rounded-full opacity-30 pointer-events-none" />
-
-        <span className="text-[10px] font-mono font-black text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase z-10">
-          {t.tourists}
-        </span>
-        <div className="flex items-center justify-center z-10">
-          <span className="text-3xl font-black font-mono leading-none tracking-tighter text-black">
-            {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
-          </span>
+        <div className="absolute inset-0 bg-radial-gradient(circle, #fff, #ddd) opacity-50" />
+        
+        <div 
+          className="relative w-10 h-10 rounded-full border-4 border-black bg-[#d91111] flex items-center justify-center transition-transform duration-75"
+          style={{ 
+            transform: `rotate(45deg) translate(${mousePos.x}px, ${mousePos.y}px)`,
+            boxShadow: `0 0 20px #d91111`
+          }}
+        >
+          <div className="w-2 h-6 bg-black rounded-full" />
+           <div className="absolute top-1 rotate-45 right-1 w-2 h-2 bg-white/40 rounded-full" />
         </div>
+
+        <AnimatePresence>
+          {!isExpanded && (
+            <motion.div 
+               initial={{ opacity: 0 }} 
+               animate={{ opacity: 1 }} 
+               exit={{ opacity: 0 }}
+               className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+               style={{ transform: "rotate(45deg)" }}
+            >
+               <span className="text-[10px] font-black text-black bg-white px-2 border border-black translate-y-6">
+                 {data?.uniqueCount || '0000'}
+               </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Slide-out Drawer (Opens Right) */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div 
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: "auto", opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className="h-[64px] bg-[#fdfaf0] border-2 border-black border-l-0 overflow-hidden flex flex-col justify-center px-10 shadow-[4px_4px_0_rgba(0,0,0,0.9)]"
+            className="h-16 bg-[#fdfaf0] border-2 border-black border-l-0 overflow-hidden flex flex-col justify-center px-8 shadow-[8px_8px_0_rgba(0,0,0,1)] ml-[-4px]"
           >
              <div className="flex flex-col min-w-[max-content]">
-                <span className="text-[10px] font-mono font-black text-black opacity-40 leading-tight uppercase tracking-widest">
+                <span className="text-[10px] font-black text-black opacity-40 uppercase tracking-widest leading-none mb-1">
                   {t.tours}
                 </span>
-                <span className="text-2xl font-black font-mono text-[var(--accent-blood)] leading-none -mt-0.5">
+                <span className="text-2xl font-black font-mono text-[#d91111] leading-none">
                   {data?.totalHits?.toLocaleString() || '---'}
                 </span>
              </div>
