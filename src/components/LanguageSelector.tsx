@@ -9,12 +9,18 @@ export function LanguageSelector() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const languages = [
-    { code: 'en', label: 'English' }, { code: 'ja', label: '日本語' },
-    { code: 'ko', label: '한국어' }, { code: 'zh-tw', label: '繁體中文' },
-    { code: 'hi', label: 'हिन्दी' }, { code: 'fr', label: 'Français' },
-    { code: 'id', label: 'Indonesia' }, { code: 'de', label: 'Deutsch' },
-    { code: 'it', label: 'Italiano' }, { code: 'pt-br', label: 'Português' },
-    { code: 'es-419', label: 'Español (Latinoamérica)' }, { code: 'es', label: 'Español (España)' }
+    { code: 'de', label: 'Deutsch' },
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español (España)' },
+    { code: 'es-419', label: 'Español (Latinoamérica)' },
+    { code: 'fr', label: 'Français' },
+    { code: 'hi', label: 'हिन्दी' },
+    { code: 'id', label: 'Indonesia' },
+    { code: 'it', label: 'Italiano' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+    { code: 'pt-br', label: 'Português' },
+    { code: 'zh-tw', label: '繁體中文' }
   ] as const;
 
   useEffect(() => {
