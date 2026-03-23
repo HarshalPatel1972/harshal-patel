@@ -38,11 +38,24 @@ function HomeContent() {
         <Navbar />
         <ScrollLine isVisible={showContent} />
         
-        {/* Adaptable Top-Right Action Stack */}
+        {/* Architectural Sidebar Unit */}
         <div 
-          className="fixed right-12 md:right-16 z-[100] flex flex-col items-end gap-[10px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
-          style={{ top: isNoticeVisible ? '50px' : '20px' }}
+          className="fixed right-0 z-[100] w-12 md:w-16 flex flex-col items-center bg-black border-l border-white/10 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{ 
+            top: isNoticeVisible ? '40px' : '0px',
+            '--navbar-top-offset': isNoticeVisible ? '160px' : '180px' // Refined offset for Logo + Counter + Lang
+          } as any}
         >
+          {/* Logo Unit */}
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="w-full aspect-square flex items-center justify-center border-b border-white/10 hover:bg-white/5 transition-all group overflow-hidden"
+            style={{ paddingTop: isNoticeVisible ? '0' : '20px', height: isNoticeVisible ? '64px' : '84px' }}
+          >
+            <img src="/icon.png" alt="Logo" className="w-8 h-8 object-contain transition-transform group-hover:scale-110" />
+          </button>
+
+          {/* Utility Units */}
           <VisitorCounter />
           <LanguageSelector />
         </div>
