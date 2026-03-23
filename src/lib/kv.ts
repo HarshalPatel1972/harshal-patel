@@ -1,10 +1,20 @@
-import { createClient } from '@vercel/kv';
+import Redis from 'ioredis';
 
 /**
- * High-Fidelity KV Client
- * Configured to handle both Custom Prefix and Default Vercel KV naming.
+ * Universal Redis Client
+ * Uses the standard REDIS_URL connection string.
  */
-export const kv = createClient({
-  url: process.env.STORAGE_KV_REST_API_URL || process.env.KV_REST_API_URL || '',
-  token: process.env.STORAGE_KV_REST_API_TOKEN || process.env.KV_REST_API_TOKEN || '',
+const redisUrl = process.env.REDIS_URL || process.env.STORAGE_KV_URL || '';
+
+export const redis = new Redis(redisUrl, {
+  // Ensure we don't crash on connection failure
+  retryStrategy: (times) => Math.min(times * 50, 2000),
+  maxRetriesPerRequest: 3,
 });
+
+// Polyfill for the previous 'kv' variable name to avoid breaking the API
+export const kv = {
+  sadd: (key: string, value: string) => redis.sadd(key, value),
+  scard: (key: string) => redis.scard(key),
+  incr: (key: string) => redis.incr(key),
+};

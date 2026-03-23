@@ -9,9 +9,9 @@ import crypto from 'crypto';
 export async function GET(req: NextRequest) {
     try {
         // 0. Connection Diagnostic
-        if (!process.env.STORAGE_KV_REST_API_URL && !process.env.KV_REST_API_URL) {
-            console.error('[HUD_SYSTEM] ENVIRONMENTAL_FAILURE: No Database URL found.');
-            return NextResponse.json({ success: false, error: 'NO_DATABASE_CONFIG' }, { status: 500 });
+        if (!process.env.REDIS_URL && !process.env.STORAGE_KV_URL && !process.env.KV_REST_API_URL) {
+            console.error('[HUD_SYSTEM] ENVIRONMENTAL_FAILURE: No Redis connection string.');
+            return NextResponse.json({ success: false, error: 'NO_REDIS_CONFIG' }, { status: 500 });
         }
 
         const ip = req.headers.get('x-forwarded-for') || 'Anonymous';
@@ -38,12 +38,14 @@ export async function GET(req: NextRequest) {
             totalHits,
             timestamp: Date.now()
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('[VISITOR_SYSTEM_FAILURE]', error);
         return NextResponse.json({ 
             success: false, 
             uniqueCount: 0, 
-            totalHits: 0 
+            totalHits: 0,
+            error: error.message || 'INTERNAL_SERVER_ERROR',
+            tip: 'If LOCAL: run "vercel env pull". If PROD: redeploy on Vercel.'
         }, { status: 500 });
     }
 }
