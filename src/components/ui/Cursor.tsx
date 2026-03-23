@@ -24,6 +24,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const burstFlash = useRef(0);
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tickingMouseRef = useRef(false);
 
   // Color Cycling State
   const PALETTE = ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
@@ -82,9 +83,15 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
     const onMouseMove = (e: MouseEvent) => { 
       mouse.current = { x: e.clientX, y: e.clientY }; 
-      // EXPOSE TO CSS: powers the glow-dots
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+      
+      if (!tickingMouseRef.current) {
+        window.requestAnimationFrame(() => {
+          document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+          document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+          tickingMouseRef.current = false;
+        });
+        tickingMouseRef.current = true;
+      }
     };
     const onMouseOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;

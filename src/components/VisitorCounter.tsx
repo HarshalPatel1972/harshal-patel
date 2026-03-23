@@ -78,7 +78,7 @@ export function VisitorCounter() {
     };
   }, []);
 
-  if (!mounted) return null;
+  // Removed hydration gate for LCP optimization
 
   return (
     <div className="relative flex items-center pointer-events-auto select-none group">

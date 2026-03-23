@@ -379,7 +379,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ref={quoteRef} 
           className={`${quoteFontSizeClass} font-black text-[#E8E8E6] ${language === 'hi' ? '' : 'uppercase italic'} tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
          >
-           {mounted ? wrappedChars : null}
+           {wrappedChars}
          </h1>
          
          <div 
@@ -389,7 +389,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
               <span className={`text-xs md:text-3xl text-[#d91111] tracking-[0.3em] md:tracking-[1.1em] ${language === 'hi' ? '' : 'uppercase italic'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
-                {mounted ? source : null}
+                {source}
               </span>
               <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
             </div>
