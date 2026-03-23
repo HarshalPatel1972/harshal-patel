@@ -39,11 +39,10 @@ export function VisitorCounter() {
         className="cursor-pointer min-w-[54px] h-[54px] bg-black border border-white/20 flex flex-col items-center justify-center px-4 transition-all duration-500 hover:border-[var(--accent-blood)]"
       >
         <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase">Tourists</span>
-        <div className="flex items-baseline gap-1.5">
+        <div className="flex items-center justify-center">
           <span className="text-2xl font-black font-mono leading-none tracking-tighter text-white">
             {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
           </span>
-          <div className={`w-0.5 h-3 ${status === 'LIVE' ? 'bg-[var(--accent-blood)] animate-pulse' : 'bg-white/10'}`} />
         </div>
       </div>
 
