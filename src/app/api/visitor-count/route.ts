@@ -8,7 +8,12 @@ import crypto from 'crypto';
  */
 export async function GET(req: NextRequest) {
     try {
-        // 1. Extract IP for unique identification
+        // 0. Connection Diagnostic
+        if (!process.env.STORAGE_KV_REST_API_URL && !process.env.KV_REST_API_URL) {
+            console.error('[HUD_SYSTEM] ENVIRONMENTAL_FAILURE: No Database URL found.');
+            return NextResponse.json({ success: false, error: 'NO_DATABASE_CONFIG' }, { status: 500 });
+        }
+
         const ip = req.headers.get('x-forwarded-for') || 'Anonymous';
         
         // 2. SHA-256 Hash for privacy protection
