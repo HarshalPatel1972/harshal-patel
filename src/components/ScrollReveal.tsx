@@ -50,6 +50,7 @@ export function ScrollReveal({
           setHasAnimated(true);
 
           const animateProps: Record<string, any> = {
+            targets: el,
             opacity: [0, 1],
             duration,
             delay,
@@ -62,7 +63,7 @@ export function ScrollReveal({
             animateProps.translateX = [initial.translateX, 0];
           }
 
-          anime(el, animateProps);
+          anime(animateProps);
 
           if (once) observer.unobserve(el);
         }
