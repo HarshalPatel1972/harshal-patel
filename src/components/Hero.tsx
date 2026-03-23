@@ -134,15 +134,23 @@ export function Hero() {
           </div>
         </div>
           
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator Arrows */}
         <div 
-          className="absolute bottom-[24px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none"
+          className="absolute bottom-[39px] md:bottom-[14px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
           style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
         >
           <div className="relative h-20 w-8 flex flex-col items-center justify-center">
             {[0, 1, 2, 3, 4].map((i) => (
-              <svg key={i} className="absolute animate-arrow-flow" style={{ animationDelay: `${i * 0.4}s` }} width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square"/>
+              <svg 
+                key={i} 
+                className="absolute animate-arrow-flow" 
+                style={{ animationDelay: `${i * 0.4}s` }} 
+                width="24" // Scaled from 22 (+~10% desktop base)
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none"
+              >
+                <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="white" strokeWidth="2.5" strokeLinecap="square" className="opacity-60"/>
               </svg>
             ))}
           </div>
