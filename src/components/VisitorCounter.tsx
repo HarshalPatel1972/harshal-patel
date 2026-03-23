@@ -1,20 +1,19 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 const TRANSLATIONS = {
-  en: { visitors: 'Visitors', views: 'Views' },
-  ja: { visitors: '訪問者', views: 'ビュー' },
-  hi: { visitors: 'आगंतुक', views: 'दृश्य' }
+  en: { visitors: 'Visitors', views: 'Views', viewsFull: 'Total Views' },
+  ja: { visitors: '訪問者', views: 'ビュー', viewsFull: '合計ビュー' },
+  hi: { visitors: 'आगंतुक', views: 'दृश्य', viewsFull: 'कुल दृश्य' }
 };
 
 export function VisitorCounter() {
   const { language } = useLanguage();
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const eyeRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
 
   useEffect(() => {
@@ -53,50 +52,55 @@ export function VisitorCounter() {
   }, []);
 
   return (
-    <div className="relative flex items-center justify-center pointer-events-auto select-none group/counter">
-      {/* THE WATCHER'S MASK - INNOVATIVE DUAL-STATE */}
+    <div className="relative flex items-center pointer-events-auto select-none group/counter">
+      {/* THE ORIGINAL CURSED ARTIFACT (OFUDA) */}
       <div 
-        ref={eyeRef}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className="relative flex items-center bg-black border-2 border-white/10 p-1 md:p-1.5 overflow-hidden"
+        role="button"
+        onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
+        onMouseLeave={() => window.innerWidth >= 768 && setIsExpanded(false)}
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="cursor-pointer min-w-[64px] h-[64px] bg-[#fdfaf0] flex flex-col items-center justify-center px-4 transition-all duration-500 hover:scale-105 shadow-[4px_4px_0_rgba(0,0,0,1)] relative z-20 group/button overflow-hidden"
+        style={{ 
+          clipPath: "polygon(5% 0%, 100% 5%, 95% 95%, 0% 100%, 8% 50%)" /* Hand-torn paper effect */
+        }}
       >
-        {/* LEFTSIDE BINARY: VISITORS (ALWAYS VISIBLE) */}
-        <div className="relative px-4 py-2 bg-white flex flex-col items-center justify-center shadow-[4px_4px_0_rgba(217,17,17,1)]">
-           <span className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em] leading-none mb-1">{t.visitors}</span>
-           <span className="text-2xl md:text-3xl font-black font-mono text-black leading-none">
-             {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
-           </span>
+        {/* Artifact Texture Layer */}
+        <div className="absolute inset-0 halftone-bg opacity-10 pointer-events-none" />
+        <div className="absolute -top-1 -right-1 w-6 h-6 border-2 border-[var(--accent-blood)]/20 rounded-full opacity-30 pointer-events-none" />
+
+        <span className="text-[10px] font-mono font-black text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase z-10">
+          {t.visitors}
+        </span>
+        <div className="flex items-center justify-center z-10">
+          <span className="text-2xl font-black font-mono leading-none tracking-tighter text-black">
+            {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
+          </span>
         </div>
+      </div>
 
-        {/* BRUTAL HINGE / SEPARATOR */}
-        <div className="w-[1px] h-12 bg-white/20 mx-2" />
-
-        {/* RIGHTSIDE BINARY: VIEWS (ONLY REVEALED ON HOVER) */}
-        <div className="relative w-[100px] md:w-[120px] h-full overflow-hidden flex items-center justify-center">
-            {/* THE EYELID / COVER */}
-            <motion.div 
-               animate={{ x: isHovered ? "105%" : "0%" }}
-               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-               className="absolute inset-0 bg-black z-20 flex items-center justify-center border-l border-white/20"
-            >
-               <div className="w-1.5 h-6 bg-[var(--accent-blood)] opacity-50 blur-[1px] animate-pulse" /> {/* Static Pupil Outline */}
-            </motion.div>
-
-            {/* THE DATA UNDERNEATH */}
-            <div className="flex flex-col items-center justify-center z-10">
-               <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] leading-none mb-1">{t.views}</span>
-               <span className="text-xl md:text-2xl font-black font-mono text-white leading-none">
+      {/* Slide-out Drawer (REVEAL VIEWS) */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div 
+            initial={{ width: 0, opacity: 0, x: -10 }}
+            animate={{ width: "auto", opacity: 1, x: -4 }}
+            exit={{ width: 0, opacity: 0, x: -10 }}
+            className="h-12 bg-[#fdfaf0] flex items-center px-6 shadow-[4px_4px_0_rgba(0,0,0,1)] z-10 overflow-hidden"
+            style={{ 
+              clipPath: "polygon(0% 0%, 95% 5%, 100% 95%, 5% 100%)" 
+            }}
+          >
+            <div className="flex flex-col items-start min-w-[max-content]">
+               <span className="text-[9px] font-black text-black opacity-40 uppercase tracking-widest leading-none mb-0.5">
+                 {t.viewsFull}
+               </span>
+               <span className="text-lg font-black font-mono text-[var(--accent-blood)] leading-none">
                  {data?.totalHits?.toLocaleString() || '---'}
                </span>
             </div>
-        </div>
-
-        {/* MAPPA CORNER ACCENT */}
-        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/40" />
-        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/40" />
-      </div>
-
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
