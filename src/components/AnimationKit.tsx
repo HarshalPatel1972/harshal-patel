@@ -22,8 +22,8 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
 
-        anime({
-          targets: el,
+        // Use 2-arg syntax for TypeScript compatibility
+        anime(el, {
           translateX: x * strength,
           translateY: y * strength,
           duration: 600,
@@ -36,8 +36,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
     const handleLeave = () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
       rafId.current = null;
-      anime({
-        targets: el,
+      anime(el, {
         translateX: 0,
         translateY: 0,
         duration: 800,
@@ -73,8 +72,7 @@ export function useCounter(target: number, duration: number = 2000) {
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
           const obj = { val: 0 };
-          anime({
-            targets: obj,
+          anime(obj as any, {
             val: target,
             duration,
             easing: "outQuart",
@@ -125,8 +123,7 @@ export function TextReveal({
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
           const chars = el.querySelectorAll(".char");
-          anime({
-            targets: chars,
+          anime(chars as any, {
             opacity: [0, 1],
             translateY: [20, 0],
             rotateX: [40, 0],
