@@ -67,9 +67,6 @@ function HomeContent() {
         
         <Footer />
       </LanguageTransitionWrapper>
-
-      {/* Persistent High-Fidelity HUD - Moved to root level for visibility */}
-      {showContent && <VisitorCounter />}
     </main>
   );
 }
