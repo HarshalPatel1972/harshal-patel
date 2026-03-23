@@ -88,6 +88,8 @@ export function VisitorCounter() {
         role="button"
         data-cursor="standard"
         onClick={() => setIsExpanded(!isExpanded)}
+        onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
+        onMouseLeave={() => window.innerWidth >= 768 && setIsExpanded(false)}
         className="cursor-pointer min-w-[54px] h-[54px] bg-black border border-white/20 flex flex-col items-center justify-center px-4 transition-all duration-500 hover:border-[var(--accent-blood)]"
       >
         <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase">
