@@ -15,6 +15,13 @@ const BOT_KEYWORDS = [
 
 export async function GET(req: NextRequest) {
     try {
+        // RESET COMMAND (ONE-TIME RITUAL)
+        if (req.nextUrl.searchParams.get('reset') === '1') {
+            await kv.del('portfolio_v3_unique_sessions');
+            await kv.del('portfolio_v3_total_hits');
+            return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
+        }
+
         const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
         const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
 
