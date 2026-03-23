@@ -9,18 +9,24 @@ import { animate as anime, utils } from "animejs";
 export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: number = 0.3) {
   const ref = useRef<T>(null);
   const rafId = useRef<number | null>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const handleMove = (e: MouseEvent) => {
+      // ⚡ Bolt: Store latest coordinates in mutable outer ref to prevent stale closures
+      // and desync when batching with requestAnimationFrame.
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
+
       if (rafId.current) return;
       
       rafId.current = requestAnimationFrame(() => {
         const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
+        const x = mousePos.current.x - rect.left - rect.width / 2;
+        const y = mousePos.current.y - rect.top - rect.height / 2;
 
         // Use 2-arg syntax for TypeScript compatibility
         anime(el, {
@@ -172,23 +178,37 @@ export function TextReveal({
  */
 export function useTilt(intensity: number = 10) {
   const ref = useRef<HTMLElement>(null);
+  const rafId = useRef<number | null>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const rotateX = (0.5 - y) * intensity;
-      const rotateY = (x - 0.5) * intensity;
+      // ⚡ Bolt: Store latest coordinates in mutable outer ref to prevent stale closures
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
 
-      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      el.style.transition = "transform 0.1s ease-out";
+      if (rafId.current) return;
+
+      // ⚡ Bolt: Batch DOM reads (getBoundingClientRect) and writes inside requestAnimationFrame
+      rafId.current = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        const x = (mousePos.current.x - rect.left) / rect.width;
+        const y = (mousePos.current.y - rect.top) / rect.height;
+        const rotateX = (0.5 - y) * intensity;
+        const rotateY = (x - 0.5) * intensity;
+
+        el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        el.style.transition = "transform 0.1s ease-out";
+        rafId.current = null;
+      });
     };
 
     const handleLeave = () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      rafId.current = null;
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -198,6 +218,7 @@ export function useTilt(intensity: number = 10) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, [intensity]);
 
