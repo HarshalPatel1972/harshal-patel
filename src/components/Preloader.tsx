@@ -277,21 +277,57 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }
       }, readTime);
 
-      // Subtle Perspective Breath
-      let frame = 0;
-      breathIntervalRef.current = setInterval(() => {
-        if (containerRef.current) {
-          frame++;
-          const drift = Math.sin(frame / 60) * 0.4;
-          containerRef.current.style.transform = `perspective(1200px) rotateX(${drift}deg) rotateY(${drift * 0.5}deg)`;
+      exitTimeoutRef.current = setTimeout(() => {
+        const exitTl = createTimeline({
+          defaults: {
+            ease: 'easeInQuint'
+          },
+          onComplete: () => {
+            setComplete(true);
+            onComplete?.();
+            document.body.style.overflow = "";
+          }
+        });
+
+        if (pChars.length > 0) {
+          exitTl.add('.p-char', {
+            opacity: 0,
+            translateY: -60,
+            filter: 'blur(30px)',
+            delay: stagger(10, { from: 'center' }),
+            duration: 1000
+          });
         }
-      }, 16);
+
+        if (sourceRef.current) {
+          exitTl.add(sourceRef.current, {
+            opacity: 0,
+            duration: 800
+          }, 200);
+        }
+
+        const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
+        if (exitApertureTargets.length > 0) {
+          exitTl.add(exitApertureTargets, {
+            translateY: 0,
+            duration: 1500,
+            ease: 'easeInExpo'
+          }, 600);
+        }
+
+        if (bgImageRef.current) {
+          exitTl.add(bgImageRef.current, {
+            opacity: 0,
+            duration: 800,
+            ease: 'easeOutSine'
+          }, 0);
+        }
+      }, readTime);
     }, 50); // 50ms delay ensures React has painted the p-char spans
 
     return () => {
       clearTimeout(initTimeout);
       if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
-      if (breathIntervalRef.current) clearInterval(breathIntervalRef.current);
       document.body.style.overflow = "";
     };
   }, [complete, onComplete, quote, readTime, language, mounted]);
@@ -301,7 +337,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none"
+      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none cinematic-breath pointer-events-none"
     >
       {/* Cinematic Shutter System */}
       <div data-dir="top" ref={topBarRef} className="absolute top-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-b border-[#E8E8E6]/5 will-change-transform" />
@@ -360,6 +396,19 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       {/* Cinematic Texture Overlays */}
       <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.08] grain-bg mix-blend-overlay" />
       <div className="absolute inset-0 pointer-events-none z-50 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.7)_100%)] opacity-80" />
+      
+      <style>{`
+        .cinematic-breath {
+          animation: cinematic-breath 12s ease-in-out infinite;
+          will-change: transform;
+          transform-style: preserve-3d;
+        }
+
+        @keyframes cinematic-breath {
+          0%, 100% { transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1); }
+          50% { transform: perspective(1200px) rotateX(0.4deg) rotateY(0.2deg) scale(1.01); }
+        }
+      `}</style>
     </div>
   );
 }

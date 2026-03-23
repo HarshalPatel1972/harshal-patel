@@ -72,16 +72,18 @@ export function Hero() {
   const currentIntro = introStages[language as keyof typeof introStages];
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
-  // SCROLL ENGINE (THREE-LAYER FIX)
+  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
-    let rafId: number;
-    
-    const update = () => {
+    const handleScroll = () => {
       if (!trackRef.current || !heroContentRef.current) return;
       
       const st = window.scrollY;
       const sectionOffset = trackRef.current.offsetTop;
       const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+      
+      // Early exit if outside hero range to save CPU
+      if (st > sectionOffset + trackHeight + 500) return;
+
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
 
       // Layer 3: Direct style updates bypassing React state
@@ -90,25 +92,25 @@ export function Hero() {
       // Hero recede effect (Parallax)
       const scale = 1 - progress * 0.5;
       const translate = progress * -150;
-      const opacity = 1 - progress * 3.5;
+      const opacity = Math.max(0, 1 - progress * 3.5);
       const blur = progress * 20;
       
-      heroContentRef.current.style.transform = `scale(${scale}) translateY(${translate}px)`;
+      heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
       heroContentRef.current.style.opacity = opacity.toString();
-      heroContentRef.current.style.filter = blur > 1 ? `blur(${blur}px)` : 'none';
+      
+      // Use 'none' instead of 'blur(0)' to fully release GPU resources
+      heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
-
-      rafId = requestAnimationFrame(update);
     };
 
-    // Layer 1: Passive listener to ensure immediate scrolling response
-    window.addEventListener("scroll", () => {}, { passive: true }); 
+    // Passive listener to ensure immediate scrolling response with zero main-thread lag
+    window.addEventListener("scroll", handleScroll, { passive: true }); 
     
-    // Layer 2: RAF loop for smooth, jank-free updates
-    rafId = requestAnimationFrame(update);
+    // Initial call to set state
+    handleScroll();
 
     return () => {
-      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
