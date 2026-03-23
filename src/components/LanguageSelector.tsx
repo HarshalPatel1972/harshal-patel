@@ -39,15 +39,23 @@ export function LanguageSelector() {
         </svg>
       </button>
 
+      {/* Expanded Container - Single Column Vertical List */}
       <div 
-        className={`absolute top-0 left-11 grid grid-cols-3 gap-0 bg-black/90 backdrop-blur-md border border-white/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[400px] opacity-100 p-[1px]' : 'max-w-0 opacity-0 pointer-events-none'}`}
-        style={{ width: '300px' }}
+        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border border-white/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
+        style={{ width: '220px' }}
       >
-        {languages.map((lang) => (
-          <button key={lang.code} onClick={() => { setLanguage(lang.code); setIsOpen(false); }} className={`relative font-mono text-[9px] font-bold tracking-widest h-9 flex items-center justify-center border border-white/5 transition-all duration-300 hover:bg-white/10 hover:text-white ${language === lang.code ? 'text-[var(--accent-blood)] bg-white/5' : 'text-white/80'}`}>
-            {lang.label}
-          </button>
-        ))}
+        <div className="flex flex-col w-full overflow-y-auto max-h-[70vh]">
+          {languages.map((lang) => (
+            <button 
+              key={lang.code} 
+              onClick={() => { setLanguage(lang.code); setIsOpen(false); }} 
+              className={`relative font-mono text-sm font-bold tracking-widest h-12 flex items-center justify-start px-6 border-b border-white/5 transition-all duration-300 hover:bg-white/10 hover:text-white ${language === lang.code ? 'text-[var(--accent-blood)] bg-white/5' : 'text-white/80'}`}
+            >
+              <span className="shrink-0">{lang.label}</span>
+              {language === lang.code && <div className="ml-auto w-1.5 h-1.5 bg-[var(--accent-blood)]" />}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
