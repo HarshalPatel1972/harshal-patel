@@ -38,9 +38,9 @@ function HomeContent() {
         <Navbar />
         <ScrollLine isVisible={showContent} />
         
-        {/* Adaptable Left-Side Utility Stack */}
+        {/* Adaptable Left-Side Utility Stack - Absolute to scroll away */}
         <div 
-          className="fixed left-4 z-[100] flex flex-col items-start gap-[10px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          className="absolute left-4 z-[100] flex flex-col items-start gap-[10px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
           style={{ top: isNoticeVisible ? '50px' : '20px' }}
         >
           <VisitorCounter />
