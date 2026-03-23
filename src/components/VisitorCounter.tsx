@@ -16,30 +16,49 @@ export function VisitorCounter() {
   useEffect(() => {
     setMounted(true);
     
-    // BIND SOUL: Generate or retrieve a persistent client ID
+    // 1. SOUL BINDING: Stable CID
     let cid = typeof window !== 'undefined' ? localStorage.getItem('visitor_soul_id') : null;
     if (!cid && typeof window !== 'undefined') {
        cid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
        localStorage.setItem('visitor_soul_id', cid);
     }
 
-    const fetchStats = async (doIncr = false) => {
+    // 2. OBSERVATION (GET): Just see the numbers
+    const fetchStats = async () => {
       try {
-        const query = new URLSearchParams();
-        if (doIncr) query.set('incr', '1');
-        if (cid) query.set('cid', cid);
-        
-        const res = await fetch(`/api/visitor-count?${query.toString()}`);
+        const res = await fetch('/api/visitor-count');
         const json = await res.json();
         if (json.success) {
           setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits }); setStatus('LIVE');
-        } else { setStatus('OFFLINE'); }
+        }
       } catch (e) { setStatus('OFFLINE'); }
     };
+
+    // 3. RITUAL (POST): Only for humans who stay 3+ seconds
+    const incrementStats = async () => {
+      try {
+        const res = await fetch('/api/visitor-count', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ cid })
+        });
+        const json = await res.json();
+        if (json.success && json.uniqueCount) {
+          setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits });
+        }
+      } catch (e) {}
+    };
+
+    fetchStats(); // See immediately
     
-    fetchStats(true); // Ritual initiation
-    const interval = setInterval(() => fetchStats(false), 60000);
-    return () => clearInterval(interval);
+    // Human check: only bound the soul if they stay for 3 seconds
+    const humanCheck = setTimeout(incrementStats, 3000);
+    
+    const interval = setInterval(fetchStats, 60000);
+    return () => {
+      clearTimeout(humanCheck);
+      clearInterval(interval);
+    };
   }, []);
 
   if (!mounted) return null;

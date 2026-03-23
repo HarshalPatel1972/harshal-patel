@@ -3,44 +3,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 /**
- * Live Visitor Tracking Engine (IP-Based)
- * Ensures 1:1 unique counting without storing raw IP data.
+ * SOUL REGISTRY V4: Robust Human-Only Counting
+ * Blocks bots, crawlers, and system checks to ensure realistic counts.
  */
+
+const BOT_KEYWORDS = [
+  'bot', 'spider', 'crawl', 'headless', 'lighthouse', 'inspect', 
+  'axios', 'node-fetch', 'python', 'curl', 'wget', 'postman', 
+  'vercel', 'ping', 'health', 'checker', 'uptimerobot'
+];
+
 export async function GET(req: NextRequest) {
-    // Force Node.js runtime for Redis stability
     try {
-        // 0. Connection Diagnostic
-        if (!process.env.REDIS_URL && !process.env.STORAGE_KV_URL && !process.env.KV_REST_API_URL) {
-            console.error('[SOUL_REGISTRY] SEAL_BREACH: No Resonance Path found.');
-            return NextResponse.json({ success: false, error: 'DOMAIN_SEALED' }, { status: 500 });
-        }
-
-        // 1. Extract and Sanitize Global IP (Take the first one in the chain)
-        let ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'Anonymous';
-        
-        if (ip.includes(':') && !ip.includes('[')) {
-             ip = ip.split(':')[0];
-        }
-
-        // 2. Identify Action (Should we bound the soul or just watch?)
-        const shouldIncr = req.nextUrl.searchParams.get('incr') === '1';
-        const clientProvidedId = req.nextUrl.searchParams.get('cid');
-
-        // 3. SHA-256 Hash for privacy protection
-        // We prioritize the persistent client-side UUID if available to prevent IP-drift resets
-        const identitySource = clientProvidedId || ip;
-        const hash = crypto
-            .createHash('sha256')
-            .update(identitySource + (process.env.APP_SECRET || 'v1_resonance'))
-            .digest('hex');
-
-        // 4. Ritual Phase (ONLY if specifically requested)
-        if (shouldIncr) {
-            await kv.sadd('portfolio_v3_unique_sessions', hash);
-            await kv.incr('portfolio_v3_total_hits');
-        }
-        
-        // 5. Perception Phase (Always happens)
         const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
         const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
 
@@ -48,16 +22,48 @@ export async function GET(req: NextRequest) {
             success: true, 
             uniqueCount, 
             totalHits: Number(totalHits),
-            status: 'DOMAIN_EXPANSION_COMPLETE'
+            status: 'DOMAIN_OBSERVED'
         });
-    } catch (error: any) {
-        console.error('[SOUL_REGISTRY] RITUAL_INTERRUPTED', error);
+    } catch (error) {
+        return NextResponse.json({ success: false, uniqueCount: 0, totalHits: 0 }, { status: 500 });
+    }
+}
+
+export async function POST(req: NextRequest) {
+    try {
+        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        
+        // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
+        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        if (isBot) {
+            return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
+        }
+
+        const { cid } = await req.json();
+        const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'Anonymous';
+        
+        // 2. PRIVACY HASHING
+        const identitySource = cid || ip;
+        const hash = crypto
+            .createHash('sha256')
+            .update(identitySource + (process.env.APP_SECRET || 'v1_resonance'))
+            .digest('hex');
+
+        // 3. ATOMIC RITUAL: Increment only for humans
+        await kv.sadd('portfolio_v3_unique_sessions', hash);
+        await kv.incr('portfolio_v3_total_hits');
+        
+        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
+        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+
         return NextResponse.json({ 
-            success: false, 
-            uniqueCount: 0, 
-            totalHits: 0,
-            error: 'CURSE_DETECTED',
-            tip: 'If LOCAL: run "vercel env pull". If PROD: redeploy on Vercel.'
-        }, { status: 500 });
+            success: true, 
+            uniqueCount, 
+            totalHits: Number(totalHits),
+            status: 'SOUL_BOUND'
+        });
+    } catch (error) {
+        console.error('[SOUL_REGISTRY] RITUAL_FAILED', error);
+        return NextResponse.json({ success: false }, { status: 500 });
     }
 }
