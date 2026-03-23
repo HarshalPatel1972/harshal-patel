@@ -167,30 +167,17 @@ export function Hero() {
               </span>
             </div>
 
-            {/* MANGA OVERLAY SHARDS */}
-            <div className="absolute -inset-x-20 inset-y-0 z-0 pointer-events-none overflow-hidden">
-               <div className="absolute top-[20%] left-[-10%] w-[120%] h-[30%] bg-white/5 rotate-[-12deg] transform-gpu blur-[2px]" />
-               <div className="absolute bottom-[20%] right-[-10%] w-[120%] h-[40%] bg-[var(--accent-blood)]/5 rotate-[8deg] transform-gpu blur-[1px]" />
-            </div>
-
-            <div ref={titlesRef} className="relative mb-2 w-full cursor-none group/title perspective-1000">
-              {/* Floating Ofuda Artifacts */}
-              <div className="absolute -top-32 -left-20 text-[6rem] font-black text-white/5 rotate-[-15deg] select-none pointer-events-none animate-float hidden lg:block">封</div>
-              <div className="absolute top-20 right-0 text-[4rem] font-black text-[var(--accent-blood)]/10 rotate-[25deg] select-none pointer-events-none animate-bounce-slow hidden lg:block">獄</div>
-
+            <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title">
               <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {currentProfile.name.split(" ")[0].split("").map((char, i) => (
-                  <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-125 hover:rotate-3 active-glitch">
+                  <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
                 ))}
               </h1>
-              <h1 
-                className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}
-                style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 0% 100%)" }}
-              >
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
-                  <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-125 hover:-rotate-3 active-glitch">
+                  <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
                 ))}
