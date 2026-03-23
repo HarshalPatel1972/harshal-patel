@@ -157,6 +157,7 @@ export function Navbar() {
   useEffect(() => {
     let ticking = false;
     let lastScrollY = window.scrollY;
+    let speedTimeout: NodeJS.Timeout | null = null;
 
     const updateScroll = () => {
       if (!navbarRef.current) return;
@@ -164,11 +165,19 @@ export function Navbar() {
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
-      const speed = Math.abs(currentScrollY - lastScrollY);
+      const speed = Math.min(Math.abs(currentScrollY - lastScrollY), 50); // Cap speed for visual sanity
       
       navbarRef.current.style.setProperty('--nav-scroll', `${progress}%`);
       navbarRef.current.style.setProperty('--nav-speed', `${speed}`);
       
+      // AUTO-DECAY: Reset speed to 0 if no more scroll events occur
+      if (speedTimeout) clearTimeout(speedTimeout);
+      speedTimeout = setTimeout(() => {
+        if (navbarRef.current) {
+          navbarRef.current.style.setProperty('--nav-speed', '0');
+        }
+      }, 150);
+
       lastScrollY = currentScrollY;
       ticking = false;
     };
@@ -185,6 +194,7 @@ export function Navbar() {
 
     return () => {
       window.removeEventListener("scroll", onScroll);
+      if (speedTimeout) clearTimeout(speedTimeout);
     };
   }, [pathname]);
 
