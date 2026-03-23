@@ -50,7 +50,7 @@ export function VisitorCounter() {
             className="h-9 bg-black border border-white/20 border-r-0 overflow-hidden flex flex-col justify-center px-3"
           >
              <div className="flex flex-col">
-                <span className="text-[7px] font-mono font-bold text-white/50 leading-tight">TOTAL_HITS</span>
+                <span className="text-[7px] font-mono font-bold text-white/50 leading-tight">TOURS</span>
                 <span className="text-sm font-black font-mono text-white leading-none italic">
                   {data?.totalHits?.toLocaleString() || '---'}
                 </span>
@@ -64,7 +64,7 @@ export function VisitorCounter() {
         onClick={() => setIsExpanded(!isExpanded)}
         className="cursor-pointer w-auto h-9 bg-black border border-white/20 flex flex-col items-end justify-center px-3 transition-all duration-500 hover:border-[var(--accent-blood)]"
       >
-        <span className="text-[7px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5">VISITS</span>
+        <span className="text-[7px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5">TOURISTS</span>
         <div className="flex items-baseline gap-1">
           <span className="text-xl font-black font-mono leading-none tracking-tighter text-white">
             {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
