@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
@@ -156,7 +156,7 @@ export const metadata: Metadata = {
   category: "technology",
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   themeColor: "#050505",
   width: "device-width",
   initialScale: 1,

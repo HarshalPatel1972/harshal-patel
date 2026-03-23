@@ -128,7 +128,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const wrappedChars = useMemo(() => {
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
-    const charStyle = { opacity: 0, transform: 'translateY(40px)', filter: 'blur(20px)' };
+    const charStyle = isMobile ? { opacity: 1 } : { opacity: 0, transform: 'translateY(40px)', filter: 'blur(20px)' };
 
     // MOBILE OPTIMIZATION: On mobile, split by words only, NEVER characters. 
     // This reduces DOM nodes from 150+ to ~15, slashing 2s of render delay.
