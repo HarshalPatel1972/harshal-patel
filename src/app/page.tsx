@@ -38,12 +38,19 @@ function HomeContent() {
         <Navbar />
         <ScrollLine isVisible={showContent} />
         
-        {/* Adaptable Left-Side Utility Stack - Absolute to scroll away */}
+        {/* 1. SCROLLING UNIT: Visitor Counter (Absolute) */}
         <div 
-          className="absolute left-4 z-[100] flex flex-col items-start gap-[10px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          className="absolute left-4 z-[50] flex flex-col items-start transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
           style={{ top: isNoticeVisible ? '50px' : '20px' }}
         >
           <VisitorCounter />
+        </div>
+
+        {/* 2. PERSISTENT UNIT: Language Selector (Fixed) */}
+        <div 
+          className="fixed left-4 z-[100] flex flex-col items-start transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{ top: isNoticeVisible ? '114px' : '84px' }} // Positioned below the counter's slot
+        >
           <LanguageSelector />
         </div>
       </div>
