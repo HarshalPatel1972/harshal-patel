@@ -1,39 +1,59 @@
 # Harshal Patel Portfolio
 
-A professional personal portfolio designed with a focus on cinematic brutalism, performance optimization, and refined user interaction.
+A high-performance, cinematic brutalist portfolio focused on aesthetic precision and thermal efficiency.
 
 ---
 
-### Overview
-This project serves as a comprehensive digital resume and project showcase. It emphasizes a monochromatic visual system, high-performance animation hooks, and intentional white space to provide a clear, distraction-free viewing experience.
+## Overview
+This Next.js-based portfolio serves as a technical showcase. The design philosophy emphasizes **Cinematic Brutalism**, utilizing monochromatic tones, analog film grain, and hardware-accelerated animations to create a premium user experience without high resource consumption.
 
-### Technical Features
-- **Performance First:** All animations are throttled and hardware-accelerated to minimize resource consumption on mobile and desktop devices.
-- **Dynamic Content:** Integration with Upstash Redis for real-time visitor tracking and statistics.
-- **Responsive Layout:** A modular system ensuring visual consistency across all screen dimensions.
-- **Human-Centric Design:** Intentional UX patterns designed to reduce cognitive load.
+## Key Features
+- **Thermal Optimization:** All JavaScript animation loops are throttled via `requestAnimationFrame` and passive event listeners to prevent device heating.
+- **Human-only Analytics:** A robust visitor counter that uses POST signals, bot-filtering, and 3-second human-pulse delays to ignore crawlers and health-pings.
+- **Adaptive HUD:** A responsive navigation system with a velocity-decaying scroll indicator for precise visual feedback.
+- **Multilingual Support:** Dynamic language switching across 10+ languages (English, Japanese, Hindi, etc.).
+- **Interactive Elements:** Magnetic CTA buttons, staggered text reveals, and parallax layers.
 
-### Technology Stack
-- **Framework:** Next.js (App Router)
-- **Programming Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **Animation Engine:** Framer Motion & Anime.js
-- **Persistence Layer:** Redis (Upstash)
+## Technical Stack
+- **Framework:** [Next.js 15+](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Animation:** [Framer Motion](https://www.framer.com/motion/) & [Anime.js](https://animejs.com/)
+- **Persistence:** [Upstash Redis](https://upstash.com/) (Serverless KV)
+- **Deployment:** [Vercel](https://vercel.com/)
 
-### Getting Started
+## Architecture Highlights
+- `src/components/AnimationKit.tsx`: Centralized, throttled animation hooks for site-wide consistency.
+- `src/app/api/visitor-count/route.ts`: A secure, bot-filtered API for identity-persistent visitor tracking.
+- `src/context/LanguageContext.tsx`: Client-side state for global localization.
 
-To run the project locally, follow these steps:
+## Getting Started
 
+### Prerequisites
+- Node.js 18+
+- An Upstash Redis account (for visitor tracking)
+
+### Environment Variables
+Create a `.env.local` file with the following keys:
+```env
+KV_REST_API_URL=your_upstash_url
+KV_REST_API_TOKEN=your_upstash_token
+APP_SECRET=a_stable_random_string_for_hashing
+```
+
+### Installation
 ```bash
-# Install dependencies
+# 1. Clone the repository
+git clone https://github.com/HarshalPatel1972/harshal-patel.git
+
+# 2. Install dependencies
 npm install
 
-# Start the development server
+# 3. Start development
 npm run dev
 ```
 
-### Deployment
-This project is configured for continuous deployment on **Vercel**. All unique visitor metrics are human-verified through a backend-supported filtering system.
+## Deployment
+The project is optimized for Vercel. All environment variables must be replicated in the Vercel Dashboard to enable the live visitor counter.
 
 ---
 **© 2026 Harshal Patel**
