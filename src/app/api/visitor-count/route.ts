@@ -24,11 +24,14 @@ export async function GET(req: NextRequest) {
 
         // 2. Identify Action (Should we bound the soul or just watch?)
         const shouldIncr = req.nextUrl.searchParams.get('incr') === '1';
+        const clientProvidedId = req.nextUrl.searchParams.get('cid');
 
         // 3. SHA-256 Hash for privacy protection
+        // We prioritize the persistent client-side UUID if available to prevent IP-drift resets
+        const identitySource = clientProvidedId || ip;
         const hash = crypto
             .createHash('sha256')
-            .update(ip + (process.env.APP_SECRET || 'v1_resonance'))
+            .update(identitySource + (process.env.APP_SECRET || 'v1_resonance'))
             .digest('hex');
 
         // 4. Ritual Phase (ONLY if specifically requested)

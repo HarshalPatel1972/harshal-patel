@@ -15,16 +15,29 @@ export function VisitorCounter() {
 
   useEffect(() => {
     setMounted(true);
+    
+    // BIND SOUL: Generate or retrieve a persistent client ID
+    let cid = typeof window !== 'undefined' ? localStorage.getItem('visitor_soul_id') : null;
+    if (!cid && typeof window !== 'undefined') {
+       cid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+       localStorage.setItem('visitor_soul_id', cid);
+    }
+
     const fetchStats = async (doIncr = false) => {
       try {
-        const res = await fetch(`/api/visitor-count${doIncr ? '?incr=1' : ''}`);
+        const query = new URLSearchParams();
+        if (doIncr) query.set('incr', '1');
+        if (cid) query.set('cid', cid);
+        
+        const res = await fetch(`/api/visitor-count?${query.toString()}`);
         const json = await res.json();
         if (json.success) {
           setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits }); setStatus('LIVE');
         } else { setStatus('OFFLINE'); }
       } catch (e) { setStatus('OFFLINE'); }
     };
-    fetchStats(true);
+    
+    fetchStats(true); // Ritual initiation
     const interval = setInterval(() => fetchStats(false), 60000);
     return () => clearInterval(interval);
   }, []);
