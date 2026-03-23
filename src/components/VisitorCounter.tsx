@@ -2,16 +2,33 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '@/context/LanguageContext';
+import { useMagnetic } from './AnimationKit';
 
-/**
- * Prominent Left-Side Visitor Counter
- * Restored to the left with increased size and rightward expansion.
- */
+const TRANSLATIONS = {
+  en: { tourists: 'Tourists', tours: 'Tours' },
+  ja: { tourists: '観光客', tours: 'ツアー' },
+  ko: { tourists: '관광객', tours: '투어' },
+  'zh-tw': { tourists: '遊客', tours: '參觀' },
+  hi: { tourists: 'पर्यटक', touristsSub: 'सैलानियों', tours: 'दौरे' },
+  fr: { tourists: 'Touristes', tours: 'Visites' },
+  id: { tourists: 'Turis', tours: 'Tur' },
+  de: { tourists: 'Touristen', tours: 'Touren' },
+  it: { tourists: 'Turisti', tours: 'Tour' },
+  'pt-br': { tourists: 'Turistas', tours: 'Tours' },
+  'es-419': { tourists: 'Turistas', tours: 'Tours' },
+  es: { tourists: 'Turistas', tours: 'Tours' }
+};
+
 export function VisitorCounter() {
+  const { language } = useLanguage();
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
   const [status, setStatus] = useState<'SYNCING' | 'LIVE' | 'OFFLINE'>('SYNCING');
   const [mounted, setMounted] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  const magneticRef = useMagnetic<HTMLDivElement>(0.3);
+  const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
 
   useEffect(() => {
     setMounted(true);
@@ -67,10 +84,13 @@ export function VisitorCounter() {
     <div className="relative flex items-center pointer-events-auto select-none group">
       {/* Main Counter Button - Increased Size */}
       <div 
+        ref={magneticRef}
         onClick={() => setIsExpanded(!isExpanded)}
         className="cursor-pointer min-w-[54px] h-[54px] bg-black border border-white/20 flex flex-col items-center justify-center px-4 transition-all duration-500 hover:border-[var(--accent-blood)]"
       >
-        <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase">Tourists</span>
+        <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase">
+          {t.tourists}
+        </span>
         <div className="flex items-center justify-center">
           <span className="text-2xl font-black font-mono leading-none tracking-tighter text-white">
             {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
@@ -88,7 +108,9 @@ export function VisitorCounter() {
             className="h-[54px] bg-black border border-white/20 border-l-0 overflow-hidden flex flex-col justify-center px-4"
           >
              <div className="flex flex-col">
-                <span className="text-[8px] font-mono font-bold text-white/50 leading-tight uppercase">Tours</span>
+                <span className="text-[8px] font-mono font-bold text-white/50 leading-tight uppercase">
+                  {t.tours}
+                </span>
                 <span className="text-base font-black font-mono text-white leading-none italic">
                   {data?.totalHits?.toLocaleString() || '---'}
                 </span>
