@@ -285,6 +285,7 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
             alt="Resting on the scroll" 
             width={606}
             height={404}
+            sizes="(max-width: 768px) 208px, 606px"
             priority
             className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
           />

@@ -389,8 +389,16 @@ export function Navbar() {
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
             <button onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} onMouseUp={handleLogoTouchEnd} onMouseLeave={handleLogoTouchEnd} onTouchStart={handleLogoTouchStart} onTouchEnd={handleLogoTouchEnd} onClick={handleLogoClick} className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation">
-              <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
-            </button>
+                <Image 
+                  src="/icon.png" 
+                  alt="HP Logo" 
+                  width={44} 
+                  height={44} 
+                  priority={true}
+                  sizes="44px"
+                  className="w-full h-full object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-500"
+                />
+</button>
           </div>
         </div>
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">

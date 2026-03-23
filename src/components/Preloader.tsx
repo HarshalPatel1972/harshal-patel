@@ -357,6 +357,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             src={bgImage} 
             alt="Cinematic Background" 
             fill 
+            sizes="100vw"
+            quality={80}
             className="object-cover"
             style={{ filter: 'grayscale(1) brightness(0.8)' }}
             priority
