@@ -147,7 +147,20 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.png",
     apple: "/favicon.png",
-  }
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Harshal Patel",
+  },
+  category: "technology",
+};
+
+export const viewport = {
+  themeColor: "#050505",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
