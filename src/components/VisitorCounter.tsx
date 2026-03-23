@@ -15,9 +15,9 @@ export function VisitorCounter() {
     setMounted(true);
     console.log("[HUD_SYSTEM] Initializing Uplink...");
     
-    const fetchStats = async () => {
+    const fetchStats = async (doIncr = false) => {
       try {
-        const res = await fetch('/api/visitor-count');
+        const res = await fetch(`/api/visitor-count${doIncr ? '?incr=1' : ''}`);
         
         // Ensure we actually got JSON (prevents "Unexpected token <" error)
         const contentType = res.headers.get("content-type");
@@ -46,8 +46,8 @@ export function VisitorCounter() {
       }
     };
 
-    fetchStats();
-    const interval = setInterval(fetchStats, 60000);
+    fetchStats(true);
+    const interval = setInterval(() => fetchStats(false), 60000);
     return () => clearInterval(interval);
   }, []);
 
