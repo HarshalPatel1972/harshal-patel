@@ -63,7 +63,7 @@ function HomeContent() {
 
         {/* 2. DYNAMIC HUD UNIT: Language Selector (Fixed) */}
         <div 
-          className="fixed left-4 z-[100] flex flex-col items-start transition-all duration-300 ease-out"
+          className="fixed left-4 z-[100] flex flex-col items-start"
           style={{ top: `${dynamicLangTop}px` }}
         >
           <LanguageSelector />
