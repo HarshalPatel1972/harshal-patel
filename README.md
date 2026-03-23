@@ -1,36 +1,39 @@
-# 🏮 Harshal Patel // Digital Ritual
+# Harshal Patel Portfolio
 
-> A portfolio developed in Cinematic Brutalism.  
-> A quiet space for algorithms, systems, and design.
+A professional personal portfolio designed with a focus on cinematic brutalism, performance optimization, and refined user interaction.
 
 ---
 
-### ⛩️ The Philosophy
-This repository is more than a codebase; it is a digital sanctuary. Built on the principles of **Cinematic Brutalism**, it prioritizes high-contrast aesthetics, intentional motion, and a distraction-free user experience. Every line of code is optimized for thermal efficiency and human interaction.
+### Overview
+This project serves as a comprehensive digital resume and project showcase. It emphasizes a monochromatic visual system, high-performance animation hooks, and intentional white space to provide a clear, distraction-free viewing experience.
 
-### 🦾 The Engineering
-Built with a focus on performant reactivity and hardware-accelerated visuals.
-- **Frontend:** Next.js (React)
-- **Styling:** Tailwind CSS (Brutalist System)
-- **Animations:** Framer Motion & Anime.js
-- **Persistence:** Redis via Upstash
-- **Aesthetic:** Analog Film Grain / Monochromatic
+### Technical Features
+- **Performance First:** All animations are throttled and hardware-accelerated to minimize resource consumption on mobile and desktop devices.
+- **Dynamic Content:** Integration with Upstash Redis for real-time visitor tracking and statistics.
+- **Responsive Layout:** A modular system ensuring visual consistency across all screen dimensions.
+- **Human-Centric Design:** Intentional UX patterns designed to reduce cognitive load.
 
-### 🏮 Ritual Initiation
-To summon the local development environment:
+### Technology Stack
+- **Framework:** Next.js (App Router)
+- **Programming Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Animation Engine:** Framer Motion & Anime.js
+- **Persistence Layer:** Redis (Upstash)
+
+### Getting Started
+
+To run the project locally, follow these steps:
 
 ```bash
-# 1. Install the dependencies
+# Install dependencies
 npm install
 
-# 2. Begin the movement
+# Start the development server
 npm run dev
 ```
 
-### 🌌 Manifestation
-Every interaction on the live domain is human-verified.  
-The soul of this project resides on [Vercel](https://vercel.com).
+### Deployment
+This project is configured for continuous deployment on **Vercel**. All unique visitor metrics are human-verified through a backend-supported filtering system.
 
 ---
-*Developed with intention.*  
 **© 2026 Harshal Patel**
