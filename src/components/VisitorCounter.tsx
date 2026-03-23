@@ -85,6 +85,8 @@ export function VisitorCounter() {
       {/* Main Counter Button - Increased Size */}
       <div 
         ref={magneticRef}
+        role="button"
+        data-cursor="standard"
         onClick={() => setIsExpanded(!isExpanded)}
         className="cursor-pointer min-w-[54px] h-[54px] bg-black border border-white/20 flex flex-col items-center justify-center px-4 transition-all duration-500 hover:border-[var(--accent-blood)]"
       >
