@@ -7,6 +7,7 @@ import crypto from 'crypto';
  * Ensures 1:1 unique counting without storing raw IP data.
  */
 export async function GET(req: NextRequest) {
+    // Force Node.js runtime for Redis stability
     try {
         // 0. Connection Diagnostic
         if (!process.env.REDIS_URL && !process.env.STORAGE_KV_URL && !process.env.KV_REST_API_URL) {

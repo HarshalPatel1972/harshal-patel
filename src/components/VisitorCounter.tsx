@@ -9,13 +9,24 @@ import React, { useEffect, useState } from 'react';
 export function VisitorCounter() {
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
   const [status, setStatus] = useState<'SYNCING' | 'LIVE' | 'OFFLINE'>('SYNCING');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     console.log("[HUD_SYSTEM] Initializing Uplink...");
     
     const fetchStats = async () => {
       try {
         const res = await fetch('/api/visitor-count');
+        
+        // Ensure we actually got JSON (prevents "Unexpected token <" error)
+        const contentType = res.headers.get("content-type");
+        if (!res.ok || !contentType || !contentType.includes("application/json")) {
+           console.warn("[HUD_SYSTEM] Received non-JSON response.");
+           setStatus('OFFLINE');
+           return;
+        }
+
         const json = await res.json();
         
         console.log("[HUD_SYSTEM] Sync Data:", json);
@@ -39,6 +50,8 @@ export function VisitorCounter() {
     const interval = setInterval(fetchStats, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed bottom-6 left-6 z-[99999] pointer-events-none select-none animate-in fade-in slide-in-from-bottom-4 duration-1000">
