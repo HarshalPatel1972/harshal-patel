@@ -71,20 +71,29 @@ export function useCounter(target: number, duration: number = 2000) {
       ([entry]) => {
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
-          const obj = { val: 0 };
           
-          anime(obj, {
-            val: target,
-            duration,
-            easing: "outQuart",
-            round: 1,
-            update: () => {
-              if (el) el.textContent = String(Math.round(obj.val));
-            },
-          });
+          let startTime: number | null = null;
+          const startValue = 0;
+
+          const step = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            
+            // Native easing logic to keep it smooth
+            const easedProgress = 1 - Math.pow(1 - progress, 4); // OutQuart
+            const currentCount = Math.floor(easedProgress * (target - startValue) + startValue);
+            
+            if (el) el.textContent = currentCount.toString();
+            
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          };
+          
+          requestAnimationFrame(step);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.05 }
     );
 
     observer.observe(el);
