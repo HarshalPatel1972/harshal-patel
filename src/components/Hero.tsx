@@ -156,12 +156,24 @@ export function Hero() {
           </div>
         </div>
 
-        <div ref={heroContentRef} className="w-full h-full flex items-center justify-center">
+        <div ref={heroContentRef} className="w-full h-full flex items-center justify-center relative overflow-hidden">
+          {/* MAPPA-LEVEL ART LAYERS */}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 ink-splatter z-0" />
+          <div className="absolute top-[20%] right-[10%] opacity-20 z-0 select-none pointer-events-none hidden lg:block">
+            <span className="text-[20rem] font-black text-white/5 leading-none">呪術</span>
+          </div>
+
+          <div className="absolute left-4 md:left-12 top-1/2 -translate-y-1/2 z-20 hidden md:block">
+            <div className="ofuda-seal">
+               {language === 'ja' ? '呪術師' : language === 'en' ? 'SOFT EXORCIST' : 'सॉफ्टवेयर इंजीनियर'}
+            </div>
+          </div>
+
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
           <ExorcistsScroll />
 
-          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
-            <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none pl-0 md:pl-24">
+            <div className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] shadow-[8px_8px_0_rgba(0,0,0,0.9)] transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                 {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
               </span>

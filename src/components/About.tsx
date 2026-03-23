@@ -205,10 +205,14 @@ export function About() {
       className="relative z-20 pt-[34px] pb-[34px] md:pt-[98px] md:pb-[98px] px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden isolate transform-gpu
                  before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-[var(--bg-ink)] before:pointer-events-none"
     >
-      {/* Background Halftone Drop */}
+      {/* Background Art Layers */}
+      <div className="absolute inset-x-0 bottom-0 h-1/2 ink-splatter z-0 opacity-30" />
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
-      {/* Vertical Watermark */}
+      {/* Massive Vertical Kanji Watermark */}
+      <div className="absolute top-[10%] -left-[15%] opacity-5 z-0 rotate-[-90deg] hidden xl:block select-none pointer-events-none">
+        <span className="text-[30rem] font-black text-white/5 leading-none tracking-tighter">宿儺</span>
+      </div>
 
       {/* Massive Section Title (MAPPA Background Text Style) */}
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">

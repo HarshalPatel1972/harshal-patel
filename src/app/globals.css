@@ -411,7 +411,7 @@ img, svg, picture, .ink-slash, .manga-panel {
   inset: -100%;
   z-index: 999998;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.08;
+  opacity: 0.12; /* Increased intensity */
   pointer-events: none;
   mix-blend-mode: overlay;
   animation: grain 1s steps(1) infinite;
@@ -432,11 +432,11 @@ img, svg, picture, .ink-slash, .manga-panel {
   z-index: 999997;
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.05) 50%
+    rgba(0, 0, 0, 0.15) 50%
   );
   background-size: 100% 4px;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.4; /* Increased intensity */
 }
 
 .distorted-vignette {
@@ -445,8 +445,41 @@ img, svg, picture, .ink-slash, .manga-panel {
   z-index: 999996;
   background: radial-gradient(
     circle at center, 
-    transparent 20%, 
-    rgba(0,0,0,0.5) 150%
+    transparent 0%, 
+    rgba(0,0,0,0.8) 160%
   );
   pointer-events: none;
+}
+
+.ofuda-seal {
+  position: relative;
+  background: #fdfaf0;
+  border-left: 2px solid rgba(217, 17, 17, 0.4);
+  padding: 1.5rem 0.6rem;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.8), 0 0 15px rgba(217,17,17,0.2);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: #1a1a1a;
+  font-family: var(--font-victor);
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.ofuda-seal::before {
+  content: "領域展開";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  color: var(--accent-blood);
+  font-size: 0.6rem;
+  opacity: 0.6;
+}
+
+.ink-splatter {
+  mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20,-10 C40,-30 60,10 80,-10 C100,-30 120,20 140,0 C160,-20 180,30 200,10 L200,200 L0,200 Z' fill='black'/%3E%3C/svg%3E");
+  background: var(--bg-ink);
+  opacity: 0.4;
 }
