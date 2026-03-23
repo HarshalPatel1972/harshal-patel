@@ -5,14 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 const TRANSLATIONS = {
-  en: { tourists: 'Unique', tours: 'Total' },
-  ja: { tourists: 'ユニーク', tours: '合計' },
-  hi: { tourists: 'अद्वितीय', tours: 'कुल' }
+  en: { visitors: 'Visitors', views: 'Views' },
+  ja: { visitors: '訪問者', views: 'ビュー' },
+  hi: { visitors: 'आगंतुक', views: 'दृश्य' }
 };
 
 export function VisitorCounter() {
   const { language } = useLanguage();
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const eyeRef = useRef<HTMLDivElement>(null);
   const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
@@ -52,9 +53,8 @@ export function VisitorCounter() {
       const rect = eyeRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-      const dist = Math.min(6, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 60);
-      setMousePos({ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist });
+      const dist = Math.min(10, Math.hypot(e.clientX - centerX, e.clientY - centerY) / 50);
+      setMousePos({ x: (e.clientX - centerX) * 0.1, y: (e.clientY - centerY) * 0.1 });
     };
 
     window.addEventListener('mousemove', handleMove);
@@ -66,46 +66,72 @@ export function VisitorCounter() {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center pointer-events-auto select-none">
-      {/* THE DOUBLE-IRIS WATCHER */}
+    <div className="relative flex items-center justify-center pointer-events-auto select-none group/counter mt-2 md:mt-0">
+      {/* THE SPLIT HORIZON - MINIMAL MAPPA ART */}
       <div 
         ref={eyeRef}
-        className="w-40 h-24 bg-white border-[6px] border-black flex items-center justify-center gap-2 relative shadow-[10px_10px_0_rgba(0,0,0,1)] hover:scale-105 transition-transform duration-500"
-        style={{ borderRadius: "100% 0 100% 0" }}
+        role="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
+        onMouseLeave={() => window.innerWidth >= 768 && setIsExpanded(false)}
+        className="cursor-pointer relative w-40 h-20 md:w-56 md:h-24 flex items-center justify-center overflow-visible"
       >
-        {/* IRIS 1: TOURISTS */}
-        <div className="flex flex-col items-center">
-            <motion.div 
-               animate={{ x: mousePos.x, y: mousePos.y }}
-               className="w-12 h-12 rounded-full border-4 border-black bg-[#d91111] flex flex-col items-center justify-center overflow-hidden mb-1 relative"
-            >
-               <div className="w-1 h-full bg-black opacity-60" />
-               <div className="absolute top-1 right-2 w-2 h-2 bg-white/40 rounded-full" />
-            </motion.div>
-            <span className="text-[10px] font-black uppercase text-black/40">{t.tourists}</span>
-            <span className="text-sm font-black text-black leading-none">{data?.uniqueCount?.toString().padStart(4, '0') || '0000'}</span>
+        {/* UPPER LINE - THE SKY */}
+        <motion.div 
+           animate={{ y: isExpanded ? -30 : 0, skewX: isExpanded ? -10 : 0 }}
+           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+           className="absolute top-1/2 left-0 right-0 h-[3px] bg-white z-30" 
+        />
+
+        {/* LOWER LINE - THE EARTH */}
+        <motion.div 
+           animate={{ y: isExpanded ? 30 : 0, skewX: isExpanded ? 10 : 0 }}
+           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+           className="absolute top-1/2 left-0 right-0 h-[3px] bg-white z-30" 
+        />
+
+        {/* THE VOID DATA GUTS (REVEALED IN THE GAP) */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+           <AnimatePresence>
+             {isExpanded && (
+               <motion.div 
+                 initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                 exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+                 className="flex flex-col items-center gap-1"
+               >
+                  <div className="flex flex-col items-center">
+                    <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] leading-none mb-1">{t.visitors}</span>
+                    <span className="text-3xl font-black font-mono text-white leading-none">
+                      {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center mt-2 pt-2 border-t border-white/10 w-full">
+                    <span className="text-[10px] font-black text-[var(--accent-blood)] uppercase tracking-[0.3em] leading-none mb-1">{t.views}</span>
+                    <span className="text-2xl font-black font-mono text-white leading-none">
+                      {data?.totalHits?.toLocaleString() || '---'}
+                    </span>
+                  </div>
+
+                  {/* MINIMAL GLITCH PUPIL */}
+                  <motion.div 
+                    animate={{ x: mousePos.x, y: mousePos.y }}
+                    className="absolute -right-4 top-1/2 -translate-y-1/2 w-1.5 h-12 bg-[var(--accent-blood)] opacity-40 blur-[1px]" 
+                  />
+               </motion.div>
+             )}
+           </AnimatePresence>
         </div>
 
-        {/* BRUTAL SEPARATOR */}
-        <div className="w-[2px] h-16 bg-black opacity-20 mx-1" />
-
-        {/* IRIS 2: TOURS */}
-        <div className="flex flex-col items-center">
-            <motion.div 
-               animate={{ x: mousePos.x * 1.2, y: mousePos.y * 1.2 }}
-               className="w-12 h-12 rounded-full border-4 border-black bg-[#0ee0c3] flex flex-col items-center justify-center overflow-hidden mb-1 relative"
-            >
-               <div className="w-1 h-full bg-black opacity-60" />
-               <div className="absolute top-1 right-2 w-2 h-2 bg-white/40 rounded-full" />
-            </motion.div>
-            <span className="text-[10px] font-black uppercase text-black/40">{t.tours}</span>
-            <span className="text-sm font-black text-black leading-none">{data?.totalHits?.toLocaleString() || '---'}</span>
-        </div>
-
-        {/* MANGA TEXTURE */}
-        <div className="absolute inset-0 halftone-bg opacity-10 pointer-events-none" />
+        {/* STATIC STATE: MINIMAL IRIS OUTLINE */}
+        {!isExpanded && (
+           <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="w-4 h-4 rounded-full border-2 border-white/20 z-0"
+           />
+        )}
       </div>
-
     </div>
   );
 }
