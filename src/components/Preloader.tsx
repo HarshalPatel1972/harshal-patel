@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from "react";
+import Image from "next/image";
 import { createTimeline, stagger } from "animejs";
 import { mappaQuotesList, characterRegistry } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
@@ -351,13 +352,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         <div 
           ref={bgImageRef}
           className="absolute inset-0 z-0 opacity-0 pointer-events-none"
-          style={{ 
-            backgroundImage: `url('${bgImage}')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'grayscale(1) brightness(0.8)' // MAPPA aesthetic: high-contrast monochrome base
-          }}
-        />
+        >
+          <Image 
+            src={bgImage} 
+            alt="Cinematic Background" 
+            fill 
+            className="object-cover"
+            style={{ filter: 'grayscale(1) brightness(0.8)' }}
+            priority
+          />
+        </div>
       )}
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.03)_0%,transparent_85%)] opacity-60" />

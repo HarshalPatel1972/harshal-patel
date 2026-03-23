@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLanguage, type Language } from "@/context/LanguageContext";
 import { animate as anime } from "animejs";
@@ -244,8 +245,14 @@ export function Navbar() {
     
     if (hit) squish = 0.8 + (Math.random() * 0.1); else squish += (1 - squish) * 0.12; 
     
-    physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
-    setDotPos({ x, y });
+    physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish, scale };
+    
+    if (dotRef.current && dotMode === 'RELEASED') {
+      dotRef.current.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${squish})`;
+      dotRef.current.style.height = `${25 * scale}px`;
+      dotRef.current.style.width = `${25 * scale}px`;
+    }
+
     rafRef.current = requestAnimationFrame(runPhysics);
   }, [dotMode, isDragging]);
 
@@ -352,7 +359,9 @@ export function Navbar() {
         const vy = (pageY - lastTouchRef.current.y) / (dt / 16);
         physicsRef.current = { ...physicsRef.current, x: pageX, y: pageY, vx, vy };
       }
-      setDotPos({ x: pageX, y: pageY });
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${pageX}px, ${pageY}px) translate(-50%, -50%) scale(${physicsRef.current.squish})`;
+      }
       lastTouchRef.current = { x: pageX, y: pageY, time: now };
     }
   };
@@ -380,7 +389,7 @@ export function Navbar() {
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
             <button onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} onMouseUp={handleLogoTouchEnd} onMouseLeave={handleLogoTouchEnd} onTouchStart={handleLogoTouchStart} onTouchEnd={handleLogoTouchEnd} onClick={handleLogoClick} className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation">
-              <img src="/icon.png" alt="HP Logo" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
+              <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
             </button>
           </div>
         </div>
