@@ -14,8 +14,14 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ success: false, error: 'NO_REDIS_CONFIG' }, { status: 500 });
         }
 
-        const ip = req.headers.get('x-forwarded-for') || 'Anonymous';
+        // 1. Extract and Sanitize Global IP (Take the first one in the chain)
+        let ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'Anonymous';
         
+        // Remove port mapping if present (e.g., 127.0.0.1:1234 -> 127.0.0.1)
+        if (ip.includes(':') && !ip.includes('[')) { // Avoid stripping IPv6
+             ip = ip.split(':')[0];
+        }
+
         // 2. SHA-256 Hash for privacy protection
         const hash = crypto
             .createHash('sha256')
