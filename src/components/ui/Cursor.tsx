@@ -31,7 +31,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
   const [holdProgress, setHoldProgress] = useState(0);
-  const [pulses, setPulses] = useState<{ id: number; x: number; y: number }[]>([]);
 
   const PSIZE = 2.2;
   const GAP = PSIZE * 2 + 1.2;
@@ -84,7 +83,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
     const onMouseMove = (e: MouseEvent) => { 
       mouse.current = { x: e.clientX, y: e.clientY }; 
-      
       if (!tickingMouseRef.current) {
         window.requestAnimationFrame(() => {
           document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
@@ -103,22 +101,13 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       const t = e.target as HTMLElement;
       if (t.closest('a, button, [role="button"], [data-cursor]')) { hoverType.current = "none"; locked.current.fill(0); }
     };
-
     const onMouseDown = () => {
-      const id = Date.now();
-      const { x, y } = mouse.current;
-      setPulses(p => [...p, { id, x, y }]);
-      setTimeout(() => setPulses(p => p.filter(item => item.id !== id)), 1200);
       holdStartTimeRef.current = Date.now();
       totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
-
-    const onMouseUp = () => {
-      holdStartTimeRef.current = null;
-      setHoldProgress(0);
-    };
+    const onMouseUp = () => { holdStartTimeRef.current = null; setHoldProgress(0); };
 
     const handleScroll = () => {
       if (!isScrolling.current) isScrolling.current = true;
@@ -138,36 +127,29 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (!canvas || !ctx) return;
-
       if (isScrolling.current) { canvas.style.opacity = "0"; rafId = requestAnimationFrame(loop); return; }
       canvas.style.opacity = "1";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // ── Hold Progression Logic ──────────────────────────────────────────
       if (holdStartTimeRef.current) {
         const elapsed = Date.now() - holdStartTimeRef.current;
         const progress = Math.min(1, elapsed / 3000);
         setHoldProgress(progress);
-        
         if (progress >= 1) {
-          // Change Color and Reset Timer (Cycle)
           colorIndexRef.current = (colorIndexRef.current + 1) % PALETTE.length;
-          holdStartTimeRef.current = Date.now(); // Reset for next cycle if still held
-          burstFlash.current = 15; // Visual feedback for change
+          holdStartTimeRef.current = Date.now();
+          burstFlash.current = 15;
         }
       }
 
-      // Core follows mouse
       vx.current[0] += (mouse.current.x - px.current[0]) * 0.2;
       vy.current[0] += (mouse.current.y - py.current[0]) * 0.2;
       vx.current[0] *= 0.68; vy.current[0] *= 0.68;
       px.current[0] += vx.current[0]; py.current[0] += vy.current[0];
-
       if (burstFlash.current > 0) burstFlash.current--;
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      // Current Particle Color
       const baseColor = PALETTE[colorIndexRef.current];
       const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? PALETTE[2] : PALETTE[1]) : hoverType.current !== "none" ? PALETTE[2] : baseColor;
 
@@ -176,9 +158,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
           const slot = slots[i - 1];
           const tx = px.current[0] + slot.x, ty = py.current[0] + slot.y;
-          if (locked.current[i]) {
-            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0;
-          } else {
+          if (locked.current[i]) { px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; }
+          else {
             const ddx = tx - px.current[i], ddy = ty - py.current[i];
             const dist = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001;
             if (dist < 2.5) { px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; }
@@ -203,37 +184,26 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
         }
       }
 
-      // Draw Hold Progress Ring
       if (holdStartTimeRef.current) {
         ctx.beginPath();
         ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 3000));
-        ctx.strokeStyle = PALETTE[(colorIndexRef.current + 1) % PALETTE.length];
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.strokeStyle = PALETTE[(colorIndexRef.current + 1) % PALETTE.length]; ctx.lineWidth = 2; ctx.stroke();
       }
-
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
         ctx.strokeStyle = baseColor; ctx.globalAlpha = 0.04; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
       }
-
       for (let i = 0; i < 20; i++) {
         if (i === 0 && hoverType.current === "play") continue;
         const x = px.current[i], y = py.current[i];
-
         ctx.beginPath(); ctx.arc(x, y, PSIZE, 0, Math.PI * 2); ctx.fillStyle = currentColor; ctx.fill();
-
         if (burstFlash.current === 0) {
-          ctx.shadowBlur = 0;
           ctx.beginPath(); ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
           ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
           ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
-          ctx.lineWidth = 0.6;
-          ctx.strokeStyle = hoverType.current !== "none" ? PALETTE[2] : `${baseColor}15`;
-          ctx.stroke();
+          ctx.lineWidth = 0.6; ctx.strokeStyle = hoverType.current !== "none" ? PALETTE[2] : `${baseColor}15`; ctx.stroke();
         }
       }
-      ctx.shadowBlur = 0;
       rafId = requestAnimationFrame(loop);
     };
     rafId = requestAnimationFrame(loop);
@@ -246,33 +216,19 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
+      window.addEventListener("mousedown", onMouseDown);
+      window.addEventListener("mouseup", onMouseUp);
     };
   }, [isTouch]);
 
   if (isTouch) return null;
-
   return createPortal(
     <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
-      
-      {/* WOW FACTOR: System Breach Pulses */}
-      {pulses.map(pulse => (
-        <div 
-          key={pulse.id} 
-          className="interference-pulse" 
-          style={{ 
-            '--mouse-x': `${pulse.x}px`, 
-            '--mouse-y': `${pulse.y}px` 
-          } as any} 
-        />
-      ))}
-
       <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform" }} />
     </>,
     document.body
   );
 });
-Cursor.displayName = "Cursor";
+
 export default Cursor;
