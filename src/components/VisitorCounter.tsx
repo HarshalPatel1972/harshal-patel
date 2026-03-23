@@ -90,13 +90,20 @@ export function VisitorCounter() {
         onClick={() => setIsExpanded(!isExpanded)}
         onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
         onMouseLeave={() => window.innerWidth >= 768 && setIsExpanded(false)}
-        className="cursor-pointer min-w-[54px] h-[54px] bg-black border border-white/20 flex flex-col items-center justify-center px-4 transition-all duration-500 hover:border-[var(--accent-blood)]"
+        className="cursor-pointer min-w-[64px] h-[64px] bg-[#fdfaf0] flex flex-col items-center justify-center px-4 transition-all duration-500 hover:scale-105 shadow-[4px_4px_0_rgba(0,0,0,0.9)] relative group/button overflow-hidden"
+        style={{ 
+          clipPath: "polygon(5% 0%, 100% 5%, 95% 95%, 0% 100%, 8% 50%)" /* Hand-torn paper effect */
+        }}
       >
-        <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase">
+        {/* Artifact Texture Layer */}
+        <div className="absolute inset-0 halftone-bg opacity-10 pointer-events-none" />
+        <div className="absolute -top-1 -right-1 w-6 h-6 border-2 border-[var(--accent-blood)]/20 rounded-full opacity-30 pointer-events-none" />
+
+        <span className="text-[10px] font-mono font-black text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase z-10">
           {t.tourists}
         </span>
-        <div className="flex items-center justify-center">
-          <span className="text-2xl font-black font-mono leading-none tracking-tighter text-white">
+        <div className="flex items-center justify-center z-10">
+          <span className="text-3xl font-black font-mono leading-none tracking-tighter text-black">
             {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
           </span>
         </div>
@@ -107,15 +114,15 @@ export function VisitorCounter() {
         {isExpanded && (
           <motion.div 
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 120, opacity: 1 }}
+            animate={{ width: "auto", opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className="h-[54px] bg-black border border-white/20 border-l-0 overflow-hidden flex flex-col justify-center px-4"
+            className="h-[64px] bg-[#fdfaf0] border-2 border-black border-l-0 overflow-hidden flex flex-col justify-center px-10 shadow-[4px_4px_0_rgba(0,0,0,0.9)]"
           >
-             <div className="flex flex-col">
-                <span className="text-[8px] font-mono font-bold text-white/50 leading-tight uppercase">
+             <div className="flex flex-col min-w-[max-content]">
+                <span className="text-[10px] font-mono font-black text-black opacity-40 leading-tight uppercase tracking-widest">
                   {t.tours}
                 </span>
-                <span className="text-base font-black font-mono text-white leading-none italic">
+                <span className="text-2xl font-black font-mono text-[var(--accent-blood)] leading-none -mt-0.5">
                   {data?.totalHits?.toLocaleString() || '---'}
                 </span>
              </div>

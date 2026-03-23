@@ -206,9 +206,6 @@ export default function RootLayout({
             ])
           }}
         />
-        <div className="cinematic-grain" />
-        <div className="cursed-scanlines" />
-        <div className="distorted-vignette" />
         <div className="halftone-glow" />
         {children}
       </body>
