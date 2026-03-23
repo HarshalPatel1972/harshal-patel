@@ -207,6 +207,7 @@ export function About() {
     >
       {/* Background Halftone Drop */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 halftone-glow z-0 pointer-events-none" />
 
       {/* Vertical Watermark */}
 

@@ -98,6 +98,19 @@ body::before {
   opacity: 0.05;
 }
 
+/* Reactive flashlight dots */
+.halftone-glow {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--text-bone) 1px, transparent 1.5px);
+  background-size: 8px 8px;
+  mask-image: radial-gradient(circle 150px at var(--mouse-x, -100px) var(--mouse-y, -100px), black, transparent);
+  -webkit-mask-image: radial-gradient(circle 150px at var(--mouse-x, -100px) var(--mouse-y, -100px), black, transparent);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* ─── GRID UTILITIES ─── */
 .grid-cols-16 {
   display: grid !important;

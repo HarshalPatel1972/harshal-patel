@@ -80,7 +80,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    const onMouseMove = (e: MouseEvent) => { mouse.current = { x: e.clientX, y: e.clientY }; };
+    const onMouseMove = (e: MouseEvent) => { 
+      mouse.current = { x: e.clientX, y: e.clientY }; 
+      // EXPOSE TO CSS: powers the glow-dots
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    };
     const onMouseOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
       const c = t.closest('a, button, [role="button"], [data-cursor]');
