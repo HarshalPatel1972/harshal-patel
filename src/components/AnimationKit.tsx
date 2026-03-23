@@ -72,18 +72,20 @@ export function useCounter(target: number, duration: number = 2000) {
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
           const obj = { val: 0 };
-          anime(obj as any, {
+          
+          anime({
+            targets: obj,
             val: target,
             duration,
             easing: "outQuart",
             round: 1,
             update: () => {
-              if (el) el.textContent = obj.val.toString();
+              if (el) el.textContent = String(Math.round(obj.val));
             },
-          });
+          } as any, {}); // Standard syntax for animejs, adding empty {} to satisfy strict TS definitions
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0 }
     );
 
     observer.observe(el);
