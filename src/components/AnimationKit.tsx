@@ -73,8 +73,7 @@ export function useCounter(target: number, duration: number = 2000) {
           animated.current = true;
           const obj = { val: 0 };
           
-          anime({
-            targets: obj,
+          anime(obj, {
             val: target,
             duration,
             easing: "outQuart",
@@ -82,10 +81,10 @@ export function useCounter(target: number, duration: number = 2000) {
             update: () => {
               if (el) el.textContent = String(Math.round(obj.val));
             },
-          } as any, {}); // Standard syntax for animejs, adding empty {} to satisfy strict TS definitions
+          });
         }
       },
-      { threshold: 0 }
+      { threshold: 0.1 }
     );
 
     observer.observe(el);
