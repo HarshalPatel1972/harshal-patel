@@ -125,11 +125,40 @@ export function Navbar() {
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
 
+  // SECTION TRACKING (OPTIMIZED NATIVE OBSERVERS)
   useEffect(() => {
-    let rafId: number;
+    const sectionIds = currentNavItems.map(item => item.id);
+    const observers: IntersectionObserver[] = [];
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -70% 0px', // Precise activation zone
+      threshold: 0
+    };
+
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActive(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [currentNavItems]);
+
+  // SCROLL PROGRESS (THROTTLED LISTENER)
+  useEffect(() => {
+    let ticking = false;
     let lastScrollY = window.scrollY;
 
-    const update = () => {
+    const updateScroll = () => {
       if (!navbarRef.current) return;
       
       const currentScrollY = window.scrollY;
@@ -140,31 +169,24 @@ export function Navbar() {
       navbarRef.current.style.setProperty('--nav-scroll', `${progress}%`);
       navbarRef.current.style.setProperty('--nav-speed', `${speed}`);
       
-      const sections = currentNavItems.map((item) => ({
-        id: item.id,
-        el: document.getElementById(item.id),
-      }));
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const el = sections[i].el;
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.5) {
-          const targetId = sections[i].id;
-          setActive(prev => prev !== targetId ? targetId : prev);
-          break;
-        }
-      }
-
       lastScrollY = currentScrollY;
-      rafId = requestAnimationFrame(update);
+      ticking = false;
     };
 
-    window.addEventListener("scroll", () => {}, { passive: true });
-    rafId = requestAnimationFrame(update);
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updateScroll();
 
     return () => {
-      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
     };
-  }, [currentNavItems, pathname]);
+  }, [pathname]);
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
@@ -174,36 +196,48 @@ export function Navbar() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const updateHeight = () => setDocHeight(document.documentElement.scrollHeight);
+    
+    // Use a lighter ResizeObserver only when content actually changes
+    const resizer = new ResizeObserver(updateHeight);
+    resizer.observe(document.body);
+    
     updateHeight();
-    window.addEventListener('resize', updateHeight);
-    const observer = new MutationObserver(updateHeight);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => {
-      window.removeEventListener('resize', updateHeight);
-      observer.disconnect();
-    };
+    return () => resizer.disconnect();
   }, []);
 
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
-    const currentScale = physicsRef.current.scale;
-    const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
-    const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (25 * currentScale) / 2;
-    let { x, y, vx, vy, squish } = physicsRef.current;
+    
+    let { x, y, vx, vy, squish, scale } = physicsRef.current;
+    
+    // SLEEP ENGINE: If velocity is near zero, stop the loop to save battery
+    if (Math.abs(vx) < 0.05 && Math.abs(vy) < 0.05 && Math.abs(squish - 1) < 0.01) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      return;
+    }
+
+    const friction = 0.985 + ((scale - 1) / 3) * 0.012;
+    const bounce = -0.95 - ((scale - 1) / 3) * 0.05; 
+    const radius = (25 * scale) / 2;
+    
     x += vx; y += vy; vx *= friction; vy *= friction;
+    
     const width = window.innerWidth;
     const height = document.documentElement.scrollHeight;
+    
     let hit = false;
     if (x + radius > width) { x = width - radius; vx *= bounce; hit = true; }
     if (x - radius < 0) { x = radius; vx *= bounce; hit = true; }
     if (y + radius > height) { y = height - radius; vy *= bounce; hit = true; }
     if (y - radius < 0) { y = radius; vy *= bounce; hit = true; }
+    
     if (hit) squish = 0.8 + (Math.random() * 0.1); else squish += (1 - squish) * 0.12; 
+    
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
     setDotPos({ x, y });
     rafRef.current = requestAnimationFrame(runPhysics);
-  }, [dotMode, isDragging, dotScale, physicsRef]);
+  }, [dotMode, isDragging]);
 
   useEffect(() => {
     if (dotMode === 'RELEASED' && !isDragging) rafRef.current = requestAnimationFrame(runPhysics);
