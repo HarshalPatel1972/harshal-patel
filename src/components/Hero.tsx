@@ -158,7 +158,6 @@ export function Hero() {
 
         <div ref={heroContentRef} className="w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
-          <div className="absolute inset-0 halftone-glow z-0 pointer-events-none" />
           <ExorcistsScroll />
 
           <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">

@@ -194,6 +194,7 @@ export default function RootLayout({
           }}
         />
         {children}
+        <div className="halftone-glow" />
       </body>
     </html>
   );
