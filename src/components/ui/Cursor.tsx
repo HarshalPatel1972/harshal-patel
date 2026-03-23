@@ -31,6 +31,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
   const [holdProgress, setHoldProgress] = useState(0);
+  const [pulses, setPulses] = useState<{ id: number; x: number; y: number }[]>([]);
 
   const PSIZE = 2.2;
   const GAP = PSIZE * 2 + 1.2;
@@ -104,6 +105,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     };
 
     const onMouseDown = () => {
+      const id = Date.now();
+      const { x, y } = mouse.current;
+      setPulses(p => [...p, { id, x, y }]);
+      setTimeout(() => setPulses(p => p.filter(item => item.id !== id)), 1200);
       holdStartTimeRef.current = Date.now();
       totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
       const force = 6 + totalClicks.current * 5;
@@ -251,6 +256,19 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   return createPortal(
     <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
+      
+      {/* WOW FACTOR: System Breach Pulses */}
+      {pulses.map(pulse => (
+        <div 
+          key={pulse.id} 
+          className="interference-pulse" 
+          style={{ 
+            '--mouse-x': `${pulse.x}px`, 
+            '--mouse-y': `${pulse.y}px` 
+          } as any} 
+        />
+      ))}
+
       <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform" }} />
     </>,
     document.body

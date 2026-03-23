@@ -167,12 +167,20 @@ export function Hero() {
               </span>
             </div>
 
-            <div ref={titlesRef} className="relative mb-8 w-full">
-              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
-                {currentProfile.name.split(" ")[0]}
+            <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title">
+              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
+                {currentProfile.name.split(" ")[0].split("").map((char, i) => (
+                  <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-125 active-glitch">
+                    {char}
+                  </span>
+                ))}
               </h1>
-              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                {currentProfile.name.split(" ").slice(1).join(" ")}
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                 {currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
+                  <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-125 active-glitch">
+                    {char}
+                  </span>
+                ))}
               </h1>
             </div>
 
