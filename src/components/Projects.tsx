@@ -139,7 +139,7 @@ export function Projects() {
           return (
             <div 
               key={project.title} 
-              className={`transition-all duration-700 ease-out w-full ${isOverridden ? `relative top-0 ${i === 0 ? "md:col-span-2" : ""}` : 'sticky top-[calc(10vh+60px)] md:top-[12vh]'}`} 
+              className={`transition-[opacity,transform] duration-700 ease-out w-full ${isOverridden ? `relative top-0 ${i === 0 ? "md:col-span-2" : ""}` : 'sticky top-[calc(10vh+60px)] md:top-[12vh]'}`} 
               style={{ zIndex: isOverridden ? 1 : i }}
             >
               <div className="flex items-start">
@@ -154,7 +154,7 @@ export function Projects() {
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
-                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-all duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[490px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
+                  className={`project-card block relative flex-1 manga-panel manga-cut-bl bg-[var(--bg-ink)] border-4 border-black brutal-shadow transition-[border-color,transform,opacity,box-shadow] duration-500 ${isOverridden ? 'min-h-[300px] md:min-h-[470px] p-5 md:p-12' : 'h-[490px] md:h-[570px] p-6 md:p-12'} group cursor-pointer overflow-hidden ${isLoading ? 'animate-pulse opacity-60' : ''}`}
                 >
                   <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`absolute inset-0 w-full h-full text-[var(--accent-blood)] transition-opacity duration-500 pointer-events-none z-0 ${isHovered ? 'opacity-10' : 'opacity-0'}`}>
                      <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="currentColor" />
