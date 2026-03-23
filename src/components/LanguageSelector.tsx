@@ -42,7 +42,7 @@ export function LanguageSelector() {
       {/* Trigger Icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-9 h-9 md:w-11 md:h-11 bg-black border border-[var(--text-bone)]/20 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)]/10 ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : ''} brutal-shadow-sm`}
+        className={`w-9 h-9 bg-black border border-white/20 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : ''}`}
         aria-label="Selection Language"
       >
         <svg 

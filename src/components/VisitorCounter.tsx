@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * Compact Adaptable Visitor Counter
- * Clean MAPPA aesthetic with minimal nomenclature.
+ * Minimalist MAPPA-style Visitor Counter
+ * Stackable vertical design with clean labels.
  */
 export function VisitorCounter() {
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
@@ -19,12 +19,6 @@ export function VisitorCounter() {
     const fetchStats = async (doIncr = false) => {
       try {
         const res = await fetch(`/api/visitor-count${doIncr ? '?incr=1' : ''}`);
-        const contentType = res.headers.get("content-type");
-        if (!res.ok || !contentType || !contentType.includes("application/json")) {
-           setStatus('OFFLINE');
-           return;
-        }
-
         const json = await res.json();
         if (json.success) {
           setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits });
@@ -45,19 +39,19 @@ export function VisitorCounter() {
   if (!mounted) return null;
 
   return (
-    <div className="relative flex items-stretch pointer-events-auto select-none">
-      {/* Detail Slide-out (Left to avoid overlap) */}
+    <div className="relative flex items-center pointer-events-auto select-none group">
+      {/* Drawer Content - Slips out to the left */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div 
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 140, opacity: 1 }}
+            animate={{ width: 100, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className="bg-[var(--text-bone)] border border-black overflow-hidden flex flex-col justify-center px-4 z-0"
+            className="h-9 bg-black border border-white/20 border-r-0 overflow-hidden flex flex-col justify-center px-3"
           >
              <div className="flex flex-col">
-                <span className="text-[8px] font-mono font-bold text-black/50 leading-tight">LOG_ENTRIES</span>
-                <span className="text-lg font-black font-mono text-black leading-none italic">
+                <span className="text-[7px] font-mono font-bold text-white/50 leading-tight">TOTAL_HITS</span>
+                <span className="text-sm font-black font-mono text-white leading-none italic">
                   {data?.totalHits?.toLocaleString() || '---'}
                 </span>
              </div>
@@ -65,23 +59,18 @@ export function VisitorCounter() {
         )}
       </AnimatePresence>
 
-      {/* Main Counter Block */}
+      {/* Main Trigger Button */}
       <div 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="cursor-pointer group relative flex flex-col items-end bg-black border border-[var(--text-bone)]/20 hover:border-[var(--accent-blood)] transition-all duration-500 py-1.5 px-3 brutal-shadow-sm"
+        className="cursor-pointer w-auto h-9 bg-black border border-white/20 flex flex-col items-end justify-center px-3 transition-all duration-500 hover:border-[var(--accent-blood)]"
       >
-        <div className="flex flex-col items-end">
-           <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5">VISITORS</span>
-           <div className="flex items-baseline gap-1.5">
-             <span className="text-2xl font-black font-mono leading-none tracking-tighter text-[var(--text-bone)]">
-                {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
-             </span>
-             <div className={`w-1 h-3 ${status === 'LIVE' ? 'bg-[var(--accent-blood)] animate-pulse' : 'bg-white/10'}`} />
-           </div>
+        <span className="text-[7px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5">VISITS</span>
+        <div className="flex items-baseline gap-1">
+          <span className="text-xl font-black font-mono leading-none tracking-tighter text-white">
+            {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
+          </span>
+          <div className={`w-0.5 h-2 ${status === 'LIVE' ? 'bg-[var(--accent-blood)] animate-pulse' : 'bg-white/10'}`} />
         </div>
-        
-        {/* Subtle Side ID */}
-        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--text-bone)]/10" />
       </div>
     </div>
   );

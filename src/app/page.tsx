@@ -38,10 +38,10 @@ function HomeContent() {
         <Navbar />
         <ScrollLine isVisible={showContent} />
         
-        {/* Adaptable Top-Right Action Bar */}
+        {/* Adaptable Top-Right Action Stack */}
         <div 
-          className="fixed right-12 md:right-16 z-[100] flex items-start gap-px transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
-          style={{ top: isNoticeVisible ? '40px' : '0px' }}
+          className="fixed right-12 md:right-16 z-[100] flex flex-col items-end gap-[10px] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{ top: isNoticeVisible ? '50px' : '20px' }}
         >
           <VisitorCounter />
           <LanguageSelector />
