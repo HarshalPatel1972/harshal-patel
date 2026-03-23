@@ -296,7 +296,7 @@ export function About() {
             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
               
               <div className="grid grid-cols-2 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                  <MangaStat value={300} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : language === 'id' ? "Algoritma" : language === 'de' ? "Algorithmen" : language === 'it' ? "Algoritmi" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Algoritmos" : "एल्गोरिदम"} prefix=">" />
+                  <MangaStat value={300} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : language === 'id' ? "Algoritma" : language === 'de' ? "Algoritmen" : language === 'it' ? "Algoritmi" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Algoritmos" : "एल्गोरिदम"} prefix="" />
                   <MangaStat value={12} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : language === 'fr' ? "Systèmes Construits" : language === 'id' ? "Sistem Dibangun" : language === 'de' ? "Gebaute Systeme" : language === 'it' ? "Sistemi Costruiti" : language === 'pt-br' ? "Sistemas Construídos" : (language === 'es-419' || language === 'es') ? "Sistemas Creados" : "सिस्टम बनाए"} prefix="" />
               </div>
 

@@ -136,7 +136,7 @@ export function Hero() {
           
         {/* Scroll Indicator Arrows */}
         <div 
-          className="absolute bottom-[39px] md:bottom-[14px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
+          className="absolute bottom-[44px] md:bottom-[4px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
           style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
         >
           <div className="relative h-20 w-8 flex flex-col items-center justify-center">
