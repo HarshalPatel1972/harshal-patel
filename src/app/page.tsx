@@ -37,10 +37,11 @@ function HomeContent() {
   // HUD Positioning Logic
   const counterTop = isNoticeVisible ? 50 : 20;
   const langInitialTop = isNoticeVisible ? 114 : 84;
-  const scrollThreshold = 64; // Distance to slide
   
-  // Calculate dynamic top for Language Selector
-  const dynamicLangTop = Math.max(counterTop, langInitialTop - scrollY);
+  // Calculate the offset to slide UP to the counter slot
+  // Max slide distance is 64px (langInitialTop - counterTop)
+  const maxSlide = langInitialTop - counterTop;
+  const currentSlide = Math.min(maxSlide, scrollY);
 
   return (
     <main className="relative">
@@ -63,8 +64,11 @@ function HomeContent() {
 
         {/* 2. DYNAMIC HUD UNIT: Language Selector (Fixed) */}
         <div 
-          className="fixed left-4 z-[100] flex flex-col items-start"
-          style={{ top: `${dynamicLangTop}px` }}
+          className="fixed left-4 z-[100] flex flex-col items-start will-change-transform"
+          style={{ 
+            top: `${langInitialTop}px`,
+            transform: `translateY(-${currentSlide}px)`
+          }}
         >
           <LanguageSelector />
         </div>
