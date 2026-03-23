@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { profile } from "@/data/profile";
 import { useLanguage, type Language } from "@/context/LanguageContext";
+import { useMagnetic } from "./AnimationKit";
 import { animate as anime } from "animejs";
 
 type NavItem = {
@@ -106,6 +109,7 @@ export function Navbar() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
+  const [mounted, setMounted] = useState(false);
   
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
@@ -128,6 +132,7 @@ export function Navbar() {
 
   // SECTION TRACKING (OPTIMIZED NATIVE OBSERVERS)
   useEffect(() => {
+    setMounted(true);
     const sectionIds = currentNavItems.map(item => item.id);
     const observers: IntersectionObserver[] = [];
 
@@ -366,6 +371,40 @@ export function Navbar() {
     }
   };
 
+  const handleDotMouseDown = (e: React.MouseEvent) => {
+    if (dotMode === 'RELEASED') {
+      const pageX = e.clientX;
+      const pageY = e.clientY + window.scrollY;
+      setIsDragging(true);
+      lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() };
+      
+      const onMove = (ev: MouseEvent) => {
+        const mx = ev.clientX;
+        const my = ev.clientY + window.scrollY;
+        const now = Date.now();
+        const dt = now - lastTouchRef.current.time;
+        if (dt > 0) {
+          const vx = (mx - lastTouchRef.current.x) / (dt / 16);
+          const vy = (my - lastTouchRef.current.y) / (dt / 16);
+          physicsRef.current = { ...physicsRef.current, x: mx, y: my, vx, vy };
+        }
+        if (dotRef.current) {
+          dotRef.current.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%) scale(${physicsRef.current.squish})`;
+        }
+        lastTouchRef.current = { x: mx, y: my, time: now };
+      };
+      
+      const onUp = () => {
+        setIsDragging(false);
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+  };
+
   const handleDotTouchEnd = () => setIsDragging(false);
 
   return (
@@ -376,11 +415,6 @@ export function Navbar() {
             {[0, 1, 2].map((i) => (
               <div key={i} className="absolute inset-0 rounded-full border-2 border-[var(--accent-blood)] animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '60px', height: '60px', margin: '-30px 0 0 -30px' }} />
             ))}
-          </div>
-        )}
-        {dotMode === 'RELEASED' && (
-          <div className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" style={{ top: dotPos.y, left: dotPos.x, transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`, height: `${25 * dotScale}px`, width: `${25 * dotScale}px`, touchAction: 'none' }} onTouchStart={handleDotTouchStart} onTouchMove={handleDotTouchMove} onTouchEnd={handleDotTouchEnd}>
-            <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300" />
           </div>
         )}
       </div>
@@ -396,7 +430,7 @@ export function Navbar() {
                   height={44} 
                   priority={true}
                   sizes="44px"
-                  className="w-full h-full object-contain invert opacity-60 group-hover:opacity-100 transition-all duration-500"
+                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                 />
 </button>
           </div>
@@ -429,6 +463,30 @@ export function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* GLOBAL PHYSICS BALL PORTAL — Absolute Authority */}
+      {dotMode === 'RELEASED' && mounted && createPortal(
+         <div 
+          ref={dotRef}
+          className="fixed cursor-grab active:cursor-grabbing pointer-events-auto z-[999999]" 
+          style={{ 
+            top: 0, 
+            left: 0, 
+            width: `${25 * dotScale}px`, 
+            height: `${25 * dotScale}px`, 
+            touchAction: 'none',
+            transform: `translate(${dotPos.x}px, ${dotPos.y}px) translate(-50%, -50%) scale(${physicsRef.current.squish})`,
+            willChange: 'transform'
+          }}
+          onMouseDown={handleDotMouseDown}
+          onTouchStart={handleDotTouchStart}
+          onTouchMove={handleDotTouchMove}
+          onTouchEnd={handleDotTouchEnd}
+        >
+          <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-shadow duration-300" />
+        </div>,
+        document.body
+      )}
     </>
   );
 }
