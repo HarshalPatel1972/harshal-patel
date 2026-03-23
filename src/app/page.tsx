@@ -18,9 +18,9 @@ import { SignalProvider } from "@/context/SignalContext";
 import { FlipProvider, useFlipTransition } from "@/context/FlipContext";
 import { FlipTransition } from "@/components/ui/FlipTransition";
 import { SpaceWarpTransition } from "@/components/ui/SpaceWarpTransition";
-import { VisitorCounter } from "@/components/VisitorCounter";
 
 const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
+const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(mod => mod.VisitorCounter), { ssr: false });
 
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);
