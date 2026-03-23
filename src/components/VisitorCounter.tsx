@@ -5,15 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 const TRANSLATIONS = {
-  en: { visitors: 'Visitors', views: 'Views', viewsFull: 'Total Views' },
-  ja: { visitors: '訪問者', views: 'ビュー', viewsFull: '合計ビュー' },
-  hi: { visitors: 'आगंतुक', views: 'दृश्य', viewsFull: 'कुल दृश्य' }
+  en: { visitors: 'Visitors', views: 'Views' },
+  ja: { visitors: '訪問者', views: 'ビュー' },
+  hi: { visitors: 'आगंतुक', views: 'दृश्य' }
 };
 
 export function VisitorCounter() {
   const { language } = useLanguage();
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
 
   useEffect(() => {
@@ -52,55 +52,47 @@ export function VisitorCounter() {
   }, []);
 
   return (
-    <div className="relative flex items-center pointer-events-auto select-none group/counter">
-      {/* THE ORIGINAL CURSED ARTIFACT (OFUDA) */}
-      <div 
-        role="button"
-        onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
-        onMouseLeave={() => window.innerWidth >= 768 && setIsExpanded(false)}
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="cursor-pointer min-w-[64px] h-[64px] bg-[#fdfaf0] flex flex-col items-center justify-center px-4 transition-all duration-500 hover:scale-105 shadow-[4px_4px_0_rgba(0,0,0,1)] relative z-20 group/button overflow-hidden"
-        style={{ 
-          clipPath: "polygon(5% 0%, 100% 5%, 95% 95%, 0% 100%, 8% 50%)" /* Hand-torn paper effect */
-        }}
+    <div className="relative flex items-center pointer-events-auto select-none group/counter h-9">
+      {/* THE MINIMAL PILL BUTTON - MATCHES LANGUAGE SELECTOR STYLE */}
+      <motion.div 
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="flex items-center bg-black border border-white/20 h-9 transition-all duration-500 hover:border-[var(--accent-blood)] overflow-hidden"
+        initial={false}
+        animate={{ width: isHovered ? "auto" : "auto" }}
       >
-        {/* Artifact Texture Layer */}
-        <div className="absolute inset-0 halftone-bg opacity-10 pointer-events-none" />
-        <div className="absolute -top-1 -right-1 w-6 h-6 border-2 border-[var(--accent-blood)]/20 rounded-full opacity-30 pointer-events-none" />
-
-        <span className="text-[10px] font-mono font-black text-[var(--accent-blood)] tracking-tighter mb-0.5 uppercase z-10">
-          {t.visitors}
-        </span>
-        <div className="flex items-center justify-center z-10">
-          <span className="text-2xl font-black font-mono leading-none tracking-tighter text-black">
-            {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
-          </span>
+        {/* ICON & VISITORS (ALWAYS VISIBLE) */}
+        <div className="flex items-center px-4 h-full gap-3 border-r border-white/5 whitespace-nowrap">
+           <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[var(--accent-blood)]" xmlns="http://www.w3.org/2000/svg">
+             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+           </svg>
+           <div className="flex flex-col justify-center">
+             <span className="text-[10px] font-black font-mono text-white leading-none">
+               {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
+             </span>
+             <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mt-0.5">
+               {t.visitors}
+             </span>
+           </div>
         </div>
-      </div>
 
-      {/* Slide-out Drawer (REVEAL VIEWS) */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div 
-            initial={{ width: 0, opacity: 0, x: -10 }}
-            animate={{ width: "auto", opacity: 1, x: -4 }}
-            exit={{ width: 0, opacity: 0, x: -10 }}
-            className="h-12 bg-[#fdfaf0] flex items-center px-6 shadow-[4px_4px_0_rgba(0,0,0,1)] z-10 overflow-hidden"
-            style={{ 
-              clipPath: "polygon(0% 0%, 95% 5%, 100% 95%, 5% 100%)" 
-            }}
-          >
-            <div className="flex flex-col items-start min-w-[max-content]">
-               <span className="text-[9px] font-black text-black opacity-40 uppercase tracking-widest leading-none mb-0.5">
-                 {t.viewsFull}
-               </span>
-               <span className="text-lg font-black font-mono text-[var(--accent-blood)] leading-none">
-                 {data?.totalHits?.toLocaleString() || '---'}
-               </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* REVEAL VIEWS ON HOVER */}
+        <motion.div 
+           initial={{ width: 0, opacity: 0 }}
+           animate={{ width: isHovered ? "auto" : 0, opacity: isHovered ? 1 : 0 }}
+           transition={{ type: "spring", stiffness: 300, damping: 30 }}
+           className="flex items-center h-full px-5 bg-white/5 overflow-hidden whitespace-nowrap"
+        >
+           <div className="flex flex-col justify-center">
+             <span className="text-[10px] font-black font-mono text-[var(--accent-blood)] leading-none">
+                {data?.totalHits?.toLocaleString() || '---'}
+             </span>
+             <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mt-0.5">
+                {t.views}
+             </span>
+           </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
