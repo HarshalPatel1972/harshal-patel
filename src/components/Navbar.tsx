@@ -235,7 +235,7 @@ export function Navbar() {
     x += vx; y += vy; vx *= friction; vy *= friction;
     
     const width = window.innerWidth;
-    const height = document.documentElement.scrollHeight;
+    const height = docHeight; // FIXED: Using cached height to prevent forced reflow
     
     let hit = false;
     if (x + radius > width) { x = width - radius; vx *= bounce; hit = true; }
@@ -396,7 +396,7 @@ export function Navbar() {
                   height={44} 
                   priority={true}
                   sizes="44px"
-                  className="w-full h-full object-contain brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-500"
+                  className="w-full h-full object-contain invert opacity-60 group-hover:opacity-100 transition-all duration-500"
                 />
 </button>
           </div>
