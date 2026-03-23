@@ -186,11 +186,11 @@ body::before {
 
 
 @keyframes arrow-flow {
-  0% { transform: translateY(-30px); opacity: 0; color: var(--text-muted); }
+  0% { transform: translateY(-30px); opacity: 0; }
   20% { transform: translateY(-15px); opacity: 0.3; }
-  50% { transform: translateY(0); opacity: 1; color: var(--accent-blood); }
+  50% { transform: translateY(0); opacity: 1; }
   80% { transform: translateY(15px); opacity: 0.3; }
-  100% { transform: translateY(30px); opacity: 0; color: var(--text-muted); }
+  100% { transform: translateY(30px); opacity: 0; }
 }
 
 .animate-arrow-flow {

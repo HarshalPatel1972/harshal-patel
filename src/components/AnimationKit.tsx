@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import Image from "next/image";
 import { animate as anime, utils } from "animejs";
 
 /**
@@ -279,9 +280,12 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
   return (
     <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
        <div className="relative flex flex-col items-end">
-          <img 
+          <Image 
             src="/Lying Down.png" 
             alt="Resting on the scroll" 
+            width={606}
+            height={404}
+            priority
             className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
           />
           <div ref={textRef} 
