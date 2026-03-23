@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 
-export function SystemBanner() {
-  const [visible, setVisible] = useState(true);
+export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onDismiss: () => void }) {
   const { language } = useLanguage();
 
-  if (!visible) return null;
+  if (!isVisible) return null;
 
   const getNoticeText = () => {
     switch(language) {
@@ -57,7 +56,7 @@ export function SystemBanner() {
       <div className="flex items-center pl-4 shrink-0 bg-[#9e1b1b] z-10">
         {/* Dismiss Button */}
         <button 
-          onClick={() => setVisible(false)} 
+          onClick={onDismiss} 
           className="text-white/60 hover:text-white transition-colors font-mono text-xs md:text-sm px-2 shrink-0 font-black"
           aria-label="Dismiss system notice"
         >

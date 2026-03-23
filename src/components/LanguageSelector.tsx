@@ -37,12 +37,12 @@ export function LanguageSelector() {
   return (
     <div 
       ref={containerRef}
-      className="fixed left-[11px] top-[52px] md:top-14 z-[70] flex flex-col group"
+      className="relative flex flex-col group"
     >
       {/* Trigger Icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-9 h-9 bg-black border border-white/20 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : ''}`}
+        className={`w-9 h-9 md:w-11 md:h-11 bg-black border border-[var(--text-bone)]/20 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] hover:bg-[var(--accent-blood)]/10 ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : ''} brutal-shadow-sm`}
         aria-label="Selection Language"
       >
         <svg 
@@ -56,7 +56,7 @@ export function LanguageSelector() {
 
       {/* Expanded Container - 3 Column Grid */}
       <div 
-        className={`absolute top-0 left-[36px] grid grid-cols-3 gap-0 bg-black/90 backdrop-blur-md border border-white/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[400px] opacity-100 p-[1px]' : 'max-w-0 opacity-0 pointer-events-none'}`}
+        className={`absolute top-0 right-[40px] md:right-[50px] grid grid-cols-3 gap-0 bg-black/90 backdrop-blur-md border border-[var(--text-bone)]/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-w-[400px] opacity-100 p-[1px]' : 'max-w-0 opacity-0 pointer-events-none'}`}
         style={{ width: '300px' }}
       >
         {languages.map((lang) => (
@@ -67,7 +67,7 @@ export function LanguageSelector() {
               setIsOpen(false);
             }}
             className={`
-              relative font-mono text-[9px] font-bold tracking-widest h-9 flex items-center justify-center border border-white/5 transition-all duration-300 hover:bg-white/10 hover:text-white
+              relative font-mono text-[9px] font-bold tracking-widest h-9 flex items-center justify-center border border-[var(--text-bone)]/5 transition-all duration-300 hover:bg-white/10 hover:text-white
               ${language === lang.code ? 'text-[var(--accent-blood)] bg-white/5' : 'text-white/80'}
             `}
           >
@@ -76,14 +76,14 @@ export function LanguageSelector() {
         ))}
         {/* Fill empty cells to maintain 3 items per row layout */}
         {languages.length % 3 !== 0 && Array.from({ length: 3 - (languages.length % 3) }).map((_, i) => (
-          <div key={`empty-${i}`} className="border border-white/5 h-9" />
+          <div key={`empty-${i}`} className="border border-[var(--text-bone)]/5 h-9" />
         ))}
       </div>
 
       {/* Tooltip hint when closed */}
       {!isOpen && (
-        <span className="absolute left-11 top-1/2 -translate-y-1/2 font-mono text-[9px] text-white/40 tracking-widest opacity-0 group-hover:opacity-100 transition-opacity uppercase pointer-events-none whitespace-nowrap">
-          SYSTEM_LOCALE
+        <span className="absolute right-12 md:right-16 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--text-bone)]/40 tracking-widest opacity-0 group-hover:opacity-100 transition-opacity uppercase pointer-events-none whitespace-nowrap">
+          LANGUAGE_CORE
         </span>
       )}
     </div>

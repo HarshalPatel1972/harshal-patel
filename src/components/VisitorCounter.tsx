@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * MAPPA_100 [SOUL_REGISTRY]
- * A high-fidelity, cursed-energy inspired visitor tracker.
+ * Compact Adaptable Visitor Counter
+ * Clean MAPPA aesthetic with minimal nomenclature.
  */
 export function VisitorCounter() {
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
@@ -15,14 +15,11 @@ export function VisitorCounter() {
 
   useEffect(() => {
     setMounted(true);
-    // NOMENCLATURE: Calibration of Domain Resonance
-    console.log("[DOMAIN_LOG] Scanning for Soul Signatures...");
     
     const fetchStats = async (doIncr = false) => {
       try {
         const res = await fetch(`/api/visitor-count${doIncr ? '?incr=1' : ''}`);
         const contentType = res.headers.get("content-type");
-        
         if (!res.ok || !contentType || !contentType.includes("application/json")) {
            setStatus('OFFLINE');
            return;
@@ -36,7 +33,6 @@ export function VisitorCounter() {
           setStatus('OFFLINE');
         }
       } catch (e) {
-        console.error("[DOMAIN_LOG] Seal Integrity Compromised.", e);
         setStatus('OFFLINE');
       }
     };
@@ -49,80 +45,44 @@ export function VisitorCounter() {
   if (!mounted) return null;
 
   return (
-    <div className="fixed bottom-0 right-12 z-[99999] flex flex-col items-end group pointer-events-auto">
-      {/* MAPPA Header: Vertical nomenclature */}
-      <div className="flex items-start gap-0">
-        
-        {/* The Actionable Core */}
-        <div 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="cursor-pointer group flex flex-col items-end"
-        >
-          {/* Top Status Tag */}
-          <div className="bg-[var(--accent-blood)] px-2 py-0.5 mb-[-1px] border border-black transform -skew-x-12">
-            <span className="font-mono text-[8px] font-bold text-black uppercase tracking-tighter">
-              {status === 'LIVE' ? 'RESONANCE_STABLE' : 'CALIBRATING...'}
-            </span>
-          </div>
-
-          {/* Main Visual Block */}
-          <div className="bg-black border-2 border-[var(--accent-blood)] p-3 relative hover:scale-105 transition-transform duration-300">
-            {/* Corner Accents */}
-            <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[var(--text-bone)]" />
-            <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[var(--text-bone)]" />
-
-            <div className="flex flex-col items-end gap-0">
-              <span className="text-[9px] font-mono text-[var(--text-bone)] opacity-40 leading-none mb-1">
-                [SOUL_SIGNATURES]
-              </span>
-              <div className="flex items-baseline gap-1">
-                <span className="text-4xl md:text-5xl font-black font-mono leading-none tracking-tighter text-[var(--text-bone)]">
-                  {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
+    <div className="relative flex items-stretch pointer-events-auto select-none">
+      {/* Detail Slide-out (Left to avoid overlap) */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div 
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 140, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            className="bg-[var(--text-bone)] border border-black overflow-hidden flex flex-col justify-center px-4 z-0"
+          >
+             <div className="flex flex-col">
+                <span className="text-[8px] font-mono font-bold text-black/50 leading-tight">LOG_ENTRIES</span>
+                <span className="text-lg font-black font-mono text-black leading-none italic">
+                  {data?.totalHits?.toLocaleString() || '---'}
                 </span>
-                <div className={`w-2 h-2 animate-pulse bg-[var(--accent-blood)] ${status === 'LIVE' ? 'opacity-100 shadow-[0_0_8px_red]' : 'opacity-20'}`} />
-              </div>
-            </div>
-          </div>
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          {/* Vertical Nomenclature Strip */}
-          <div className="h-20 w-8 bg-[var(--text-bone)] flex items-center justify-center border-x-2 border-black">
-             <span className="font-mono text-[10px] font-black text-black uppercase -rotate-90 whitespace-nowrap tracking-[0.2em]">
-               MAPPA_GEN_10.0
+      {/* Main Counter Block */}
+      <div 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="cursor-pointer group relative flex flex-col items-end bg-black border border-[var(--text-bone)]/20 hover:border-[var(--accent-blood)] transition-all duration-500 py-1.5 px-3 brutal-shadow-sm"
+      >
+        <div className="flex flex-col items-end">
+           <span className="text-[8px] font-mono font-bold text-[var(--accent-blood)] tracking-tighter mb-0.5">VISITORS</span>
+           <div className="flex items-baseline gap-1.5">
+             <span className="text-2xl font-black font-mono leading-none tracking-tighter text-[var(--text-bone)]">
+                {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
              </span>
-          </div>
+             <div className={`w-1 h-3 ${status === 'LIVE' ? 'bg-[var(--accent-blood)] animate-pulse' : 'bg-white/10'}`} />
+           </div>
         </div>
-
-        {/* Slide-Out Detail Panel */}
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div 
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 180, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              className="h-full bg-[var(--text-bone)] border-2 border-black overflow-hidden flex flex-col justify-center px-4 ml-[-2px] z-[-1]"
-            >
-               <div className="flex flex-col gap-3">
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-mono font-bold text-black opacity-60">TOTAL_MANIFESTATIONS</span>
-                    <span className="text-xl font-black font-mono text-black leading-none">
-                      {data?.totalHits?.toLocaleString() || '---'}
-                    </span>
-                  </div>
-                  <div className="w-full h-[1px] bg-black/10" />
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-mono font-bold text-black opacity-60">DOM_STAT_ID</span>
-                    <span className="text-[10px] font-black font-mono text-[var(--accent-blood)] leading-none uppercase">
-                      SECURE_SHARD_82
-                    </span>
-                  </div>
-               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        
+        {/* Subtle Side ID */}
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--text-bone)]/10" />
       </div>
-
-      {/* Background Decorative Element */}
-      <div className="w-1 bg-[var(--accent-blood)] h-32 absolute right-[-8px] top-1/2 -translate-y-1/2 opacity-30" />
     </div>
   );
 }

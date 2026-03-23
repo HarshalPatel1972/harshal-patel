@@ -24,6 +24,7 @@ const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(
 
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);
+  const [isNoticeVisible, setIsNoticeVisible] = useState(true);
   const { type } = useFlipTransition();
 
   return (
@@ -32,14 +33,23 @@ function HomeContent() {
       {!showContent && <Preloader onComplete={() => setShowContent(true)} />}
       {showContent && <Cursor />}
 
+      {/* Global Interface Overlay */}
       <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
         <Navbar />
-        <LanguageSelector />
         <ScrollLine isVisible={showContent} />
+        
+        {/* Adaptable Top-Right Action Bar */}
+        <div 
+          className="fixed right-12 md:right-16 z-[100] flex items-start gap-px transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
+          style={{ top: isNoticeVisible ? '40px' : '0px' }}
+        >
+          <VisitorCounter />
+          <LanguageSelector />
+        </div>
       </div>
 
       <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
-        <SystemBanner />
+        <SystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
         <Hero />
         
         {/* Priority 5: High-Performance Off-Screen Rendering */}
