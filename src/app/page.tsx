@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SystemBanner } from "@/components/SystemBanner";
@@ -25,7 +25,22 @@ const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);
   const [isNoticeVisible, setIsNoticeVisible] = useState(true);
+  const [scrollY, setScrollY] = useState(0);
   const { type } = useFlipTransition();
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // HUD Positioning Logic
+  const counterTop = isNoticeVisible ? 50 : 20;
+  const langInitialTop = isNoticeVisible ? 114 : 84;
+  const scrollThreshold = 64; // Distance to slide
+  
+  // Calculate dynamic top for Language Selector
+  const dynamicLangTop = Math.max(counterTop, langInitialTop - scrollY);
 
   return (
     <main className="relative">
@@ -40,16 +55,16 @@ function HomeContent() {
         
         {/* 1. SCROLLING UNIT: Visitor Counter (Absolute) */}
         <div 
-          className="absolute left-4 z-[50] flex flex-col items-start transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
-          style={{ top: isNoticeVisible ? '50px' : '20px' }}
+          className="absolute left-4 z-[50] flex flex-col items-start"
+          style={{ top: `${counterTop}px` }}
         >
           <VisitorCounter />
         </div>
 
-        {/* 2. PERSISTENT UNIT: Language Selector (Fixed) */}
+        {/* 2. DYNAMIC HUD UNIT: Language Selector (Fixed) */}
         <div 
-          className="fixed left-4 z-[100] flex flex-col items-start transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]"
-          style={{ top: isNoticeVisible ? '114px' : '84px' }} // Positioned below the counter's slot
+          className="fixed left-4 z-[100] flex flex-col items-start transition-all duration-300 ease-out"
+          style={{ top: `${dynamicLangTop}px` }}
         >
           <LanguageSelector />
         </div>
