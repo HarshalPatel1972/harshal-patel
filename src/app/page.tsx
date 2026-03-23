@@ -25,23 +25,11 @@ const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);
   const [isNoticeVisible, setIsNoticeVisible] = useState(true);
-  const [scrollY, setScrollY] = useState(0);
   const { type } = useFlipTransition();
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // HUD Positioning Logic
-  const counterTop = isNoticeVisible ? 50 : 20;
-  const langInitialTop = isNoticeVisible ? 114 : 84;
-  
-  // Calculate the offset to slide UP to the counter slot
-  // Max slide distance is 64px (langInitialTop - counterTop)
-  const maxSlide = langInitialTop - counterTop;
-  const currentSlide = Math.min(maxSlide, scrollY);
+  // Top offsets based on notice visibility
+  const containerTop = isNoticeVisible ? '50px' : '20px';
+  const stickyTarget = isNoticeVisible ? '50px' : '20px';
 
   return (
     <main className="relative">
@@ -54,23 +42,26 @@ function HomeContent() {
         <Navbar />
         <ScrollLine isVisible={showContent} />
         
-        {/* 1. SCROLLING UNIT: Visitor Counter (Absolute) */}
+        {/* Zero-Lag Utility Container - Full height track */}
         <div 
-          className="absolute left-4 z-[50] flex flex-col items-start"
-          style={{ top: `${counterTop}px` }}
+          className="absolute left-4 bottom-0 z-[100] flex flex-col items-start pointer-events-none"
+          style={{ top: containerTop }}
         >
-          <VisitorCounter />
-        </div>
+          {/* 1. SCROLLING UNIT: Visitor Counter */}
+          <div className="pointer-events-auto">
+            <VisitorCounter />
+          </div>
 
-        {/* 2. DYNAMIC HUD UNIT: Language Selector (Fixed) */}
-        <div 
-          className="fixed left-4 z-[100] flex flex-col items-start will-change-transform"
-          style={{ 
-            top: `${langInitialTop}px`,
-            transform: `translateY(-${currentSlide}px)`
-          }}
-        >
-          <LanguageSelector />
+          {/* 10px Structural Gap */}
+          <div className="h-[10px]" />
+
+          {/* 2. ZERO-LAG PERSISTENT UNIT: Language Selector (Sticky) */}
+          <div 
+            className="sticky transition-all duration-700 pointer-events-auto"
+            style={{ top: stickyTarget }}
+          >
+            <LanguageSelector />
+          </div>
         </div>
       </div>
 
