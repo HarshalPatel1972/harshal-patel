@@ -213,7 +213,7 @@ export function Navbar() {
     const currentScale = physicsRef.current.scale;
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (150 * currentScale) / 2;
+    const radius = (135 * currentScale) / 2;
     
     let { x, y, vx, vy, squish } = physicsRef.current;
     x += vx; y += vy;
@@ -239,6 +239,10 @@ export function Navbar() {
   }, [dotMode, isDragging, runPhysics]);
 
   const handleLogoTouchStart = () => {
+    // MOBILE ONLY GUARD 🏮
+    const isMobile = window.innerWidth < 1024;
+    if (!isMobile && dotMode === 'LOCKED') return;
+
     if (dotMode === 'LOCKED') {
       chargingLogoRef.current = true;
       longPressActiveRef.current = false;
@@ -248,12 +252,18 @@ export function Navbar() {
       chargeTimerRef.current = setTimeout(() => {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true; 
+        
+        // TARGETED SPAWN POINT (Just Above Opportunities) 🏮
+        const oppsEl = document.getElementById('available-for-opps');
+        const rect = oppsEl?.getBoundingClientRect();
         const cx = window.innerWidth / 2;
-        const cy = window.scrollY + window.innerHeight / 2 - 155;
+        const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
+
         physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 1 };
         setDotPos({ x: cx, y: cy });
         setDotMode('RELEASED');
         growBall(3);
+        
         setSplashPos({ x: cx, y: cy });
         setShowSplash(true);
         setTimeout(() => setShowSplash(false), 1000);
@@ -291,26 +301,7 @@ export function Navbar() {
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (longPressActiveRef.current) { longPressActiveRef.current = false; return; }
-    switch (dotMode) {
-      case 'RELEASED':
-        const s = physicsRef.current.scale;
-        if (s < 1.5) growBall(2); else if (s < 3.5) growBall(4); else growBall(1);
-        break;
-      case 'LOCKED':
-      default:
-        const cx = window.innerWidth / 2;
-        const cy = window.scrollY + window.innerHeight / 2 - 155;
-        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 0.8 };
-        setDotPos({ x: cx, y: cy });
-        setDotMode('RELEASED');
-        growBall(3);
-        setSplashPos({ x: 44, y: 44 }); 
-        setShowSplash(true);
-        setTimeout(() => setShowSplash(false), 800);
-        if (window.scrollY > 200) window.scrollTo({ top: 0, behavior: "smooth" });
-        break;
-    }
+    // CLICKS ARE NOW IGNORED 🏮
   };
 
   const growBall = (target: number) => {
@@ -403,8 +394,8 @@ export function Navbar() {
             style={{ 
               top: dotPos.y, 
               left: dotPos.x, 
-              width: `${150 * dotScale}px`, 
-              height: `${150 * dotScale}px`, 
+              width: `${135 * dotScale}px`, 
+              height: `${135 * dotScale}px`, 
               touchAction: 'none',
               transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`,
             }}
