@@ -192,6 +192,9 @@ export function About() {
     return () => observer.disconnect();
   }, []);
 
+  // NEW DYNAMIC VIDEO SOURCE SELECTOR 📽️
+  const currentVideoSrc = language === 'hi' ? "/pressure.mp4" : "/pressure-eng.mp4";
+
   const triggerPressure = () => {
     setShowPressureVideo(true);
     if (videoRef.current) {
@@ -212,16 +215,16 @@ export function About() {
     return createPortal(
       <div 
          className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-700
-                    ${showPressureVideo ? 'bg-black/90 opacity-100 backdrop-blur-xl' : 'bg-transparent opacity-0 pointer-events-none'}`}
+                    ${showPressureVideo ? 'bg-black/95 opacity-100 backdrop-blur-2xl' : 'bg-transparent opacity-0 pointer-events-none'}`}
       >
         <div 
-          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_80px_var(--accent-blood)]
-                     transition-transform duration-700 ${showPressureVideo ? 'scale-100' : 'scale-50'}`}
+          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_100px_var(--accent-blood)]
+                     transition-transform duration-700 ${showPressureVideo ? 'scale-100 translate-y-0' : 'scale-50 translate-y-20'}`}
         >
-          {/* ZERO-LAG PRELOADED VIDEO 🎞️ */}
+          {/* ZERO-LAG PRELOADED LOCALIZED VIDEO 🎞️ */}
           <video 
             ref={videoRef}
-            src="/pressure.mp4" 
+            src={currentVideoSrc} 
             preload="auto"
             playsInline
             onEnded={closePressure}
@@ -229,9 +232,9 @@ export function About() {
           />
           <button 
             onClick={closePressure}
-            className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--accent-blood)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-90 transition-transform brutal-shadow z-50"
+            className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--accent-blood)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-95 transition-transform brutal-shadow z-50 group/close"
           >
-            X
+            <span className="group-hover:rotate-90 transition-transform duration-300">X</span>
           </button>
         </div>
       </div>,
@@ -307,7 +310,7 @@ export function About() {
                           {job.company}
                         </h4>
                         <span className="text-[10px] sm:text-xs font-mono font-bold bg-black text-white group-hover:bg-[var(--accent-blood)] px-3 py-1 uppercase tracking-widest self-start md:self-auto border-2 border-black group-hover:border-[var(--accent-blood)] transition-colors">
-                          {job.period}
+                           {job.period}
                         </span>
                      </div>
                      <div className="text-lg md:text-2xl font-bold font-sans uppercase tracking-tighter mb-4 text-[var(--accent-blood)] group-hover:text-[var(--text-bone)] transition-colors">
