@@ -68,8 +68,8 @@ export function Hero() {
     de: ["Ich finde, was kaputt ist,", "und baue, was fehlt."],
     it: ["Trovo ciò che è rotto", "e costruisco ciò che manca."],
     "pt-br": ["Eu encontro o que está quebrado", "e costruo o que falta."],
-    "es-419": ["Encuentro lo que está roto", "y construyo lo que falta."],
-    es: ["Encuentro lo que está roto", "y construyo lo que falta."]
+    "es-419": ["Encuentro lo que está roto", "y construयो lo que falta."],
+    es: ["Encuentro lo que está roto", "y construuyo lo que falta."]
   };
 
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
@@ -153,7 +153,7 @@ export function Hero() {
         }}
       />
 
-      <div id="hero" className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6">
+      <div id="hero" className="sticky top-0 h-screen flex items-center justify-start overflow-hidden px-4 md:px-24">
         {/* RANGO VIEWPORT IMPACT 🌵 */}
         {whoAmIMode && (
           <div 
@@ -182,10 +182,10 @@ export function Hero() {
           </div>
         )}
 
-        {/* HERO INTRO WRAPPER (Blueprint Alignment 95d6cb) */}
-        <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
-            <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
+        {/* HERO INTRO WRAPPER (Left Aligned Lockdown) */}
+        <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-start transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="relative w-full max-w-7xl flex items-start text-left">
+            <div id="hero-intro-text" className="leading-[1.05] md:leading-[1.15] max-w-4xl">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
               ))}
@@ -211,14 +211,14 @@ export function Hero() {
           </div>
         </div>
 
-        {/* MAIN CONTENT WRAPPER (Blueprint Alignment 95d6cb) */}
-        <div ref={heroContentRef} className={`w-full h-full flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+        {/* MAIN CONTENT WRAPPER (Left Aligned Lockdown) */}
+        <div ref={heroContentRef} className={`w-full h-full flex items-center justify-start transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
           <div className="md:hidden w-full h-full">
              <ExorcistsScroll />
           </div>
 
-          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl flex flex-col items-start text-left justify-center mt-12 md:mt-24 pointer-events-none">
             <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                 {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
