@@ -213,7 +213,7 @@ export function Navbar() {
     const currentScale = physicsRef.current.scale;
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (135 * currentScale) / 2;
+    const radius = (108 * currentScale) / 2;
     
     let { x, y, vx, vy, squish } = physicsRef.current;
     x += vx; y += vy;
@@ -352,7 +352,7 @@ export function Navbar() {
         const dt = now - lastTouchRef.current.time;
         if (dt > 0) {
           const vx = (mx - lastTouchRef.current.x) / (dt / 16);
-          const vy = (my - lastScrollY.current) / (dt / 16); // fix reference if needed
+          const vy = (my - lastTouchRef.current.y) / (dt / 16);
           physicsRef.current = { ...physicsRef.current, x: mx, y: my, vx, vy };
         }
         setDotPos({ x: mx, y: my });
@@ -394,8 +394,8 @@ export function Navbar() {
             style={{ 
               top: dotPos.y, 
               left: dotPos.x, 
-              width: `${135 * dotScale}px`, 
-              height: `${135 * dotScale}px`, 
+              width: `${108 * dotScale}px`, 
+              height: `${108 * dotScale}px`, 
               touchAction: 'none',
               transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`,
             }}
