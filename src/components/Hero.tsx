@@ -182,6 +182,7 @@ export function Hero() {
           </div>
         )}
 
+        {/* HERO INTRO WRAPPER (Blueprint Alignment 95d6cb) */}
         <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
           <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
             <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
@@ -210,6 +211,7 @@ export function Hero() {
           </div>
         </div>
 
+        {/* MAIN CONTENT WRAPPER (Blueprint Alignment 95d6cb) */}
         <div ref={heroContentRef} className={`w-full h-full flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
           <div className="md:hidden w-full h-full">
