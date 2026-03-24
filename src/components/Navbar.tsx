@@ -99,6 +99,7 @@ export function Navbar() {
   const [scrollSpeed, setScrollSpeed] = useState(0);
   const pathname = usePathname();
 
+  const [isBallCyan, setIsBallCyan] = useState(false);
   const [dotMode, setDotMode] = useState<DotMode>('LOCKED');
   const [dotPos, setDotPos] = useState({ x: 0, y: 0 });
   const [dotScale, setDotScale] = useState(1);
@@ -410,7 +411,18 @@ export function Navbar() {
         {showSplash && (
           <div className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: splashPos.x, top: splashPos.y }}>
             {[0, 1, 2].map((i) => (
-              <div key={i} className="absolute inset-0 rounded-full border-2 border-[var(--accent-blood)] animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '60px', height: '60px', margin: '-30px 0 0 -30px' }} />
+              <div 
+                key={i} 
+                className="absolute inset-0 rounded-full border-2 animate-ping" 
+                style={{ 
+                  animationDuration: '1s', 
+                  animationDelay: `${i * 0.2}s`, 
+                  width: '60px', 
+                  height: '60px', 
+                  margin: '-30px 0 0 -30px',
+                  borderColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)'
+                }} 
+              />
             ))}
           </div>
         )}
@@ -431,8 +443,19 @@ export function Navbar() {
             onTouchStart={handleDotTouchStart}
             onTouchMove={handleDotTouchMove}
             onTouchEnd={handleDotTouchEnd}
+            onClick={(e) => {
+              e.stopPropagation();
+              // TOGGLE COLOR ON BALL CLICK 🏮
+              setIsBallCyan(prev => !prev);
+            }}
           >
-            <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20">
+            <div 
+              className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20"
+              style={{
+                backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)',
+                boxShadow: isBallCyan ? `0 0 25px ${isBallCyan ? 'rgba(14,224,195,0.9)' : 'rgba(217,17,17,0.9)'}` : '0 0 25px rgba(217,17,17,0.9)'
+              }}
+            >
                <div className="absolute inset-0 halftone-bg opacity-10" />
             </div>
           </div>
