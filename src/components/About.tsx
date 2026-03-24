@@ -61,7 +61,7 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
     if (isDragging && rounded < 15) {
       if (lastTriggered.current === null) {
         onPressureTrigger();
-        triggerSignal("PRESSURE"); // Keep global shake signal too
+        triggerSignal("PRESSURE"); // Global shake signal
         lastTriggered.current = rounded;
       }
     } else if (rounded >= 15) {
@@ -174,17 +174,35 @@ export function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [skillsVisible, setSkillsVisible] = useState(false);
   const [showPressureVideo, setShowPressureVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const skillsRef = useRef<HTMLDivElement>(null);
 
+  // Intersection Observer for preloading and entry
   useEffect(() => {
     if (!skillsRef.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setSkillsVisible(true); },
-      { threshold: 0.3 }
+      { threshold: 0.1 }
     );
     observer.observe(skillsRef.current);
     return () => observer.disconnect();
   }, []);
+
+  // Handle Video Reset & Trigger
+  const triggerPressure = () => {
+    setShowPressureVideo(true);
+    if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(e => console.log("Video Play Blocked:", e));
+    }
+  };
+
+  const closePressure = () => {
+    setShowPressureVideo(false);
+    if (videoRef.current) {
+        videoRef.current.pause();
+    }
+  };
 
   return (
     <section 
@@ -195,24 +213,35 @@ export function About() {
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
-      {/* NEW PRESSURE VIDEO OVERLAY 📽️ */}
-      {showPressureVideo && (
+      {/* SEPARATE RESPONSIVE BOX OVERLAY 📽️ */}
+      <div 
+         className={`fixed inset-0 z-[100] flex items-center justify-center pointer-events-none transition-all duration-700
+                    ${showPressureVideo ? 'bg-black/80 opacity-100 backdrop-blur-md' : 'bg-transparent opacity-0 pointer-events-none'}`}
+      >
         <div 
-          className="fixed inset-0 z-[100] bg-black flex items-center justify-center animate-cinematic-in overflow-hidden cursor-none pointer-events-auto"
-          onClick={() => setShowPressureVideo(false)}
+          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_50px_var(--accent-blood)]
+                     transition-transform duration-700 ${showPressureVideo ? 'scale-100 rotate-0' : 'scale-75 -rotate-3'}`}
         >
+          {/* ZERO-LAG PRELOADED VIDEO 🎞️ */}
           <video 
+            ref={videoRef}
             src="/pressure.mp4" 
-            autoPlay 
+            preload="auto"
             playsInline
-            onEnded={() => setShowPressureVideo(false)}
-            className="w-full h-full object-cover md:object-contain drop-shadow-[0_0_50px_var(--accent-blood)] scale-[1.05]"
+            onEnded={closePressure}
+            className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}
           />
-          <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 opacity-20 text-[8px] md:text-[10px] tracking-[1em] text-white uppercase italic whitespace-nowrap">
-             Critical System Pressure Detected
+          <button 
+            onClick={closePressure}
+            className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--accent-blood)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-90 transition-transform brutal-shadow"
+          >
+            X
+          </button>
+          <div className="absolute -bottom-8 left-0 text-[10px] font-mono font-bold text-white uppercase tracking-[0.3em] opacity-40">
+             // System Breach: Critical_Pressure_Detected
           </div>
         </div>
-      )}
+      </div>
 
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`}>
@@ -303,7 +332,7 @@ export function About() {
                          skill={skill} 
                          isVisible={skillsVisible} 
                          index={i} 
-                         onPressureTrigger={() => setShowPressureVideo(true)}
+                         onPressureTrigger={triggerPressure}
                        />
                      ))}
                   </div>
