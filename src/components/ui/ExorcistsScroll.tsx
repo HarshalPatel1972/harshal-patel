@@ -11,13 +11,13 @@ interface ActiveCard {
   rect: DOMRect | null;
 }
 
-const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
+const CharacterInscription: React.FC<{ text: string, isRead: boolean }> = ({ text, isRead }) => {
   const words = useMemo(() => text.split(" "), [text]);
   const [isVisible, setIsVisible] = useState(false);
   let charCount = 0;
+  const shadowColor = isRead ? 'rgba(14,224,195,0.5)' : 'rgba(217,17,17,0.5)';
 
   useEffect(() => {
-    // Small delay to ensure mount is stable
     const timer = setTimeout(() => setIsVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
@@ -26,7 +26,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
     <div className="w-full h-full p-5 md:p-10 flex flex-col items-center justify-center text-center relative z-10 contain-layout">
       <div 
         className="text-[#F5F5F0] font-inter text-lg md:text-xl lg:text-3xl leading-[1.3] font-black tracking-tighter text-center uppercase" 
-        style={{ textShadow: '0 0 10px rgba(217,17,17,0.5)' }}
+        style={{ textShadow: `0 0 10px ${shadowColor}` }}
       >
         {words.map((word, wi) => (
           <span key={wi} className="inline-block whitespace-nowrap mr-[0.34em]">
@@ -36,9 +36,7 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
                 <span 
                   key={ci} 
                   className={`inline-block transition-all duration-700 ease-out will-change-transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                  style={{ 
-                    transitionDelay: `${delay}ms`,
-                  }}
+                  style={{ transitionDelay: `${delay}ms` }}
                 >
                   {char}
                 </span>
@@ -51,20 +49,60 @@ const CharacterInscription: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
+const SystemNodes = ({ isRead }: { isRead: boolean }) => {
+    const color = isRead ? '#0ee0c3' : '#D91111';
+    return (
+        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+            <div className="absolute top-4 left-4 w-4 h-4 border" style={{ borderColor: color }} />
+            <div className="absolute bottom-4 right-4 w-4 h-4 border" style={{ borderColor: color }} />
+            <div className="absolute top-1/2 left-4 w-[1px] h-32 -translate-y-1/2" style={{ backgroundColor: color }} />
+            <div className="absolute top-1/2 right-4 w-[1px] h-32 -translate-y-1/2" style={{ backgroundColor: color }} />
+        </div>
+    );
+};
+
 const ExorcistsScroll: React.FC = () => {
   const { language } = useLanguage();
   const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
   const [mounted, setMounted] = useState(false);
   const [showShutters, setShowShutters] = useState(false);
+  const [readIds, setReadIds] = useState<Set<number>>(new Set());
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true); 
+    const cid = localStorage.getItem('visitor_soul_id');
+    if (cid) {
+       fetch(`/api/read-status?cid=${cid}`)
+        .then(res => res.json())
+        .then(data => {
+           if (data.success && data.readIds) {
+             setReadIds(new Set(data.readIds));
+           }
+        })
+        .catch(() => {});
+    }
+  }, []);
 
-  const handleCardClick = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCardClick = async (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const currentFacts = OFUDA_FACTS[language] || OFUDA_FACTS['en'];
+    // Use modulo or ID mapping to ensure we get consistent facts per user if desired, 
+    // but the user wants the card ITSELF to remember reading.
     const { fact } = getNextFact(currentFacts);
     setActiveCard({ id, fact, isAssembled: false, rect });
     
+    // Commit to server memory
+    const cid = localStorage.getItem('visitor_soul_id');
+    if (cid) {
+        fetch('/api/read-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cid, factId: id })
+        }).then(() => {
+            setReadIds(prev => new Set(prev).add(id));
+        }).catch(() => {});
+    }
+
     requestAnimationFrame(() => {
       setShowShutters(true);
       setTimeout(() => {
@@ -98,76 +136,42 @@ const ExorcistsScroll: React.FC = () => {
     }));
   }, []);
 
-  const SystemNodes = () => (
-    <>
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-600/80 z-30" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-red-600/80 z-30" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-red-600/80 z-30" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600/80 z-30" />
-    </>
-  );
-
-  const [isInView, setIsInView] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsInView(entry.isIntersecting);
-    }, { threshold: 0.1 });
-    
-    if (containerRef.current) observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  if (mounted && typeof window !== 'undefined' && window.innerWidth >= 1024) return null;
-
   return (
-    <div 
-      ref={containerRef}
-      className={`absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden sm:flex md:hidden lg:hidden contain-strict`}
-      style={{
-        animationPlayState: isInView ? 'running' : 'paused'
-      }}
-    >
-      <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%] pointer-events-none">
+    <div className="w-full flex items-center justify-center min-h-[140px] md:min-h-[180px] py-10 relative overflow-hidden">
+      <div className="absolute left-[5%] right-[5%] h-[2px] bg-white/5 top-1/2 -translate-y-1/2 pointer-events-none" />
+      
+      <div className="flex gap-4 md:gap-8 overflow-visible relative px-20">
         {segments.map((s) => (
-          <div 
-            key={s.id}
-            className="absolute flex flex-col items-center justify-center pointer-events-none"
-            style={{ 
-              animation: `scroll-flow 15s linear infinite`, 
-              animationDelay: `${s.delay}s`,
-              backfaceVisibility: 'hidden',
-              animationPlayState: isInView ? 'running' : 'paused'
-            }}
-          >
-            <button 
-              onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
-              data-cursor="play"
-              disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 h-32 border-2 border-red-600/40 bg-black flex flex-col items-center justify-between py-4 shadow-[0_0_8px_rgba(217,17,17,0.15)] transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_15px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
-              style={{ contain: 'content' }}
+          <div key={s.id} className="relative group/ofuda">
+            <button
+               onClick={(e) => handleCardClick(s.id, e)}
+               className={`w-10 h-32 md:w-14 md:h-44 transition-all duration-500 flex flex-col items-center justify-between py-4 relative transform-gpu hover:scale-110 active:scale-95 border-x-2 ${readIds.has(s.id) ? 'bg-[#0ee0c3]/5 border-[#0ee0c3]/20 hover:border-[#0ee0c3]/60' : 'bg-red-600/5 border-red-600/20 hover:border-red-600/60'}`}
+               style={{ 
+                  animation: `scroll-flow 12s linear infinite`, 
+                  animationDelay: `${s.delay}s`,
+                  boxShadow: readIds.has(s.id) ? '0 0 15px rgba(14,224,195,0.05)' : '0 0 15px rgba(217,17,17,0.05)'
+               }}
             >
                <div className="flex gap-1 opacity-60">
                   {[1,2,3].map(j => (
-                    <div key={j} className="w-2 h-2 border border-red-600 rotate-45 flex items-center justify-center">
-                      <div className="w-[1px] h-[1px] bg-red-600" />
+                    <div key={j} className="w-2 h-2 border rotate-45 flex items-center justify-center" style={{ borderColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }}>
+                      <div className="w-[1px] h-[1px]" style={{ backgroundColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
                     </div>
                   ))}
                </div>
 
                <div className="relative w-full flex items-center justify-center py-2">
-                  <div className="absolute inset-0 bg-red-600/5 blur-lg rounded-full" />
+                  <div className="absolute inset-0 blur-lg rounded-full" style={{ backgroundColor: readIds.has(s.id) ? 'rgba(14,224,195,0.1)' : 'rgba(217,17,17,0.1)' }} />
                   <div className="relative">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12 bg-red-600/40" />
-                    <span className="font-mono text-[9px] text-red-500 font-bold tracking-widest" style={{ writingMode: 'vertical-rl' }}>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12" style={{ backgroundColor: readIds.has(s.id) ? '#0ee0c366' : '#d9111166' }} />
+                    <span className="font-mono text-[9px] font-bold tracking-widest" style={{ writingMode: 'vertical-rl', color: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }}>
                        {s.hex}
                     </span>
                   </div>
                </div>
 
                <div className="flex flex-col gap-1 items-center opacity-60">
-                  <div className="w-1 h-1 border border-red-600 rotate-45" />
+                  <div className="w-1 h-1 border rotate-45" style={{ borderColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
                </div>
             </button>
           </div>
@@ -182,35 +186,45 @@ const ExorcistsScroll: React.FC = () => {
           />
 
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-[#050505] border-2 border-red-600 flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(217,17,17,0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict' }}>
-                <div className="absolute inset-4 border border-red-600/15 bg-gradient-to-br from-red-600/5 via-black to-black" />
+             <div 
+               className={`absolute inset-0 bg-[#050505] border-2 flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100' : 'opacity-0 scale-102'}`} 
+               style={{ 
+                 contain: 'strict', 
+                 borderColor: readIds.has(activeCard.id) ? '#0ee0c3' : '#D91111',
+                 boxShadow: activeCard.isAssembled ? (readIds.has(activeCard.id) ? '0 0 40px rgba(14,224,195,0.4)' : '0 0 40px rgba(217,17,17,0.4)') : 'none'
+               }}
+             >
+                <div className="absolute inset-4 border bg-gradient-to-br from-black via-black to-black" style={{ borderColor: readIds.has(activeCard.id) ? 'rgba(14,224,195,0.15)' : 'rgba(217,17,17,0.15)' }} />
                 
-                <div className="absolute inset-0 blood-grid opacity-10" />
-                <div className="absolute inset-0 red-halftone opacity-5" />
+                <div className={`absolute inset-0 opacity-10 ${readIds.has(activeCard.id) ? 'cyan-grid' : 'blood-grid'}`} />
+                <div className={`absolute inset-0 opacity-5 ${readIds.has(activeCard.id) ? 'cyan-halftone' : 'red-halftone'}`} />
                 
-                <SystemNodes />
+                <SystemNodes isRead={readIds.has(activeCard.id)} />
                 
-                {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} />}
+                {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} isRead={readIds.has(activeCard.id)} />}
              </div>
 
              <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" 
                   style={{ visibility: activeCard.isAssembled ? 'hidden' : 'visible' }}>
                 {[0,1,2,3].map(i => {
                    const fromAbove = i % 2 !== 0;
+                   const color = readIds.has(activeCard.id) ? 'rgba(14,224,195,0.2)' : 'rgba(217,17,17,0.2)';
+                   const lineCol = readIds.has(activeCard.id) ? 'rgba(14,224,195,0.4)' : 'rgba(217,17,17,0.4)';
                    return (
                       <div 
                         key={i}
-                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[700ms] ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col items-center justify-center border-l border-r border-red-600/20"
+                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[700ms] ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col items-center justify-center border-l border-r"
                         style={{
                            left: `${i * 25}%`,
+                           borderColor: color,
                            transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-120%' : '120%'})`,
                            transitionDelay: showShutters ? `${i * 80}ms` : `${(3-i) * 50}ms`,
                            opacity: activeCard.isAssembled ? 0 : 1,
                         }}
                       >
-                         <div className="absolute inset-0 red-halftone opacity-[0.03]" />
-                         <div className="absolute top-0 left-0 right-0 h-[1px] bg-red-600/40" />
-                         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-red-600/40" />
+                         <div className={`absolute inset-0 opacity-[0.03] ${readIds.has(activeCard.id) ? 'cyan-halftone' : 'red-halftone'}`} />
+                         <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ backgroundColor: lineCol }} />
+                         <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{ backgroundColor: lineCol }} />
                       </div>
                    );
                 })}
@@ -231,8 +245,16 @@ const ExorcistsScroll: React.FC = () => {
           background-image: linear-gradient(rgba(217, 17, 17, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.03) 1px, transparent 1px);
           background-size: 60px 60px;
         }
+        .cyan-grid {
+          background-image: linear-gradient(rgba(14, 224, 195, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 224, 195, 0.03) 1px, transparent 1px);
+          background-size: 60px 60px;
+        }
         .red-halftone {
           background-image: radial-gradient(#D91111 0.6px, transparent 0.6px);
+          background-size: 8px 8px;
+        }
+        .cyan-halftone {
+          background-image: radial-gradient(#0ee0c3 0.6px, transparent 0.6px);
           background-size: 8px 8px;
         }
       `}</style>
