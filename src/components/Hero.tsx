@@ -129,9 +129,12 @@ export function Hero() {
         }}
       />
 
-      <div id="hero" className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6">
+      <div 
+        id="hero" 
+        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
+      >
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
-          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12 transition-all duration-500" style={{ filter: whoAmIMode ? 'brightness(2) contrast(1.2)' : 'none' }}>
+          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12 transition-all duration-500" style={{ filter: whoAmIMode ? 'brightness(1.5)' : 'none' }}>
             <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
@@ -139,11 +142,22 @@ export function Hero() {
             </div>
           </div>
         </div>
-          
-        <div className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30" style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}>
-          <div className="flex flex-col items-center gap-1 mb-8">
-            {[0, 1].map((i) => (
-              <svg key={i} className={`w-6 h-6 md:w-8 md:h-8 transition-transform duration-500 rotate-0`} viewBox="0 0 24 24" fill="none">
+
+        <div 
+          className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
+          style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
+        >
+          <div className="relative h-20 w-8 flex flex-col items-center justify-center">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <svg 
+                key={i} 
+                className="absolute animate-arrow-flow" 
+                style={{ animationDelay: `${i * 0.4}s` }} 
+                width="24"
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none"
+              >
                 <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="white" strokeWidth="2.5" strokeLinecap="square" className="opacity-60"/>
               </svg>
             ))}
@@ -213,6 +227,15 @@ export function Hero() {
           transform: translateY(calc((1 - var(--progress)) * 25px));
           filter: blur(calc((1 - var(--progress)) * 12px));
           will-change: transform, opacity;
+        }
+        @keyframes arrow-flow {
+          0% { transform: translateY(-30px); opacity: 0; }
+          20% { opacity: 0.6; }
+          80% { opacity: 0.6; }
+          100% { transform: translateY(30px); opacity: 0; }
+        }
+        .animate-arrow-flow {
+          animation: arrow-flow 2s infinite linear;
         }
       `}</style>
     </section>
