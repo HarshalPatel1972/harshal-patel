@@ -223,7 +223,7 @@ export function Navbar() {
     // SPONGIER PHYSICS
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (25 * currentScale) / 2;
+    const radius = (50 * currentScale) / 2;
     
     let { x, y, vx, vy, squish } = physicsRef.current;
     
@@ -422,8 +422,8 @@ export function Navbar() {
             style={{ 
               top: dotPos.y, 
               left: dotPos.x, 
-              width: `${25 * dotScale}px`, 
-              height: `${25 * dotScale}px`, 
+              width: `${50 * dotScale}px`, 
+              height: `${50 * dotScale}px`, 
               touchAction: 'none',
               transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`,
             }}
@@ -433,13 +433,6 @@ export function Navbar() {
             onTouchEnd={handleDotTouchEnd}
           >
             <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20">
-               <Image 
-                  src="/icon.png" 
-                  alt="Logo Particle" 
-                  width={80} 
-                  height={80} 
-                  className="w-4/5 h-4/5 object-contain"
-               />
                <div className="absolute inset-0 halftone-bg opacity-10" />
             </div>
           </div>
