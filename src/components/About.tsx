@@ -57,11 +57,11 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
 
     const rounded = Math.round(newPercent);
     
-    // NEW PRESSURE VIDEO TRIGGER 📽️
+    // PRESSURE VIDEO TRIGGER 📽️
     if (isDragging && rounded < 15) {
       if (lastTriggered.current === null) {
         onPressureTrigger();
-        triggerSignal("PRESSURE"); // Global shake signal
+        triggerSignal("PRESSURE"); // Shake signal
         lastTriggered.current = rounded;
       }
     } else if (rounded >= 15) {
@@ -177,7 +177,7 @@ export function About() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const skillsRef = useRef<HTMLDivElement>(null);
 
-  // Intersection Observer for preloading and entry
+  // Preloading & Intersection Setup
   useEffect(() => {
     if (!skillsRef.current) return;
     const observer = new IntersectionObserver(
@@ -188,7 +188,6 @@ export function About() {
     return () => observer.disconnect();
   }, []);
 
-  // Handle Video Reset & Trigger
   const triggerPressure = () => {
     setShowPressureVideo(true);
     if (videoRef.current) {
@@ -213,16 +212,16 @@ export function About() {
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
-      {/* SEPARATE RESPONSIVE BOX OVERLAY 📽️ */}
+      {/* DEAD-CENTER RESPONSIVE PURE VIEWPORT OVERLAY 📽️ */}
       <div 
          className={`fixed inset-0 z-[100] flex items-center justify-center pointer-events-none transition-all duration-700
-                    ${showPressureVideo ? 'bg-black/80 opacity-100 backdrop-blur-md' : 'bg-transparent opacity-0 pointer-events-none'}`}
+                    ${showPressureVideo ? 'bg-black/90 opacity-100 backdrop-blur-xl' : 'bg-transparent opacity-0 pointer-events-none'}`}
+         onClick={closePressure}
       >
         <div 
-          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_50px_var(--accent-blood)]
-                     transition-transform duration-700 ${showPressureVideo ? 'scale-100 rotate-0' : 'scale-75 -rotate-3'}`}
+          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_80px_var(--accent-blood)]
+                     transition-transform duration-700 ${showPressureVideo ? 'scale-100' : 'scale-50'}`}
         >
-          {/* ZERO-LAG PRELOADED VIDEO 🎞️ */}
           <video 
             ref={videoRef}
             src="/pressure.mp4" 
@@ -231,15 +230,6 @@ export function About() {
             onEnded={closePressure}
             className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}
           />
-          <button 
-            onClick={closePressure}
-            className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--accent-blood)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-90 transition-transform brutal-shadow"
-          >
-            X
-          </button>
-          <div className="absolute -bottom-8 left-0 text-[10px] font-mono font-bold text-white uppercase tracking-[0.3em] opacity-40">
-             // System Breach: Critical_Pressure_Detected
-          </div>
         </div>
       </div>
 
@@ -323,7 +313,6 @@ export function About() {
                <div ref={skillsRef} className="flex flex-col gap-6">
                   <h4 className={`text-[var(--text-bone)] font-black text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                       {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : language === 'zh-tw' ? "核心專業領域" : language === 'fr' ? "Expertise Fondamentale" : language === 'id' ? "Keahlian Inti" : language === 'de' ? "Kernkompetenz" : language === 'it' ? "Competenza Core" : language === 'pt-br' ? "Competência Principal" : (language === 'es-419' || language === 'es') ? "Experiencia Principal" : "मुख्य विशेषज्ञता"}
-                      <span className="text-[10px] font-mono text-[var(--accent-blood)]">DRAG LEFT</span>
                   </h4>
                   <div className="space-y-6">
                      {currentProfile.skills.map((skill, i) => (
