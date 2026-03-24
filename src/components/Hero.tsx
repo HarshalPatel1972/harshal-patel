@@ -57,6 +57,7 @@ export function Hero() {
   const trackRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
 
   const introStages = {
     en: ["I find what's broken", "and build what's missing."],
@@ -82,7 +83,6 @@ export function Hero() {
       keysRef.current.push(e.key.toLowerCase());
       if (keysRef.current.length > 6) keysRef.current.shift();
       const sequence = keysRef.current.join("");
-      
       if (sequence === "whoami") {
         setWhoAmIMode(true);
         setTimeout(() => setShowRangoText(true), 250); 
@@ -93,17 +93,26 @@ export function Hero() {
     return () => window.removeEventListener("keydown", handleKeydown);
   }, []);
 
-  // FLASHLIGHT TRACKING 🔋
+  // FLASHLIGHT TRACKING (RAF Engine for 60fps) 🔌
   useEffect(() => {
     if (!whoAmIMode) return;
-    const handleMouseMove = (e: MouseEvent) => {
+    let rafId: number;
+    const update = () => {
       if (spotlightRef.current) {
-        spotlightRef.current.style.setProperty('--mouse-x', `${e.clientX}px`);
-        spotlightRef.current.style.setProperty('--mouse-y', `${e.clientY}px`);
+        spotlightRef.current.style.setProperty('--mouse-x', `${mouseRef.current.x}px`);
+        spotlightRef.current.style.setProperty('--mouse-y', `${mouseRef.current.y}px`);
       }
+      rafId = requestAnimationFrame(update);
+    };
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
     };
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    rafId = requestAnimationFrame(update);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(rafId);
+    };
   }, [whoAmIMode]);
 
   // SCROLL ENGINE
@@ -141,8 +150,9 @@ export function Hero() {
         ref={spotlightRef}
         className={`fixed inset-0 z-[100] pointer-events-none transition-opacity ${whoAmIMode ? 'opacity-100 duration-[50ms]' : 'opacity-0 duration-1000'}`}
         style={{
-          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 80px, rgba(0,0,0,0.99) 220px)`,
-          backdropFilter: whoAmIMode ? 'contrast(2) grayscale(1) brightness(0.6)' : 'none'
+          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 100px, rgba(0,0,0,0.99) 300px)`,
+          backdropFilter: whoAmIMode ? 'contrast(2) grayscale(1) brightness(0.6)' : 'none',
+          willChange: 'background'
         }}
       />
 
@@ -187,11 +197,11 @@ export function Hero() {
           
         <div className={`absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`} style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}>
           <div className="relative h-20 w-8 flex flex-col items-center justify-center">
-            {[0, 1, 2, 3, 4].map((i) => (
+            {[0, 1, 2].map((i) => (
               <svg 
                 key={i} 
                 className="absolute animate-arrow-flow" 
-                style={{ animationDelay: `${i * 0.4}s` }} 
+                style={{ animationDelay: `${i * 0.6}s` }} 
                 width="24"
                 height="24" 
                 viewBox="0 0 24 24" 
@@ -212,7 +222,7 @@ export function Hero() {
           <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
             <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunिटीज" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
               </span>
             </div>
 
@@ -236,10 +246,6 @@ export function Hero() {
             <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
               {currentProfile.tagline}
             </p>
-
-            <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
-              {/* CTAs omitted for clarity during WhoAmIMode */}
-            </div>
           </div>
         </div>
 
@@ -256,12 +262,13 @@ export function Hero() {
         }
         @keyframes arrow-flow {
           0% { transform: translateY(-30px); opacity: 0; }
-          20% { opacity: 0.6; }
-          80% { opacity: 0.6; }
+          20% { opacity: 0.3; }
+          50% { transform: translateY(0px); opacity: 1; }
+          80% { opacity: 0.3; }
           100% { transform: translateY(30px); opacity: 0; }
         }
         .animate-arrow-flow {
-          animation: arrow-flow 2s infinite linear;
+          animation: arrow-flow 1.8s infinite ease-out;
         }
       `}</style>
     </section>
