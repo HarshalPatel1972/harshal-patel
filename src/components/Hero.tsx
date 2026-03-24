@@ -55,6 +55,7 @@ export function Hero() {
   const cta2Ref = useMagnetic<HTMLAnchorElement>(0.2);
   const trackRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
 
   const introStages = {
     en: ["I find what's broken", "and build what's missing."],
@@ -83,13 +84,26 @@ export function Hero() {
       
       if (sequence === "whoami") {
         setWhoAmIMode(true);
-        setTimeout(() => setWhoAmIMode(false), 4400); 
+        setTimeout(() => setWhoAmIMode(false), 8000); // Extended for flashlight explore
         keysRef.current = [];
       }
     };
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
   }, []);
+
+  // FLASHLIGHT TRACKING 🔋
+  useEffect(() => {
+    if (!whoAmIMode) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (spotlightRef.current) {
+        spotlightRef.current.style.setProperty('--mouse-x', `${e.clientX}px`);
+        spotlightRef.current.style.setProperty('--mouse-y', `${e.clientY}px`);
+      }
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [whoAmIMode]);
 
   // SCROLL ENGINE
   useEffect(() => {
@@ -121,20 +135,40 @@ export function Hero() {
       className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
-      {/* THEATRICAL SPOTLIGHT 📽️ */}
-      <div className={`fixed inset-0 z-[60] pointer-events-none transition-all duration-1000 ${whoAmIMode ? 'opacity-100' : 'opacity-0'}`}
+      {/* UNIVERSAL FLASHLIGHT 📽️ */}
+      <div 
+        ref={spotlightRef}
+        className={`fixed inset-0 z-[100] pointer-events-none transition-opacity duration-1000 ${whoAmIMode ? 'opacity-100' : 'opacity-0'}`}
         style={{
-          background: `radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.98) 75%)`,
-          backdropFilter: whoAmIMode ? 'contrast(1.6) grayscale(1) brightness(0.8)' : 'none'
+          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 80px, rgba(0,0,0,0.99) 220px)`,
+          backdropFilter: whoAmIMode ? 'contrast(2) grayscale(1) brightness(0.6)' : 'none'
         }}
       />
 
-      <div 
-        id="hero" 
-        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
-      >
-        <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
-          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12 transition-all duration-500" style={{ filter: whoAmIMode ? 'brightness(1.5)' : 'none' }}>
+      <div id="hero" className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6">
+        {/* RANGO VIEWPORT IMPACT 🌵 */}
+        {whoAmIMode && (
+          <div className="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-black select-none transition-all duration-700">
+             <div className="mb-4 cinematic-in opacity-80">
+                <span className="uppercase tracking-[0.5em] text-sm md:text-xl font-black text-white">
+                  NO MAN CAN WALK OUT ON HIS OWN STORY
+                </span>
+             </div>
+             <h1 className="text-[28vw] leading-[0.7] font-black uppercase text-white tracking-[-0.04em] flex gap-x-[4vw]">
+                {"RANGO".split("").map((char, i) => (
+                  <span key={i} className="inline-block hover:text-[var(--accent-blood)] transition-colors duration-300">
+                    {char}
+                  </span>
+                ))}
+             </h1>
+             <div className="absolute bottom-[15%] left-1/2 -translate-x-1/2 opacity-20 text-[10px] tracking-[1em] text-white uppercase italic">
+                The Spirit of the West awaits
+             </div>
+          </div>
+        )}
+
+        <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
             <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
@@ -142,51 +176,40 @@ export function Hero() {
             </div>
           </div>
         </div>
-
-        <div 
-          className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
-          style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
-        >
-          <div className="relative h-20 w-8 flex flex-col items-center justify-center">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <svg 
-                key={i} 
-                className="absolute animate-arrow-flow" 
-                style={{ animationDelay: `${i * 0.4}s` }} 
-                width="24"
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none"
-              >
+          
+        <div className={`absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`} style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}>
+          <div className="flex flex-col items-center gap-1 mb-8">
+            {[0, 1].map((i) => (
+              <svg key={i} className={`w-6 h-6 md:w-8 md:h-8 transition-transform duration-500 rotate-0`} viewBox="0 0 24 24" fill="none">
                 <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="white" strokeWidth="2.5" strokeLinecap="square" className="opacity-60"/>
               </svg>
             ))}
           </div>
         </div>
 
-        <div ref={heroContentRef} className="w-full h-full flex items-center justify-center">
+        <div ref={heroContentRef} className={`w-full h-full flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
           <div className="md:hidden w-full h-full">
-            <ExorcistsScroll />
+             <ExorcistsScroll />
           </div>
 
           <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
-            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1 transition-all duration-700" style={{ opacity: whoAmIMode ? 0.9 : 1, transform: whoAmIMode ? 'scale(1.1) rotate(0deg)' : 'rotate(-1deg)' }}>
+            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                {whoAmIMode ? "NO MAN CAN WALK OUT ON HIS OWN STORY" : (language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध")}
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
               </span>
             </div>
 
             <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title">
-              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'} transition-all duration-300 ${whoAmIMode ? 'blur-[2px] animate-pulse' : ''}`} style={{ letterSpacing: "-0.04em" }}>
-                {whoAmIMode ? "RANGO" : currentProfile.name.split(" ")[0].split("").map((char, i) => (
+              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
+                {currentProfile.name.split(" ")[0].split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
                 ))}
               </h1>
-              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'} transition-all duration-300 ${whoAmIMode ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
-                 {!whoAmIMode && currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                 {currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
@@ -194,27 +217,12 @@ export function Hero() {
               </h1>
             </div>
 
-            <p className={`cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4 transition-all duration-500 ${whoAmIMode ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
               {currentProfile.tagline}
             </p>
 
-            <div className={`cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto transition-all duration-500 ${whoAmIMode ? 'opacity-20 blur-sm pointer-events-none' : 'opacity-100'}`}>
-              <a ref={cta1Ref} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : language === 'de' ? "Arbeit ansehen" : language === 'it' ? "Vedi Lavori" : language === 'pt-br' ? "Ver Trabalhos" : (language === 'es-419' || language === 'es') ? "Ver Trabajos" : "कार्य देखें"}
-                  </span>
-                </div>
-              </a>
-              <a ref={cta2Ref} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Hubungi" : language === 'de' ? "Kontakt" : language === 'it' ? "Contatto" : language === 'pt-br' ? "Contato" : (language === 'es-419' || language === 'es') ? "Contacto" : "संपर्क करें"}
-                  </span>
-                </div>
-              </a>
+            <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
+              {/* CTAs omitted for clarity during WhoAmIMode */}
             </div>
           </div>
         </div>
