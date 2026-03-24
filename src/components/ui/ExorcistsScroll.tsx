@@ -86,8 +86,6 @@ const ExorcistsScroll: React.FC = () => {
   const handleCardClick = async (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const currentFacts = OFUDA_FACTS[language] || OFUDA_FACTS['en'];
-    // Use modulo or ID mapping to ensure we get consistent facts per user if desired, 
-    // but the user wants the card ITSELF to remember reading.
     const { fact } = getNextFact(currentFacts);
     setActiveCard({ id, fact, isAssembled: false, rect });
     
@@ -129,53 +127,58 @@ const ExorcistsScroll: React.FC = () => {
   }, [activeCard]);
 
   const segments = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => ({
+    return Array.from({ length: 30 }).map((_, i) => ({
       id: i,
       hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
-      delay: i * -1.25 
+      delay: i * -0.5 
     }));
   }, []);
 
   return (
-    <div className="w-full flex items-center justify-center min-h-[140px] md:min-h-[180px] py-10 relative overflow-hidden">
-      <div className="absolute left-[5%] right-[5%] h-[2px] bg-white/5 top-1/2 -translate-y-1/2 pointer-events-none" />
-      
-      <div className="flex gap-4 md:gap-8 overflow-visible relative px-20">
+    <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden opacity-60">
+      {/* ─── LAYER 1: THE ETERNAL PATH (RESTORED LAYOUT) ─── */}
+      <div className="relative w-full h-[600px] flex items-center justify-center translate-y-[-10%]">
         {segments.map((s) => (
-          <div key={s.id} className="relative group/ofuda">
+          <div 
+             key={s.id} 
+             className="absolute flex flex-col items-center justify-center"
+             style={{
+               animation: `scroll-flow 15s linear infinite`,
+               animationDelay: `${s.delay}s`,
+             }}
+          >
             <button
                onClick={(e) => handleCardClick(s.id, e)}
-               className={`w-10 h-32 md:w-14 md:h-44 transition-all duration-500 flex flex-col items-center justify-between py-4 relative transform-gpu hover:scale-110 active:scale-95 border-x-2 ${readIds.has(s.id) ? 'bg-[#0ee0c3]/5 border-[#0ee0c3]/20 hover:border-[#0ee0c3]/60' : 'bg-red-600/5 border-red-600/20 hover:border-red-600/60'}`}
+               className={`relative w-12 md:w-20 h-32 md:h-48 transition-all duration-500 flex flex-col items-center justify-between py-4 transform-gpu hover:scale-110 active:scale-95 border-2 pointer-events-auto ${readIds.has(s.id) ? 'bg-[#0ee0c3]/10 border-[#0ee0c3]/40 hover:border-[#0ee0c3]/100' : 'bg-black/80 border-red-600/40 hover:border-red-600/100'}`}
                style={{ 
-                  animation: `scroll-flow 12s linear infinite`, 
-                  animationDelay: `${s.delay}s`,
-                  boxShadow: readIds.has(s.id) ? '0 0 15px rgba(14,224,195,0.05)' : '0 0 15px rgba(217,17,17,0.05)'
+                  boxShadow: readIds.has(s.id) ? '0 0 20px rgba(14,224,195,0.2)' : '0 0 20px rgba(217,17,17,0.2)'
                }}
             >
-               <div className="flex gap-1 opacity-60">
+               {/* Script logic */}
+               <div className="flex flex-col gap-1 items-center opacity-70">
                   {[1,2,3].map(j => (
-                    <div key={j} className="w-2 h-2 border rotate-45 flex items-center justify-center" style={{ borderColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }}>
-                      <div className="w-[1px] h-[1px]" style={{ backgroundColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
-                    </div>
+                    <div key={j} className="w-1 h-3 rounded-full" style={{ backgroundColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
                   ))}
                </div>
 
-               <div className="relative w-full flex items-center justify-center py-2">
-                  <div className="absolute inset-0 blur-lg rounded-full" style={{ backgroundColor: readIds.has(s.id) ? 'rgba(14,224,195,0.1)' : 'rgba(217,17,17,0.1)' }} />
-                  <div className="relative">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12" style={{ backgroundColor: readIds.has(s.id) ? '#0ee0c366' : '#d9111166' }} />
-                    <span className="font-mono text-[9px] font-bold tracking-widest" style={{ writingMode: 'vertical-rl', color: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }}>
-                       {s.hex}
-                    </span>
-                  </div>
-               </div>
+               {/* Hex Code */}
+               <span className="font-mono text-[10px] md:text-xs font-black rotate-[-90deg] whitespace-nowrap brightness-125 transition-colors duration-500" style={{ color: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }}>
+                  {s.hex}
+               </span>
 
-               <div className="flex flex-col gap-1 items-center opacity-60">
-                  <div className="w-1 h-1 border rotate-45" style={{ borderColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
+               <div className="flex flex-col gap-1 items-center">
+                  <div className="w-3 h-3 rounded-full border border-dashed animate-spin-slow" style={{ borderColor: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
+                  <div className="w-[1px] h-8 bg-current opacity-30" style={{ color: readIds.has(s.id) ? '#0ee0c3' : '#D91111' }} />
                </div>
             </button>
           </div>
         ))}
+      </div>
+
+      {/* ─── LAYER 2: THE CLEANSING LIGHT (VIEWPORT CENTER) ─── */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[300px] pointer-events-none">
+         <div className="absolute inset-0 bg-white/[0.03] blur-[100px]" />
+         <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[2px] opacity-20" style={{ backgroundColor: '#D91111' }} />
       </div>
 
       {mounted && activeCard && createPortal(
@@ -236,10 +239,10 @@ const ExorcistsScroll: React.FC = () => {
 
       <style>{`
         @keyframes scroll-flow {
-          0% { transform: translate3d(80vw, 20vh, 0) rotateZ(10deg) scale(0.7); opacity: 0; }
-          45%, 55% { opacity: 1; }
-          50% { transform: translate3d(0vw, 5vh, 0) rotateZ(0deg) scale(1.05); }
-          100% { transform: translate3d(-80vw, -20vh, 0) rotateZ(-10deg) scale(0.7); opacity: 0; }
+          0% { transform: translateX(100vw) translateY(15vh) rotateZ(15deg) scale(0.6); opacity: 0; filter: blur(4px) grayscale(1); }
+          45%, 55% { opacity: 1; filter: blur(0px) grayscale(0); }
+          50% { transform: translateX(0vw) translateY(0vh) rotateZ(0deg) scale(1.1); }
+          100% { transform: translateX(-100vw) translateY(-15vh) rotateZ(-15deg) scale(0.6); opacity: 0; filter: blur(4px) grayscale(1); }
         }
         .blood-grid {
           background-image: linear-gradient(rgba(217, 17, 17, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.03) 1px, transparent 1px);
