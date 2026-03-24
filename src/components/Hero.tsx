@@ -145,7 +145,9 @@ export function Hero() {
 
         <div ref={heroContentRef} className="w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
-          <ExorcistsScroll />
+          <div className="md:hidden">
+            <ExorcistsScroll />
+          </div>
 
           <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
             <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
