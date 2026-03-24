@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, memo } from "react";
+import React, { useEffect, useRef, useMemo, memo, useState } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
 import ExorcistsScroll from './ui/ExorcistsScroll';
@@ -48,6 +48,8 @@ IntroWord.displayName = "IntroWord";
 export function Hero() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
+  const [whoAmIMode, setWhoAmIMode] = useState(false);
+  const keysRef = useRef<string[]>([]);
   const titlesRef = useRef<HTMLDivElement>(null);
   const cta1Ref = useMagnetic<HTMLAnchorElement>(0.2);
   const cta2Ref = useMagnetic<HTMLAnchorElement>(0.2);
@@ -64,54 +66,53 @@ export function Hero() {
     id: ["Saya menemukan apa yang rusak", "dan membangun apa yang hilang."],
     de: ["Ich finde, was kaputt ist,", "und baue, was fehlt."],
     it: ["Trovo ciò che è rotto", "e costruisco ciò che manca."],
-    "pt-br": ["Eu encontro o que está quebrado", "et eu costruisco ciò che manca."],
+    "pt-br": ["Eu encontro o que está quebrado", "e construo o que falta."],
     "es-419": ["Encuentro lo que está roto", "y construyo lo que falta."],
     es: ["Encuentro lo que está roto", "y construyo lo que falta."]
   };
 
-  const currentIntro = introStages[language as keyof typeof introStages];
+  const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
-  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
+  // WHOAMI EASTER EGG LISTENER 🏮
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      keysRef.current.push(e.key.toLowerCase());
+      if (keysRef.current.length > 6) keysRef.current.shift();
+      const sequence = keysRef.current.join("");
+      
+      if (sequence === "whoami") {
+        setWhoAmIMode(true);
+        setTimeout(() => setWhoAmIMode(false), 4400); 
+        keysRef.current = [];
+      }
+    };
+    window.addEventListener("keydown", handleKeydown);
+    return () => window.removeEventListener("keydown", handleKeydown);
+  }, []);
+
+  // SCROLL ENGINE
   useEffect(() => {
     const handleScroll = () => {
       if (!trackRef.current || !heroContentRef.current) return;
-      
       const st = window.scrollY;
       const sectionOffset = trackRef.current.offsetTop;
       const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      // Early exit if outside hero range to save CPU
       if (st > sectionOffset + trackHeight + 500) return;
-
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-
-      // Layer 3: Direct style updates bypassing React state
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
-      
-      // Hero recede effect (Parallax)
       const scale = 1 - progress * 0.5;
       const translate = progress * -150;
       const opacity = Math.max(0, 1 - progress * 3.5);
       const blur = progress * 20;
-      
       heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
       heroContentRef.current.style.opacity = opacity.toString();
-      
-      // Use 'none' instead of 'blur(0)' to fully release GPU resources
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
     };
-
-    // Passive listener to ensure immediate scrolling response with zero main-thread lag
     window.addEventListener("scroll", handleScroll, { passive: true }); 
-    
-    // Initial call to set state
     handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -120,12 +121,17 @@ export function Hero() {
       className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
-      <div 
-        id="hero" 
-        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
-      >
+      {/* THEATRICAL SPOTLIGHT 📽️ */}
+      <div className={`fixed inset-0 z-[60] pointer-events-none transition-all duration-1000 ${whoAmIMode ? 'opacity-100' : 'opacity-0'}`}
+        style={{
+          background: `radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.98) 75%)`,
+          backdropFilter: whoAmIMode ? 'contrast(1.6) grayscale(1) brightness(0.8)' : 'none'
+        }}
+      />
+
+      <div id="hero" className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6">
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
-          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
+          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12 transition-all duration-500" style={{ filter: whoAmIMode ? 'brightness(2) contrast(1.2)' : 'none' }}>
             <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
@@ -134,22 +140,10 @@ export function Hero() {
           </div>
         </div>
           
-        {/* Scroll Indicator Arrows */}
-        <div 
-          className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
-          style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
-        >
-          <div className="relative h-20 w-8 flex flex-col items-center justify-center">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <svg 
-                key={i} 
-                className="absolute animate-arrow-flow" 
-                style={{ animationDelay: `${i * 0.4}s` }} 
-                width="24" // Scaled from 22 (+~10% desktop base)
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none"
-              >
+        <div className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30" style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}>
+          <div className="flex flex-col items-center gap-1 mb-8">
+            {[0, 1].map((i) => (
+              <svg key={i} className={`w-6 h-6 md:w-8 md:h-8 transition-transform duration-500 rotate-0`} viewBox="0 0 24 24" fill="none">
                 <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="white" strokeWidth="2.5" strokeLinecap="square" className="opacity-60"/>
               </svg>
             ))}
@@ -161,22 +155,22 @@ export function Hero() {
           <ExorcistsScroll />
 
           <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
-            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1 transition-all duration-700" style={{ opacity: whoAmIMode ? 0.9 : 1, transform: whoAmIMode ? 'scale(1.1) rotate(0deg)' : 'rotate(-1deg)' }}>
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
+                {whoAmIMode ? "NO MAN CAN WALK OUT ON HIS OWN STORY" : (language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध")}
               </span>
             </div>
 
             <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title">
-              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
-                {currentProfile.name.split(" ")[0].split("").map((char, i) => (
+              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'} transition-all duration-300 ${whoAmIMode ? 'blur-[2px] animate-pulse' : ''}`} style={{ letterSpacing: "-0.04em" }}>
+                {whoAmIMode ? "RANGO" : currentProfile.name.split(" ")[0].split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
                 ))}
               </h1>
-              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                 {currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'} transition-all duration-300 ${whoAmIMode ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}>
+                 {!whoAmIMode && currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
@@ -184,11 +178,11 @@ export function Hero() {
               </h1>
             </div>
 
-            <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
+            <p className={`cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4 transition-all duration-500 ${whoAmIMode ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
               {currentProfile.tagline}
             </p>
 
-            <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
+            <div className={`cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto transition-all duration-500 ${whoAmIMode ? 'opacity-20 blur-sm pointer-events-none' : 'opacity-100'}`}>
               <a ref={cta1Ref} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
@@ -214,7 +208,6 @@ export function Hero() {
       </div>
       <style>{`
         .reveal-word {
-          /* Computed once per word, updated by hardware via --scroll-progress variable */
           --progress: clamp(0, (var(--scroll-progress) - var(--start)) / (var(--end) - var(--start)), 1);
           opacity: var(--progress);
           transform: translateY(calc((1 - var(--progress)) * 25px));
