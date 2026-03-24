@@ -181,7 +181,7 @@ export function Navbar() {
     const currentScale = physicsRef.current.scale;
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (108 * currentScale) / 2;
+    const radius = (40 * currentScale) / 2;
     let { x, y, vx, vy, squish } = physicsRef.current;
     x += vx; y += vy; vx *= friction; vy *= friction;
     const width = window.innerWidth;
@@ -280,7 +280,7 @@ export function Navbar() {
         {dotMode === 'RELEASED' && (
            <div 
             className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" 
-            style={{ top: dotPos.y, left: dotPos.x, width: `${108 * dotScale}px`, height: `${108 * dotScale}px`, touchAction: 'none', transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})` }}
+            style={{ top: dotPos.y, left: dotPos.x, width: `${40 * dotScale}px`, height: `${40 * dotScale}px`, touchAction: 'none', transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})` }}
             onMouseDown={handleDotMouseDown}
             onClick={(e) => { e.stopPropagation(); setIsBallCyan(prev => !prev); }}
           >
