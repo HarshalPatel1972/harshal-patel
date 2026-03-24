@@ -64,7 +64,7 @@ export function Hero() {
     "zh-tw": ["找出破碎之處，", "構築缺失之事。"],
     hi: ["मैं ढूंढता हूँ जो टूटा है,", "और बनाता हूँ जो गायब है।"],
     fr: ["Je trouve ce qui est brisé", "et je construis ce qui manque."],
-    id: ["Saya menemukan apa yang rusak", "dan membangun apa yang hilang."],
+    id: ["Saya menemukan apa yang rusak", "and membangun apa yang hilang."],
     de: ["Ich finde, was kaputt ist,", "und baue, was fehlt."],
     it: ["Trovo ciò che è rotto", "e costruisco ciò che manca."],
     "pt-br": ["Eu encontro o que está quebrado", "e costruo o que falta."],
@@ -182,9 +182,9 @@ export function Hero() {
           </div>
         )}
 
-        <div className={`absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center md:items-start text-center md:text-left transition-all duration-500">
-            <div id="hero-intro-text" className="leading-[1.05] md:leading-[1.15] max-w-3xl">
+        <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
+            <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
               ))}
@@ -210,28 +210,28 @@ export function Hero() {
           </div>
         </div>
 
-        <div ref={heroContentRef} className={`w-full h-full flex flex-col items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+        <div ref={heroContentRef} className={`w-full h-full flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
-          <div className="md:hidden w-full h-full pointer-events-none">
+          <div className="md:hidden w-full h-full">
              <ExorcistsScroll />
           </div>
 
-          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
-            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1 pointer-events-auto">
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                 {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
               </span>
             </div>
 
-            <div id="titles-container" className="relative mb-8 w-full cursor-none group/title pointer-events-auto">
-              <h1 id="hero-title-first" className={`cinematic-in text-[12vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
+            <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title">
+              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {currentProfile.name.split(" ")[0].split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
                 ))}
               </h1>
-              <h1 id="hero-title-last" className={`cinematic-in text-[12vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
