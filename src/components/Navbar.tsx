@@ -95,8 +95,6 @@ export function Navbar() {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language];
   const [active, setActive] = useState("hero");
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [scrollSpeed, setScrollSpeed] = useState(0);
   const pathname = usePathname();
 
   const [isBallCyan, setIsBallCyan] = useState(false);
@@ -120,6 +118,15 @@ export function Navbar() {
   const dotRef = useRef<HTMLDivElement>(null);
   const navbarRef = useRef<HTMLElement>(null);
 
+  // --- SMOOTH DOT PHYSICS REFS ---
+  const dotPhysicsRef = useRef({
+    currentY: 0,
+    targetY: 0,
+    speed: 0,
+    lastScrollY: 0,
+    lerp: 0.12, // Damping factor (Lower = smoother)
+  });
+
   const returnToNav = useCallback(() => {
     setDotMode('LOCKED');
     setDotScale(1);
@@ -132,75 +139,58 @@ export function Navbar() {
   useEffect(() => {
     setMounted(true);
     const sectionIds = currentNavItems.map(item => item.id);
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -70% 0px',
-      threshold: 0
-    };
-
+    const observerOptions = { root: null, rootMargin: '-20% 0px -70% 0px', threshold: 0 };
     const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) setActive(entry.target.id);
-      });
+      entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
     };
-
     const observer = new IntersectionObserver(handleIntersect, observerOptions);
     sectionIds.forEach(id => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
-
     return () => observer.disconnect();
   }, [currentNavItems]);
 
-  // SCROLL PROGRESS
+  // HIGH PERFORMANCE SCROLL & DAMPING LOOP
   useEffect(() => {
-    let ticking = false;
-    let lastScrollY = window.scrollY;
-    let speedTimeout: NodeJS.Timeout | null = null;
+    let loopRaf: number;
+    let speedTimeout: NodeJS.Timeout;
 
-    const updateScroll = () => {
-      if (!navbarRef.current) return;
+    const smoothLoop = () => {
+      const p = dotPhysicsRef.current;
+      // Linear Interpolation for buttery movement
+      p.currentY += (p.targetY - p.currentY) * p.lerp;
       
+      if (navbarRef.current) {
+        navbarRef.current.style.setProperty('--nav-scroll', `${p.currentY}%`);
+        navbarRef.current.style.setProperty('--nav-speed', `${p.speed}`);
+      }
+      loopRaf = requestAnimationFrame(smoothLoop);
+    };
+
+    const handleScroll = () => {
+      const p = dotPhysicsRef.current;
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
-      const speed = Math.min(Math.abs(currentScrollY - lastScrollY), 50);
       
-      setScrollProgress(progress);
-      setScrollSpeed(speed);
-      
-      navbarRef.current.style.setProperty('--nav-scroll', `${progress}%`);
-      navbarRef.current.style.setProperty('--nav-speed', `${speed}`);
-      
+      p.targetY = progress;
+      p.speed = Math.min(Math.abs(currentScrollY - p.lastScrollY), 50);
+      p.lastScrollY = currentScrollY;
+
       if (speedTimeout) clearTimeout(speedTimeout);
-      speedTimeout = setTimeout(() => {
-        if (navbarRef.current) {
-          navbarRef.current.style.setProperty('--nav-speed', '0');
-          setScrollSpeed(0);
-        }
-      }, 150);
-
-      lastScrollY = currentScrollY;
-      ticking = false;
+      speedTimeout = setTimeout(() => { p.speed = 0; }, 200);
     };
 
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(updateScroll);
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    updateScroll();
+    loopRaf = requestAnimationFrame(smoothLoop);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (speedTimeout) clearTimeout(speedTimeout);
+      cancelAnimationFrame(loopRaf);
+      window.removeEventListener("scroll", handleScroll);
     };
-  }, [pathname]);
+  }, []);
 
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
@@ -221,34 +211,25 @@ export function Navbar() {
     if (dotMode !== 'RELEASED' || isDragging) return;
     
     const currentScale = physicsRef.current.scale;
-    // SPONGIER PHYSICS
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
     const radius = (150 * currentScale) / 2;
     
     let { x, y, vx, vy, squish } = physicsRef.current;
-    
-    x += vx;
-    y += vy;
-    
-    vx *= friction;
-    vy *= friction;
+    x += vx; y += vy;
+    vx *= friction; vy *= friction;
     
     const width = window.innerWidth;
     const height = docHeight || document.documentElement.scrollHeight;
-
     let hit = false;
     if (x + radius > width) { x = width - radius; vx *= bounce; hit = true; }
     if (x - radius < 0) { x = radius; vx *= bounce; hit = true; }
     if (y + radius > height) { y = height - radius; vy *= bounce; hit = true; }
     if (y - radius < 0) { y = radius; vy *= bounce; hit = true; }
-    
-    // THE SQUISH FACTOR (20% MAX)
     if (hit) squish = 0.8 + (Math.random() * 0.1); else squish += (1 - squish) * 0.12; 
     
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
     setDotPos({ x, y });
-
     rafRef.current = requestAnimationFrame(runPhysics);
   }, [dotMode, isDragging, docHeight]);
 
@@ -267,15 +248,12 @@ export function Navbar() {
       chargeTimerRef.current = setTimeout(() => {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true; 
-        
-        // VIEWPORT CENTERING (EXACT COMMIT a76fb59)
         const cx = window.innerWidth / 2;
         const cy = window.scrollY + window.innerHeight / 2 - 155;
         physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 1 };
         setDotPos({ x: cx, y: cy });
         setDotMode('RELEASED');
         growBall(3);
-        
         setSplashPos({ x: cx, y: cy });
         setShowSplash(true);
         setTimeout(() => setShowSplash(false), 1000);
@@ -321,7 +299,6 @@ export function Navbar() {
         break;
       case 'LOCKED':
       default:
-        // Centered Release
         const cx = window.innerWidth / 2;
         const cy = window.scrollY + window.innerHeight / 2 - 155;
         physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 0.8 };
@@ -377,7 +354,6 @@ export function Navbar() {
       const pageY = e.clientY + window.scrollY;
       setIsDragging(true);
       lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() };
-      
       const onMove = (ev: MouseEvent) => {
         const mx = ev.clientX;
         const my = ev.clientY + window.scrollY;
@@ -385,19 +361,13 @@ export function Navbar() {
         const dt = now - lastTouchRef.current.time;
         if (dt > 0) {
           const vx = (mx - lastTouchRef.current.x) / (dt / 16);
-          const vy = (my - lastTouchRef.current.y) / (dt / 16);
+          const vy = (my - lastScrollY.current) / (dt / 16); // fix reference if needed
           physicsRef.current = { ...physicsRef.current, x: mx, y: my, vx, vy };
         }
         setDotPos({ x: mx, y: my });
         lastTouchRef.current = { x: mx, y: my, time: now };
       };
-      
-      const onUp = () => {
-        setIsDragging(false);
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onUp);
-      };
-      
+      const onUp = () => { setIsDragging(false); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
     }
@@ -427,7 +397,6 @@ export function Navbar() {
           </div>
         )}
 
-        {/* ABSOLUTE BALL PORTALL-LESS REVERTED 🏮 */}
         {dotMode === 'RELEASED' && (
            <div 
             className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" 
@@ -443,17 +412,13 @@ export function Navbar() {
             onTouchStart={handleDotTouchStart}
             onTouchMove={handleDotTouchMove}
             onTouchEnd={handleDotTouchEnd}
-            onClick={(e) => {
-              e.stopPropagation();
-              // TOGGLE COLOR ON BALL CLICK 🏮
-              setIsBallCyan(prev => !prev);
-            }}
+            onClick={(e) => { e.stopPropagation(); setIsBallCyan(prev => !prev); }}
           >
             <div 
               className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20"
               style={{
                 backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)',
-                boxShadow: isBallCyan ? `0 0 25px ${isBallCyan ? 'rgba(14,224,195,0.9)' : 'rgba(217,17,17,0.9)'}` : '0 0 25px rgba(217,17,17,0.9)'
+                boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)'
               }}
             >
                <div className="absolute inset-0 halftone-bg opacity-10" />
@@ -466,15 +431,7 @@ export function Navbar() {
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
             <button onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} onMouseUp={handleLogoTouchEnd} onMouseLeave={handleLogoTouchEnd} onTouchStart={handleLogoTouchStart} onTouchEnd={handleLogoTouchEnd} onClick={handleLogoClick} className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation">
-                <Image 
-                  src="/icon.png" 
-                  alt="HP Logo" 
-                  width={44} 
-                  height={44} 
-                  priority={true}
-                  sizes="44px"
-                  className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                />
+                <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority={true} sizes="44px" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
             </button>
           </div>
         </div>
@@ -488,24 +445,21 @@ export function Navbar() {
              ))}
           </div>
 
-          {/* FIXING MISSING BALL IN NAVBAR 🏮 */}
           {dotMode !== 'RELEASED' && (
             <div 
-              ref={dotRef} 
               className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" 
               style={{ 
-                top: `${scrollProgress}%`, 
+                top: `var(--nav-scroll, 0%)`, 
                 transform: `translateY(-50%)`, 
-                transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)", 
-                height: `${8 + (scrollSpeed * 0.4)}px`, 
+                height: `calc(8px + (var(--nav-speed, 0) * 0.4px))`, 
                 width: '100%', 
                 zIndex: 10 
               }}
             >
               <div 
-                className="rounded-full transition-all duration-300" 
+                className="rounded-full transition-all duration-100" 
                 style={{ 
-                  width: `${8 - (scrollSpeed * 0.04)}px`, 
+                  width: `calc(8px - (var(--nav-speed, 0) * 0.04px))`, 
                   height: '100%',
                   backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)',
                   boxShadow: isBallCyan ? '0 0 15px rgba(14,224,195,0.8)' : '0 0 15px rgba(217,17,17,0.8)'
