@@ -178,9 +178,17 @@ export function Hero() {
         </div>
           
         <div className={`absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`} style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}>
-          <div className="flex flex-col items-center gap-1 mb-8">
-            {[0, 1].map((i) => (
-              <svg key={i} className={`w-6 h-6 md:w-8 md:h-8 transition-transform duration-500 rotate-0`} viewBox="0 0 24 24" fill="none">
+          <div className="relative h-20 w-8 flex flex-col items-center justify-center">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <svg 
+                key={i} 
+                className="absolute animate-arrow-flow" 
+                style={{ animationDelay: `${i * 0.4}s` }} 
+                width="24"
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none"
+              >
                 <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="white" strokeWidth="2.5" strokeLinecap="square" className="opacity-60"/>
               </svg>
             ))}
