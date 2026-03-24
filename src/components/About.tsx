@@ -22,7 +22,7 @@ function MangaStat({ value, label, prefix = "" }: { value: number; label: string
 }
 
 // INTERACTIVE BOUNCY SKILL BARS
-function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: string; level: number }; isVisible: boolean; index: number }) {
+function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { skill: { name: string; level: number }; isVisible: boolean; index: number; onPressureTrigger: () => void }) {
   const [percent, setPercent] = useState(skill.level);
   const barRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
@@ -57,20 +57,15 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
 
     const rounded = Math.round(newPercent);
     
-    // PRESSURE TRIGGER LOGIC
-    if (isDragging) {
-      if (rounded === 0 && lastTriggered.current !== 0) {
-        triggerSignal("PRESSURE PRESSURE PRESSURE");
-        lastTriggered.current = 0;
-      } else if (rounded <= 8 && rounded > 0 && lastTriggered.current !== 8 && lastTriggered.current !== 0) {
-        triggerSignal("PRESSURE");
-        lastTriggered.current = 8;
-      } else if (rounded <= 10 && rounded > 8 && lastTriggered.current !== 10 && lastTriggered.current !== 8 && lastTriggered.current !== 0) {
-        triggerSignal("PRESSURE");
-        lastTriggered.current = 10;
-      } else if (rounded > 15) {
-        lastTriggered.current = null;
+    // NEW PRESSURE VIDEO TRIGGER 📽️
+    if (isDragging && rounded < 15) {
+      if (lastTriggered.current === null) {
+        onPressureTrigger();
+        triggerSignal("PRESSURE"); // Keep global shake signal too
+        lastTriggered.current = rounded;
       }
+    } else if (rounded >= 15) {
+      lastTriggered.current = null;
     }
 
     // Colors
@@ -98,7 +93,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
     if (fillRef.current) {
       fillRef.current.style.backgroundColor = 'var(--accent-blood)';
     }
-    if (labelRef.current) labelRef.current.style.color = 'var(--accent-blood)';
+    if (labelRef.current) {
+      labelRef.current.style.color = 'var(--accent-blood)';
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
@@ -174,9 +171,9 @@ function InteractiveSkillBar({ skill, isVisible, index }: { skill: { name: strin
 export function About() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
-
   const sectionRef = useRef<HTMLElement>(null);
   const [skillsVisible, setSkillsVisible] = useState(false);
+  const [showPressureVideo, setShowPressureVideo] = useState(false);
   const skillsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -197,6 +194,25 @@ export function About() {
                  before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-[var(--bg-ink)] before:pointer-events-none"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
+
+      {/* NEW PRESSURE VIDEO OVERLAY 📽️ */}
+      {showPressureVideo && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black flex items-center justify-center animate-cinematic-in overflow-hidden cursor-none pointer-events-auto"
+          onClick={() => setShowPressureVideo(false)}
+        >
+          <video 
+            src="/pressure.mp4" 
+            autoPlay 
+            playsInline
+            onEnded={() => setShowPressureVideo(false)}
+            className="w-full h-full object-cover md:object-contain drop-shadow-[0_0_50px_var(--accent-blood)] scale-[1.05]"
+          />
+          <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 opacity-20 text-[8px] md:text-[10px] tracking-[1em] text-white uppercase italic whitespace-nowrap">
+             Critical System Pressure Detected
+          </div>
+        </div>
+      )}
 
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`}>
@@ -271,26 +287,27 @@ export function About() {
 
           <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
-              <div className="grid grid-cols-2 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                  <MangaStat value={300} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : language === 'id' ? "Algoritma" : language === 'de' ? "Algoritmen" : language === 'it' ? "Algoritmi" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Algoritmos" : "एल्गोरिदम"} prefix="" />
-                  <MangaStat value={12} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : language === 'fr' ? "Systèmes Construits" : language === 'id' ? "Sistem Dibangun" : language === 'de' ? "Gebaute Systeme" : language === 'it' ? "Sistemi Costruiti" : language === 'pt-br' ? "Sistemas Construídos" : (language === 'es-419' || language === 'es') ? "Sistemas Creados" : "सिस्टम बनाए"} prefix="" />
-              </div>
-              <div ref={skillsRef} className="flex flex-col gap-6">
-                 <h4 className={`text-[var(--text-bone)] font-black text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                     {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : language === 'zh-tw' ? "核心專業領域" : language === 'fr' ? "Expertise Fondamentale" : language === 'id' ? "Keahlian Inti" : language === 'de' ? "Kernkompetenz" : language === 'it' ? "Competenza Core" : language === 'pt-br' ? "Competência Principal" : (language === 'es-419' || language === 'es') ? "Experiencia Principal" : "मुख्य विशेषज्ञता"}
-                     <span className="text-[10px] font-mono text-[var(--accent-blood)]">MAX 100%</span>
-                 </h4>
-                 <div className="space-y-6">
-                    {currentProfile.skills.map((skill, i) => (
-                      <InteractiveSkillBar 
-                        key={skill.name} 
-                        skill={skill} 
-                        isVisible={skillsVisible} 
-                        index={i} 
-                      />
-                    ))}
-                 </div>
-              </div>
+               <div className="grid grid-cols-2 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
+                   <MangaStat value={300} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : language === 'id' ? "Algoritma" : language === 'de' ? "Algoritmen" : language === 'it' ? "Algoritmi" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Algoritmos" : "एल्गोरिदम"} prefix="" />
+                   <MangaStat value={12} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : language === 'fr' ? "Systèmes Construits" : language === 'id' ? "Sistem Dibangun" : language === 'de' ? "Gebaute Systeme" : language === 'it' ? "Sistemi Costruiti" : language === 'pt-br' ? "Sistemas Construídos" : (language === 'es-419' || language === 'es') ? "Sistemas Creados" : "सिस्टम बनाए"} prefix="" />
+               </div>
+               <div ref={skillsRef} className="flex flex-col gap-6">
+                  <h4 className={`text-[var(--text-bone)] font-black text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                      {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : language === 'zh-tw' ? "核心專業領域" : language === 'fr' ? "Expertise Fondamentale" : language === 'id' ? "Keahlian Inti" : language === 'de' ? "Kernkompetenz" : language === 'it' ? "Competenza Core" : language === 'pt-br' ? "Competência Principal" : (language === 'es-419' || language === 'es') ? "Experiencia Principal" : "मुख्य विशेषज्ञता"}
+                      <span className="text-[10px] font-mono text-[var(--accent-blood)]">DRAG LEFT</span>
+                  </h4>
+                  <div className="space-y-6">
+                     {currentProfile.skills.map((skill, i) => (
+                       <InteractiveSkillBar 
+                         key={skill.name} 
+                         skill={skill} 
+                         isVisible={skillsVisible} 
+                         index={i} 
+                         onPressureTrigger={() => setShowPressureVideo(true)}
+                       />
+                     ))}
+                  </div>
+               </div>
             </div>
           </ScrollReveal>
         </div>
