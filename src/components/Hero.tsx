@@ -185,8 +185,8 @@ export function Hero() {
         )}
 
         <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
-            <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
+          <div className="relative w-full max-w-7xl flex flex-col items-center md:items-start gap-6 md:gap-12 text-center md:text-left">
+            <div id="hero-intro-text" className="leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
               ))}
