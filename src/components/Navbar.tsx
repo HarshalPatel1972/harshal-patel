@@ -267,7 +267,7 @@ export function Navbar() {
   }, [dotMode, isDragging, runPhysics]);
 
   const handleLogoTouchStart = () => {
-    if (window.innerWidth >= 768) return;
+    // Enable for both mobile and desktop
     if (dotMode === 'LOCKED') {
       chargingLogoRef.current = true;
       longPressActiveRef.current = false;
@@ -329,7 +329,26 @@ export function Navbar() {
         break;
       case 'LOCKED':
       default:
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // RELEASE THE BALL INTO THE MIDDLE 🏮
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        physicsRef.current = { 
+          ...physicsRef.current, 
+          x: cx, 
+          y: cy + window.scrollY, 
+          vx: 0, 
+          vy: 0, 
+          scale: 0, 
+          squish: 0.8 
+        };
+        setDotMode('RELEASED');
+        growBall(3);
+        setSplashPos({ x: 44, y: 44 }); // Visual confirmation at logo
+        setShowSplash(true);
+        setTimeout(() => setShowSplash(false), 800);
+        
+        // Slight scroll-to-top as fallback
+        if (window.scrollY > 200) window.scrollTo({ top: 0, behavior: "smooth" });
         break;
     }
   };
@@ -483,7 +502,16 @@ export function Navbar() {
           onTouchMove={handleDotTouchMove}
           onTouchEnd={handleDotTouchEnd}
         >
-          <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-shadow duration-300" />
+          <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-shadow duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20">
+             <Image 
+                src="/icon.png" 
+                alt="Logo Particle" 
+                width={80} 
+                height={80} 
+                className="w-4/5 h-4/5 object-contain"
+             />
+             <div className="absolute inset-0 halftone-bg opacity-10" />
+          </div>
         </div>,
         document.body
       )}
