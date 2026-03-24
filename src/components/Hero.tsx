@@ -52,8 +52,6 @@ export function Hero() {
   const [showRangoText, setShowRangoText] = useState(false);
   const keysRef = useRef<string[]>([]);
   const titlesRef = useRef<HTMLDivElement>(null);
-  const cta1Ref = useMagnetic<HTMLAnchorElement>(0.2);
-  const cta2Ref = useMagnetic<HTMLAnchorElement>(0.2);
   const trackRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
@@ -69,7 +67,7 @@ export function Hero() {
     id: ["Saya menemukan apa yang rusak", "dan membangun apa yang hilang."],
     de: ["Ich finde, was kaputt ist,", "und baue, was fehlt."],
     it: ["Trovo ciò che è rotto", "e costruisco ciò che manca."],
-    "pt-br": ["Eu encontro o que está quebrado", "e construo o que falta."],
+    "pt-br": ["Eu encontro o que está quebrado", "e costruo o que falta."],
     "es-419": ["Encuentro lo que está roto", "y construyo lo que falta."],
     es: ["Encuentro lo que está roto", "y construyo lo que falta."]
   };
@@ -141,7 +139,7 @@ export function Hero() {
   return (
     <section
       ref={trackRef}
-      className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
+      className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-hidden"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
       {/* UNIVERSAL FLASHLIGHT 📽️ */}
@@ -159,34 +157,34 @@ export function Hero() {
         {/* RANGO VIEWPORT IMPACT 🌵 */}
         {whoAmIMode && (
           <div 
-            className="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-black select-none transition-all duration-700 pointer-events-auto cursor-none"
+            className="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-black select-none pointer-events-auto cursor-none overflow-hidden"
             onClick={() => { setWhoAmIMode(false); setShowRangoText(false); }}
           >
              {showRangoText && (
-               <>
-                 <div className="mb-4 cinematic-in opacity-80">
-                    <span className="uppercase tracking-[0.5em] text-sm md:text-xl font-black text-white">
+               <div className="flex flex-col items-center justify-center w-full h-full px-4 overflow-hidden">
+                 <div className="mb-4 cinematic-in opacity-80 text-center">
+                    <span className="uppercase tracking-[0.3em] md:tracking-[0.5em] text-xs md:text-xl font-black text-white whitespace-pre-wrap max-w-sm md:max-w-none">
                       NO MAN CAN WALK OUT ON HIS OWN STORY
                     </span>
                  </div>
-                 <h1 className="text-[28vw] leading-[0.7] font-black uppercase text-white tracking-[-0.04em] flex gap-x-[4vw]">
+                 <h1 className="text-[17vw] leading-[0.7] font-black uppercase text-white tracking-[-0.04em] flex flex-row items-center justify-center gap-[2vw]">
                     {"RANGO".split("").map((char, i) => (
                       <span key={i} className="inline-block hover:text-[var(--accent-blood)] transition-colors duration-300">
                         {char}
                       </span>
                     ))}
                  </h1>
-                 <div className="absolute bottom-[15%] left-1/2 -translate-x-1/2 opacity-20 text-[10px] tracking-[1em] text-white uppercase italic">
+                 <div className="absolute bottom-[10%] md:bottom-[15%] left-1/2 -translate-x-1/2 opacity-20 text-[8px] md:text-[10px] tracking-[0.5em] md:tracking-[1em] text-white uppercase italic text-center w-full">
                     The Spirit of the West awaits
                  </div>
-               </>
+               </div>
              )}
           </div>
         )}
 
-        <div className={`absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="relative w-full max-w-7xl flex flex-col items-center md:items-start gap-6 md:gap-12 text-center md:text-left">
-            <div id="hero-intro-text" className="leading-[1.05] md:leading-[1.15]">
+        <div className={`absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center md:items-start text-center md:text-left transition-all duration-500">
+            <div id="hero-intro-text" className="leading-[1.05] md:leading-[1.15] max-w-3xl">
               {allWords.map((word, i) => (
                 <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
               ))}
@@ -212,28 +210,28 @@ export function Hero() {
           </div>
         </div>
 
-        <div ref={heroContentRef} className={`w-full h-full flex items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
+        <div ref={heroContentRef} className={`w-full h-full flex flex-col items-center justify-center transition-opacity duration-500 ${whoAmIMode ? 'opacity-0' : 'opacity-100'}`}>
           <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
-          <div className="md:hidden w-full h-full">
+          <div className="md:hidden w-full h-full pointer-events-none">
              <ExorcistsScroll />
           </div>
 
-          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
-            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1 pointer-events-auto">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunिटीज" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : "अवसरों के लिए उपलब्ध"}
               </span>
             </div>
 
-            <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title">
-              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
+            <div id="titles-container" className="relative mb-8 w-full cursor-none group/title pointer-events-auto">
+              <h1 id="hero-title-first" className={`cinematic-in text-[12vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {currentProfile.name.split(" ")[0].split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
                   </span>
                 ))}
               </h1>
-              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+              <h1 id="hero-title-last" className={`cinematic-in text-[12vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
                   <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
                     {char}
