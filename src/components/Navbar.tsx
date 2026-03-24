@@ -173,6 +173,9 @@ export function Navbar() {
       const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
       const speed = Math.min(Math.abs(currentScrollY - lastScrollY), 50); // Cap speed for visual sanity
       
+      setScrollProgress(progress);
+      setScrollSpeed(speed);
+      
       navbarRef.current.style.setProperty('--nav-scroll', `${progress}%`);
       navbarRef.current.style.setProperty('--nav-speed', `${speed}`);
       
@@ -221,27 +224,27 @@ export function Navbar() {
     return () => resizer.disconnect();
   }, []);
 
+  // --- REVERTED PHYSICS ENGINE (COMMIT 5a8bd7f) ---
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
     
-    let { x, y, vx, vy, squish, scale } = physicsRef.current;
+    const currentScale = physicsRef.current.scale;
+    // SPONGIER PHYSICS: High bounce and low friction for big ball
+    const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
+    const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
+    const radius = (25 * currentScale) / 2;
     
-    // SLEEP ENGINE: If velocity is near zero, stop the loop to save battery
-    if (Math.abs(vx) < 0.05 && Math.abs(vy) < 0.05 && Math.abs(squish - 1) < 0.01) {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-      return;
-    }
-
-    const friction = 0.985 + ((scale - 1) / 3) * 0.012;
-    const bounce = -0.95 - ((scale - 1) / 3) * 0.05; 
-    const radius = (25 * scale) / 2;
+    let { x, y, vx, vy, squish } = physicsRef.current;
     
-    x += vx; y += vy; vx *= friction; vy *= friction;
+    x += vx;
+    y += vy;
+    
+    vx *= friction;
+    vy *= friction;
     
     const width = window.innerWidth;
-    const height = docHeight; // FIXED: Using cached height to prevent forced reflow
-    
+    const height = docHeight || document.documentElement.scrollHeight;
+
     let hit = false;
     if (x + radius > width) { x = width - radius; vx *= bounce; hit = true; }
     if (x - radius < 0) { x = radius; vx *= bounce; hit = true; }
@@ -250,16 +253,11 @@ export function Navbar() {
     
     if (hit) squish = 0.8 + (Math.random() * 0.1); else squish += (1 - squish) * 0.12; 
     
-    physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish, scale };
-    
-    if (dotRef.current && dotMode === 'RELEASED') {
-      dotRef.current.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${squish})`;
-      dotRef.current.style.height = `${25 * scale}px`;
-      dotRef.current.style.width = `${25 * scale}px`;
-    }
+    physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
+    setDotPos({ x, y }); // State-based sync for absolute positioning
 
     rafRef.current = requestAnimationFrame(runPhysics);
-  }, [dotMode, isDragging]);
+  }, [dotMode, isDragging, docHeight]);
 
   useEffect(() => {
     if (dotMode === 'RELEASED' && !isDragging) rafRef.current = requestAnimationFrame(runPhysics);
@@ -277,19 +275,21 @@ export function Navbar() {
       chargeTimerRef.current = setTimeout(() => {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true; 
-        if (dotRef.current) {
-          const centerX = window.innerWidth / 2;
-          const centerY = window.scrollY + window.innerHeight / 2 - 155;
-          physicsRef.current = { x: centerX, y: centerY, vx: 0, vy: 0, scale: 1, squish: 1 };
-          setDotPos({ x: centerX, y: centerY });
-          setDotScale(1); 
-          setDotMode('RELEASED');
-          setSplashPos({ x: centerX, y: centerY });
-          setShowSplash(true);
-          setTimeout(() => setShowSplash(false), 1000);
-        }
+        
+        // RELEASE THE BALL INTO THE MIDDLE 🏮
+        const cx = window.innerWidth / 2;
+        const cy = window.scrollY + window.innerHeight / 2 - 155;
+        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 1 };
+        setDotPos({ x: cx, y: cy });
+        setDotMode('RELEASED');
+        growBall(3);
+        
+        setSplashPos({ x: cx, y: cy });
+        setShowSplash(true);
+        setTimeout(() => setShowSplash(false), 1000);
       }, duration);
-      const scaleObj = { s: 1 };
+
+      const scaleObj = { s: physicsRef.current.scale };
       chargeAnimRef.current = anime(scaleObj, {
         s: 3, duration: duration, easing: 'linear',
         update: () => { if (chargingLogoRef.current) setDotScale(scaleObj.s); }
@@ -331,23 +331,23 @@ export function Navbar() {
       default:
         // RELEASE THE BALL INTO THE MIDDLE 🏮
         const cx = window.innerWidth / 2;
-        const cy = window.innerHeight / 2;
+        const cy = window.scrollY + window.innerHeight / 2 - 155;
         physicsRef.current = { 
           ...physicsRef.current, 
           x: cx, 
-          y: cy + window.scrollY, 
+          y: cy, 
           vx: 0, 
           vy: 0, 
           scale: 0, 
           squish: 0.8 
         };
+        setDotPos({ x: cx, y: cy });
         setDotMode('RELEASED');
         growBall(3);
-        setSplashPos({ x: 44, y: 44 }); // Visual confirmation at logo
+        setSplashPos({ x: 44, y: 44 }); 
         setShowSplash(true);
         setTimeout(() => setShowSplash(false), 800);
         
-        // Slight scroll-to-top as fallback
         if (window.scrollY > 200) window.scrollTo({ top: 0, behavior: "smooth" });
         break;
     }
@@ -361,6 +361,7 @@ export function Navbar() {
     });
   };
 
+  // --- REVERTED DRAG HANDLERS ---
   const handleDotTouchStart = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
@@ -383,9 +384,7 @@ export function Navbar() {
         const vy = (pageY - lastTouchRef.current.y) / (dt / 16);
         physicsRef.current = { ...physicsRef.current, x: pageX, y: pageY, vx, vy };
       }
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${pageX}px, ${pageY}px) translate(-50%, -50%) scale(${physicsRef.current.squish})`;
-      }
+      setDotPos({ x: pageX, y: pageY });
       lastTouchRef.current = { x: pageX, y: pageY, time: now };
     }
   };
@@ -407,9 +406,7 @@ export function Navbar() {
           const vy = (my - lastTouchRef.current.y) / (dt / 16);
           physicsRef.current = { ...physicsRef.current, x: mx, y: my, vx, vy };
         }
-        if (dotRef.current) {
-          dotRef.current.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%) scale(${physicsRef.current.squish})`;
-        }
+        setDotPos({ x: mx, y: my });
         lastTouchRef.current = { x: mx, y: my, time: now };
       };
       
@@ -436,6 +433,36 @@ export function Navbar() {
             ))}
           </div>
         )}
+
+        {/* REVERTED: ABSOLUTE BALL IN PAGE CONTEXT 🏮 */}
+        {dotMode === 'RELEASED' && (
+           <div 
+            className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" 
+            style={{ 
+              top: dotPos.y, 
+              left: dotPos.x, 
+              width: `${25 * dotScale}px`, 
+              height: `${25 * dotScale}px`, 
+              touchAction: 'none',
+              transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`,
+            }}
+            onMouseDown={handleDotMouseDown}
+            onTouchStart={handleDotTouchStart}
+            onTouchMove={handleDotTouchMove}
+            onTouchEnd={handleDotTouchEnd}
+          >
+            <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20">
+               <Image 
+                  src="/icon.png" 
+                  alt="Logo Particle" 
+                  width={80} 
+                  height={80} 
+                  className="w-4/5 h-4/5 object-contain"
+               />
+               <div className="absolute inset-0 halftone-bg opacity-10" />
+            </div>
+          </div>
+        )}
       </div>
 
       <nav ref={navbarRef} className="fixed right-0 top-0 bottom-0 z-[100] w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 touch-none" style={{ userSelect: 'none' }}>
@@ -451,7 +478,7 @@ export function Navbar() {
                   sizes="44px"
                   className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                 />
-</button>
+            </button>
           </div>
         </div>
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
@@ -464,8 +491,8 @@ export function Navbar() {
              ))}
           </div>
           {dotMode !== 'RELEASED' && (
-            <div ref={dotRef} className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" style={{ top: `var(--nav-scroll)`, transform: `translateY(-50%)`, transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)", height: `calc(8px + (var(--nav-speed) * 0.4px))`, width: '100%', zIndex: 10 }}>
-              <div className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300" style={{ width: `calc(8px - (var(--nav-speed) * 0.04px))`, height: '100%' }} />
+            <div ref={dotRef} className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" style={{ top: `${scrollProgress}%`, transform: `translateY(-50%)`, transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)", height: `calc(8px + (scrollSpeed * 0.4px))`, width: '100%', zIndex: 10 }}>
+              <div className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300" style={{ width: `calc(8px - (scrollSpeed * 0.04px))`, height: '100%' }} />
             </div>
           )}
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
@@ -482,39 +509,6 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-
-      {/* GLOBAL PHYSICS BALL PORTAL — Absolute Authority */}
-      {dotMode === 'RELEASED' && mounted && createPortal(
-         <div 
-          ref={dotRef}
-          className="fixed cursor-grab active:cursor-grabbing pointer-events-auto z-[999999]" 
-          style={{ 
-            top: 0, 
-            left: 0, 
-            width: `${25 * dotScale}px`, 
-            height: `${25 * dotScale}px`, 
-            touchAction: 'none',
-            transform: `translate(${dotPos.x}px, ${dotPos.y}px) translate(-50%, -50%) scale(${physicsRef.current.squish})`,
-            willChange: 'transform'
-          }}
-          onMouseDown={handleDotMouseDown}
-          onTouchStart={handleDotTouchStart}
-          onTouchMove={handleDotTouchMove}
-          onTouchEnd={handleDotTouchEnd}
-        >
-          <div className="w-full h-full bg-[var(--accent-blood)] shadow-[0_0_25px_rgba(217,17,17,0.9)] rounded-full transition-shadow duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20">
-             <Image 
-                src="/icon.png" 
-                alt="Logo Particle" 
-                width={80} 
-                height={80} 
-                className="w-4/5 h-4/5 object-contain"
-             />
-             <div className="absolute inset-0 halftone-bg opacity-10" />
-          </div>
-        </div>,
-        document.body
-      )}
     </>
   );
 }
