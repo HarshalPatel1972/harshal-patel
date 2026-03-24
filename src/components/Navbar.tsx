@@ -503,10 +503,12 @@ export function Navbar() {
               }}
             >
               <div 
-                className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300" 
+                className="rounded-full transition-all duration-300" 
                 style={{ 
                   width: `${8 - (scrollSpeed * 0.04)}px`, 
-                  height: '100%' 
+                  height: '100%',
+                  backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)',
+                  boxShadow: isBallCyan ? '0 0 15px rgba(14,224,195,0.8)' : '0 0 15px rgba(217,17,17,0.8)'
                 }} 
               />
             </div>
