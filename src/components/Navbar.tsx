@@ -181,7 +181,7 @@ export function Navbar() {
     const currentScale = physicsRef.current.scale;
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (25 * currentScale) / 2;
+    const radius = (10 * currentScale) / 2;
     let { x, y, vx, vy, squish } = physicsRef.current;
     x += vx; y += vy; vx *= friction; vy *= friction;
     const width = window.innerWidth;
@@ -242,6 +242,35 @@ export function Navbar() {
     setTimeout(() => { longPressActiveRef.current = false; }, 100);
   };
 
+  const handleDotTouchStart = (e: React.TouchEvent) => {
+    if (dotMode === 'RELEASED') {
+      const touch = e.touches[0];
+      const pageX = touch.clientX;
+      const pageY = touch.clientY + window.scrollY;
+      const dist = Math.hypot(pageX - dotPos.x, pageY - dotPos.y);
+      if (dist < 60) { setIsDragging(true); lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() }; }
+    }
+  };
+
+  const handleDotTouchMove = (e: React.TouchEvent) => {
+    if (dotMode === 'RELEASED' && isDragging) {
+      const touch = e.touches[0];
+      const pageX = touch.clientX;
+      const pageY = touch.clientY + window.scrollY;
+      const now = Date.now();
+      const dt = now - lastTouchRef.current.time;
+      if (dt > 0) {
+        const vx = (pageX - lastTouchRef.current.x) / (dt / 16);
+        const vy = (pageY - lastTouchRef.current.y) / (dt / 16);
+        physicsRef.current = { ...physicsRef.current, x: pageX, y: pageY, vx, vy };
+      }
+      setDotPos({ x: pageX, y: pageY });
+      lastTouchRef.current = { x: pageX, y: pageY, time: now };
+    }
+  };
+
+  const handleDotTouchEnd = () => setIsDragging(false);
+
   const handleDotMouseDown = (e: React.MouseEvent) => {
     if (dotMode === 'RELEASED') {
       const pageX = e.clientX;
@@ -280,8 +309,11 @@ export function Navbar() {
         {dotMode === 'RELEASED' && (
            <div 
             className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" 
-            style={{ top: dotPos.y, left: dotPos.x, width: `${25 * dotScale}px`, height: `${25 * dotScale}px`, touchAction: 'none', transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})` }}
+            style={{ top: dotPos.y, left: dotPos.x, width: `${10 * dotScale}px`, height: `${10 * dotScale}px`, touchAction: 'none', transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})` }}
             onMouseDown={handleDotMouseDown}
+            onTouchStart={handleDotTouchStart}
+            onTouchMove={handleDotTouchMove}
+            onTouchEnd={handleDotTouchEnd}
             onClick={(e) => { e.stopPropagation(); setIsBallCyan(prev => !prev); }}
           >
             <div className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20" style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
