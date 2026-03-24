@@ -224,7 +224,7 @@ export function Navbar() {
     // SPONGIER PHYSICS
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
-    const radius = (50 * currentScale) / 2;
+    const radius = (150 * currentScale) / 2;
     
     let { x, y, vx, vy, squish } = physicsRef.current;
     
@@ -434,8 +434,8 @@ export function Navbar() {
             style={{ 
               top: dotPos.y, 
               left: dotPos.x, 
-              width: `${50 * dotScale}px`, 
-              height: `${50 * dotScale}px`, 
+              width: `${150 * dotScale}px`, 
+              height: `${150 * dotScale}px`, 
               touchAction: 'none',
               transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})`,
             }}
