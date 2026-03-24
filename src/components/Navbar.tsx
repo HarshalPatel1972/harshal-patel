@@ -259,10 +259,10 @@ export function Navbar() {
         const cx = window.innerWidth / 2;
         const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
 
-        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 1 };
+        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
         setDotPos({ x: cx, y: cy });
+        setDotScale(3);
         setDotMode('RELEASED');
-        growBall(3);
         
         setSplashPos({ x: cx, y: cy });
         setShowSplash(true);
