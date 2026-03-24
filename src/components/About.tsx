@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { animate as anime } from "animejs";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSignals } from "@/context/SignalContext";
+import { createPortal } from "react-dom";
 
 // Giant bold stats
 function MangaStat({ value, label, prefix = "" }: { value: number; label: string; prefix?: string }) {
@@ -61,7 +62,7 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
     if (isDragging && rounded < 15) {
       if (lastTriggered.current === null) {
         onPressureTrigger();
-        triggerSignal("PRESSURE"); // Shake signal
+        triggerSignal("PRESSURE"); // Global shake signal
         lastTriggered.current = rounded;
       }
     } else if (rounded >= 15) {
@@ -176,8 +177,11 @@ export function About() {
   const [showPressureVideo, setShowPressureVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const skillsRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // Preloading & Intersection Setup
+  useEffect(() => setMounted(true), []);
+
+  // Intersection Observer for preloading
   useEffect(() => {
     if (!skillsRef.current) return;
     const observer = new IntersectionObserver(
@@ -203,6 +207,38 @@ export function About() {
     }
   };
 
+  const renderPressureOverlay = () => {
+    if (!mounted) return null;
+    return createPortal(
+      <div 
+         className={`fixed inset-0 z-[1000] flex items-center justify-center pointer-events-none transition-all duration-700
+                    ${showPressureVideo ? 'bg-black/90 opacity-100 backdrop-blur-xl' : 'bg-transparent opacity-0 pointer-events-none'}`}
+      >
+        <div 
+          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_80px_var(--accent-blood)]
+                     transition-transform duration-700 ${showPressureVideo ? 'scale-100' : 'scale-50'}`}
+        >
+          {/* ZERO-LAG PRELOADED VIDEO 🎞️ */}
+          <video 
+            ref={videoRef}
+            src="/pressure.mp4" 
+            preload="auto"
+            playsInline
+            onEnded={closePressure}
+            className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}
+          />
+          <button 
+            onClick={closePressure}
+            className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--accent-blood)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-90 transition-transform brutal-shadow z-50"
+          >
+            X
+          </button>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
   return (
     <section 
       id="about" 
@@ -212,26 +248,8 @@ export function About() {
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
-      {/* DEAD-CENTER RESPONSIVE PURE VIEWPORT OVERLAY 📽️ */}
-      <div 
-         className={`fixed inset-0 z-[100] flex items-center justify-center pointer-events-none transition-all duration-700
-                    ${showPressureVideo ? 'bg-black/90 opacity-100 backdrop-blur-xl' : 'bg-transparent opacity-0 pointer-events-none'}`}
-         onClick={closePressure}
-      >
-        <div 
-          className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white brutal-shadow pointer-events-auto shadow-[0_0_80px_var(--accent-blood)]
-                     transition-transform duration-700 ${showPressureVideo ? 'scale-100' : 'scale-50'}`}
-        >
-          <video 
-            ref={videoRef}
-            src="/pressure.mp4" 
-            preload="auto"
-            playsInline
-            onEnded={closePressure}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}
-          />
-        </div>
-      </div>
+      {/* PORTALED RESPONSIVE HUB 📽️ */}
+      {renderPressureOverlay()}
 
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`}>
