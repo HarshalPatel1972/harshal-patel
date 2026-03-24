@@ -49,6 +49,7 @@ export function Hero() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
   const [whoAmIMode, setWhoAmIMode] = useState(false);
+  const [showRangoText, setShowRangoText] = useState(false);
   const keysRef = useRef<string[]>([]);
   const titlesRef = useRef<HTMLDivElement>(null);
   const cta1Ref = useMagnetic<HTMLAnchorElement>(0.2);
@@ -84,6 +85,7 @@ export function Hero() {
       
       if (sequence === "whoami") {
         setWhoAmIMode(true);
+        setTimeout(() => setShowRangoText(true), 250); 
         keysRef.current = [];
       }
     };
@@ -149,23 +151,27 @@ export function Hero() {
         {whoAmIMode && (
           <div 
             className="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-black select-none transition-all duration-700 pointer-events-auto cursor-none"
-            onClick={() => setWhoAmIMode(false)}
+            onClick={() => { setWhoAmIMode(false); setShowRangoText(false); }}
           >
-             <div className="mb-4 cinematic-in opacity-80">
-                <span className="uppercase tracking-[0.5em] text-sm md:text-xl font-black text-white">
-                  NO MAN CAN WALK OUT ON HIS OWN STORY
-                </span>
-             </div>
-             <h1 className="text-[28vw] leading-[0.7] font-black uppercase text-white tracking-[-0.04em] flex gap-x-[4vw]">
-                {"RANGO".split("").map((char, i) => (
-                  <span key={i} className="inline-block hover:text-[var(--accent-blood)] transition-colors duration-300">
-                    {char}
-                  </span>
-                ))}
-             </h1>
-             <div className="absolute bottom-[15%] left-1/2 -translate-x-1/2 opacity-20 text-[10px] tracking-[1em] text-white uppercase italic">
-                The Spirit of the West awaits
-             </div>
+             {showRangoText && (
+               <>
+                 <div className="mb-4 cinematic-in opacity-80">
+                    <span className="uppercase tracking-[0.5em] text-sm md:text-xl font-black text-white">
+                      NO MAN CAN WALK OUT ON HIS OWN STORY
+                    </span>
+                 </div>
+                 <h1 className="text-[28vw] leading-[0.7] font-black uppercase text-white tracking-[-0.04em] flex gap-x-[4vw]">
+                    {"RANGO".split("").map((char, i) => (
+                      <span key={i} className="inline-block hover:text-[var(--accent-blood)] transition-colors duration-300">
+                        {char}
+                      </span>
+                    ))}
+                 </h1>
+                 <div className="absolute bottom-[15%] left-1/2 -translate-x-1/2 opacity-20 text-[10px] tracking-[1em] text-white uppercase italic">
+                    The Spirit of the West awaits
+                 </div>
+               </>
+             )}
           </div>
         )}
 
