@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { createPortal } from "react-dom";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { profile } from "@/data/profile";
 import { useLanguage, type Language } from "@/context/LanguageContext";
-import { useMagnetic } from "./AnimationKit";
 import { animate as anime } from "animejs";
 
 type NavItem = {
@@ -130,23 +127,20 @@ export function Navbar() {
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
 
-  // SECTION TRACKING (OPTIMIZED NATIVE OBSERVERS)
+  // SECTION TRACKING
   useEffect(() => {
     setMounted(true);
     const sectionIds = currentNavItems.map(item => item.id);
-    const observers: IntersectionObserver[] = [];
 
     const observerOptions = {
       root: null,
-      rootMargin: '-20% 0px -70% 0px', // Precise activation zone
+      rootMargin: '-20% 0px -70% 0px',
       threshold: 0
     };
 
     const handleIntersect = (entries: IntersectionObserverEntry[]) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setActive(entry.target.id);
-        }
+        if (entry.isIntersecting) setActive(entry.target.id);
       });
     };
 
@@ -159,7 +153,7 @@ export function Navbar() {
     return () => observer.disconnect();
   }, [currentNavItems]);
 
-  // SCROLL PROGRESS (THROTTLED LISTENER)
+  // SCROLL PROGRESS
   useEffect(() => {
     let ticking = false;
     let lastScrollY = window.scrollY;
@@ -171,7 +165,7 @@ export function Navbar() {
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
-      const speed = Math.min(Math.abs(currentScrollY - lastScrollY), 50); // Cap speed for visual sanity
+      const speed = Math.min(Math.abs(currentScrollY - lastScrollY), 50);
       
       setScrollProgress(progress);
       setScrollSpeed(speed);
@@ -179,11 +173,11 @@ export function Navbar() {
       navbarRef.current.style.setProperty('--nav-scroll', `${progress}%`);
       navbarRef.current.style.setProperty('--nav-speed', `${speed}`);
       
-      // AUTO-DECAY: Reset speed to 0 if no more scroll events occur
       if (speedTimeout) clearTimeout(speedTimeout);
       speedTimeout = setTimeout(() => {
         if (navbarRef.current) {
           navbarRef.current.style.setProperty('--nav-speed', '0');
+          setScrollSpeed(0);
         }
       }, 150);
 
@@ -215,21 +209,18 @@ export function Navbar() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const updateHeight = () => setDocHeight(document.documentElement.scrollHeight);
-    
-    // Use a lighter ResizeObserver only when content actually changes
     const resizer = new ResizeObserver(updateHeight);
     resizer.observe(document.body);
-    
     updateHeight();
     return () => resizer.disconnect();
   }, []);
 
-  // --- REVERTED PHYSICS ENGINE (COMMIT 5a8bd7f) ---
+  // --- REVERTED PHYSICS ENGINE (EXACT COMMIT a76fb59) ---
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
     
     const currentScale = physicsRef.current.scale;
-    // SPONGIER PHYSICS: High bounce and low friction for big ball
+    // SPONGIER PHYSICS
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
     const radius = (25 * currentScale) / 2;
@@ -251,10 +242,11 @@ export function Navbar() {
     if (y + radius > height) { y = height - radius; vy *= bounce; hit = true; }
     if (y - radius < 0) { y = radius; vy *= bounce; hit = true; }
     
+    // THE SQUISH FACTOR (20% MAX)
     if (hit) squish = 0.8 + (Math.random() * 0.1); else squish += (1 - squish) * 0.12; 
     
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
-    setDotPos({ x, y }); // State-based sync for absolute positioning
+    setDotPos({ x, y });
 
     rafRef.current = requestAnimationFrame(runPhysics);
   }, [dotMode, isDragging, docHeight]);
@@ -265,7 +257,6 @@ export function Navbar() {
   }, [dotMode, isDragging, runPhysics]);
 
   const handleLogoTouchStart = () => {
-    // Enable for both mobile and desktop
     if (dotMode === 'LOCKED') {
       chargingLogoRef.current = true;
       longPressActiveRef.current = false;
@@ -276,7 +267,7 @@ export function Navbar() {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true; 
         
-        // RELEASE THE BALL INTO THE MIDDLE 🏮
+        // VIEWPORT CENTERING (EXACT COMMIT a76fb59)
         const cx = window.innerWidth / 2;
         const cy = window.scrollY + window.innerHeight / 2 - 155;
         physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 1 };
@@ -329,25 +320,16 @@ export function Navbar() {
         break;
       case 'LOCKED':
       default:
-        // RELEASE THE BALL INTO THE MIDDLE 🏮
+        // Centered Release
         const cx = window.innerWidth / 2;
         const cy = window.scrollY + window.innerHeight / 2 - 155;
-        physicsRef.current = { 
-          ...physicsRef.current, 
-          x: cx, 
-          y: cy, 
-          vx: 0, 
-          vy: 0, 
-          scale: 0, 
-          squish: 0.8 
-        };
+        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 0, squish: 0.8 };
         setDotPos({ x: cx, y: cy });
         setDotMode('RELEASED');
         growBall(3);
         setSplashPos({ x: 44, y: 44 }); 
         setShowSplash(true);
         setTimeout(() => setShowSplash(false), 800);
-        
         if (window.scrollY > 200) window.scrollTo({ top: 0, behavior: "smooth" });
         break;
     }
@@ -361,7 +343,6 @@ export function Navbar() {
     });
   };
 
-  // --- REVERTED DRAG HANDLERS ---
   const handleDotTouchStart = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
@@ -434,7 +415,7 @@ export function Navbar() {
           </div>
         )}
 
-        {/* REVERTED: ABSOLUTE BALL IN PAGE CONTEXT 🏮 */}
+        {/* ABSOLUTE BALL PORTALL-LESS REVERTED 🏮 */}
         {dotMode === 'RELEASED' && (
            <div 
             className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" 
@@ -490,11 +471,31 @@ export function Navbar() {
                </div>
              ))}
           </div>
+
+          {/* FIXING MISSING BALL IN NAVBAR 🏮 */}
           {dotMode !== 'RELEASED' && (
-            <div ref={dotRef} className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" style={{ top: `${scrollProgress}%`, transform: `translateY(-50%)`, transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)", height: `calc(8px + (scrollSpeed * 0.4px))`, width: '100%', zIndex: 10 }}>
-              <div className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300" style={{ width: `calc(8px - (scrollSpeed * 0.04px))`, height: '100%' }} />
+            <div 
+              ref={dotRef} 
+              className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" 
+              style={{ 
+                top: `${scrollProgress}%`, 
+                transform: `translateY(-50%)`, 
+                transition: "top 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)", 
+                height: `${8 + (scrollSpeed * 0.4)}px`, 
+                width: '100%', 
+                zIndex: 10 
+              }}
+            >
+              <div 
+                className="bg-[var(--accent-blood)] shadow-[0_0_15px_rgba(217,17,17,0.8)] rounded-full transition-all duration-300" 
+                style={{ 
+                  width: `${8 - (scrollSpeed * 0.04)}px`, 
+                  height: '100%' 
+                }} 
+              />
             </div>
           )}
+
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
             {currentNavItems.map((item) => {
               const isActive = active === item.id;
