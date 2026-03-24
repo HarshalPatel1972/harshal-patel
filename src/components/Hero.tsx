@@ -93,12 +93,11 @@ export function Hero() {
     return () => window.removeEventListener("keydown", handleKeydown);
   }, []);
 
-  // FLASHLIGHT TRACKING (RAF Engine for 60fps) 🔌
+  // FLASHLIGHT TRACKING (High-Res RAF Engine) 🔦
   useEffect(() => {
-    if (!whoAmIMode) return;
     let rafId: number;
     const update = () => {
-      if (spotlightRef.current) {
+      if (whoAmIMode && spotlightRef.current) {
         spotlightRef.current.style.setProperty('--mouse-x', `${mouseRef.current.x}px`);
         spotlightRef.current.style.setProperty('--mouse-y', `${mouseRef.current.y}px`);
       }
@@ -107,7 +106,7 @@ export function Hero() {
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     rafId = requestAnimationFrame(update);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -261,14 +260,14 @@ export function Hero() {
           will-change: transform, opacity;
         }
         @keyframes arrow-flow {
-          0% { transform: translateY(-30px); opacity: 0; }
-          20% { opacity: 0.3; }
+          0% { transform: translateY(-45px); opacity: 0; }
+          20% { opacity: 0.15; }
           50% { transform: translateY(0px); opacity: 1; }
-          80% { opacity: 0.3; }
-          100% { transform: translateY(30px); opacity: 0; }
+          80% { opacity: 0.15; }
+          100% { transform: translateY(45px); opacity: 0; }
         }
         .animate-arrow-flow {
-          animation: arrow-flow 1.8s infinite ease-out;
+          animation: arrow-flow 1.8s infinite ease-in-out;
         }
       `}</style>
     </section>
