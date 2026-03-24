@@ -84,7 +84,6 @@ export function Hero() {
       
       if (sequence === "whoami") {
         setWhoAmIMode(true);
-        setTimeout(() => setWhoAmIMode(false), 8000); // Extended for flashlight explore
         keysRef.current = [];
       }
     };
@@ -138,7 +137,7 @@ export function Hero() {
       {/* UNIVERSAL FLASHLIGHT 📽️ */}
       <div 
         ref={spotlightRef}
-        className={`fixed inset-0 z-[100] pointer-events-none transition-opacity duration-1000 ${whoAmIMode ? 'opacity-100' : 'opacity-0'}`}
+        className={`fixed inset-0 z-[100] pointer-events-none transition-opacity ${whoAmIMode ? 'opacity-100 duration-[50ms]' : 'opacity-0 duration-1000'}`}
         style={{
           background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), transparent 80px, rgba(0,0,0,0.99) 220px)`,
           backdropFilter: whoAmIMode ? 'contrast(2) grayscale(1) brightness(0.6)' : 'none'
@@ -148,7 +147,10 @@ export function Hero() {
       <div id="hero" className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6">
         {/* RANGO VIEWPORT IMPACT 🌵 */}
         {whoAmIMode && (
-          <div className="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-black select-none transition-all duration-700">
+          <div 
+            className="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-black select-none transition-all duration-700 pointer-events-auto cursor-none"
+            onClick={() => setWhoAmIMode(false)}
+          >
              <div className="mb-4 cinematic-in opacity-80">
                 <span className="uppercase tracking-[0.5em] text-sm md:text-xl font-black text-white">
                   NO MAN CAN WALK OUT ON HIS OWN STORY
