@@ -105,13 +105,11 @@ export function Navbar() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
-  const [isGyroActive, setIsGyroActive] = useState(false);
 
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const gyroTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const physicsRef = useRef({ vx: 0, vy: 0, x: 0, y: 0, scale: 1, squish: 1, gx: 0, gy: 0 });
+  const physicsRef = useRef({ vx: 0, vy: 0, x: 0, y: 0, scale: 1, squish: 1 });
   const lastTouchRef = useRef({ x: 0, y: 0, time: 0 });
   const rafRef = useRef<number | null>(null);
   const navbarRef = useRef<HTMLElement>(null);
@@ -121,10 +119,8 @@ export function Navbar() {
     setDotMode('LOCKED');
     setDotScale(1);
     setIsDragging(false);
-    setIsGyroActive(false);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
-    if (gyroTimerRef.current) clearTimeout(gyroTimerRef.current);
   }, []);
 
   // SECTION TRACKING
@@ -180,36 +176,13 @@ export function Navbar() {
     return () => resizer.disconnect();
   }, []);
 
-  const gyroBaseRef = useRef<{ beta: number, gamma: number } | null>(null);
-
-  // SECTION TRACKING
-  useEffect(() => {
-    const sectionIds = currentNavItems.map(item => item.id);
-    const observerOptions = { root: null, rootMargin: '-20% 0px -70% 0px', threshold: 0 };
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
-    };
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    sectionIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, [currentNavItems]);
-
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
     const currentScale = physicsRef.current.scale;
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
     const bounce = -0.92 - ((currentScale - 1) / 3) * 0.05; 
     const radius = (10 * currentScale) / 2;
-    let { x, y, vx, vy, squish, gx, gy } = physicsRef.current;
-    
-    // Apply Gyro Gravity if active
-    if (isGyroActive) {
-      vx += gx;
-      vy += gy;
-    }
+    let { x, y, vx, vy, squish } = physicsRef.current;
     
     x += vx; y += vy; vx *= friction; vy *= friction;
     const width = window.innerWidth;
@@ -223,7 +196,7 @@ export function Navbar() {
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
     setDotPos({ x, y });
     rafRef.current = requestAnimationFrame(runPhysics);
-  }, [dotMode, isDragging, docHeight, isGyroActive]);
+  }, [dotMode, isDragging, docHeight]);
 
   useEffect(() => {
     if (dotMode === 'RELEASED' && !isDragging) rafRef.current = requestAnimationFrame(runPhysics);
@@ -245,7 +218,7 @@ export function Navbar() {
         const rect = oppsEl?.getBoundingClientRect();
         const cx = window.innerWidth / 2;
         const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
-        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1, gx: 0, gy: 0 };
+        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
         setDotPos({ x: cx, y: cy });
         setDotScale(3);
         setDotMode('RELEASED');
@@ -270,76 +243,6 @@ export function Navbar() {
     setTimeout(() => { longPressActiveRef.current = false; }, 100);
   };
 
-  // GYRO ACTIVATION TRIGGER 📱🏮
-  const requestGyroPermission = useCallback(() => {
-    if (dotMode !== 'RELEASED' || isGyroActive) return;
-    
-    // Note: This must be triggered by direct user gesture (like the end of the 3s hold)
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      (DeviceOrientationEvent as any).requestPermission()
-        .then((response: string) => {
-          if (response === 'granted') activateGyro();
-        })
-        .catch(console.error);
-    } else {
-      activateGyro();
-    }
-  }, [dotMode, isGyroActive]);
-
-  const holdStartTimeRef = useRef<number>(0);
-
-  const startGyroTimer = useCallback(() => {
-    if (dotMode !== 'RELEASED' || isGyroActive) return;
-    holdStartTimeRef.current = Date.now();
-  }, [dotMode, isGyroActive]);
-
-  const activateGyro = () => {
-    setIsGyroActive(true);
-    setSplashPos({ x: dotPos.x, y: dotPos.y });
-    setShowSplash(true);
-    setTimeout(() => setShowSplash(false), 1500);
-    // Subtle Vibration feedback if supported
-    if (window.navigator?.vibrate) window.navigator.vibrate([100, 50, 200]);
-
-    console.log("Igniting Gyro Systems...");
-
-    const handleSensors = (e: any) => {
-      // SOURCE 1: Orientation (Absolute/Relative) 🏮
-      const beta = e.beta;
-      const gamma = e.gamma;
-      
-      if (beta !== null && gamma !== null) {
-        if (!gyroBaseRef.current) {
-          gyroBaseRef.current = { beta, gamma };
-          return;
-        }
-        const dG = gamma - gyroBaseRef.current.gamma;
-        const dB = beta - gyroBaseRef.current.beta;
-        const dz = 1.5;
-        physicsRef.current.gx = Math.max(-2.5, Math.min(2.5, (Math.abs(dG) > dz ? (dG > 0 ? dG - dz : dG + dz) * 0.14 : 0)));
-        physicsRef.current.gy = Math.max(-2.5, Math.min(2.5, (Math.abs(dB) > dz ? (dB > 0 ? dB - dz : dB + dz) * 0.14 : 0)));
-      }
-
-      // SOURCE 2: Motion Acceleration (Fallback) 🦾
-      if (e.accelerationIncludingGravity) {
-        const { x, y } = e.accelerationIncludingGravity;
-        if (x !== null && y !== null) {
-          // Accelerometer uses inverse axis compared to orientation
-          physicsRef.current.gx = Math.max(-2.5, Math.min(2.5, -x * 0.25));
-          physicsRef.current.gy = Math.max(-2.5, Math.min(2.5, y * 0.25));
-        }
-      }
-    };
-
-    window.addEventListener('deviceorientation', handleSensors, true);
-    window.addEventListener('deviceorientationabsolute', handleSensors, true);
-    window.addEventListener('devicemotion', handleSensors, true);
-  };
-
-  const clearGyroTimer = () => {
-    if (gyroTimerRef.current) clearTimeout(gyroTimerRef.current);
-  };
-
   const handleDotTouchStart = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
@@ -349,7 +252,6 @@ export function Navbar() {
       if (dist < 60) { 
         setIsDragging(true); 
         lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() }; 
-        startGyroTimer(); // START 3S GYRO TRIGGER 🏮
       }
     }
   };
@@ -371,13 +273,7 @@ export function Navbar() {
     }
   };
 
-  const handleDotTouchEnd = () => {
-    setIsDragging(false);
-    const holdTime = Date.now() - holdStartTimeRef.current;
-    if (holdTime > 2500) {
-      requestGyroPermission();
-    }
-  };
+  const handleDotTouchEnd = () => setIsDragging(false);
 
   const handleDotMouseDown = (e: React.MouseEvent) => {
     if (dotMode === 'RELEASED') {
@@ -386,8 +282,6 @@ export function Navbar() {
       setIsDragging(true);
       lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() };
       
-      startGyroTimer();
-
       const onMove = (ev: MouseEvent) => {
         const mx = ev.clientX;
         const my = ev.clientY + window.scrollY;
@@ -403,10 +297,6 @@ export function Navbar() {
       };
       const onUp = () => { 
         setIsDragging(false); 
-        const holdTime = Date.now() - holdStartTimeRef.current;
-        if (holdTime > 2500) {
-           requestGyroPermission();
-        }
         document.removeEventListener('mousemove', onMove); 
         document.removeEventListener('mouseup', onUp); 
       };
@@ -420,8 +310,8 @@ export function Navbar() {
       <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: docHeight || '100%', zIndex: 999 }}>
         {showSplash && (
           <div className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: splashPos.x, top: splashPos.y }}>
-            {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: isGyroActive ? '200px' : '100px', height: isGyroActive ? '200px' : '100px', margin: isGyroActive ? '-100px 0 0 -100px' : '-50px 0 0 -50px', borderColor: isGyroActive ? '#fff' : (isBallCyan ? '#0ee0c3' : 'var(--accent-blood)') }} />
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '100px', height: '100px', margin: '-50px 0 0 -50px', borderColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)' }} />
             ))}
           </div>
         )}
@@ -435,16 +325,8 @@ export function Navbar() {
             onTouchEnd={handleDotTouchEnd}
             onClick={(e) => { e.stopPropagation(); setIsBallCyan(prev => !prev); }}
           >
-            <div className={`w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20 ${isGyroActive ? "ring-4 ring-white shadow-[0_0_50px_#fff]" : ""}`} style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
+            <div className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20" style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
                <div className="absolute inset-0 halftone-bg opacity-10" />
-               {isGyroActive && (
-                 <div className="flex flex-col items-center justify-center z-10">
-                   <div className="text-[6px] font-black text-white uppercase tracking-[0.1em] animate-pulse">GYRO</div>
-                   <div className="text-[4px] font-mono text-white/40 mt-[2px]">
-                     {Math.round(physicsRef.current.gx * 10) / 10} / {Math.round(physicsRef.current.gy * 10) / 10}
-                   </div>
-                 </div>
-               )}
             </div>
           </div>
         )}
