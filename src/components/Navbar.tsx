@@ -186,9 +186,27 @@ export function Navbar() {
     
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.beta !== null && e.gamma !== null) {
-        // High sensitivity for "Brutal" weight
-        physicsRef.current.gx = e.gamma * 0.45; 
-        physicsRef.current.gy = e.beta * 0.45;
+        // NORMALIZED TILT: Map -45 to 45 degree tilt to -1.5 to 1.5 force
+        // Beta: Front-back (-90 to 90), Gamma: Left-right (-90 to 90)
+        // We use a small deadzone (2 degrees) for stability
+        const deadzone = 2;
+        
+        let targetGx = 0;
+        let targetGy = 0;
+        
+        if (Math.abs(e.gamma) > deadzone) {
+          targetGx = (e.gamma > 0 ? e.gamma - deadzone : e.gamma + deadzone) * 0.08;
+        }
+        
+        // Compensate for "Holding Angle": Normal reading angle is ~45 deg
+        const compensatedBeta = e.beta - 45;
+        if (Math.abs(compensatedBeta) > deadzone) {
+          targetGy = (compensatedBeta > 0 ? compensatedBeta - deadzone : compensatedBeta + deadzone) * 0.08;
+        }
+
+        // Clamp to prevent "Warp Speed"
+        physicsRef.current.gx = Math.max(-2, Math.min(2, targetGx));
+        physicsRef.current.gy = Math.max(-2, Math.min(2, targetGy));
       }
     };
     
@@ -403,7 +421,12 @@ export function Navbar() {
             <div className={`w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20 ${isGyroActive ? "ring-4 ring-white shadow-[0_0_50px_#fff]" : ""}`} style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
                <div className="absolute inset-0 halftone-bg opacity-10" />
                {isGyroActive && (
-                 <div className="text-[6px] font-black text-white uppercase tracking-[0.1em] z-10 animate-pulse">GYRO</div>
+                 <div className="flex flex-col items-center justify-center z-10">
+                   <div className="text-[6px] font-black text-white uppercase tracking-[0.1em] animate-pulse">GYRO</div>
+                   <div className="text-[4px] font-mono text-white/40 mt-[2px]">
+                     {Math.round(physicsRef.current.gx * 10) / 10} / {Math.round(physicsRef.current.gy * 10) / 10}
+                   </div>
+                 </div>
                )}
             </div>
           </div>
