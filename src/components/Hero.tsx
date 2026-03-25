@@ -127,19 +127,28 @@ export function Hero() {
           style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
         >
           <div className="relative h-20 w-8 flex flex-col items-center justify-center">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <svg 
-                key={i} 
-                className="absolute animate-arrow-flow" 
-                style={{ animationDelay: `${i * 0.4}s` }} 
-                width="24"
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none"
-              >
-                <path d="M12 4L12 20M12 20L5 13M12 20L19 13" stroke="white" strokeWidth="2.5" strokeLinecap="square" className="opacity-60"/>
-              </svg>
-            ))}
+            {[0, 1, 2, 3, 4].map((i) => {
+              const themeColors = ['var(--accent-blood)', 'var(--accent-cursed)', 'var(--text-bone)', 'var(--accent-blood)', 'var(--accent-cursed)'];
+              return (
+                <svg 
+                  key={i} 
+                  className="absolute animate-arrow-flow" 
+                  style={{ animationDelay: `${i * 0.4}s` }} 
+                  width="24"
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none"
+                >
+                  <path 
+                    d="M12 4L12 20M12 20L5 13M12 20L19 13" 
+                    stroke={themeColors[i]} 
+                    strokeWidth="3.2" 
+                    strokeLinecap="square" 
+                    className="opacity-70"
+                  />
+                </svg>
+              );
+            })}
           </div>
         </div>
 
