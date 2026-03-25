@@ -9,7 +9,7 @@ export function Footer() {
 
   // LOCALIZED KINETIC NARRATIVES ☕
   const initialText = language === 'hi' ? "काम पसंद आया?" : "Enjoy my work?";
-  const hoverText = language === 'hi' ? "चाय पिलाएँ ☕" : "Buy me a Chai ☕";
+  const hoverText = language === 'hi' ? "कॉफी पिलाएँ ☕" : "Buy me a Coffee ☕";
 
   return (
     <footer className="relative bg-[#050505] border-t-4 border-[var(--text-bone)] px-4 py-8 md:px-12 md:py-16 overflow-hidden">
@@ -22,21 +22,18 @@ export function Footer() {
             <div className="text-[16px] md:text-[24px] font-black font-display uppercase tracking-[-0.04em] text-[var(--text-bone)]">
                 {currentProfile.name} <span className="text-[var(--accent-blood)] ml-4 opacity-80 decoration-slice">© {new Date().getFullYear()}</span>
             </div>
-            <div className="text-[10px] md:text-xs font-mono font-bold text-[var(--text-bone)]/40 uppercase tracking-[0.4em]">
-                System Runtime: STABLE_V2.0.4
-            </div>
         </div>
 
-        {/* KINETIC BRUTALIST CHAI SUPPORT BUTTON ☕ */}
+        {/* KINETIC BRUTALIST COFFEE SUPPORT BUTTON ☕ */}
         <a 
           href="https://www.chai4.me/harshalpatel" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="group relative h-[60px] md:h-[70px] px-8 md:px-12 bg-[var(--accent-blood)] border-4 border-black text-white font-black uppercase text-lg md:text-xl tracking-widest brutal-shadow hover:translate-x-[-4px] hover:translate-y-[-4px] active:translate-x-0 active:translate-y-0 transition-all duration-300 overflow-hidden flex items-center justify-center"
+          className="group relative h-[60px] md:h-[70px] px-8 md:px-12 bg-[var(--accent-blood)] border-4 border-black text-white font-black uppercase text-lg md:text-xl tracking-widest brutal-shadow hover:translate-x-[-4px] hover:translate-y-[-4px] md:hover:-translate-x-[64px] active:translate-x-0 active:translate-y-0 transition-all duration-300 overflow-hidden flex items-center justify-center md:-translate-x-[60px]"
         >
           <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           
-          <div className="relative h-full w-full flex flex-col items-center transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+          <div className="relative h-full w-full flex flex-col items-center transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full mobile-kinetic-loop">
             {/* INITIAL STATE 🏮 */}
             <div className={`h-full flex items-center justify-center whitespace-nowrap gap-3 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -59,6 +56,19 @@ export function Footer() {
       <div className="absolute -bottom-10 -left-10 text-[10rem] font-black text-white/5 uppercase select-none pointer-events-none mix-blend-overlay">
          CREATOR
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+           .mobile-kinetic-loop {
+              animation: mobile-text-slide 6s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+           }
+        }
+        @keyframes mobile-text-slide {
+           0%, 40% { transform: translateY(0); }
+           50%, 90% { transform: translateY(-100%); }
+           100% { transform: translateY(0); }
+        }
+      `}</style>
     </footer>
   );
 }
