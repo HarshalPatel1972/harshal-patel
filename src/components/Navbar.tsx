@@ -180,38 +180,53 @@ export function Navbar() {
     return () => resizer.disconnect();
   }, []);
 
-  // GYROSCOPE GRAVITY SYSTEM 📱🏮
+  const gyroBaseRef = useRef<{ beta: number, gamma: number } | null>(null);
+
   useEffect(() => {
     if (!isGyroActive) return;
     
-    const handleOrientation = (e: DeviceOrientationEvent) => {
-      if (e.beta !== null && e.gamma !== null) {
-        // NORMALIZED TILT: Map -45 to 45 degree tilt to -1.5 to 1.5 force
-        // Beta: Front-back (-90 to 90), Gamma: Left-right (-90 to 90)
-        // We use a small deadzone (2 degrees) for stability
-        const deadzone = 2;
+    const handleOrientation = (e: any) => {
+      const beta = e.beta;
+      const gamma = e.gamma;
+      
+      if (beta !== null && gamma !== null) {
+        // Capture initial angle as Zero-Point for this session 🏮
+        if (!gyroBaseRef.current) {
+          gyroBaseRef.current = { beta, gamma };
+          return;
+        }
+
+        // Calculate Relative Tilt from the calibration base
+        const dGamma = gamma - gyroBaseRef.current.gamma;
+        const dBeta = beta - gyroBaseRef.current.beta;
         
+        const deadzone = 1.5;
         let targetGx = 0;
         let targetGy = 0;
         
-        if (Math.abs(e.gamma) > deadzone) {
-          targetGx = (e.gamma > 0 ? e.gamma - deadzone : e.gamma + deadzone) * 0.08;
+        if (Math.abs(dGamma) > deadzone) {
+          targetGx = (dGamma > 0 ? dGamma - deadzone : dGamma + deadzone) * 0.12;
         }
         
-        // Compensate for "Holding Angle": Normal reading angle is ~45 deg
-        const compensatedBeta = e.beta - 45;
-        if (Math.abs(compensatedBeta) > deadzone) {
-          targetGy = (compensatedBeta > 0 ? compensatedBeta - deadzone : compensatedBeta + deadzone) * 0.08;
+        if (Math.abs(dBeta) > deadzone) {
+          targetGy = (dBeta > 0 ? dBeta - deadzone : dBeta + deadzone) * 0.12;
         }
 
         // Clamp to prevent "Warp Speed"
-        physicsRef.current.gx = Math.max(-2, Math.min(2, targetGx));
-        physicsRef.current.gy = Math.max(-2, Math.min(2, targetGy));
+        physicsRef.current.gx = Math.max(-2.5, Math.min(2.5, targetGx));
+        physicsRef.current.gy = Math.max(-2.5, Math.min(2.5, targetGy));
       }
     };
     
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => window.removeEventListener('deviceorientation', handleOrientation);
+    // Add multiple listeners for Android/iOS compatibility 📱
+    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+    window.addEventListener('deviceorientation', handleOrientation, true);
+    
+    return () => {
+      window.removeEventListener('deviceorientationabsolute', handleOrientation);
+      window.removeEventListener('deviceorientation', handleOrientation);
+      gyroBaseRef.current = null;
+    };
   }, [isGyroActive]);
 
   const runPhysics = useCallback(() => {
