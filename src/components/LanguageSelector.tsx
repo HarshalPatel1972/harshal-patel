@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { animate as anime } from "animejs";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const languages = [
     { code: 'de', label: 'Deutsch' },
@@ -33,11 +35,36 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Kinetic Smooth Animation HUB 📽️
+  useEffect(() => {
+    if (!menuRef.current) return;
+    
+    if (isOpen) {
+      // SLIDE & SCALE IN
+      anime(menuRef.current, {
+        opacity: [0, 1],
+        scaleY: [0.95, 1],
+        translateY: [-10, 0],
+        duration: 800,
+        easing: 'easeOutQuart'
+      });
+    } else {
+      // SLIDE & FADE OUT
+      anime(menuRef.current, {
+        opacity: [1, 0],
+        translateY: [0, -5],
+        scaleY: [1, 0.98],
+        duration: 400,
+        easing: 'easeInQuad'
+      });
+    }
+  }, [isOpen]);
+
   return (
     <div ref={containerRef} className="relative flex flex-col group">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-9 h-9 bg-black border border-white/20 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : ''}`}
+        className={`w-9 h-9 bg-black border-2 border-white flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : ''}`}
         aria-label="Selection Language"
       >
         <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white transition-colors group-hover:fill-[var(--accent-blood)]" xmlns="http://www.w3.org/2000/svg">
@@ -45,10 +72,11 @@ export function LanguageSelector() {
         </svg>
       </button>
 
-      {/* Expanded Container - Single Column Vertical List */}
+      {/* Expanded Container - Kinetic Vertical List 🎞️ */}
       <div 
-        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border border-white/20 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] overflow-hidden ${isOpen ? 'max-h-[80vh] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
-        style={{ width: '220px' }}
+        ref={menuRef}
+        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border border-white/20 overflow-hidden transform-gpu origin-top ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none'}`}
+        style={{ width: '220px', zIndex: 100 }}
       >
         <div className="flex flex-col w-full overflow-y-auto max-h-[70vh]">
           {languages.map((lang) => (

@@ -57,7 +57,7 @@ export function VisitorCounter() {
       <motion.div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="flex items-center bg-black border border-white/20 h-9 transition-all duration-500 hover:border-[var(--accent-blood)] overflow-hidden"
+        className="flex items-center bg-black border-2 border-white h-9 transition-all duration-500 hover:border-[var(--accent-blood)] overflow-hidden"
         initial={false}
         animate={{ width: isHovered ? "auto" : "auto" }}
       >
