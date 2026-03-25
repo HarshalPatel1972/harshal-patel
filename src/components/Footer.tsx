@@ -33,7 +33,7 @@ export function Footer() {
         >
           <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
           
-          <div className="relative h-full w-full flex flex-col items-center transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full mobile-kinetic-loop">
+          <div className="relative h-full w-full flex flex-col items-center transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full mobile-kinetic-loop-v2">
             {/* INITIAL STATE 🏮 */}
             <div className={`h-full flex items-center justify-center whitespace-nowrap gap-3 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -59,13 +59,13 @@ export function Footer() {
 
       <style>{`
         @media (max-width: 768px) {
-           .mobile-kinetic-loop {
-              animation: mobile-text-slide 6s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+           .mobile-kinetic-loop-v2 {
+              animation: mobile-text-slide-custom 11s cubic-bezier(0.19, 1, 0.22, 1) infinite;
            }
         }
-        @keyframes mobile-text-slide {
-           0%, 40% { transform: translateY(0); }
-           50%, 90% { transform: translateY(-100%); }
+        @keyframes mobile-text-slide-custom {
+           0%, 27% { transform: translateY(0); } /* Enjoy my work? (3s) */
+           30%, 97% { transform: translateY(-100%); } /* Buy me a Coffee ☕ (8s) */
            100% { transform: translateY(0); }
         }
       `}</style>
