@@ -186,10 +186,9 @@ export function Navbar() {
     
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.beta !== null && e.gamma !== null) {
-        // Map beta/gamma to small gravity forces
-        // Adjust for "Brutal" weight feel
-        physicsRef.current.gx = e.gamma * 0.15; 
-        physicsRef.current.gy = e.beta * 0.15;
+        // High sensitivity for "Brutal" weight
+        physicsRef.current.gx = e.gamma * 0.45; 
+        physicsRef.current.gy = e.beta * 0.45;
       }
     };
     
@@ -271,24 +270,26 @@ export function Navbar() {
   };
 
   // GYRO ACTIVATION TRIGGER 📱🏮
-  const startGyroTimer = useCallback(() => {
+  const requestGyroPermission = useCallback(() => {
     if (dotMode !== 'RELEASED' || isGyroActive) return;
     
-    gyroTimerRef.current = setTimeout(() => {
-      // REQUEST GYRO PERMISSION (For iOS/Android)
-      // Note: This must be triggered by user gesture
-      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-        (DeviceOrientationEvent as any).requestPermission()
-          .then((response: string) => {
-            if (response === 'granted') {
-              activateGyro();
-            }
-          })
-          .catch(console.error);
-      } else {
-        activateGyro();
-      }
-    }, 3000);
+    // Note: This must be triggered by direct user gesture (like the end of the 3s hold)
+    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+      (DeviceOrientationEvent as any).requestPermission()
+        .then((response: string) => {
+          if (response === 'granted') activateGyro();
+        })
+        .catch(console.error);
+    } else {
+      activateGyro();
+    }
+  }, [dotMode, isGyroActive]);
+
+  const holdStartTimeRef = useRef<number>(0);
+
+  const startGyroTimer = useCallback(() => {
+    if (dotMode !== 'RELEASED' || isGyroActive) return;
+    holdStartTimeRef.current = Date.now();
   }, [dotMode, isGyroActive]);
 
   const activateGyro = () => {
@@ -337,7 +338,10 @@ export function Navbar() {
 
   const handleDotTouchEnd = () => {
     setIsDragging(false);
-    clearGyroTimer();
+    const holdTime = Date.now() - holdStartTimeRef.current;
+    if (holdTime > 2500) {
+      requestGyroPermission();
+    }
   };
 
   const handleDotMouseDown = (e: React.MouseEvent) => {
@@ -347,7 +351,7 @@ export function Navbar() {
       setIsDragging(true);
       lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() };
       
-      startGyroTimer(); // START 3S GYRO TRIGGER (For Desktop Dev tools testing/Sim) 🏮
+      startGyroTimer();
 
       const onMove = (ev: MouseEvent) => {
         const mx = ev.clientX;
@@ -364,7 +368,10 @@ export function Navbar() {
       };
       const onUp = () => { 
         setIsDragging(false); 
-        clearGyroTimer();
+        const holdTime = Date.now() - holdStartTimeRef.current;
+        if (holdTime > 2500) {
+           requestGyroPermission();
+        }
         document.removeEventListener('mousemove', onMove); 
         document.removeEventListener('mouseup', onUp); 
       };
