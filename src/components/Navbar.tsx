@@ -182,52 +182,20 @@ export function Navbar() {
 
   const gyroBaseRef = useRef<{ beta: number, gamma: number } | null>(null);
 
+  // SECTION TRACKING
   useEffect(() => {
-    if (!isGyroActive) return;
-    
-    const handleOrientation = (e: any) => {
-      const beta = e.beta;
-      const gamma = e.gamma;
-      
-      if (beta !== null && gamma !== null) {
-        // Capture initial angle as Zero-Point for this session 🏮
-        if (!gyroBaseRef.current) {
-          gyroBaseRef.current = { beta, gamma };
-          return;
-        }
-
-        // Calculate Relative Tilt from the calibration base
-        const dGamma = gamma - gyroBaseRef.current.gamma;
-        const dBeta = beta - gyroBaseRef.current.beta;
-        
-        const deadzone = 1.5;
-        let targetGx = 0;
-        let targetGy = 0;
-        
-        if (Math.abs(dGamma) > deadzone) {
-          targetGx = (dGamma > 0 ? dGamma - deadzone : dGamma + deadzone) * 0.12;
-        }
-        
-        if (Math.abs(dBeta) > deadzone) {
-          targetGy = (dBeta > 0 ? dBeta - deadzone : dBeta + deadzone) * 0.12;
-        }
-
-        // Clamp to prevent "Warp Speed"
-        physicsRef.current.gx = Math.max(-2.5, Math.min(2.5, targetGx));
-        physicsRef.current.gy = Math.max(-2.5, Math.min(2.5, targetGy));
-      }
+    const sectionIds = currentNavItems.map(item => item.id);
+    const observerOptions = { root: null, rootMargin: '-20% 0px -70% 0px', threshold: 0 };
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
     };
-    
-    // Add multiple listeners for Android/iOS compatibility 📱
-    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    
-    return () => {
-      window.removeEventListener('deviceorientationabsolute', handleOrientation);
-      window.removeEventListener('deviceorientation', handleOrientation);
-      gyroBaseRef.current = null;
-    };
-  }, [isGyroActive]);
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [currentNavItems]);
 
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
@@ -332,6 +300,40 @@ export function Navbar() {
     setTimeout(() => setShowSplash(false), 1500);
     // Subtle Vibration feedback if supported
     if (window.navigator?.vibrate) window.navigator.vibrate([100, 50, 200]);
+
+    console.log("Igniting Gyro Systems...");
+
+    const handleSensors = (e: any) => {
+      // SOURCE 1: Orientation (Absolute/Relative) 🏮
+      const beta = e.beta;
+      const gamma = e.gamma;
+      
+      if (beta !== null && gamma !== null) {
+        if (!gyroBaseRef.current) {
+          gyroBaseRef.current = { beta, gamma };
+          return;
+        }
+        const dG = gamma - gyroBaseRef.current.gamma;
+        const dB = beta - gyroBaseRef.current.beta;
+        const dz = 1.5;
+        physicsRef.current.gx = Math.max(-2.5, Math.min(2.5, (Math.abs(dG) > dz ? (dG > 0 ? dG - dz : dG + dz) * 0.14 : 0)));
+        physicsRef.current.gy = Math.max(-2.5, Math.min(2.5, (Math.abs(dB) > dz ? (dB > 0 ? dB - dz : dB + dz) * 0.14 : 0)));
+      }
+
+      // SOURCE 2: Motion Acceleration (Fallback) 🦾
+      if (e.accelerationIncludingGravity) {
+        const { x, y } = e.accelerationIncludingGravity;
+        if (x !== null && y !== null) {
+          // Accelerometer uses inverse axis compared to orientation
+          physicsRef.current.gx = Math.max(-2.5, Math.min(2.5, -x * 0.25));
+          physicsRef.current.gy = Math.max(-2.5, Math.min(2.5, y * 0.25));
+        }
+      }
+    };
+
+    window.addEventListener('deviceorientation', handleSensors, true);
+    window.addEventListener('deviceorientationabsolute', handleSensors, true);
+    window.addEventListener('devicemotion', handleSensors, true);
   };
 
   const clearGyroTimer = () => {
