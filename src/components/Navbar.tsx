@@ -105,11 +105,13 @@ export function Navbar() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
+  const [isGyroActive, setIsGyroActive] = useState(false);
 
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
   const chargeTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const physicsRef = useRef({ vx: 0, vy: 0, x: 0, y: 0, scale: 1, squish: 1 });
+  const gyroTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const physicsRef = useRef({ vx: 0, vy: 0, x: 0, y: 0, scale: 1, squish: 1, gx: 0, gy: 0 });
   const lastTouchRef = useRef({ x: 0, y: 0, time: 0 });
   const rafRef = useRef<number | null>(null);
   const navbarRef = useRef<HTMLElement>(null);
@@ -119,8 +121,10 @@ export function Navbar() {
     setDotMode('LOCKED');
     setDotScale(1);
     setIsDragging(false);
+    setIsGyroActive(false);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
+    if (gyroTimerRef.current) clearTimeout(gyroTimerRef.current);
   }, []);
 
   // SECTION TRACKING
@@ -176,13 +180,37 @@ export function Navbar() {
     return () => resizer.disconnect();
   }, []);
 
+  // GYROSCOPE GRAVITY SYSTEM 📱🏮
+  useEffect(() => {
+    if (!isGyroActive) return;
+    
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (e.beta !== null && e.gamma !== null) {
+        // Map beta/gamma to small gravity forces
+        // Adjust for "Brutal" weight feel
+        physicsRef.current.gx = e.gamma * 0.15; 
+        physicsRef.current.gy = e.beta * 0.15;
+      }
+    };
+    
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
+  }, [isGyroActive]);
+
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
     const currentScale = physicsRef.current.scale;
     const friction = 0.985 + ((currentScale - 1) / 3) * 0.012;
-    const bounce = -0.95 - ((currentScale - 1) / 3) * 0.05; 
+    const bounce = -0.92 - ((currentScale - 1) / 3) * 0.05; 
     const radius = (10 * currentScale) / 2;
-    let { x, y, vx, vy, squish } = physicsRef.current;
+    let { x, y, vx, vy, squish, gx, gy } = physicsRef.current;
+    
+    // Apply Gyro Gravity if active
+    if (isGyroActive) {
+      vx += gx;
+      vy += gy;
+    }
+    
     x += vx; y += vy; vx *= friction; vy *= friction;
     const width = window.innerWidth;
     const height = docHeight || document.documentElement.scrollHeight;
@@ -195,7 +223,7 @@ export function Navbar() {
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
     setDotPos({ x, y });
     rafRef.current = requestAnimationFrame(runPhysics);
-  }, [dotMode, isDragging, docHeight]);
+  }, [dotMode, isDragging, docHeight, isGyroActive]);
 
   useEffect(() => {
     if (dotMode === 'RELEASED' && !isDragging) rafRef.current = requestAnimationFrame(runPhysics);
@@ -217,7 +245,7 @@ export function Navbar() {
         const rect = oppsEl?.getBoundingClientRect();
         const cx = window.innerWidth / 2;
         const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
-        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
+        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1, gx: 0, gy: 0 };
         setDotPos({ x: cx, y: cy });
         setDotScale(3);
         setDotMode('RELEASED');
@@ -242,13 +270,51 @@ export function Navbar() {
     setTimeout(() => { longPressActiveRef.current = false; }, 100);
   };
 
+  // GYRO ACTIVATION TRIGGER 📱🏮
+  const startGyroTimer = useCallback(() => {
+    if (dotMode !== 'RELEASED' || isGyroActive) return;
+    
+    gyroTimerRef.current = setTimeout(() => {
+      // REQUEST GYRO PERMISSION (For iOS/Android)
+      // Note: This must be triggered by user gesture
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        (DeviceOrientationEvent as any).requestPermission()
+          .then((response: string) => {
+            if (response === 'granted') {
+              activateGyro();
+            }
+          })
+          .catch(console.error);
+      } else {
+        activateGyro();
+      }
+    }, 3000);
+  }, [dotMode, isGyroActive]);
+
+  const activateGyro = () => {
+    setIsGyroActive(true);
+    setSplashPos({ x: dotPos.x, y: dotPos.y });
+    setShowSplash(true);
+    setTimeout(() => setShowSplash(false), 1500);
+    // Subtle Vibration feedback if supported
+    if (window.navigator?.vibrate) window.navigator.vibrate([100, 50, 200]);
+  };
+
+  const clearGyroTimer = () => {
+    if (gyroTimerRef.current) clearTimeout(gyroTimerRef.current);
+  };
+
   const handleDotTouchStart = (e: React.TouchEvent) => {
     if (dotMode === 'RELEASED') {
       const touch = e.touches[0];
       const pageX = touch.clientX;
       const pageY = touch.clientY + window.scrollY;
       const dist = Math.hypot(pageX - dotPos.x, pageY - dotPos.y);
-      if (dist < 60) { setIsDragging(true); lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() }; }
+      if (dist < 60) { 
+        setIsDragging(true); 
+        lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() }; 
+        startGyroTimer(); // START 3S GYRO TRIGGER 🏮
+      }
     }
   };
 
@@ -269,7 +335,10 @@ export function Navbar() {
     }
   };
 
-  const handleDotTouchEnd = () => setIsDragging(false);
+  const handleDotTouchEnd = () => {
+    setIsDragging(false);
+    clearGyroTimer();
+  };
 
   const handleDotMouseDown = (e: React.MouseEvent) => {
     if (dotMode === 'RELEASED') {
@@ -277,6 +346,9 @@ export function Navbar() {
       const pageY = e.clientY + window.scrollY;
       setIsDragging(true);
       lastTouchRef.current = { x: pageX, y: pageY, time: Date.now() };
+      
+      startGyroTimer(); // START 3S GYRO TRIGGER (For Desktop Dev tools testing/Sim) 🏮
+
       const onMove = (ev: MouseEvent) => {
         const mx = ev.clientX;
         const my = ev.clientY + window.scrollY;
@@ -290,7 +362,12 @@ export function Navbar() {
         setDotPos({ x: mx, y: my });
         lastTouchRef.current = { x: mx, y: my, time: now };
       };
-      const onUp = () => { setIsDragging(false); document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
+      const onUp = () => { 
+        setIsDragging(false); 
+        clearGyroTimer();
+        document.removeEventListener('mousemove', onMove); 
+        document.removeEventListener('mouseup', onUp); 
+      };
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
     }
@@ -301,8 +378,8 @@ export function Navbar() {
       <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: docHeight || '100%', zIndex: 999 }}>
         {showSplash && (
           <div className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: splashPos.x, top: splashPos.y }}>
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '100px', height: '100px', margin: '-50px 0 0 -50px', borderColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)' }} />
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: isGyroActive ? '200px' : '100px', height: isGyroActive ? '200px' : '100px', margin: isGyroActive ? '-100px 0 0 -100px' : '-50px 0 0 -50px', borderColor: isGyroActive ? '#fff' : (isBallCyan ? '#0ee0c3' : 'var(--accent-blood)') }} />
             ))}
           </div>
         )}
@@ -316,8 +393,11 @@ export function Navbar() {
             onTouchEnd={handleDotTouchEnd}
             onClick={(e) => { e.stopPropagation(); setIsBallCyan(prev => !prev); }}
           >
-            <div className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20" style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
+            <div className={`w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20 ${isGyroActive ? "ring-4 ring-white shadow-[0_0_50px_#fff]" : ""}`} style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
                <div className="absolute inset-0 halftone-bg opacity-10" />
+               {isGyroActive && (
+                 <div className="text-[6px] font-black text-white uppercase tracking-[0.1em] z-10 animate-pulse">GYRO</div>
+               )}
             </div>
           </div>
         )}
