@@ -26,11 +26,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickingMouseRef = useRef(false);
 
-  // Color Cycling State
-  const PALETTE = ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
+  // Dynamic Theme Colors 🎞️
+  const colorsRef = useRef({ text: '#ffffff', accent: '#d91111', glow: '#0ee0c3' });
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
-  const [holdProgress, setHoldProgress] = useState(0);
 
   const PSIZE = 2.2;
   const GAP = PSIZE * 2 + 1.2;
@@ -107,7 +106,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
-    const onMouseUp = () => { holdStartTimeRef.current = null; setHoldProgress(0); };
+    const onMouseUp = () => { holdStartTimeRef.current = null; };
 
     const handleScroll = () => {
       if (!isScrolling.current) isScrolling.current = true;
@@ -131,12 +130,21 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       canvas.style.opacity = "1";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // KINETIC THEME SAMPLE (Cheap per-frame capture) 🏮
+      const style = getComputedStyle(document.documentElement);
+      colorsRef.current = {
+        text: style.getPropertyValue('--color-text').trim() || '#ffffff',
+        accent: style.getPropertyValue('--color-accent').trim() || '#d91111',
+        glow: style.getPropertyValue('--color-glow').trim() || '#0ee0c3'
+      };
+
+      const themePalette = [colorsRef.current.text, colorsRef.current.accent, colorsRef.current.glow];
+
       if (holdStartTimeRef.current) {
         const elapsed = Date.now() - holdStartTimeRef.current;
         const progress = Math.min(1, elapsed / 3000);
-        setHoldProgress(progress);
         if (progress >= 1) {
-          colorIndexRef.current = (colorIndexRef.current + 1) % PALETTE.length;
+          colorIndexRef.current = (colorIndexRef.current + 1) % themePalette.length;
           holdStartTimeRef.current = Date.now();
           burstFlash.current = 15;
         }
@@ -150,8 +158,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      const baseColor = PALETTE[colorIndexRef.current];
-      const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? PALETTE[2] : PALETTE[1]) : hoverType.current !== "none" ? PALETTE[2] : baseColor;
+      const baseColor = themePalette[colorIndexRef.current];
+      const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? themePalette[2] : themePalette[1]) : hoverType.current !== "none" ? themePalette[2] : baseColor;
 
       for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
@@ -187,7 +195,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       if (holdStartTimeRef.current) {
         ctx.beginPath();
         ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 3000));
-        ctx.strokeStyle = PALETTE[(colorIndexRef.current + 1) % PALETTE.length]; ctx.lineWidth = 2; ctx.stroke();
+        ctx.strokeStyle = themePalette[(colorIndexRef.current + 1) % themePalette.length]; ctx.lineWidth = 2; ctx.stroke();
       }
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
@@ -201,7 +209,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           ctx.beginPath(); ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
           ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
           ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
-          ctx.lineWidth = 0.6; ctx.strokeStyle = hoverType.current !== "none" ? PALETTE[2] : `${baseColor}15`; ctx.stroke();
+          ctx.lineWidth = 0.6; ctx.strokeStyle = hoverType.current !== "none" ? themePalette[2] : `${baseColor}15`; ctx.stroke();
         }
       }
       rafId = requestAnimationFrame(loop);
@@ -216,8 +224,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
-      window.addEventListener("mousedown", onMouseDown);
-      window.addEventListener("mouseup", onMouseUp);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
     };
   }, [isTouch]);
 

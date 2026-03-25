@@ -5,14 +5,30 @@
    ═══════════════════════════════════════════ */
 
 :root {
-  --bg-ink: #050505;
-  --bg-darker: #020202;
-  --text-bone: #E8E8E6;
-  --text-muted: #8E8A85;
-  --accent-blood: #d91111;
-  --accent-cursed: #0ee0c3;
-  --panel-border: rgba(232, 232, 230, 0.15);
-  --radius: 0px; /* Brutalist sharp edges */
+  /* THEME SYSTEM 🏮 */
+  --color-bg:     #050505;
+  --color-text:   #ffffff;
+  --color-accent: #d91111;
+  --color-glow:   #0ee0c3;
+
+  /* Ancestral System Mapping */
+  --bg-ink: var(--color-bg);
+  --bg-darker: var(--color-bg);
+  --text-bone: var(--color-text);
+  --text-muted: var(--color-text);
+  --accent-blood: var(--color-accent);
+  --accent-cursed: var(--color-glow);
+  --panel-border: rgba(255, 255, 255, 0.15);
+  --radius: 0px;
+}
+
+/* GLOBAL THEME TRANSITION 🎞️ */
+* {
+  transition: 
+    background-color 400ms ease,
+    color 400ms ease,
+    border-color 400ms ease,
+    box-shadow 400ms ease;
 }
 
 @theme inline {

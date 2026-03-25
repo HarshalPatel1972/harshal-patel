@@ -23,7 +23,7 @@ const DomainExpansionVoid: React.FC = () => {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
       {/* ─── LAYER 1: THE CHAOTIC EXTERIOR (TECHNICAL DEBT) ─── */}
-      <div className="absolute inset-0 bg-[#050505]">
+      <div className="absolute inset-0 bg-[var(--color-bg)]">
         <div className="absolute inset-0 opacity-20 flex flex-wrap gap-4 p-8 overflow-hidden font-mono text-[10px] text-[var(--accent-blood)] select-none">
           {Array.from({ length: 100 }).map((_, i) => (
             <span key={i} className="animate-pulse" style={{ animationDelay: `${Math.random() * 2}s` }}>
@@ -41,7 +41,7 @@ const DomainExpansionVoid: React.FC = () => {
              <polygon
                key={i}
                points={s.points}
-               fill="#050505"
+               fill="var(--color-bg)"
                stroke="#1a1a1a"
                strokeWidth="0.5"
              >
@@ -59,7 +59,7 @@ const DomainExpansionVoid: React.FC = () => {
           <radialGradient id="eyeGlow" cx="500" cy="500" r="500" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#E8E8E6" stopOpacity="0.15" />
             <stop offset="60%" stopColor="#E8E8E6" stopOpacity="0.05" />
-            <stop offset="100%" stopColor="#050505" stopOpacity="0" />
+            <stop offset="100%" stopColor="var(--color-bg)" stopOpacity="0" />
           </radialGradient>
 
           <mask id="domainMask">
@@ -126,8 +126,8 @@ const DomainExpansionVoid: React.FC = () => {
 
       {/* Cinematic Fog / Mappa Smoke */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 w-full h-1/3 bg-gradient-to-b from-[#050505] to-transparent opacity-90" />
-        <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-[#050505] to-transparent opacity-90" />
+        <div className="absolute top-0 w-full h-1/3 bg-gradient-to-b from-[var(--color-bg)] to-transparent opacity-90" />
+        <div className="absolute bottom-0 w-full h-1/3 bg-gradient-to-t from-[var(--color-bg)] to-transparent opacity-90" />
       </div>
 
       {/* Lens Flare effect for the Eye */}

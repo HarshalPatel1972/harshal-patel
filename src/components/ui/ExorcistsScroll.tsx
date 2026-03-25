@@ -191,7 +191,7 @@ const ExorcistsScroll: React.FC = () => {
           />
 
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-[#050505] border-2 border-red-600 flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(217,17,17,0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict' }}>
+             <div className={`absolute inset-0 bg-[var(--color-bg)] border-2 border-[var(--color-accent)] flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(217,17,17,0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict' }}>
                 <div className="absolute inset-4 border border-red-600/15 bg-gradient-to-br from-red-600/5 via-black to-black" />
                 
                 <div className="absolute inset-0 blood-grid opacity-10" />
@@ -241,7 +241,7 @@ const ExorcistsScroll: React.FC = () => {
           background-size: 60px 60px;
         }
         .red-halftone {
-          background-image: radial-gradient(#D91111 0.6px, transparent 0.6px);
+          background-image: radial-gradient(var(--color-accent) 0.6px, transparent 0.6px);
           background-size: 8px 8px;
         }
       `}</style>

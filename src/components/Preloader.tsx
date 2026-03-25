@@ -354,14 +354,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none cinematic-breath pointer-events-none"
+      className="fixed inset-0 z-[999999] bg-[var(--color-bg)] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none cinematic-breath pointer-events-none"
     >
       {/* Cinematic Shutter System */}
       <div data-dir="top" ref={topBarRef} className="absolute top-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-b border-[#E8E8E6]/5 will-change-transform" />
       <div data-dir="bottom" ref={bottomBarRef} className="absolute bottom-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-t border-[#E8E8E6]/5 will-change-transform" />
 
       {/* Atmospheric Layers */}
-      <div className="absolute inset-0 bg-[#050505]" />
+      <div className="absolute inset-0 bg-[var(--color-bg)]" />
       
       {/* AUTHOR MAPPED BACKGROUND (Cinematic Materialization) */}
       {bgImage && (
@@ -389,7 +389,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       {/* The Sunder Flash */}
       <div 
         ref={slashRef} 
-        className="absolute top-1/2 left-0 right-0 h-[2px] bg-[#d91111] -translate-y-1/2 z-30 shadow-[0_0_50px_rgba(217,17,17,0.9)] opacity-0 will-change-transform" 
+        className="absolute top-1/2 left-0 right-0 h-[2px] bg-[var(--color-accent)] -translate-y-1/2 z-30 shadow-[0_0_50px_rgba(217,17,17,0.9)] opacity-0 will-change-transform" 
       />
 
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
@@ -404,14 +404,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ref={sourceRef}
           className="flex items-center justify-center gap-6 md:gap-24 opacity-0 will-change-transform mx-auto"
          >
-            <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
+            <div className="w-12 md:w-48 h-[1px] bg-[var(--color-accent)]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
-              <span className={`text-xs md:text-3xl text-[#d91111] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase italic'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
+              <span className={`text-xs md:text-3xl text-[var(--color-accent)] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase italic'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
                 {source}
               </span>
-              <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
+              <div className="absolute top-0 left-0 w-[5px] h-full bg-[var(--color-accent)] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
             </div>
-            <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
+            <div className="w-12 md:w-48 h-[1px] bg-[var(--color-accent)]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
          </div>
       </div>
 

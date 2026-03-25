@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SystemBanner } from "@/components/SystemBanner";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { ThemeSwitcher } from "@/components/ui/ThemeSwitcher";
 import { LanguageProvider, LanguageTransitionWrapper } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
@@ -40,6 +41,7 @@ function HomeContent() {
       {/* Global Interface Overlay */}
       <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
         <Navbar />
+        <ThemeSwitcher />
         <ScrollLine isVisible={showContent} />
         
         {/* Zero-Lag Utility Container - Full height track */}
@@ -88,14 +90,18 @@ function HomeContent() {
   );
 }
 
+import { ThemeProvider } from "@/context/ThemeContext";
+
 export default function Home() {
   return (
-    <LanguageProvider>
-      <SignalProvider>
-        <FlipProvider>
-          <HomeContent />
-        </FlipProvider>
-      </SignalProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <SignalProvider>
+          <FlipProvider>
+            <HomeContent />
+          </FlipProvider>
+        </SignalProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }

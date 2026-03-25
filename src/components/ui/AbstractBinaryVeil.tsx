@@ -90,7 +90,7 @@ const AbstractBinaryVeil: React.FC = () => {
         className="w-full h-full"
       />
       {/* Brutalist Gradient Overlay to fade the top/bottom */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505] opacity-80" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)] via-transparent to-[var(--color-bg)] opacity-80" />
       
       {/* Central Purification Beam Highlight */}
       <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[400px] bg-white/[0.02] blur-[100px]" />

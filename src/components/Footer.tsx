@@ -12,7 +12,7 @@ export function Footer() {
   const hoverText = language === 'hi' ? "कॉफी पिलाएँ ☕" : "Buy me a Coffee ☕";
 
   return (
-    <footer className="relative bg-[#050505] border-t-4 border-[var(--text-bone)] px-4 py-8 md:px-12 md:py-16 overflow-hidden">
+    <footer className="relative bg-[var(--color-bg)] border-t-4 border-[var(--text-bone)] px-4 py-8 md:px-12 md:py-16 overflow-hidden">
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(217,17,17,0.05)_0%,transparent_70%)] opacity-60" />

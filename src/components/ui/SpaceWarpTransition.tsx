@@ -27,7 +27,7 @@ export function SpaceWarpTransition() {
     const stars: Star[] = [];
     const numStars = 600;
     
-    const palette = ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
+    const palette = ["var(--color-accent)", "var(--color-glow)", "var(--color-text)", "var(--color-text)"];
 
     class Star {
       x: number; y: number; z: number;
