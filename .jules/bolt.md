@@ -1,0 +1,3 @@
+## 2026-03-26 - Synchronous Layout Thrashing in Scroll Listeners
+**Learning:** Found synchronous DOM reads (offsetTop, offsetHeight) mixed with DOM writes (style updates) in high-frequency scroll event listeners (e.g., Hero.tsx). This causes severe layout thrashing because the browser has to recalculate layout on every scroll event before the next paint.
+**Action:** Always wrap scroll-based DOM manipulations in `requestAnimationFrame` with a `ticking` flag to batch updates. Additionally, cache loop-invariant DOM reads (like element dimensions) outside the scroll handler, updating them only on window resize.
