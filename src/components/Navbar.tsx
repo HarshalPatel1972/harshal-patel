@@ -356,7 +356,35 @@ export function Navbar() {
           )}
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
             {currentNavItems.map((item) => (
-              <a key={item.id} href={item.id === 'hero' ? '#' : `#${item.id}`} className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300" style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }} onClick={(e) => { e.preventDefault(); if (item.id === 'hero') window.scrollTo({ top: 0, behavior: 'smooth' }); else { const el = document.getElementById(item.id); if (el) el.scrollIntoView({ behavior: "smooth" }); } }}>
+              <a 
+                key={item.id} 
+                href={item.id === 'hero' ? '#' : `#${item.id}`} 
+                className="pointer-events-auto absolute w-full group py-4 flex flex-col items-center transition-all duration-300" 
+                style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }} 
+                onClick={(e) => { 
+                  e.preventDefault(); 
+                  
+                  if (typeof window !== 'undefined') {
+                    const currentScrollY = window.scrollY;
+                    const targetEl = item.id === 'hero' ? null : document.getElementById(item.id);
+                    const targetY = item.id === 'hero' ? 0 : (targetEl ? targetEl.getBoundingClientRect().top + window.scrollY : 0);
+                    
+                    const direction = targetY > currentScrollY ? 1 : -1;
+                    const distance = Math.abs(targetY - currentScrollY);
+                    
+                    if (distance > 300) {
+                      window.dispatchEvent(new CustomEvent('WARP_JUMP', { detail: { direction } }));
+                    }
+                  }
+
+                  if (item.id === 'hero') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                  } else { 
+                    const el = document.getElementById(item.id); 
+                    if (el) el.scrollIntoView({ behavior: "smooth" }); 
+                  } 
+                }}
+              >
                 <span className={`font-display font-bold ${language === 'ja' ? 'text-xl md:text-2xl' : 'text-sm md:text-base'} uppercase tracking-widest transition-all duration-300 ${active === item.id ? "text-[var(--bg-ink)] drop-shadow-[0_0_8px_rgba(5,5,5,0.4)] scale-110" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>{item.label}</span>
               </a>
             ))}

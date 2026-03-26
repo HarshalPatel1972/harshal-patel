@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
+import { VelocityWarp } from "@/components/ui/VelocityWarp";
 
 const cirka = localFont({
   src: [
@@ -207,6 +208,7 @@ export default function RootLayout({
           }}
         />
         <div className="halftone-glow" />
+        <VelocityWarp />
         {children}
       </body>
     </html>
