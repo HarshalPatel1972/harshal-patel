@@ -181,23 +181,44 @@ export function TextReveal({
  */
 export function useTilt(intensity: number = 10) {
   const ref = useRef<HTMLElement>(null);
+  const rafId = useRef<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const rotateX = (0.5 - y) * intensity;
-      const rotateY = (x - 0.5) * intensity;
+    let currentX = 0;
+    let currentY = 0;
 
-      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      el.style.transition = "transform 0.1s ease-out";
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+
+      if (rafId.current) return;
+
+      rafId.current = requestAnimationFrame(() => {
+        if (!el) return;
+
+        // ⚡ Bolt: Batch DOM read (getBoundingClientRect) and write (style.transform)
+        // inside requestAnimationFrame to prevent layout thrashing on high-frequency mousemove events.
+        const rect = el.getBoundingClientRect();
+        const x = (currentX - rect.left) / rect.width;
+        const y = (currentY - rect.top) / rect.height;
+        const rotateX = (0.5 - y) * intensity;
+        const rotateY = (x - 0.5) * intensity;
+
+        el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        el.style.transition = "transform 0.1s ease-out";
+
+        rafId.current = null;
+      });
     };
 
     const handleLeave = () => {
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -207,6 +228,7 @@ export function useTilt(intensity: number = 10) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, [intensity]);
 
