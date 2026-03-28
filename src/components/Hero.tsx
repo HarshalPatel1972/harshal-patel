@@ -74,16 +74,33 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    const updateDimensions = () => {
+      if (!trackRef.current) return;
+      sectionOffset = trackRef.current.offsetTop;
+      trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+    };
+
+    const updateDOM = () => {
+      if (!trackRef.current || !heroContentRef.current) {
+        ticking = false;
+        return;
+      }
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
-      if (st > sectionOffset + trackHeight + 500) return;
+      if (st > sectionOffset + trackHeight + 500) {
+        ticking = false;
+        return;
+      }
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+      // Avoid division by zero on initialization
+      const heightToUse = trackHeight > 0 ? trackHeight : 1;
+      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / heightToUse));
+
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
       
       const scale = 1 - progress * 0.5;
@@ -95,11 +112,28 @@ export function Hero() {
       heroContentRef.current.style.opacity = opacity.toString();
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+      ticking = false;
     };
 
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateDOM);
+        ticking = true;
+      }
+    };
+
+    // Initialize dimensions and perform first render
+    updateDimensions();
+    updateDOM();
+
+    window.addEventListener("resize", updateDimensions);
     window.addEventListener("scroll", handleScroll, { passive: true }); 
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
