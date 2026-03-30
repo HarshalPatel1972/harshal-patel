@@ -135,7 +135,7 @@ export function VelocityWarp() {
       
       if (!s.isWarpingRef) {
         // High visibility for active testing Phase
-        s.isPetrovaMode = Math.random() < 0.90;
+        s.isPetrovaMode = Math.random() < 0.05;
         
         s.isWarpingRef = true;
         setIsWarping(true);
