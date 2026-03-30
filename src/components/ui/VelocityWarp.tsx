@@ -142,8 +142,8 @@ export function VelocityWarp() {
       s.direction = dir;
       
       if (!s.isWarpingRef) {
-        // Restored stealthy 5% anomaly probability
-        s.isPetrovaMode = Math.random() < 0.05;
+        // High visibility for active testing Phase
+        s.isPetrovaMode = Math.random() < 0.90;
         
         s.isWarpingRef = true;
         setIsWarping(true);
