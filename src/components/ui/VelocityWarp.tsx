@@ -65,25 +65,43 @@ export function VelocityWarp() {
 
       // Petrova Central Beam Rendering (The Astrophage line to Tau Ceti)
       if (s.isPetrovaMode) {
-        // Outer glowing aura
-        ctx.shadowBlur = 40;
-        ctx.shadowColor = "#FFD700";
-        ctx.fillStyle = "rgba(255, 215, 0, 0.1)";
-        ctx.fillRect(canvas.width / 2 - 50, 0, 100, canvas.height);
+        // Astrophage swarm mechanics: Hundreds of overlapping, blinding pulses
         
-        // Scorching inner core
-        ctx.shadowBlur = 80;
+        // Deep Outer glowing aura (Infrared heat bleed)
+        ctx.shadowBlur = 60;
+        ctx.shadowColor = "#FF3300"; // Deep burning red
+        ctx.fillStyle = "rgba(255, 30, 0, 0.05)";
+        ctx.fillRect(canvas.width / 2 - 80, 0, 160, canvas.height);
+
+        // Inner golden aura (Astrophage light emission)
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = "#FFD700";
+        ctx.fillStyle = "rgba(255, 215, 0, 0.15)";
+        ctx.fillRect(canvas.width / 2 - 30, 0, 60, canvas.height);
+        
+        // Scorching inner core (Pure light)
+        ctx.shadowBlur = 20;
         ctx.shadowColor = "#FFFFFF";
         ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(canvas.width / 2 - 8, 0, 16, canvas.height);
+        ctx.fillRect(canvas.width / 2 - 5, 0, 10, canvas.height);
         
+        // Minor Astrophage clusters around the main beam
+        for(let j=0; j<15; j++) {
+           const clusterX = (canvas.width / 2) + ((Math.random() - 0.5) * 120);
+           const clusterY = Math.random() * canvas.height;
+           ctx.beginPath();
+           ctx.arc(clusterX, clusterY, Math.random() * 3 + 1, 0, Math.PI * 2);
+           ctx.fillStyle = Math.random() > 0.5 ? '#FFFDE7' : '#FFAA00';
+           ctx.fill();
+        }
+
         // Reset Shadow for minor lines
         ctx.shadowBlur = 0;
       }
 
       // ALWAYS render lines so they continue to fly during the CSS fade out!
       // This prevents the abrupt vanishing of the kinetic lines.
-        lines.forEach(line => {
+      lines.forEach(line => {
         // Lines flow strongly in opposite direction of the jump
         const movement = -s.direction * line.speed;
         line.y += movement;
@@ -98,37 +116,20 @@ export function VelocityWarp() {
         let strokeColor = line.color;
         if (s.isPetrovaMode) {
             // Convert to Astrophage intense heat colors
-            if (line.color === '#d91111') strokeColor = '#FFD700'; // Gold
-            else if (line.color === '#0ee0c3') strokeColor = '#FFAA00'; // Deep Orange
+            if (line.color === '#d91111') strokeColor = '#FF3300'; // Deep Heat
+            else if (line.color === '#0ee0c3') strokeColor = '#FFD700'; // Pure Gold
             else strokeColor = '#FFFDE7'; // Blinding white
         }
 
         // Speed lines styling
         ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = s.isPetrovaMode ? 4.0 : 2.0;    // Astrophage lines are thicker and emit more light
+        ctx.lineWidth = s.isPetrovaMode ? 6.0 : 2.0;    // Astrophage lines are thick pulses of light
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(renderedX, line.y);
         ctx.lineTo(renderedX, line.y + (movement > 0 ? line.length : -line.length));
         ctx.stroke();
       });
-      
-      // Hidden UI Elements for the Hail Mary Easter Egg
-      if (s.isPetrovaMode) {
-         ctx.font = "bold 20px monospace";
-         ctx.fillStyle = "rgba(255, 215, 0, 0.8)";
-         ctx.textAlign = "center";
-         ctx.fillText("[TAU CETI TRAJECTORY ENGAGED]", canvas.width / 2, canvas.height - 110);
-         
-         ctx.font = "bold 14px monospace";
-         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-         ctx.fillText("ASTROPHAGE SWARM DETECTED ON PETROVA LINE", canvas.width / 2, canvas.height - 80);
-
-         // The unmistakably iconic Rocky (Eridian) reference
-         ctx.font = "bold 22px 'Arial', sans-serif"; // Using Arial for music note support
-         ctx.fillStyle = "#0ee0c3"; // Cyan for contrast
-         ctx.fillText("♫ ♪ ♬ 「 AMAZE! HAPPY HAPPY HAPPY! 」 ♬ ♪ ♫", canvas.width / 2, canvas.height - 40);
-      }
 
       rafId = requestAnimationFrame(animate);
     };
