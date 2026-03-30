@@ -135,8 +135,8 @@ export function VelocityWarp() {
       s.direction = dir;
       
       if (!s.isWarpingRef) {
-        // Roll for Easter Egg (5% chance)
-        s.isPetrovaMode = Math.random() < 0.05;
+        // Roll for Easter Egg (90% chance for testing Phase)
+        s.isPetrovaMode = Math.random() < 0.90;
         
         s.isWarpingRef = true;
         setIsWarping(true);
