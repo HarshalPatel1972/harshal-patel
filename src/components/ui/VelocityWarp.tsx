@@ -23,11 +23,13 @@ export function VelocityWarp() {
 
     // Use state-bound lines so they can be regenerated dynamically or use normalized horizontal placement
     let lines: { xNorm: number; y: number; length: number; speed: number; color: string }[] = [];
+    let petrovaSwarm: { offsetX: number; y: number; speed: number; radius: number; color: string }[] = [];
     const colors = ['#E8E8E6', '#d91111', '#0ee0c3']; 
     
     // Dynamic Density: Generate lines based on viewport area (Scales perfectly from Mobile to 4K Desktop)
     const generateLines = () => {
       lines = [];
+      petrovaSwarm = [];
       const density = Math.floor((window.innerWidth * window.innerHeight) / 7000); 
       // e.g. 1920x1080 -> ~296 lines (immersion on desktop). 375x812 -> ~43 lines. (immersion on mobile).
       
@@ -38,6 +40,23 @@ export function VelocityWarp() {
               length: 100 + Math.random() * 250, // Cinematic length
               speed: 10 + Math.random() * 20, // Cinematic speed
               color: colors[Math.floor(Math.random() * colors.length)]
+          });
+      }
+
+      // Pre-allocate Astrophage Swarm for Zero-Lag (Oily Smooth) running
+      const swarmDensity = density * 2.5; 
+      for(let i=0; i < swarmDensity; i++) {
+          const depth = Math.random(); 
+          // 5th power pushes 80% to cluster heavily around the center
+          const stretch = Math.pow(depth, 5) * (window.innerWidth / 1.5);
+          const directionMap = Math.random() > 0.5 ? 1 : -1;
+          
+          petrovaSwarm.push({
+             offsetX: stretch * directionMap,
+             y: Math.random() * window.innerHeight,
+             speed: 15 + Math.random() * 30, // Faster than normal lines
+             radius: 0.5 + Math.random() * 2.5,
+             color: Math.random() > 0.7 ? '#FFFDE7' : (Math.random() > 0.4 ? '#FFD700' : '#FF3300')
           });
       }
     };
@@ -65,38 +84,38 @@ export function VelocityWarp() {
 
       // Petrova Central Beam Rendering (The Astrophage line to Tau Ceti)
       if (s.isPetrovaMode) {
-        // Astrophage swarm mechanics: Hundreds of overlapping, blinding pulses
+        // NO SHADOW BLUR. ShadowBlur kills GPU performance.
+        // We use layered alpha rects to get a glassy, oily smooth glow.
         
-        // Deep Outer glowing aura (Infrared heat bleed)
-        ctx.shadowBlur = 60;
-        ctx.shadowColor = "#FF3300"; // Deep burning red
+        const centerX = canvas.width / 2;
+
+        // Outer Heat Bleed (Deep trailing radiation)
         ctx.fillStyle = "rgba(255, 30, 0, 0.05)";
-        ctx.fillRect(canvas.width / 2 - 80, 0, 160, canvas.height);
+        ctx.fillRect(centerX - 100, 0, 200, canvas.height);
+        
+        ctx.fillStyle = "rgba(255, 30, 0, 0.1)";
+        ctx.fillRect(centerX - 50, 0, 100, canvas.height);
 
         // Inner golden aura (Astrophage light emission)
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = "#FFD700";
-        ctx.fillStyle = "rgba(255, 215, 0, 0.15)";
-        ctx.fillRect(canvas.width / 2 - 30, 0, 60, canvas.height);
+        ctx.fillStyle = "rgba(255, 170, 0, 0.2)";
+        ctx.fillRect(centerX - 20, 0, 40, canvas.height);
         
         // Scorching inner core (Pure light)
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "#FFFFFF";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(canvas.width / 2 - 5, 0, 10, canvas.height);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.fillRect(centerX - 3, 0, 6, canvas.height);
         
-        // Minor Astrophage clusters around the main beam
-        for(let j=0; j<15; j++) {
-           const clusterX = (canvas.width / 2) + ((Math.random() - 0.5) * 120);
-           const clusterY = Math.random() * canvas.height;
-           ctx.beginPath();
-           ctx.arc(clusterX, clusterY, Math.random() * 3 + 1, 0, Math.PI * 2);
-           ctx.fillStyle = Math.random() > 0.5 ? '#FFFDE7' : '#FFAA00';
-           ctx.fill();
-        }
+        // Render pre-calculated Swarm particles (Oily smooth, no Math.random at runtime)
+        petrovaSwarm.forEach(p => {
+           const movement = -s.direction * p.speed;
+           p.y += movement;
+           if (p.y < -50) p.y = canvas.height + 50;
+           if (p.y > canvas.height + 50) p.y = -50;
 
-        // Reset Shadow for minor lines
-        ctx.shadowBlur = 0;
+           ctx.beginPath();
+           ctx.arc(centerX + p.offsetX, p.y, p.radius, 0, Math.PI * 2);
+           ctx.fillStyle = p.color;
+           ctx.fill();
+        });
       }
 
       // ALWAYS render lines so they continue to fly during the CSS fade out!
