@@ -304,6 +304,7 @@ export const characterRegistry: Record<string, CharacterData> = {
 };
 
 export const mappaQuotesList: QuoteEntry[] = [
+  /*
   {
     charId: "EREN",
     en: "IF YOU DON'T FIGHT, YOU CAN'T WIN.",
@@ -319,6 +320,7 @@ export const mappaQuotesList: QuoteEntry[] = [
     "es-419": "SI NO PELEAS, NO PUEDES GANAR.",
     es: "SI NO PELEAS, NO PUEDES GANAR."
   },
+  */
   {
     charId: "THORS",
     en: "YOU HAVE NO ENEMIES. NO ONE HAS ANY ENEMIES. THERE IS NO ONE WHO IT IS OKAY TO HURT.",
@@ -409,6 +411,7 @@ export const mappaQuotesList: QuoteEntry[] = [
     "es-419": "QUIERO VIVIR UNA VIDA DE LA QUE PUEDA ESTAR ORGULLOSO.",
     es: "QUIERO VIVIR UNA VIDA DE LA QUE PUEDA ESTAR ORGULLOSO."
   },
+  /*
   {
     charId: "EREN",
     en: "I'LL KEEP MOVING FORWARD. UNTIL MY ENEMIES ARE DESTROYED.",
@@ -424,6 +427,7 @@ export const mappaQuotesList: QuoteEntry[] = [
     "es-419": "SEGUIRÉ AVANZANDO. HASTA QUE MIS ENEMIGOS SEAN DESTRUIDOS.",
     es: "SEGUIRÉ AVANZANDO. HASTA QUE MIS ENEMIGOS SEAN DESTRUIDOS."
   },
+  */
   {
     charId: "GOJO",
     en: "THROUGHOUT HEAVEN AND EARTH, I ALONE AM THE HONORED ONE.",
