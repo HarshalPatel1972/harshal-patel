@@ -113,14 +113,21 @@ export function VelocityWarp() {
         ctx.stroke();
       });
       
-      // Hidden UI Elements for the Easter Egg
+      // Hidden UI Elements for the Hail Mary Easter Egg
       if (s.isPetrovaMode) {
          ctx.font = "bold 20px monospace";
-         ctx.fillStyle = "rgba(255, 215, 0, 0.6)";
+         ctx.fillStyle = "rgba(255, 215, 0, 0.8)";
          ctx.textAlign = "center";
-         ctx.fillText("[TAU CETI TRAJECTORY ENGAGED]", canvas.width / 2, canvas.height - 80);
+         ctx.fillText("[TAU CETI TRAJECTORY ENGAGED]", canvas.width / 2, canvas.height - 110);
+         
          ctx.font = "bold 14px monospace";
-         ctx.fillText("ASTROPHAGE CONTAINMENT: OVERRIDE", canvas.width / 2, canvas.height - 50);
+         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+         ctx.fillText("ASTROPHAGE SWARM DETECTED ON PETROVA LINE", canvas.width / 2, canvas.height - 80);
+
+         // The unmistakably iconic Rocky (Eridian) reference
+         ctx.font = "bold 22px 'Arial', sans-serif"; // Using Arial for music note support
+         ctx.fillStyle = "#0ee0c3"; // Cyan for contrast
+         ctx.fillText("♫ ♪ ♬ 「 AMAZE! HAPPY HAPPY HAPPY! 」 ♬ ♪ ♫", canvas.width / 2, canvas.height - 40);
       }
 
       rafId = requestAnimationFrame(animate);
@@ -135,8 +142,8 @@ export function VelocityWarp() {
       s.direction = dir;
       
       if (!s.isWarpingRef) {
-        // Roll for Easter Egg (90% chance for testing Phase)
-        s.isPetrovaMode = Math.random() < 0.90;
+        // Restored stealthy 5% anomaly probability
+        s.isPetrovaMode = Math.random() < 0.05;
         
         s.isWarpingRef = true;
         setIsWarping(true);
