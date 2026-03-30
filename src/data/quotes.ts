@@ -29,6 +29,7 @@ export interface QuoteEntry {
   "pt-br": string;
   "es-419": string;
   es: string;
+  eridian?: string;
 }
 
 export const characterRegistry: Record<string, CharacterData> = {
@@ -300,6 +301,23 @@ export const characterRegistry: Record<string, CharacterData> = {
     es: { name: "KISHIBE" },
     image: "/KISHIBE.jpg",
     opacity: 0.3
+  },
+  // ♫ Project Hail Mary — Rocky of Erid ♫
+  ROCKY: {
+    en: { name: "ROCKY" },
+    ja: { name: "ROCKY" },
+    ko: { name: "ROCKY" },
+    "zh-tw": { name: "ROCKY" },
+    hi: { name: "ROCKY" },
+    fr: { name: "ROCKY" },
+    id: { name: "ROCKY" },
+    de: { name: "ROCKY" },
+    it: { name: "ROCKY" },
+    "pt-br": { name: "ROCKY" },
+    "es-419": { name: "ROCKY" },
+    es: { name: "ROCKY" },
+    image: "/ROCKY.jpg",
+    opacity: 0.35
   }
 };
 
@@ -592,5 +610,23 @@ export const mappaQuotesList: QuoteEntry[] = [
     "pt-br": "NÃO TEMA NADA. NEM MESMO O PRÓPRIO MEDO.",
     "es-419": "NO TEMAS A NADA. INCLUSO AL MIEDO MISMO.",
     es: "NO TEMAS A NADA. INCLUSO AL MIEDO MISMO."
+  },
+  // ♫ Project Hail Mary — Rocky (Eridian). Only surfaces in Eridian language mode. ♫
+  {
+    charId: "ROCKY",
+    eridian: "♫ ♪ ♬ HARSHAL MAKE CODE. AMAZE! ♬ ♪ ♫",
+    en: "HARSHAL MAKE CODE. AMAZE!",
+    ja: "HARSHAL MAKE CODE. AMAZE!",
+    ko: "HARSHAL MAKE CODE. AMAZE!",
+    "zh-tw": "HARSHAL MAKE CODE. AMAZE!",
+    hi: "HARSHAL MAKE CODE. AMAZE!",
+    fr: "HARSHAL MAKE CODE. AMAZE!",
+    id: "HARSHAL MAKE CODE. AMAZE!",
+    de: "HARSHAL MAKE CODE. AMAZE!",
+    it: "HARSHAL MAKE CODE. AMAZE!",
+    "pt-br": "HARSHAL MAKE CODE. AMAZE!",
+    "es-419": "HARSHAL MAKE CODE. AMAZE!",
+    es: "HARSHAL MAKE CODE. AMAZE!"
   }
 ];
+

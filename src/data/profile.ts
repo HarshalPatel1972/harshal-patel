@@ -502,5 +502,48 @@ export const profile = {
       { name: "Python / AI", level: 80, color: "#f59e0b" },
       { name: "SQL / Bash", level: 75, color: "#10b981" },
     ],
+  },
+  // ♫ Rocky translated this. He amaze. ♫
+  "eridian": {
+    name: "HARSHAL",
+    title: "♩ MAKE-CODE HUMAN ♩",
+    tagline: "HARSHAL MAKE FAST SYSTEM. USE GO. USE TYPESCRIPT. USE WASM. AMAZE!",
+    bio: "HARSHAL MAKE CODE IN THREE LANGUAGE-THING. GO LANGUAGE. WASM LANGUAGE. TYPESCRIPT LANGUAGE. ALSO SOLVE 300 HARD PROBLEM. MAKE SYSTEM FAST UNDER 200 MILLISECOND. AMAZE! QUESTION? YES. HARSHAL GOOD ENGINEER.",
+    email: "harshalpatel6828@gmail.com",
+    phone: "+91-7017297823",
+    github: "https://github.com/HarshalPatel1972",
+    linkedin: "https://www.linkedin.com/in/harshal-patel-59b9a5278/",
+    location: "INDIA-PLACE. VARANASI.",
+
+    education: {
+      school: "CHANDIGARH UNIVERSITY-THING",
+      degree: "LEARN CSE + AI/ML",
+      years: "2022 – 2026",
+      gpa: "8.87",
+    },
+
+    experience: [
+      {
+        company: "CELEBAL TECHNOLOGIES",
+        role: "MAKE FRONT-THING FOR HUMAN SCREEN",
+        period: "MAY 2025 – OCT 2025",
+        description: "HARSHAL MAKE 15 REACT COMPONENT-THING. ALSO CONNECT SHAZAM MUSIC-DATA. ALSO MAKE KANBAN FLOW-TRACK. ALSO MAKE 10 INTERACTIVE FEATURE. AMAZE!",
+      },
+      {
+        company: "INTERNSHALA",
+        role: "LOOK AT DATA. MAKE SENSE.",
+        period: "JUN 2024 – AUG 2024",
+        description: "HARSHAL LOOK AT 5000 SELL-RECORD IN TABLEAU. MAKE MODEL 85% CORRECT. IMPROVE PLAN-INVENTORY 20%. ALSO MAKE TRAIN FASTER 25%. HAPPY.",
+      },
+    ],
+
+    skills: [
+      { name: "C++ / SYSTEMS", level: 95, color: "#f43f5e" },
+      { name: "GO (GOLANG)", level: 92, color: "#14b8a6" },
+      { name: "TYPESCRIPT / REACT", level: 90, color: "#3b82f6" },
+      { name: "RUST / WASM", level: 85, color: "#8b5cf6" },
+      { name: "PYTHON / AI", level: 80, color: "#f59e0b" },
+      { name: "SQL / BASH", level: 75, color: "#10b981" },
+    ],
   }
 };

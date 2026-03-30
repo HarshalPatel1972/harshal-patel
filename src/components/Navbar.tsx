@@ -86,6 +86,13 @@ const NAV_ITEMS: NavItems = {
     { id: "projects", label: "TRABAJO", percent: 33 },
     { id: "about", label: "ORIGEN", percent: 65 },
     { id: "contact", label: "CONTACTO", percent: 95 },
+  ],
+  // ♫ Rocky translate human page. Amaze! ♫
+  eridian: [
+    { id: "hero", label: "WHO-IS", percent: 5 },
+    { id: "projects", label: "MAKE-THING", percent: 33 },
+    { id: "about", label: "HARSHAL-DATA", percent: 65 },
+    { id: "contact", label: "SEND-SIGNAL", percent: 95 },
   ]
 };
 

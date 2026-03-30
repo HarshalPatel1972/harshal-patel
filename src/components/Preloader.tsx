@@ -36,11 +36,12 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   // Enhanced Randomization: Avoid picking the same quote twice in a row
   const [selectedQuote] = useState(() => {
     const lastQuoteId = typeof window !== 'undefined' ? sessionStorage.getItem('last_quote_id') : null;
-    let filtered = mappaQuotesList;
+    let filtered = mappaQuotesList.filter(q => q.charId !== 'ROCKY'); // Rocky only shows in Eridian mode
     
     // If we have more than 1 quote, try to pick one that isn't the last one shown
-    if (mappaQuotesList.length > 1 && lastQuoteId) {
-      filtered = mappaQuotesList.filter(q => `${q.charId}-${q.en.slice(0, 10)}` !== lastQuoteId);
+    if (filtered.length > 1 && lastQuoteId) {
+      const deduplicated = filtered.filter(q => `${q.charId}-${q.en.slice(0, 10)}` !== lastQuoteId);
+      if (deduplicated.length > 0) filtered = deduplicated;
     }
     
     const picked = filtered[Math.floor(Math.random() * filtered.length)];
@@ -52,25 +53,31 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     
     return picked;
   });
+
+  // In Eridian mode, always override with Rocky's quote
+  const rockyQuote = mappaQuotesList.find(q => q.charId === 'ROCKY');
+  const activeQuote = language === 'eridian' ? (rockyQuote ?? selectedQuote) : selectedQuote;
   
   const quoteData = useMemo(() => {
-    if (!selectedQuote) return null;
-    const character = characterRegistry[selectedQuote.charId];
+    if (!activeQuote) return null;
+    const character = characterRegistry[activeQuote.charId];
     
     return {
-      text: language === 'ja' ? selectedQuote.ja : 
-            language === 'ko' ? selectedQuote.ko : 
-            language === 'zh-tw' ? selectedQuote["zh-tw"] : 
-            language === 'hi' ? (selectedQuote.hi || selectedQuote.en) :
-            language === 'fr' ? selectedQuote.fr :
-            language === 'id' ? selectedQuote.id :
-            language === 'de' ? selectedQuote.de :
-            language === 'it' ? selectedQuote.it :
-            language === 'pt-br' ? selectedQuote["pt-br"] :
-            language === 'es-419' ? selectedQuote["es-419"] :
-            language === 'es' ? selectedQuote.es :
-            selectedQuote.en,
-      author: language === 'ja' ? character.ja.name : 
+      text: language === 'eridian' ? (activeQuote.eridian || activeQuote.en) :
+            language === 'ja' ? activeQuote.ja : 
+            language === 'ko' ? activeQuote.ko : 
+            language === 'zh-tw' ? activeQuote["zh-tw"] : 
+            language === 'hi' ? (activeQuote.hi || activeQuote.en) :
+            language === 'fr' ? activeQuote.fr :
+            language === 'id' ? activeQuote.id :
+            language === 'de' ? activeQuote.de :
+            language === 'it' ? activeQuote.it :
+            language === 'pt-br' ? activeQuote["pt-br"] :
+            language === 'es-419' ? activeQuote["es-419"] :
+            language === 'es' ? activeQuote.es :
+            activeQuote.en,
+      author: language === 'eridian' ? character.en.name :
+              language === 'ja' ? character.ja.name : 
               language === 'ko' ? character.ko.name : 
               language === 'zh-tw' ? character["zh-tw"].name : 
               language === 'hi' ? (character.hi?.name || character.en.name) :
@@ -85,7 +92,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       image: character.image,
       overrideOpacity: character.opacity
     };
-  }, [language, selectedQuote]);
+  }, [language, activeQuote]);
 
   // Handle case where quoteData is null (safety)
   if (!quoteData) return null;
