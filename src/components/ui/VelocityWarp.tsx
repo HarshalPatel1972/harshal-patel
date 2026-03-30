@@ -9,6 +9,7 @@ export function VelocityWarp() {
   const stateRef = useRef({ 
     direction: 1, 
     isWarpingRef: false,
+    isPetrovaMode: false,
     warpTimer: null as ReturnType<typeof setTimeout> | null
   });
 
@@ -57,8 +58,28 @@ export function VelocityWarp() {
       const s = stateRef.current;
       
       // SOLID BRUTALIST BACKGROUND - Hides everything underneath
-      ctx.fillStyle = "#050505";
+      ctx.fillStyle = s.isPetrovaMode ? "#000000" : "#050505";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.globalCompositeOperation = s.isPetrovaMode ? "screen" : "source-over";
+
+      // Petrova Central Beam Rendering (The Astrophage line to Tau Ceti)
+      if (s.isPetrovaMode) {
+        // Outer glowing aura
+        ctx.shadowBlur = 40;
+        ctx.shadowColor = "#FFD700";
+        ctx.fillStyle = "rgba(255, 215, 0, 0.1)";
+        ctx.fillRect(canvas.width / 2 - 50, 0, 100, canvas.height);
+        
+        // Scorching inner core
+        ctx.shadowBlur = 80;
+        ctx.shadowColor = "#FFFFFF";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(canvas.width / 2 - 8, 0, 16, canvas.height);
+        
+        // Reset Shadow for minor lines
+        ctx.shadowBlur = 0;
+      }
 
       // ALWAYS render lines so they continue to fly during the CSS fade out!
       // This prevents the abrupt vanishing of the kinetic lines.
@@ -73,15 +94,34 @@ export function VelocityWarp() {
 
         const renderedX = line.xNorm * canvas.width;
 
+        // Determine color
+        let strokeColor = line.color;
+        if (s.isPetrovaMode) {
+            // Convert to Astrophage intense heat colors
+            if (line.color === '#d91111') strokeColor = '#FFD700'; // Gold
+            else if (line.color === '#0ee0c3') strokeColor = '#FFAA00'; // Deep Orange
+            else strokeColor = '#FFFDE7'; // Blinding white
+        }
+
         // Speed lines styling
-        ctx.strokeStyle = line.color;
-        ctx.lineWidth = 2.0;    // Thicker lines for higher visibility
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = s.isPetrovaMode ? 4.0 : 2.0;    // Astrophage lines are thicker and emit more light
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(renderedX, line.y);
         ctx.lineTo(renderedX, line.y + (movement > 0 ? line.length : -line.length));
         ctx.stroke();
       });
+      
+      // Hidden UI Elements for the Easter Egg
+      if (s.isPetrovaMode) {
+         ctx.font = "bold 20px monospace";
+         ctx.fillStyle = "rgba(255, 215, 0, 0.6)";
+         ctx.textAlign = "center";
+         ctx.fillText("[TAU CETI TRAJECTORY ENGAGED]", canvas.width / 2, canvas.height - 80);
+         ctx.font = "bold 14px monospace";
+         ctx.fillText("ASTROPHAGE CONTAINMENT: OVERRIDE", canvas.width / 2, canvas.height - 50);
+      }
 
       rafId = requestAnimationFrame(animate);
     };
@@ -95,6 +135,9 @@ export function VelocityWarp() {
       s.direction = dir;
       
       if (!s.isWarpingRef) {
+        // Roll for Easter Egg (5% chance)
+        s.isPetrovaMode = Math.random() < 0.05;
+        
         s.isWarpingRef = true;
         setIsWarping(true);
       }
