@@ -80,31 +80,12 @@ export function VelocityWarp() {
       ctx.fillStyle = s.isPetrovaMode ? "#000000" : "#050505";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      ctx.globalCompositeOperation = s.isPetrovaMode ? "screen" : "source-over";
-
       // Petrova Central Beam Rendering (The Astrophage line to Tau Ceti)
       if (s.isPetrovaMode) {
-        // NO SHADOW BLUR. ShadowBlur kills GPU performance.
-        // We use layered alpha rects to get a glassy, oily smooth glow.
-        
-        const centerX = canvas.width / 2;
-
-        // Outer Heat Bleed (Deep trailing radiation)
-        ctx.fillStyle = "rgba(255, 30, 0, 0.05)";
-        ctx.fillRect(centerX - 100, 0, 200, canvas.height);
-        
-        ctx.fillStyle = "rgba(255, 30, 0, 0.1)";
-        ctx.fillRect(centerX - 50, 0, 100, canvas.height);
-
-        // Inner golden aura (Astrophage light emission)
-        ctx.fillStyle = "rgba(255, 170, 0, 0.2)";
-        ctx.fillRect(centerX - 20, 0, 40, canvas.height);
-        
-        // Scorching inner core (Pure light)
-        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-        ctx.fillRect(centerX - 3, 0, 6, canvas.height);
-        
         // Render pre-calculated Swarm particles (Oily smooth, no Math.random at runtime)
+        // This is purely the tiny glowing Astrophage microorganisms traveling down the line
+        const centerX = canvas.width / 2;
+        
         petrovaSwarm.forEach(p => {
            const movement = -s.direction * p.speed;
            p.y += movement;
@@ -131,18 +112,9 @@ export function VelocityWarp() {
 
         const renderedX = line.xNorm * canvas.width;
 
-        // Determine color
-        let strokeColor = line.color;
-        if (s.isPetrovaMode) {
-            // Convert to Astrophage intense heat colors
-            if (line.color === '#d91111') strokeColor = '#FF3300'; // Deep Heat
-            else if (line.color === '#0ee0c3') strokeColor = '#FFD700'; // Pure Gold
-            else strokeColor = '#FFFDE7'; // Blinding white
-        }
-
-        // Speed lines styling
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = s.isPetrovaMode ? 6.0 : 2.0;    // Astrophage lines are thick pulses of light
+        // Speed lines styling (Standard Brutalist Colors retained)
+        ctx.strokeStyle = line.color;
+        ctx.lineWidth = 2.0;
         ctx.lineCap = "round";
         ctx.beginPath();
         ctx.moveTo(renderedX, line.y);
