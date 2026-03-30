@@ -64,12 +64,13 @@ export function Hero() {
     id: ["Saya menemukan apa yang rusak", "dan membangun apa yang hilang."],
     de: ["Ich finde, was kaputt ist,", "und baue, was fehlt."],
     it: ["Trovo ciò che è rotto", "e costruisco ciò che manca."],
-    "pt-br": ["Eu encontro o que está quebrado", "et eu costruisco ciò che manca."],
+    "pt-br": ["Eu encontro o que está quebrado", "e eu construo o que falta."],
     "es-419": ["Encuentro lo que está roto", "y construyo lo que falta."],
-    es: ["Encuentro lo que está roto", "y construyo lo que falta."]
+    es: ["Encuentro lo que está roto", "y construyo lo que falta."],
+    eridian: ["♩ FIND BROKE-THING.", "BUILD NEW-THING. AMAZE! ♩"]
   };
 
-  const currentIntro = introStages[language as keyof typeof introStages];
+  const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)

@@ -100,7 +100,7 @@ type DotMode = 'LOCKED' | 'CHARGING' | 'RELEASED';
 
 export function Navbar() {
   const { language } = useLanguage();
-  const currentNavItems = NAV_ITEMS[language];
+  const currentNavItems = NAV_ITEMS[language as keyof typeof NAV_ITEMS] || NAV_ITEMS.en;
   const [active, setActive] = useState("hero");
   const pathname = usePathname();
 
