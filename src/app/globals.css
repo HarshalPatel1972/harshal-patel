@@ -345,10 +345,7 @@ body::before {
   box-shadow: 0 0 10px var(--accent-cursed) !important;
 }
 
-.is-eridian [id="available-for-opps"] {
-  background-color: var(--accent-blood) !important;
-  color: #050505 !important;
-}
+  /* Banner accents automatically follow variables, so specific overrides are minimized */
 
 /* System Banner specifically for Eridian mode */
 .is-eridian [class*="bg-[#9e1b1b]"] {
