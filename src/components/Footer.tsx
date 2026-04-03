@@ -8,8 +8,8 @@ export function Footer() {
   const currentProfile = profile[language];
 
   // LOCALIZED KINETIC NARRATIVES ☕
-  const initialText = language === 'hi' ? "काम पसंद आया?" : "Enjoy my work?";
-  const hoverText = language === 'hi' ? "कॉफी पिलाएँ ☕" : "Buy me a Coffee ☕";
+  const initialText = language === 'hi' ? "काम पसंद आया?" : language === 'eridian' ? "LIKE THIS?" : "Enjoy my work?";
+  const hoverText = language === 'hi' ? "कॉफी पिलाएँ ☕" : language === 'eridian' ? "BUY ME COFFEE ☕" : "Buy me a Coffee ☕";
 
   return (
     <footer className="relative bg-[#050505] border-t-4 border-[var(--text-bone)] px-4 py-8 md:px-12 md:py-16 overflow-hidden">

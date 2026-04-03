@@ -20,7 +20,7 @@ interface Project {
 export function Projects() {
   const { language } = useLanguage();
   const { triggerTransition, isPreloading, loadingSlug, setPreloading } = useFlipTransition();
-  const currentProjects = projects[language];
+  const currentProjects = projects[language as keyof typeof projects] || projects.en;
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isOverridden, setIsOverridden] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
@@ -50,10 +50,10 @@ export function Projects() {
       <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
-             {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : language === 'ko' ? '제 1 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 01' : language === 'id' ? 'BAB 01' : language === 'de' ? 'KAPITEL 01' : language === 'it' ? 'CAPITOLO 01' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 01' : 'अध्याय 01'}
+             {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : language === 'ko' ? '제 1 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 01' : language === 'id' ? 'BAB 01' : language === 'de' ? 'KAPITEL 01' : language === 'it' ? 'CAPITOLO 01' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 01' : language === 'eridian' ? 'PART-ONE-THING' : 'अध्याय 01'}
            </div>
            <h2 className="text-5xl md:text-8xl lg:text-9xl font-black font-display text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] m-0">
-             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : language === 'ko' ? <>선정된<br/>작품</> : language === 'zh-tw' ? <>精選<br/>作品集</> : language === 'fr' ? <>TRAVAUX <br/> SÉLECTIONNÉS</> : language === 'id' ? <>KARYA <br/> TERPILIH</> : language === 'de' ? <>AUSGEWÄHLTE <br/> WERKE</> : language === 'it' ? <>OPERE <br/> SELEZIONATE</> : language === 'pt-br' ? <>TRABALHOS <br/> SELECIONADOS</> : (language === 'es-419' || language === 'es') ? <>TRABAJOS <br/> SELECCIONADOS</> : <>चुनिंदा <br/> कार्य</>}
+             {language === 'en' ? <>SELECTED <br/> WORKS</> : language === 'ja' ? <>選定された<br/>作品</> : language === 'ko' ? <>선정된<br/>작품</> : language === 'zh-tw' ? <>精選<br/>作品集</> : language === 'fr' ? <>TRAVAUX <br/> SÉLECTIONNÉS</> : language === 'id' ? <>KARYA <br/> TERPILIH</> : language === 'de' ? <>AUSGEWÄHLTE <br/> WERKE</> : language === 'it' ? <>OPERE <br/> SELEZIONATE</> : language === 'pt-br' ? <>TRABALHOS <br/> SELECIONADOS</> : (language === 'es-419' || language === 'es') ? <>TRABAJOS <br/> SELECCIONADOS</> : language === 'eridian' ? <>HARSHAL <br/> MAKE-THINGS</> : <>चुनिंदा <br/> कार्य</>}
            </h2>
         </div>
         <p className="text-[var(--bg-ink)] font-sans font-bold max-w-xs text-left md:text-right mt-8 md:mt-0 text-sm md:text-base uppercase tracking-widest leading-relaxed">
@@ -75,6 +75,8 @@ export function Projects() {
               ? "Una vetrina di sistemi costruiti e problemi tecnici risolti."
               : (language === 'pt-br' || language === 'es-419' || language === 'es')
               ? (language === 'pt-br' ? "Uma vitrine de sistemas construídos e problemas técnicos resolvidos." : "Una muestra de sistemas construidos y problemas técnicos resueltos.")
+              : language === 'eridian'
+              ? "HARSHAL BUILD GOOD FAST SYSTEM FOR HUMANS. FIX HARD PROBLEM. AMAZE!"
               : "तैयार किए गए सिस्टम और हल की गई तकनीकी समस्याओं का एक प्रदर्शन।"}
         </p>
       </div>
@@ -116,6 +118,8 @@ export function Projects() {
                     ? "EXPANDIR"
                     : (language === 'es-419' || language === 'es')
                     ? "EXPANDIR"
+                    : language === 'eridian'
+                    ? "MAKE_BIG_YES"
                     : "विस्तार"
                   ).split("_").map((word, wIdx) => (
                     <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>
@@ -198,7 +202,7 @@ export function Projects() {
                          </svg>
                        </div>
                        <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
-                           {language === 'en' ? (isLoading ? "Loading..." : "View Project") : language === 'ja' ? (isLoading ? "読み込み中..." : "プロジェクトを見る") : language === 'ko' ? (isLoading ? "로딩 중..." : "프로젝트 보기") : language === 'zh-tw' ? (isLoading ? "載入中..." : "查看項目") : language === 'fr' ? (isLoading ? "Chargement..." : "Voir le Projet") : language === 'id' ? (isLoading ? "Memuat..." : "Lihat Proyek") : language === 'de' ? (isLoading ? "Laden..." : "Projekt ansehen") : language === 'it' ? (isLoading ? "Caricamento..." : "Vedi Progetto") : language === 'pt-br' ? (isLoading ? "Carregando..." : "Ver Projeto") : (language === 'es-419' || language === 'es') ? (isLoading ? "Cargando..." : "Ver Proyecto") : (isLoading ? "लोड हो रहा है..." : "परियोजना देखें")}
+                           {language === 'en' ? (isLoading ? "Loading..." : "View Project") : language === 'ja' ? (isLoading ? "読み込み中..." : "プロジェクトを見る") : language === 'ko' ? (isLoading ? "로딩 중..." : "프로젝트 보기") : language === 'zh-tw' ? (isLoading ? "載入中..." : "查看項目") : language === 'fr' ? (isLoading ? "Chargement..." : "Voir le Projet") : language === 'id' ? (isLoading ? "Memuat..." : "Lihat Proyek") : language === 'de' ? (isLoading ? "Laden..." : "Projekt ansehen") : language === 'it' ? (isLoading ? "Caricamento..." : "Vedi Progetto") : language === 'pt-br' ? (isLoading ? "Carregando..." : "Ver Projeto") : (language === 'es-419' || language === 'es') ? (isLoading ? "Cargando..." : "Ver Proyecto") : language === 'eridian' ? (isLoading ? "WAIT-THING..." : "LOOK AT WORK") : (isLoading ? "लोड हो रहा है..." : "परियोजना देखें")}
                        </span>
                     </div>
                   </div>

@@ -171,7 +171,7 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
 
 export function About() {
   const { language } = useLanguage();
-  const currentProfile = profile[language];
+  const currentProfile = profile[language as keyof typeof profile] || profile.en;
   const sectionRef = useRef<HTMLElement>(null);
   const [skillsVisible, setSkillsVisible] = useState(false);
   const [showPressureVideo, setShowPressureVideo] = useState(false);

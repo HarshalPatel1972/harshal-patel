@@ -9,7 +9,7 @@ export interface Project {
   specs: string[];
 }
 
-export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[]; de: Project[]; it: Project[]; "pt-br": Project[]; "es-419": Project[]; es: Project[] } = {
+export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": Project[]; hi: Project[]; fr: Project[]; id: Project[]; de: Project[]; it: Project[]; "pt-br": Project[]; "es-419": Project[]; es: Project[]; eridian: Project[] } = {
   en: [
     {
       title: "Aero",
@@ -872,6 +872,79 @@ export const projects: { en: Project[]; ja: Project[]; ko: Project[]; "zh-tw": P
       slug: "a1-tantra",
       mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
       specs: ["// NAV_SUB_SEGUNDO", "// LEADS_SERVERLESS", "// ESTÉTICA_OPTIMIZADA"]
+    }
+  ],
+  // ♫ Rocky translate project list. Very fast code. Amaze! ♫
+  eridian: [
+    {
+      title: "Aero",
+      description: "HARSHAL MAKE SEND-DATA FAST. 100MB/S. NO SPY. SECRET HANDSHAKE. AMAZE!",
+      tags: ["Go", "Wails", "React", "Crypto"],
+      color: "#06b6d4",
+      link: "https://github.com/HarshalPatel1972/aero",
+      slug: "aero",
+      mobileScreenshot: "/screenshots_phone/Aero.jpg",
+      specs: ["// VERY_FAST_100MBPS", "// SECRET_CRYPTO_ROCKY", "// NO_PEEK_PROTOCOL_"]
+    },
+    {
+      title: "RIFT",
+      description: "MAKE PHONE BECOME KEY-BOARD. VERY FAST. MAGIC AIR-TYPE. NO INSTALL. YES!",
+      tags: ["Go", "WebSocket", "Win32 API"],
+      color: "#8b5cf6",
+      link: "https://github.com/HarshalPatel1972/rift",
+      slug: "rift",
+      mobileScreenshot: "/screenshots_phone/Rift.jpg",
+      specs: ["// NO_WAIT_SPEED", "// ZERO_FRICTION_TYPE", "// MAGIC_PHONE_BRIDGE_"]
+    },
+    {
+      title: "Momentum",
+      description: "CONNECT AI FRIEND TO POCKET SENDER. TELL CURSOR YES OR NO FAR AWAY. SAFE!",
+      tags: ["MCP", "Node.js", "Telegram", "Go"],
+      color: "#f97316",
+      link: "https://github.com/HarshalPatel1972/momentum",
+      slug: "momentum",
+      mobileScreenshot: "/screenshots_phone/Momentum.jpg",
+      specs: ["// MCP_FRIEND", "// TELEGRAM_BRIDGE_THING", "// SAFE_FAR_AWAY_WORK_"]
+    },
+    {
+      title: "GoSync",
+      description: "SAVE DATA IN COLD. MERKLE TREE FIND DIFFERENT PIECE. SEND ONLY SMALL PIECE. SMART.",
+      tags: ["Go", "WASM", "Next.js", "IndexedDB"],
+      color: "#10b981",
+      link: "https://github.com/HarshalPatel1972/gosync",
+      slug: "gosync",
+      mobileScreenshot: "/screenshots_phone/GoSync.jpg",
+      specs: ["// SAVE_DATA_70%", "// TREE_VALIDATE_MATH", "// COLD_STORAGE_FIRST_"]
+    },
+    {
+      title: "Velocity",
+      description: "HARSHAL SQUISH WHATSAPP MEMORY. 370MB BECOME 90MB. MAKE CPU REST. GOOD SLEEP.",
+      tags: ["C++", "Win32", "Optimization"],
+      color: "#f43f5e",
+      link: "https://github.com/HarshalPatel1972/velocity",
+      slug: "velocity",
+      mobileScreenshot: "/screenshots_phone/Velocity.jpg",
+      specs: ["// SQUISH_RAM_75%", "// ECO_REST_SPEED", "// MEMORY_CUT_ENGINE_"]
+    },
+    {
+      title: "WinLight",
+      description: "RUST CODE SEARCH 50,000 FILE VERY FAST. MULTI-SORT FIND THING UNDER 100MS. AMAZE!",
+      tags: ["Rust", "Tauri", "Algorithms"],
+      color: "#3b82f6",
+      link: "https://github.com/HarshalPatel1972/win-light",
+      slug: "win-light",
+      mobileScreenshot: "/screenshots_phone/Win-light.jpg",
+      specs: ["// FIND_50K_THINGS", "// NO_WAIT_100MS", "// RUST_MANY_WORK_"]
+    },
+    {
+      title: "A1 Tantra",
+      description: "BIG BEAUTIFUL SITE FOR TANTRA HUMANS. FAST PAGE TURN. NO SERVER LEADS. PEACE.",
+      tags: ["Next.js", "Tailwind", "SEO"],
+      color: "#eab308",
+      link: "https://a1-tantra.vercel.app/",
+      slug: "a1-tantra",
+      mobileScreenshot: "/screenshots_phone/A1 TANTRA.jpg",
+      specs: ["// VERY_FAST_PAGE", "// SERVER_NO_NEED", "// BEAUTIFUL_LOOK_"]
     }
   ]
 };

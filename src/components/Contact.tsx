@@ -67,6 +67,11 @@ const LINKS = {
     { id: "email", label: "01 // E-MAIL", value: "ENVIAR MENSAJE", href: `mailto:${profile.es.email}` },
     { id: "github", label: "02 // GITHUB", value: "VER REPOSITORIO", href: profile.es.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile.es.linkedin },
+  ],
+  eridian: [
+    { id: "email", label: "01 // SIGNAL-SEND", value: "MAKE NOISE TO HARSHAL", href: `mailto:${profile.eridian.email}` },
+    { id: "github", label: "02 // CODE-PLACE", value: "LOOK AT BUGS", href: profile.eridian.github },
+    { id: "linkedin", label: "03 // SUIT-PLACE", value: "SEE HUMAN SUIT", href: profile.eridian.linkedin },
   ]
 };
 
@@ -79,7 +84,7 @@ interface LinkItem {
 
 export function Contact() {
   const { language } = useLanguage();
-  const currentLinks = LINKS[language];
+  const currentLinks = LINKS[language as keyof typeof LINKS] || LINKS.en;
   const containerRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
 
@@ -124,7 +129,7 @@ export function Contact() {
       {/* Massive Background Typography */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
          <h2 className={`text-[6rem] md:text-[25rem] font-black whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--bg-ink)]`}>
-            {language === 'en' ? "CONTACT" : language === 'ja' ? "連絡先" : language === 'ko' ? "연락처" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "CONTACT" : language === 'id' ? "KONTAK" : language === 'de' ? "KONTAKT" : language === 'it' ? "CONTATTO" : language === 'pt-br' ? "CONTATO" : (language === 'es-419' || language === 'es') ? "CONTACTO" : "संपर्क"}
+            {language === 'en' ? "CONTACT" : language === 'ja' ? "連絡先" : language === 'ko' ? "연락처" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "CONTACT" : language === 'id' ? "KONTAK" : language === 'de' ? "KONTAKT" : language === 'it' ? "CONTATTO" : language === 'pt-br' ? "CONTATO" : (language === 'es-419' || language === 'es') ? "CONTACTO" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क"}
          </h2>
       </div>
 
@@ -133,10 +138,10 @@ export function Contact() {
         {/* Header Block */}
         <ScrollReveal duration={1000}>
            <div className={`bg-black text-white font-black text-xs tracking-widest px-3 py-1 inline-block mb-4 ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
-             {language === 'en' ? 'CHAPTER 03' : language === 'ja' ? '第三章' : language === 'ko' ? '제 3 장' : language === 'zh-tw' ? '第三章' : language === 'fr' ? 'CHAPITRE 03' : language === 'id' ? 'BAB 03' : language === 'de' ? 'KAPITEL 03' : language === 'it' ? 'CAPITOLO 03' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 03' : 'अध्याय 03'}
+             {language === 'en' ? 'CHAPTER 03' : language === 'ja' ? '第三章' : language === 'ko' ? '제 3 장' : language === 'zh-tw' ? '第三章' : language === 'fr' ? 'CHAPITRE 03' : language === 'id' ? 'BAB 03' : language === 'de' ? 'KAPITEL 03' : language === 'it' ? 'CAPITOLO 03' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 03' : language === 'eridian' ? 'PART-THREE-THING' : 'अध्याय 03'}
            </div>
            <h2 className={`text-4xl md:text-8xl lg:text-9xl font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'ja' ? <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></> : language === 'ko' ? <>통신을<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>시작하기</span></> : language === 'zh-tw' ? <>發起<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>通信</span></> : language === 'fr' ? <>INITIER LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'id' ? <>MULAI <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>KOMUNIKASI</span></> : language === 'de' ? <>KOMMUNIKATION <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>EINLEITEN</span></> : language === 'it' ? <>AVVIARE LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAZIONE</span></> : language === 'pt-br' ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAÇÃO</span></> : (language === 'es-419' || language === 'es') ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICACIÓN</span></> : <>संपर्क <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>शुरू करें</span></>}
+             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'ja' ? <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></> : language === 'ko' ? <>통신을<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>시작하기</span></> : language === 'zh-tw' ? <>發起<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>通信</span></> : language === 'fr' ? <>INITIER LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'id' ? <>MULAI <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>KOMUNIKASI</span></> : language === 'de' ? <>KOMMUNIKATION <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>EINLEITEN</span></> : language === 'it' ? <>AVVIARE LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAZIONE</span></> : language === 'pt-br' ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAÇÃO</span></> : (language === 'es-419' || language === 'es') ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICACIÓN</span></> : language === 'eridian' ? <>MAKE NOISE <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>TO HARSHAL NOW</span></> : <>संपर्क <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>शुरू करें</span></>}
            </h2>
         </ScrollReveal>
 
