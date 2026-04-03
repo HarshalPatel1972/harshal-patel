@@ -46,7 +46,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   }));
 
   useEffect(() => {
-    const touchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    // Improved touch detection: only disable if it's primarily a touch device
+    // and hasn't seen mouse movement, or if we want to allow mouse on touch-enabled desktops.
+    const touchDevice = ("ontouchstart" in window || navigator.maxTouchPoints > 0) && 
+                       (window.matchMedia("(pointer: coarse)").matches && !window.matchMedia("(pointer: fine)").matches);
     setIsTouch(touchDevice);
     if (touchDevice) return;
 
@@ -82,6 +85,9 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     window.addEventListener("resize", handleResize);
 
     const onMouseMove = (e: MouseEvent) => { 
+      // If we see mouse movement, ensure isTouch is false
+      if (isTouch) setIsTouch(false);
+      
       mouse.current = { x: e.clientX, y: e.clientY }; 
       if (!tickingMouseRef.current) {
         window.requestAnimationFrame(() => {
@@ -216,8 +222,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseover", onMouseOver);
       document.removeEventListener("mouseout", onMouseOut);
-      window.addEventListener("mousedown", onMouseDown);
-      window.addEventListener("mouseup", onMouseUp);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
     };
   }, [isTouch]);
 
