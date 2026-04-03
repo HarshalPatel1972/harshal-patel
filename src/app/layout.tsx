@@ -5,6 +5,8 @@ import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
 import { VelocityWarp } from "@/components/ui/VelocityWarp";
 
+import { Providers } from "@/components/Providers";
+
 const cirka = localFont({
   src: [
     {
@@ -175,41 +177,43 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${cirka.variable} ${season.variable} ${victor.variable} ${luna.variable} font-sans antialiased bg-background text-foreground`}
       >
-        <ImageGuard />
-        {/* JSON-LD Structured Data for Google Search */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "name": "Harshal Patel",
-                "alternateName": ["Harshal Patel Portfolio", "Harshal Patel Engineer"],
-                "url": "https://harshal-patel-chi.vercel.app"
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "Person",
-                "name": "Harshal Patel",
-                "url": "https://harshal-patel-chi.vercel.app",
-                "jobTitle": "Software Engineer",
-                "alumniOf": {
-                  "@type": "CollegeOrUniversity",
-                  "name": "Chandigarh University"
+        <Providers>
+          <ImageGuard />
+          {/* JSON-LD Structured Data for Google Search */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify([
+                {
+                  "@context": "https://schema.org",
+                  "@type": "WebSite",
+                  "name": "Harshal Patel",
+                  "alternateName": ["Harshal Patel Portfolio", "Harshal Patel Engineer"],
+                  "url": "https://harshal-patel-chi.vercel.app"
                 },
-                "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
-                "sameAs": [
-                  "https://github.com/HarshalPatel1972",
-                  "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
-                ]
-              }
-            ])
-          }}
-        />
-        <div className="halftone-glow" />
-        <VelocityWarp />
-        {children}
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Person",
+                  "name": "Harshal Patel",
+                  "url": "https://harshal-patel-chi.vercel.app",
+                  "jobTitle": "Software Engineer",
+                  "alumniOf": {
+                    "@type": "CollegeOrUniversity",
+                    "name": "Chandigarh University"
+                  },
+                  "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
+                  "sameAs": [
+                    "https://github.com/HarshalPatel1972",
+                    "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
+                  ]
+                }
+              ])
+            }}
+          />
+          <div className="halftone-glow" />
+          <VelocityWarp />
+          {children}
+        </Providers>
       </body>
     </html>
   );

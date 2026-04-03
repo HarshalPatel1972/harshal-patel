@@ -1,12 +1,16 @@
 import React from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 const SystemExorcismSeal: React.FC = () => {
+  const { language } = useLanguage();
+  const isEridian = language === 'eridian';
+  
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none opacity-45 overflow-hidden">
       <svg 
         viewBox="0 0 1000 1000" 
         className="w-[150%] h-[150%] md:w-[100%] md:h-[100%] animate-pulse-slow"
-        style={{ filter: 'drop-shadow(0 0 30px rgba(217,17,17,0.4))' }}
+        style={{ filter: `drop-shadow(0 0 30px ${isEridian ? 'rgba(255,179,0,0.4)' : 'rgba(217,17,17,0.4)'})` }}
       >
         <defs>
           <linearGradient id="sealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -46,7 +50,9 @@ const SystemExorcismSeal: React.FC = () => {
               const angle = (i / 12) * Math.PI * 2;
               const x = 500 + Math.cos(angle) * 380;
               const y = 500 + Math.sin(angle) * 380;
-              const hex = ['0xDEBT', '0xNULL', '0xMEM', '0xVOID', '0xSYS', '0xINIT'][i % 6];
+              const hex = isEridian 
+                ? ['ROCKY', 'AMAZE', 'JAZZ', 'SIGNAL', 'P.H.M.', 'LIGHT'][i % 6]
+                : ['0xDEBT', '0xNULL', '0xMEM', '0xVOID', '0xSYS', '0xINIT'][i % 6];
               return (
                 <text 
                   key={i} 

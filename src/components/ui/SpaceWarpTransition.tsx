@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function SpaceWarpTransition() {
   const { isActive, redirectUrl } = useFlipTransition();
+  const { language } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
   // Timing state
@@ -27,7 +29,10 @@ export function SpaceWarpTransition() {
     const stars: Star[] = [];
     const numStars = 600;
     
-    const palette = ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
+    const isEridian = language === 'eridian';
+    const palette = isEridian 
+      ? ["#FFB300", "#0055ff", "#FAF9F6", "#ffffff"] 
+      : ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
 
     class Star {
       x: number; y: number; z: number;

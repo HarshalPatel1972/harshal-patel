@@ -318,7 +318,7 @@ export function Navbar() {
         {showSplash && (
           <div className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: splashPos.x, top: splashPos.y }}>
             {[0, 1, 2].map((i) => (
-              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '100px', height: '100px', margin: '-50px 0 0 -50px', borderColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)' }} />
+              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '100px', height: '100px', margin: '-50px 0 0 -50px', borderColor: isBallCyan ? 'var(--accent-cursed)' : 'var(--accent-blood)' }} />
             ))}
           </div>
         )}
@@ -332,7 +332,11 @@ export function Navbar() {
             onTouchEnd={handleDotTouchEnd}
             onClick={(e) => { e.stopPropagation(); setIsBallCyan(prev => !prev); }}
           >
-            <div className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20" style={{ backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 25px rgba(14,224,195,0.9)' : '0 0 25px rgba(217,17,17,0.9)' }}>
+            <div className="w-full h-full rounded-full transition-all duration-300 relative flex items-center justify-center overflow-hidden border-2 border-white/20" 
+                 style={{ 
+                   backgroundColor: isBallCyan ? 'var(--accent-cursed)' : 'var(--accent-blood)', 
+                   boxShadow: isBallCyan ? '0 0 25px rgba(var(--accent-cursed-rgb), 0.9)' : '0 0 25px rgba(var(--accent-blood-rgb), 0.9)' 
+                 }}>
                <div className="absolute inset-0 halftone-bg opacity-10" />
             </div>
           </div>
@@ -358,7 +362,13 @@ export function Navbar() {
           </div>
           {dotMode !== 'RELEASED' && (
             <div className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" style={{ top: `var(--nav-scroll, 0%)`, transform: `translateY(-50%)`, height: `calc(8px + (var(--nav-speed, 0) * 0.4px))`, width: '100%', zIndex: 10 }}>
-              <div className="rounded-full transition-all duration-300" style={{ width: `calc(8px - (var(--nav-speed, 0) * 0.04px))`, height: '100%', backgroundColor: isBallCyan ? '#0ee0c3' : 'var(--accent-blood)', boxShadow: isBallCyan ? '0 0 15px rgba(14,224,195,0.8)' : '0 0 15px rgba(217,17,17,0.8)' }} />
+              <div className="rounded-full transition-all duration-300" 
+                   style={{ 
+                     width: `calc(8px - (var(--nav-speed, 0) * 0.04px))`, 
+                     height: '100%', 
+                     backgroundColor: isBallCyan ? 'var(--accent-cursed)' : 'var(--accent-blood)', 
+                     boxShadow: isBallCyan ? '0 0 15px rgba(var(--accent-cursed-rgb), 0.8)' : '0 0 15px rgba(var(--accent-blood-rgb), 0.8)' 
+                   }} />
             </div>
           )}
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">

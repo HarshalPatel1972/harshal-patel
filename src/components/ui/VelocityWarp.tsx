@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function VelocityWarp() {
+  const { language } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isWarping, setIsWarping] = useState(false);
   
@@ -24,7 +26,8 @@ export function VelocityWarp() {
     // Use state-bound lines so they can be regenerated dynamically or use normalized horizontal placement
     let lines: { xNorm: number; y: number; length: number; speed: number; color: string }[] = [];
     let petrovaSwarm: { offsetX: number; y: number; speed: number; radius: number; color: string }[] = [];
-    const colors = ['#E8E8E6', '#d91111', '#0ee0c3']; 
+    const isEridian = language === 'eridian';
+    const colors = isEridian ? ['#E8E8E6', '#FFB300', '#0055ff'] : ['#E8E8E6', '#d91111', '#0ee0c3']; 
     
     // Dynamic Density: Generate lines based on viewport area (Scales perfectly from Mobile to 4K Desktop)
     const generateLines = () => {
@@ -56,7 +59,7 @@ export function VelocityWarp() {
              y: Math.random() * window.innerHeight,
              speed: 15 + Math.random() * 30, // Faster than normal lines
              radius: 0.5 + Math.random() * 2.5,
-             color: Math.random() > 0.7 ? '#FFFDE7' : (Math.random() > 0.4 ? '#FFD700' : '#FF3300')
+             color: isEridian ? '#FFB300' : (Math.random() > 0.7 ? '#FFFDE7' : (Math.random() > 0.4 ? '#FFD700' : '#FF3300'))
           });
       }
     };
@@ -135,7 +138,7 @@ export function VelocityWarp() {
       
       if (!s.isWarpingRef) {
         // High visibility for active testing Phase
-        s.isPetrovaMode = Math.random() < 0.05;
+        s.isPetrovaMode = language === 'eridian' ? true : Math.random() < 0.05;
         
         s.isWarpingRef = true;
         setIsWarping(true);

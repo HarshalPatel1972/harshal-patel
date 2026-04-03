@@ -10,7 +10,10 @@
   --text-bone: #E8E8E6;
   --text-muted: #8E8A85;
   --accent-blood: #d91111;
+  --accent-blood-rgb: 217, 17, 17;
+  --accent-blood-alpha: rgba(217, 17, 17, 0.03);
   --accent-cursed: #0ee0c3;
+  --accent-cursed-rgb: 14, 224, 195;
   --panel-border: rgba(232, 232, 230, 0.15);
   --radius: 0px; /* Brutalist sharp edges */
 }
@@ -176,12 +179,12 @@ body::before {
 
 /* ─── CHROMATIC ABERRATION TEXT ─── */
 .chromatic-aberration {
-  text-shadow: 2px 0px 0px rgba(217, 17, 17, 0.8), -2px 0px 0px rgba(14, 224, 195, 0.8);
+  text-shadow: 2px 0px 0px rgba(var(--accent-blood-rgb), 0.8), -2px 0px 0px rgba(var(--accent-cursed-rgb), 0.8);
   position: relative;
 }
 
 .chromatic-hover:hover {
-  text-shadow: 3px 0px 0px rgba(217, 17, 17, 0.8), -3px 0px 0px rgba(14, 224, 195, 0.8);
+  text-shadow: 3px 0px 0px rgba(var(--accent-blood-rgb), 0.8), -3px 0px 0px rgba(var(--accent-cursed-rgb), 0.8);
 }
 
 
@@ -323,47 +326,52 @@ body::before {
 }
 
 /* ─── ERIDIAN THEME (Project Hail Mary Easter Egg) ─── */
-.language-transition-root.is-eridian {
-   --accent-blood: #FFB300 !important; /* Rocky Yellow */
-   --accent-cursed: #0055ff !important; /* Eridian Blue */
+:root.is-eridian {
+    --accent-blood: #FFB300 !important; /* Rocky Yellow */
+    --accent-blood-rgb: 255, 179, 0 !important;
+    --accent-blood-alpha: rgba(255, 179, 0, 0.05) !important;
+    --accent-cursed: #0055ff !important; /* Eridian Blue */
+    --accent-cursed-rgb: 0, 85, 255 !important;
 }
 
 /* Global Selection and Scrollbar for Eridian */
 .is-eridian ::selection {
-  background: #FFB300 !important;
+  background: var(--accent-blood) !important;
   color: #050505 !important;
 }
 
 .is-eridian ::-webkit-scrollbar-thumb {
-  background: #FFB300 !important;
-  box-shadow: 0 0 10px #0055ff !important;
+  background: var(--accent-blood) !important;
+  box-shadow: 0 0 10px var(--accent-cursed) !important;
 }
 
-#available-for-opps:has(span.font-mono),
 .is-eridian [id="available-for-opps"] {
-  background-color: #FFB300 !important;
+  background-color: var(--accent-blood) !important;
   color: #050505 !important;
-}
-
-.brutal-shadow.is-eridian, .is-eridian .brutal-shadow {
-  box-shadow: 8px 8px 0px 0px #FFB300 !important;
-}
-
-.brutal-shadow-sm.is-eridian, .is-eridian .brutal-shadow-sm {
-  box-shadow: 4px 4px 0px 0px #FFB300 !important;
 }
 
 /* System Banner specifically for Eridian mode */
 .is-eridian [class*="bg-[#9e1b1b]"] {
-  background-color: #FFB300 !important;
+  background-color: var(--accent-blood) !important;
   color: #050505 !important;
 }
-.is-eridian [class*="text-[#9e1b1b]"] {
-  color: #0055ff !important;
+.is-eridian [class*="text-[#9e1b1b]"],
+.is-eridian [class*="fill-[#9e1b1b]"] {
+  color: var(--accent-cursed) !important;
+  fill: var(--accent-cursed) !important;
 }
 .is-eridian [class*="bg-white"] {
-  background-color: #0055ff !important;
+  background-color: var(--accent-cursed) !important;
   color: #ffffff !important;
+}
+
+/* Card Shadows and Highlights for Eridian */
+.is-eridian [class*="shadow-rgba(217,17,17"],
+.is-eridian [class*="rgba(217,17,17"] {
+  box-shadow: 0 0 40px rgba(255, 179, 0, 0.4) !important;
+}
+.is-eridian [class*="rgba(158,27,27"] {
+  box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3) !important;
 }
 
 /* ─── CASCADING LANGUAGE TEXT SMOKE TRANSITION ─── */

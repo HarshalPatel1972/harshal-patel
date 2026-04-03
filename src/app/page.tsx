@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { SystemBanner } from "@/components/SystemBanner";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { LanguageProvider, LanguageTransitionWrapper } from "@/context/LanguageContext";
+import { LanguageTransitionWrapper } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { About } from "@/components/About";
@@ -14,8 +14,7 @@ import { Footer } from "@/components/Footer";
 import { ScrollLine } from "@/components/AnimationKit";
 import Cursor from "@/components/ui/Cursor";
 
-import { SignalProvider } from "@/context/SignalContext";
-import { FlipProvider, useFlipTransition } from "@/context/FlipContext";
+import { useFlipTransition } from "@/context/FlipContext";
 import { FlipTransition } from "@/components/ui/FlipTransition";
 import { SpaceWarpTransition } from "@/components/ui/SpaceWarpTransition";
 
@@ -90,12 +89,6 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <LanguageProvider>
-      <SignalProvider>
-        <FlipProvider>
-          <HomeContent />
-        </FlipProvider>
-      </SignalProvider>
-    </LanguageProvider>
+    <HomeContent />
   );
 }

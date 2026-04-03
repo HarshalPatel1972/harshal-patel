@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 const AbstractBinaryVeil: React.FC = () => {
+  const { language } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -21,9 +23,13 @@ const AbstractBinaryVeil: React.FC = () => {
     const columns = Math.floor(canvas.width / fontSize);
     const drops: number[] = Array(columns).fill(0).map(() => Math.random() * -100);
     
+    const isEridian = language === 'eridian';
+    
     // Characters to use (Binary + Hex snippets)
-    const chars = "01ABCDEF";
-    const specialStrings = ["0xDEBT", "0xNULL", "0xCORE", "0xINIT", "0xVOID"];
+    const chars = isEridian ? "♩♫♫♩" : "01ABCDEF";
+    const specialStrings = isEridian 
+      ? ["AMAZE!", "ROCKY", "HUMAN", "SIGNAL", "SPACE"] 
+      : ["0xDEBT", "0xNULL", "0xCORE", "0xINIT", "0xVOID"];
 
     const draw = () => {
       // Semi-transparent black background to create trail effect
@@ -54,10 +60,13 @@ const AbstractBinaryVeil: React.FC = () => {
           ctx.shadowBlur = 8;
           ctx.shadowColor = 'rgba(232, 232, 230, 0.5)';
         } else {
-          // Debt/Chaos Zone: Flickering Blood Red
-          const flick = Math.random() > 0.1 ? 'var(--accent-blood)' : '#4a0000';
+          // Debt/Chaos Zone: Flickering Blood Red -> Switch to Blue/Yellow flick in Eridian
+          const flick = Math.random() > 0.1 
+            ? 'var(--accent-blood)' 
+            : (isEridian ? '#0033aa' : '#4a0000');
           ctx.fillStyle = flick;
-          ctx.shadowBlur = 0;
+          ctx.shadowBlur = isEridian ? 4 : 0;
+          ctx.shadowColor = isEridian ? 'rgba(0, 85, 255, 0.3)' : 'transparent';
         }
 
         ctx.fillText(text, x, y);

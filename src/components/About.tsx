@@ -256,7 +256,23 @@ export function About() {
 
       <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`}>
-             {language === 'en' ? 'ORIGIN' : language === 'ja' ? '源' : language === 'ko' ? '기원' : language === 'zh-tw' ? '關於' : language === 'fr' ? 'ORIGINE' : language === 'id' ? 'ASAL' : (language === 'de' || language === 'it' || language === 'pt-br' || language === 'es-419' || language === 'es') ? (language === 'de' ? 'HERKUNFT' : language === 'it' ? 'ORIGINE' : language === 'pt-br' ? 'ORIGEM' : 'ORIGEN') : language === 'eridian' ? '♩ DATA-ORIGIN' : 'मूल'}
+             {(() => {
+                switch(language) {
+                  case 'ja': return '源';
+                  case 'ko': return '기원';
+                  case 'zh-tw': return '關於';
+                  case 'fr': return 'ORIGINE';
+                  case 'id': return 'ASAL';
+                  case 'de': return 'HERKUNFT';
+                  case 'it': return 'ORIGINE';
+                  case 'pt-br': return 'ORIGEM';
+                  case 'es-419':
+                  case 'es': return 'ORIGEN';
+                  case 'hi': return 'मूल';
+                  case 'eridian': return '♩ DATA-ORIGIN';
+                  default: return 'ORIGIN';
+                }
+             })()}
           </h2>
       </div>
 
@@ -264,33 +280,81 @@ export function About() {
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className={`absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-              {language === 'en' ? 'CHAPTER 02' : language === 'ja' ? '第二章' : language === 'ko' ? '제 2 장' : language === 'zh-tw' ? '第二章' : language === 'fr' ? 'CHAPITRE 02' : language === 'id' ? 'BAB 02' : language === 'de' ? 'KAPITEL 02' : language === 'it' ? 'CAPITOLO 02' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 02' : language === 'eridian' ? 'PART-TWO-THING' : 'अध्याय 02'}
+              {(() => {
+                switch(language) {
+                  case 'ja':
+                  case 'zh-tw': return '第二章';
+                  case 'ko': return '제 2 장';
+                  case 'fr': return 'CHAPITRE 02';
+                  case 'id': return 'BAB 02';
+                  case 'de': return 'KAPITEL 02';
+                  case 'it': return 'CAPITOLO 02';
+                  case 'pt-br':
+                  case 'es-419':
+                  case 'es': return 'CAPÍTULO 02';
+                  case 'hi': return 'अध्याय 02';
+                  case 'eridian': return 'PART-TWO-THING';
+                  default: return 'CHAPTER 02';
+                }
+              })()}
             </div>
             <div className="grid lg:grid-cols-[1fr_200px] gap-12 mt-6 relative">
                <div>
-                 <h3 className={`text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-[-0.02em] leading-[0.85] mb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                   {language === 'en' ? "Software" : language === 'ja' ? "ソフトウェア" : language === 'ko' ? "소프트웨어" : language === 'zh-tw' ? "軟體" : language === 'fr' ? "Ingénieur" : language === 'id' ? "Insinyur" : language === 'de' ? "Software" : language === 'it' ? "Ingegnere" : language === 'pt-br' ? "Engenheiro de" : (language === 'es-419' || language === 'es') ? "Ingeniero de" : language === 'eridian' ? "SOFTWARE" : "सॉफ्टवेयर"} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{language === 'en' ? "Engineer" : language === 'ja' ? "エンジニア" : language === 'ko' ? "엔지니어" : language === 'zh-tw' ? "工程師" : language === 'fr' ? "Logiciel" : language === 'id' ? "Perangkat Lunak" : language === 'de' ? "Ingenieur" : language === 'it' ? "Software" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Software" : language === 'eridian' ? "ENGINEER" : "इंजीनियर"}</span>
-                 </h3>
-                 <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
-                   {currentProfile.bio}
-                 </p>
-                 <div className="mt-8 pt-6 border-t-2 border-black/10 flex flex-col md:flex-row gap-6">
-                    <div className="flex-1">
-                      <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// EDUCATION_HISTORY</div>
-                      <div className="font-black font-display text-xl md:text-2xl uppercase italic">
-                        {currentProfile.education.school}
-                      </div>
-                      <div className="text-sm font-bold font-sans text-black/60 uppercase">
-                        {currentProfile.education.degree} | {currentProfile.education.years}
-                      </div>
-                    </div>
-                    <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
-                       <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">GPA Score</div>
-                       <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
-                         {currentProfile.education.gpa}
+                  <h3 className={`text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-[-0.02em] leading-[0.85] mb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                    {(() => {
+                      switch(language) {
+                        case 'ja': return "ソフトウェア";
+                        case 'ko': return "소프트웨어";
+                        case 'zh-tw': return "軟體";
+                        case 'fr': return "Ingénieur";
+                        case 'id': return "Insinyur";
+                        case 'de': return "Software";
+                        case 'it': return "Ingegnere";
+                        case 'pt-br': return "Engenheiro de";
+                        case 'es-419':
+                        case 'es': return "Ingeniero de";
+                        case 'hi': return "सॉफ्टवेयर";
+                        case 'eridian': return "SOFTWARE";
+                        default: return "Software";
+                      }
+                    })()} <br /> <span className="text-[var(--accent-blood)] stroke-black" style={{ WebkitTextStroke: "2px black", color: "transparent" }}>{(() => {
+                      switch(language) {
+                        case 'ja': return "エンジニア";
+                        case 'ko': return "엔지니어";
+                        case 'zh-tw': return "工程師";
+                        case 'fr': return "Logiciel";
+                        case 'id': return "Perangkat Lunak";
+                        case 'de': return "Ingenieur";
+                        case 'it': return "Software";
+                        case 'pt-br':
+                        case 'es-419':
+                        case 'es': return "Software";
+                        case 'hi': return "इंजीनियर";
+                        case 'eridian': return "ENGINEER";
+                        default: return "Engineer";
+                      }
+                    })()}</span>
+                  </h3>
+                  <p className="text-base sm:text-lg md:text-xl font-sans font-bold leading-relaxed text-black/80 max-w-2xl border-l-4 border-black pl-6">
+                    {currentProfile.bio}
+                  </p>
+                  <div className="mt-8 pt-6 border-t-2 border-black/10 flex flex-col md:flex-row gap-6">
+                     <div className="flex-1">
+                       <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// EDUCATION_HISTORY</div>
+                       <div className="font-black font-display text-xl md:text-2xl uppercase italic">
+                         {currentProfile.education.school}
                        </div>
-                    </div>
-                 </div>
+                       <div className="text-sm font-bold font-sans text-black/60 uppercase">
+                         {currentProfile.education.degree} | {currentProfile.education.years}
+                       </div>
+                     </div>
+                     <div className="bg-black text-[var(--text-bone)] px-6 py-4 flex flex-col justify-center brutal-shadow">
+                        <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] tracking-widest uppercase mb-1">GPA Score</div>
+                        <div className="font-black font-display text-2xl md:text-3xl tracking-tighter">
+                          {currentProfile.education.gpa}
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
           </div>
@@ -300,7 +364,23 @@ export function About() {
           <ScrollReveal duration={1200} delay={200} className="w-full">
             <div className="flex flex-col border-2 md:border-4 border-[var(--text-bone)] bg-white brutal-shadow">
                <div className={`bg-black text-[var(--text-bone)] font-black uppercase tracking-widest text-2xl md:text-5xl px-6 py-4 flex items-center ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                   {language === 'en' ? <>RECORDED <br/> EXPERIENCE</> : language === 'ja' ? <>記録された<br/>経験</> : language === 'ko' ? <>기록된<br/>경험</> : language === 'zh-tw' ? <>已記錄的<br/>工作經驗</> : language === 'fr' ? <>EXPÉRIENCE <br/> ENREGISTRÉE</> : language === 'id' ? <>DOKUMENTASI <br/> PENGALAMAN</> : language === 'de' ? <>ERFASSTE <br/> ERFAHRUNG</> : language === 'it' ? <>ESPERIENZA <br/> REGISTRATA</> : language === 'pt-br' ? <>EXPERIÊNCIA <br/> REGISTRADA</> : (language === 'es-419' || language === 'es') ? <>EXPERIENCIA <br/> REGISTRADA</> : language === 'eridian' ? <>PAST-MISSION <br/> HISTORY</> : <>दर्ज <br/> अनुभव</>}
+                    {(() => {
+                      switch(language) {
+                        case 'ja': return <>記録された<br/>経験</>;
+                        case 'ko': return <>기록된<br/>경험</>;
+                        case 'zh-tw': return <>已記錄的<br/>工作經驗</>;
+                        case 'fr': return <>EXPÉRIENCE <br/> ENREGISTRÉE</>;
+                        case 'id': return <>DOKUMENTASI <br/> PENGALAMAN</>;
+                        case 'de': return <>ERFASSTE <br/> ERFAHRUNG</>;
+                        case 'it': return <>ESPERIENZA <br/> REGISTRATA</>;
+                        case 'pt-br': return <>EXPERIÊNCIA <br/> REGISTRADA</>;
+                        case 'es-419':
+                        case 'es': return <>EXPERIENCIA <br/> REGISTRADA</>;
+                        case 'hi': return <>दर्ज <br/> अनुभव</>;
+                        case 'eridian': return <>PAST-MISSION <br/> HISTORY</>;
+                        default: return <>RECORDED <br/> EXPERIENCE</>;
+                      }
+                    })()}
                </div>
                <div className="flex flex-col bg-white">
                  {currentProfile.experience.map((job) => (
@@ -328,12 +408,60 @@ export function About() {
           <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
             <div className="manga-panel p-4 md:p-12 border-2 md:border-4 border-[var(--text-bone)] bg-[var(--bg-darker)] manga-cut-br flex flex-col gap-8 md:gap-12 overflow-hidden">
                <div className="grid grid-cols-2 gap-3 md:gap-8 bg-white p-4 md:p-6 border-2 border-black">
-                   <MangaStat value={300} label={language === 'en' ? "Algorithms" : language === 'ja' ? "アルゴリズム" : language === 'ko' ? "알고리즘" : language === 'zh-tw' ? "演算法" : language === 'fr' ? "Algorithmes" : language === 'id' ? "Algoritma" : language === 'de' ? "Algoritmen" : language === 'it' ? "Algoritmi" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "Algoritmos" : language === 'eridian' ? "MATH-LOGIC" : "एल्गोरिदम"} prefix="" />
-                   <MangaStat value={12} label={language === 'en' ? "Systems Built" : language === 'ja' ? "構築済システム" : language === 'ko' ? "구축된 시스템" : language === 'zh-tw' ? "已構建系統" : language === 'fr' ? "Systèmes Construits" : language === 'id' ? "Sistem Dibangun" : language === 'de' ? "Gebaute Systeme" : language === 'it' ? "Sistemi Costruiti" : language === 'pt-br' ? "Sistemas Construídos" : (language === 'es-419' || language === 'es') ? "Sistemas Creados" : language === 'eridian' ? "BUILT-THING" : "सिस्टम बनाए"} prefix="" />
+                   <MangaStat value={300} label={(() => {
+                     switch(language) {
+                       case 'ja': return "アルゴリズム";
+                       case 'ko': return "알고리즘";
+                       case 'zh-tw': return "演算法";
+                       case 'fr': return "Algorithmes";
+                       case 'id': return "Algoritma";
+                       case 'de': return "Algoritmen";
+                       case 'it': return "Algoritmi";
+                       case 'pt-br':
+                       case 'es-419':
+                       case 'es': return "Algoritmos";
+                       case 'hi': return "एल्गोरिदम";
+                       case 'eridian': return "MATH-LOGIC";
+                       default: return "Algorithms";
+                     }
+                   })()} prefix="" />
+                   <MangaStat value={12} label={(() => {
+                     switch(language) {
+                       case 'ja': return "構築済システム";
+                       case 'ko': return "구축된 시스템";
+                       case 'zh-tw': return "已構建系統";
+                       case 'fr': return "Systèmes Construits";
+                       case 'id': return "Sistem Dibangun";
+                       case 'de': return "Gebaute Systeme";
+                       case 'it': return "Sistemi Costruiti";
+                       case 'pt-br': return "Sistemas Construídos";
+                       case 'es-419':
+                       case 'es': return "Sistemas Creados";
+                       case 'hi': return "सिस्टम बनाए";
+                       case 'eridian': return "BUILT-THING";
+                       default: return "Systems Built";
+                     }
+                   })()} prefix="" />
                </div>
                <div ref={skillsRef} className="flex flex-col gap-6">
                   <h4 className={`text-[var(--text-bone)] font-black text-2xl uppercase tracking-widest border-b-2 border-[var(--panel-border)] pb-2 flex items-center justify-between ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                      {language === 'en' ? "Core Expertise" : language === 'ja' ? "主な専門分野" : language === 'ko' ? "핵심 전문 분야" : language === 'zh-tw' ? "核心專業領域" : language === 'fr' ? "Expertise Fondamentale" : language === 'id' ? "Keahlian Inti" : language === 'de' ? "Kernkompetenz" : language === 'it' ? "Competenza Core" : language === 'pt-br' ? "Competência Principal" : (language === 'es-419' || language === 'es') ? "Experiencia Principal" : language === 'eridian' ? "PRIMARY-SKILL" : "मुख्य विशेषज्ञता"}
+                      {(() => {
+                        switch(language) {
+                          case 'ja': return "主な専門分野";
+                          case 'ko': return "핵심 전문 분야";
+                          case 'zh-tw': return "核心專業領域";
+                          case 'fr': return "Expertise Fondamentale";
+                          case 'id': return "Keahlian Inti";
+                          case 'de': return "Kernkompetenz";
+                          case 'it': return "Competenza Core";
+                          case 'pt-br': return "Competência Principal";
+                          case 'es-419':
+                          case 'es': return "Experiencia Principal";
+                          case 'hi': return "मुख्य विशेषज्ञता";
+                          case 'eridian': return "PRIMARY-SKILL";
+                          default: return "Core Expertise";
+                        }
+                      })()}
                   </h4>
                   <div className="space-y-6">
                      {currentProfile.skills.map((skill, i) => (

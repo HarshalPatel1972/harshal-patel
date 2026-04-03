@@ -25,7 +25,7 @@ const CharacterInscription: React.FC<{ text: string, language: string }> = ({ te
     <div className="w-full h-full p-5 md:p-10 flex flex-col items-center justify-center text-center relative z-10 contain-layout">
       <div 
         className={`text-[#F5F5F0] ${isHindi ? 'font-hindi' : 'font-inter'} text-lg md:text-xl lg:text-3xl leading-[1.3] font-black tracking-tighter text-center uppercase`} 
-        style={{ textShadow: '0 0 10px rgba(217,17,17,0.5)' }}
+        style={{ textShadow: `0 0 10px rgba(var(--accent-blood-rgb), 0.5)` }}
       >
         {words.map((word, wi) => {
           const delay = wi * 45; // Stagger by word for Hindi, or by cumulative chars for others
@@ -104,17 +104,19 @@ const ExorcistsScroll: React.FC = () => {
   const segments = useMemo(() => {
     return Array.from({ length: 12 }).map((_, i) => ({
       id: i,
-      hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
+      hex: language === 'eridian' 
+        ? ["♩ROCKY", "♫JAZZ", "♩AMAZE", "♫SIGNAL", "♩P.H.M.", "♫LIGHT"][i % 6]
+        : ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
       delay: i * -1.25 
     }));
   }, []);
 
   const SystemNodes = () => (
     <>
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-600/80 z-30" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-red-600/80 z-30" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-red-600/80 z-30" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-600/80 z-30" />
+      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
+      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
+      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
+      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
     </>
   );
 
@@ -154,29 +156,29 @@ const ExorcistsScroll: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); handleCardClick(s.id, e); }}
               data-cursor="play"
               disabled={activeCard !== null}
-              className="group ofuda-talisman pointer-events-auto relative w-12 h-32 border-2 border-red-600/40 bg-black flex flex-col items-center justify-between py-4 shadow-[0_0_8px_rgba(217,17,17,0.15)] transition-all duration-300 hover:border-red-500 hover:shadow-[0_0_15px_rgba(217,17,17,0.3)] hover:scale-[1.05] cursor-pointer"
+              className="group ofuda-talisman pointer-events-auto relative w-12 h-32 border-2 border-[var(--accent-blood)]/40 bg-black flex flex-col items-center justify-between py-4 shadow-[0_0_8px_rgba(var(--accent-blood-rgb),0.15)] transition-all duration-300 hover:border-[var(--accent-blood)] hover:shadow-[0_0_15px_rgba(var(--accent-blood-rgb),0.3)] hover:scale-[1.05] cursor-pointer"
               style={{ contain: 'content' }}
             >
                <div className="flex gap-1 opacity-60">
                   {[1,2,3].map(j => (
-                    <div key={j} className="w-2 h-2 border border-red-600 rotate-45 flex items-center justify-center">
-                      <div className="w-[1px] h-[1px] bg-red-600" />
+                    <div key={j} className="w-2 h-2 border border-[var(--accent-blood)] rotate-45 flex items-center justify-center">
+                      <div className="w-[1px] h-[1px] bg-[var(--accent-blood)]" />
                     </div>
                   ))}
                </div>
 
                <div className="relative w-full flex items-center justify-center py-2">
-                  <div className="absolute inset-0 bg-red-600/5 blur-lg rounded-full" />
+                  <div className="absolute inset-0 bg-[var(--accent-blood)]/5 blur-lg rounded-full" />
                   <div className="relative">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12 bg-red-600/40" />
-                    <span className="font-mono text-[9px] text-red-500 font-bold tracking-widest" style={{ writingMode: 'vertical-rl' }}>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-12 bg-[var(--accent-blood)]/40" />
+                    <span className="font-mono text-[9px] text-[var(--accent-blood)] font-bold tracking-widest" style={{ writingMode: 'vertical-rl' }}>
                        {s.hex}
                     </span>
                   </div>
                </div>
 
                <div className="flex flex-col gap-1 items-center opacity-60">
-                  <div className="w-1 h-1 border border-red-600 rotate-45" />
+                  <div className="w-1 h-1 border border-[var(--accent-blood)] rotate-45" />
                </div>
             </button>
           </div>
@@ -191,8 +193,8 @@ const ExorcistsScroll: React.FC = () => {
           />
 
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-[#050505] border-2 border-red-600 flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(217,17,17,0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict' }}>
-                <div className="absolute inset-4 border border-red-600/15 bg-gradient-to-br from-red-600/5 via-black to-black" />
+             <div className={`absolute inset-0 bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(var(--accent-blood-rgb),0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict' }}>
+                <div className="absolute inset-4 border border-[var(--accent-blood)]/15 bg-gradient-to-br from-[var(--accent-blood)]/5 via-black to-black" />
                 
                 <div className="absolute inset-0 blood-grid opacity-10" />
                 <div className="absolute inset-0 red-halftone opacity-5" />
@@ -207,9 +209,9 @@ const ExorcistsScroll: React.FC = () => {
                 {[0,1,2,3].map(i => {
                    const fromAbove = i % 2 !== 0;
                    return (
-                      <div 
+                       <div 
                         key={i}
-                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[700ms] ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col items-center justify-center border-l border-r border-red-600/20"
+                        className="absolute inset-y-0 w-[25.2%] overflow-hidden bg-black transition-all duration-[700ms] ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col items-center justify-center border-l border-r border-[var(--accent-blood)]/20"
                         style={{
                            left: `${i * 25}%`,
                            transform: showShutters ? 'translateY(0%)' : `translateY(${fromAbove ? '-120%' : '120%'})`,
@@ -218,8 +220,8 @@ const ExorcistsScroll: React.FC = () => {
                         }}
                       >
                          <div className="absolute inset-0 red-halftone opacity-[0.03]" />
-                         <div className="absolute top-0 left-0 right-0 h-[1px] bg-red-600/40" />
-                         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-red-600/40" />
+                         <div className="absolute top-0 left-0 right-0 h-[1px] bg-[var(--accent-blood)]/40" />
+                         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[var(--accent-blood)]/40" />
                       </div>
                    );
                 })}
@@ -237,11 +239,11 @@ const ExorcistsScroll: React.FC = () => {
           100% { transform: translate3d(-80vw, -20vh, 0) rotateZ(-10deg) scale(0.7); opacity: 0; }
         }
         .blood-grid {
-          background-image: linear-gradient(rgba(217, 17, 17, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 17, 17, 0.03) 1px, transparent 1px);
+          background-image: linear-gradient(var(--accent-blood-alpha) 1px, transparent 1px), linear-gradient(90deg, var(--accent-blood-alpha) 1px, transparent 1px);
           background-size: 60px 60px;
         }
         .red-halftone {
-          background-image: radial-gradient(#D91111 0.6px, transparent 0.6px);
+          background-image: radial-gradient(var(--accent-blood) 0.6px, transparent 0.6px);
           background-size: 8px 8px;
         }
       `}</style>

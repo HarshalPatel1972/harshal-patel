@@ -343,14 +343,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         </div>
       )}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(217,17,17,0.03)_0%,transparent_85%)] opacity-60" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--accent-blood-alpha)_0%,transparent_85%)] opacity-60" />
       <div className="absolute inset-0 halftone-bg opacity-[0.05] mix-blend-overlay pointer-events-none" />
       
 
       {/* The Sunder Flash */}
       <div 
         ref={slashRef} 
-        className="absolute top-1/2 left-0 right-0 h-[2px] bg-[#d91111] -translate-y-1/2 z-30 shadow-[0_0_50px_rgba(217,17,17,0.9)] opacity-0 will-change-transform" 
+        className="absolute top-1/2 left-0 right-0 h-[2px] bg-[var(--accent-blood)] -translate-y-1/2 z-30 shadow-[0_0_50px_rgba(var(--accent-blood-rgb),0.9)] opacity-0 will-change-transform" 
       />
 
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
@@ -365,14 +365,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           ref={sourceRef}
           className="flex items-center justify-center gap-6 md:gap-24 opacity-0 will-change-transform mx-auto"
          >
-            <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
+            <div className="w-12 md:w-48 h-[1px] bg-[var(--accent-blood)]/40 shadow-[0_4px_30px_rgba(var(--accent-blood-rgb),0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
-              <span className={`text-xs md:text-3xl text-[#d91111] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase italic'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
+              <span className={`text-xs md:text-3xl text-[var(--accent-blood)] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase italic'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
                 {source}
               </span>
-              <div className="absolute top-0 left-0 w-[5px] h-full bg-[#d91111] shadow-[0_0_20px_rgba(217,17,17,0.8)]" />
+              <div className="absolute top-0 left-0 w-[5px] h-full bg-[var(--accent-blood)] shadow-[0_0_20px_rgba(var(--accent-blood-rgb),0.8)]" />
             </div>
-            <div className="w-12 md:w-48 h-[1px] bg-[#d91111]/40 shadow-[0_4px_30px_rgba(217,17,17,0.5)]" />
+            <div className="w-12 md:w-48 h-[1px] bg-[var(--accent-blood)]/40 shadow-[0_4px_30px_rgba(var(--accent-blood-rgb),0.5)]" />
          </div>
       </div>
 

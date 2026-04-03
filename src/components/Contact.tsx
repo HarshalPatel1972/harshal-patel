@@ -92,7 +92,7 @@ export function Contact() {
     if (id === "email") {
       // Still prevent default for email to handle copy
       e.preventDefault();
-      navigator.clipboard.writeText(profile[language].email);
+      navigator.clipboard.writeText(profile[language as keyof typeof profile].email);
       setCopied(true);
 
       const targetEl = e.currentTarget;
@@ -124,12 +124,26 @@ export function Contact() {
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />
 
-      {/* Vertical Kanji Watermark */}
-
       {/* Massive Background Typography */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
          <h2 className={`text-[6rem] md:text-[25rem] font-black whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--bg-ink)]`}>
-            {language === 'en' ? "CONTACT" : language === 'ja' ? "連絡先" : language === 'ko' ? "연락처" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "CONTACT" : language === 'id' ? "KONTAK" : language === 'de' ? "KONTAKT" : language === 'it' ? "CONTATTO" : language === 'pt-br' ? "CONTATO" : (language === 'es-419' || language === 'es') ? "CONTACTO" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क"}
+            {(() => {
+              switch(language) {
+                case 'ja': return "連絡先";
+                case 'ko': return "연락처";
+                case 'zh-tw': return "聯繫方式";
+                case 'fr': return "CONTACT";
+                case 'id': return "KONTAK";
+                case 'de': return "KONTAKT";
+                case 'it': return "CONTATTO";
+                case 'pt-br': return "CONTATO";
+                case 'es-419':
+                case 'es': return "CONTACTO";
+                case 'hi': return "संपर्क";
+                case 'eridian': return "SEND-SIGNAL";
+                default: return "CONTACT";
+              }
+            })()}
          </h2>
       </div>
 
@@ -138,10 +152,42 @@ export function Contact() {
         {/* Header Block */}
         <ScrollReveal duration={1000}>
            <div className={`bg-black text-white font-black text-xs tracking-widest px-3 py-1 inline-block mb-4 ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
-             {language === 'en' ? 'CHAPTER 03' : language === 'ja' ? '第三章' : language === 'ko' ? '제 3 장' : language === 'zh-tw' ? '第三章' : language === 'fr' ? 'CHAPITRE 03' : language === 'id' ? 'BAB 03' : language === 'de' ? 'KAPITEL 03' : language === 'it' ? 'CAPITOLO 03' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 03' : language === 'eridian' ? 'PART-THREE-THING' : 'अध्याय 03'}
+              {(() => {
+                switch(language) {
+                  case 'ja':
+                  case 'zh-tw': return '第三章';
+                  case 'ko': return '제 3 장';
+                  case 'fr': return 'CHAPITRE 03';
+                  case 'id': return 'BAB 03';
+                  case 'de': return 'KAPITEL 03';
+                  case 'it': return 'CAPITOLO 03';
+                  case 'pt-br':
+                  case 'es-419':
+                  case 'es': return 'CAPÍTULO 03';
+                  case 'hi': return 'अध्याय 03';
+                  case 'eridian': return 'PART-THREE-THING';
+                  default: return 'CHAPTER 03';
+                }
+              })()}
            </div>
            <h2 className={`text-4xl md:text-8xl lg:text-9xl font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-             {language === 'en' ? <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'ja' ? <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></> : language === 'ko' ? <>통신을<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>시작하기</span></> : language === 'zh-tw' ? <>發起<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>通信</span></> : language === 'fr' ? <>INITIER LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></> : language === 'id' ? <>MULAI <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>KOMUNIKASI</span></> : language === 'de' ? <>KOMMUNIKATION <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>EINLEITEN</span></> : language === 'it' ? <>AVVIARE LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAZIONE</span></> : language === 'pt-br' ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAÇÃO</span></> : (language === 'es-419' || language === 'es') ? <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICACIÓN</span></> : language === 'eridian' ? <>MAKE NOISE <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>TO HARSHAL NOW</span></> : <>संपर्क <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>शुरू करें</span></>}
+             {(() => {
+                switch(language) {
+                  case 'ja': return <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></>;
+                  case 'ko': return <>통신을<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>시작하기</span></>;
+                  case 'zh-tw': return <>發起<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>通信</span></>;
+                  case 'fr': return <>INITIER LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></>;
+                  case 'id': return <>MULAI <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>KOMUNIKASI</span></>;
+                  case 'de': return <>KOMMUNIKATION <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>EINLEITEN</span></>;
+                  case 'it': return <>AVVIARE LA <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICAZIONE</span></>;
+                  case 'pt-br': return <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICÇÃO</span></>;
+                  case 'es-419':
+                  case 'es': return <>INICIAR <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMUNICACIÓN</span></>;
+                  case 'hi': return <>संपर्क <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>शुरू करें</span></>;
+                  case 'eridian': return <>MAKE NOISE <br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>TO HARSHAL NOW</span></>;
+                  default: return <>INITIATE <br/> <span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>COMMUNICATION</span></>;
+                }
+             })()}
            </h2>
         </ScrollReveal>
 
@@ -149,7 +195,23 @@ export function Contact() {
         <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
           {currentLinks.map((link: LinkItem, i: number) => {
             const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : language === 'ja' ? "コピー完了" : language === 'ko' ? "이메일 복사됨" : language === 'zh-tw' ? "電子郵件已複製" : language === 'fr' ? "E-MAIL COPIÉ" : language === 'id' ? "EMAIL DISALIN" : language === 'de' ? "E-MAIL KOPIERT" : language === 'it' ? "E-MAIL COPIATA" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "E-MAIL COPIADO" : language === 'eridian' ? "DATA-STORED-IN-BRAIN" : "ईमेल कॉपी किया गया") : link.value;
+            const textValue = isEmailCopied ? (() => {
+              switch(language) {
+                case 'ja': return "コピー完了";
+                case 'ko': return "이메일 복사됨";
+                case 'zh-tw': return "電子郵件已複製";
+                case 'fr': return "E-MAIL COPIÉ";
+                case 'id': return "EMAIL DISALIN";
+                case 'de': return "E-MAIL KOPIERT";
+                case 'it': return "E-MAIL COPIATA";
+                case 'pt-br':
+                case 'es-419':
+                case 'es': return "E-MAIL COPIADO";
+                case 'hi': return "ईमेल कॉपी किया गया";
+                case 'eridian': return "DATA-STORED-IN-BRAIN";
+                default: return "EMAIL COPIED";
+              }
+            })() : link.value;
 
             return (
               <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">

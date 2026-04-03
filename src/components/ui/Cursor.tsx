@@ -30,6 +30,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
   // Color Cycling State
   const PALETTE = ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
+  const ERIDIAN_PALETTE = ["#FFB300", "#0055ff", "#FFB300", "#0055ff"]; // Rocky Yellow and Eridian Blue
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
   const [holdProgress, setHoldProgress] = useState(0);
@@ -159,8 +160,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
       const isEridian = language === 'eridian';
-      const baseColor = isEridian ? "#FFB300" : PALETTE[colorIndexRef.current];
-      const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? PALETTE[2] : PALETTE[1]) : hoverType.current !== "none" ? PALETTE[2] : baseColor;
+      const activePalette = isEridian ? ERIDIAN_PALETTE : PALETTE;
+      
+      const baseColor = activePalette[colorIndexRef.current];
+      const currentColor = burstFlash.current > 0 
+        ? (colorIndexRef.current === 1 ? activePalette[2] : activePalette[1]) 
+        : hoverType.current !== "none" ? activePalette[2] : baseColor;
 
       for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
@@ -196,7 +201,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       if (holdStartTimeRef.current) {
         ctx.beginPath();
         ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 3000));
-        ctx.strokeStyle = PALETTE[(colorIndexRef.current + 1) % PALETTE.length]; ctx.lineWidth = 2; ctx.stroke();
+        ctx.strokeStyle = activePalette[(colorIndexRef.current + 1) % activePalette.length]; ctx.lineWidth = 2; ctx.stroke();
       }
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
@@ -222,7 +227,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           ctx.beginPath(); ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
           ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
           ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
-          ctx.lineWidth = 0.6; ctx.strokeStyle = hoverType.current !== "none" ? PALETTE[2] : `${baseColor}15`; ctx.stroke();
+          ctx.lineWidth = 0.6; ctx.strokeStyle = hoverType.current !== "none" ? activePalette[2] : `${baseColor}15`; ctx.stroke();
         }
       }
       rafId = requestAnimationFrame(loop);

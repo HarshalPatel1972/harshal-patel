@@ -17,10 +17,10 @@ const IntroWord = memo(({ word, i, totalWords, language }: {
   const start = (i / totalWords) * 0.8;
   const end = start + 0.2;
   
-  const cleanWord = word.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
-  const isBroken = cleanWord === 'broken' || cleanWord === '壊れた' || cleanWord === '망가진' || cleanWord === '破碎' || cleanWord === 'टूटा' || cleanWord === 'brisé' || cleanWord === 'rusak';
-  const isBuild = cleanWord === 'build' || cleanWord === '創る' || cleanWord === 'बनाता' || cleanWord === 'membangun';
-  const isMissing = cleanWord === 'missing' || cleanWord === '足りない' || cleanWord === '부족한' || cleanWord === '缺失' || cleanWord === 'गायब' || cleanWord === 'manque' || cleanWord === 'hilang' || word === '.';
+  const cleanWord = word.toUpperCase().replace(/[.,/#!$%^&*;:{}=\-_`~()♩]/g,"");
+  const isBroken = cleanWord === 'BROKEN' || cleanWord === '壊れた' || cleanWord === '망가진' || cleanWord === '破碎' || cleanWord === 'टूटा' || cleanWord === 'BRISÉ' || cleanWord === 'RUSAK' || cleanWord === 'BROKE-THING' || cleanWord === 'BROKETHING';
+  const isBuild = cleanWord === 'BUILD' || cleanWord === '創る' || cleanWord === 'बनाता' || cleanWord === 'MEMBANGUN' || cleanWord === 'NEW-THING' || cleanWord === 'NEWTHING';
+  const isMissing = cleanWord === 'MISSING' || cleanWord === '足りない' || cleanWord === '부족한' || cleanWord === '缺失' || cleanWord === 'गायब' || cleanWord === 'MANQUE' || cleanWord === 'HILANG' || word === '.';
   
   return (
     <span 
@@ -33,7 +33,7 @@ const IntroWord = memo(({ word, i, totalWords, language }: {
       <span 
         className={`relative select-none transition-all duration-700
           ${(isBroken || isBuild || isMissing) ? 
-            `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(217,17,17,0.3)]` : 
+            `text-[2.15rem] md:text-[4.89rem] lg:text-[6.84rem] ${language === 'hi' ? 'font-season' : 'font-cirka'} text-[var(--accent-blood)] drop-shadow-[0_0_10px_rgba(var(--accent-blood-rgb),0.3)]` : 
             `text-[1.87rem] md:text-[4.25rem] lg:text-[5.95rem] ${language === 'hi' ? 'font-season' : 'font-season'} text-[var(--text-bone)]`}`}
       >
         {word}
