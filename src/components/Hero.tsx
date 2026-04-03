@@ -166,15 +166,15 @@ export function Hero() {
               </span>
             </div>
 
-            <div ref={titlesRef} className="relative mb-8 w-full cursor-none group/title pointer-events-auto">
+            <div ref={titlesRef} className="relative mb-8 w-full group/title pointer-events-auto">
               <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {language === 'hi' ? (
-                  <span className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-105">
+                  <span className="inline-block transition-all duration-300">
                     {currentProfile.name.split(" ")[0]}
                   </span>
                 ) : (
                   currentProfile.name.split(" ")[0].split("").map((char, i) => (
-                    <span key={i} className="inline-block transition-all duration-300 hover:skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
+                    <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
                   ))
@@ -182,12 +182,12 @@ export function Hero() {
               </h1>
               <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {language === 'hi' ? (
-                  <span className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-105">
+                  <span className="inline-block transition-all duration-300">
                     {currentProfile.name.split(" ").slice(1).join(" ")}
                   </span>
                  ) : (
                    currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
-                    <span key={i} className="inline-block transition-all duration-300 hover:-skew-x-12 hover:text-[var(--accent-blood)] hover:scale-110">
+                    <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
                   ))
