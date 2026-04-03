@@ -149,7 +149,7 @@ export function Contact() {
         <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
           {currentLinks.map((link: LinkItem, i: number) => {
             const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : language === 'ja' ? "コピー完了" : language === 'ko' ? "이메일 복사됨" : language === 'zh-tw' ? "電子郵件已複製" : language === 'fr' ? "E-MAIL COPIÉ" : language === 'id' ? "EMAIL DISALIN" : language === 'de' ? "E-MAIL KOPIERT" : language === 'it' ? "E-MAIL COPIATA" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "E-MAIL COPIADO" : "ईमेल कॉपी किया गया") : link.value;
+            const textValue = isEmailCopied ? (language === 'en' ? "EMAIL COPIED" : language === 'ja' ? "コピー完了" : language === 'ko' ? "이메일 복사됨" : language === 'zh-tw' ? "電子郵件已複製" : language === 'fr' ? "E-MAIL COPIÉ" : language === 'id' ? "EMAIL DISALIN" : language === 'de' ? "E-MAIL KOPIERT" : language === 'it' ? "E-MAIL COPIATA" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "E-MAIL COPIADO" : language === 'eridian' ? "DATA-STORED-IN-BRAIN" : "ईमेल कॉपी किया गया") : link.value;
 
             return (
               <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">

@@ -21,6 +21,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
       case 'pt-br': return "Este portfólio está passando por uma reformulação ao vivo. Algumas funcionalidades podem estar temporariamente indisponíveis. Obrigado pela sua paciência.";
       case 'es-419': return "Este portafolio está pasando por un rediseño en vivo. Algunas funciones podrían no estar disponibles temporalmente. Gracias por su paciencia.";
       case 'es': return "Este portafolio está experimentando un rediseño en vivo. Algunas funciones podrían no estar disponibles temporalmente. Gracias por su paciencia.";
+      case 'eridian': return "♩ HUMANS! WE MAKE REPAIRS. SOME DATA-STREAMS ARE RED. SORRY!";
       default: return "This portfolio is currently undergoing a live redesign. Some features may be temporarily unavailable. Thank you for your patience.";
     }
   };
@@ -33,7 +34,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
          {/* Brutalist Warning Label */}
          <div className="bg-white text-[#9e1b1b] text-[9px] md:text-[10px] font-black font-display tracking-widest px-2 py-0.5 uppercase shrink-0 flex items-center gap-1.5 z-10 shadow-lg">
            <span className="w-1.5 h-1.5 bg-[#9e1b1b] animate-pulse" />
-            {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "AVISO" : language === 'it' ? "AVVISO" : "सूचना"}
+            {language === 'en' ? "NOTICE" : language === 'ja' ? "お知らせ" : language === 'ko' ? "공지사항" : language === 'zh-tw' ? "公告" : language === 'fr' ? "AVIS" : language === 'id' ? "PEMBERITAHUAN" : language === 'de' ? "HINWEIS" : (language === 'pt-br' || language === 'es-419' || language === 'es') ? "AVISO" : language === 'it' ? "AVVISO" : language === 'eridian' ? "SIGNAL-LOG" : "सूचना"}
          </div>
          
          {/* Ticker Container */}

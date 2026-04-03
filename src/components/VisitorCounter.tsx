@@ -7,7 +7,8 @@ import { useLanguage } from '@/context/LanguageContext';
 const TRANSLATIONS = {
   en: { visitors: 'Visitors', views: 'Views' },
   ja: { visitors: '訪問者', views: 'ビュー' },
-  hi: { visitors: 'आगंतुक', views: 'दृश्य' }
+  hi: { visitors: 'आगंतुक', views: 'दृश्य' },
+  eridian: { visitors: 'VISIT-HUMANS', views: 'LOOK-THINGS' }
 };
 
 export function VisitorCounter() {

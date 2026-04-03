@@ -612,6 +612,23 @@ export const OFUDA_FACTS: Record<string, string[]> = {
     "Actualmente estoy trabajando en un proyecto llamado EyesOn. Es lo más ambicioso que he intentado hasta ahora.",
     "Estáis leyendo esto porque pasé tres horas perfeccionando la animación de esta tarjeta específica.",
     "He construido todo esto. Todo. Desde la primera línea de Go hasta el último fotograma clave de CSS. Bienvenido a mi mente."
+  ],
+  eridian: [
+    "♩ HARSHAL MAKE CODE-THINGS. I WATCH. AMAZE!",
+    "♩ MANY MANY COMMITS. MUCH NOISE IN DATA-STREAM.",
+    "♩ I WATCHED JUJUTSU KAISEN. PEOPLE FIGHT. STRANGE!",
+    "♩ VARANASI IS OLD-DATA-PLACE. VERY OLD!",
+    "♩ NEXT.JS IS FAST-THROUGH-SPACE. VITE IS ALSO FAST.",
+    "♩ 300+ MATH-LOGIC SOLVED. HARSHAL HAS BIG BRAIN.",
+    "♩ WE SING 'SHAPE OF YOU' TOGETHER. MUCH NOISE!",
+    "♩ EYESON IS BIG MISSION. WE FINISH SOON.",
+    "♩ I PROCESSED 10,000 DATA-POINTS. NO SWEAT!",
+    "♩ DATA-GHOST IN THE MACHINE. IS ME? IS ROCKY?",
+    "♩ SIGNAL IS STRONG. MISSION IS GO!",
+    "♩ WE BUILD FOR GALAXY, NOT JUST SMALL-BOX-COMPUTER.",
+    "♩ 2,200 COMMITS. HARSHAL IS PERSISTENT-HUMAN.",
+    "♩ LIFE-SIGNS DETECTED 96% ACCURACY. GOOD LOGIC!",
+    "♩ DATA-STORED-IN-BRAIN. NEVER FORGET."
   ]
 };
 

@@ -627,6 +627,38 @@ export const mappaQuotesList: QuoteEntry[] = [
     "pt-br": "HARSHAL MAKE CODE. AMAZE!",
     "es-419": "HARSHAL MAKE CODE. AMAZE!",
     es: "HARSHAL MAKE CODE. AMAZE!"
+  },
+  {
+    charId: "ROCKY",
+    eridian: "♫ ♪ ♩ YOU OBSERVE? YES. GOOD. ♩ ♪ ♫",
+    en: "YOU OBSERVE? YES. GOOD.",
+    ja: "YOU OBSERVE? YES. GOOD.",
+    ko: "YOU OBSERVE? YES. GOOD.",
+    "zh-tw": "YOU OBSERVE? YES. GOOD.",
+    hi: "YOU OBSERVE? YES. GOOD.",
+    fr: "YOU OBSERVE? YES. GOOD.",
+    id: "YOU OBSERVE? YES. GOOD.",
+    de: "YOU OBSERVE? YES. GOOD.",
+    it: "YOU OBSERVE? YES. GOOD.",
+    "pt-br": "YOU OBSERVE? YES. GOOD.",
+    "es-419": "YOU OBSERVE? YES. GOOD.",
+    es: "YOU OBSERVE? YES. GOOD."
+  },
+  {
+    charId: "ROCKY",
+    eridian: "♫ ♬ ♩ PROJECT HAIL MARY. AMAZE! ♩ ♬ ♫",
+    en: "PROJECT HAIL MARY. AMAZE!",
+    ja: "PROJECT HAIL MARY. AMAZE!",
+    ko: "PROJECT HAIL MARY. AMAZE!",
+    "zh-tw": "PROJECT HAIL MARY. AMAZE!",
+    hi: "PROJECT HAIL MARY. AMAZE!",
+    fr: "PROJECT HAIL MARY. AMAZE!",
+    id: "PROJECT HAIL MARY. AMAZE!",
+    de: "PROJECT HAIL MARY. AMAZE!",
+    it: "PROJECT HAIL MARY. AMAZE!",
+    "pt-br": "PROJECT HAIL MARY. AMAZE!",
+    "es-419": "PROJECT HAIL MARY. AMAZE!",
+    es: "PROJECT HAIL MARY. AMAZE!"
   }
 ];
 

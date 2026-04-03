@@ -322,6 +322,24 @@ body::before {
   }
 }
 
+/* ─── ERIDIAN THEME (Project Hail Mary Easter Egg) ─── */
+.language-transition-root:has(.font-mono) {
+   --accent-blood: #FFB300 !important;
+   --accent-cursed: #FFFFFF !important;
+}
+
+#available-for-opps:has(span.font-mono) {
+  background-color: #FFB300 !important;
+  color: #050505 !important;
+}
+
+.brutal-shadow:has(span.font-mono) {
+  box-shadow: 8px 8px 0px 0px #FFB300 !important;
+}
+.brutal-shadow-sm:has(span.font-mono) {
+  box-shadow: 4px 4px 0px 0px #FFB300 !important;
+}
+
 /* ─── CASCADING LANGUAGE TEXT SMOKE TRANSITION ─── */
 /* Target only textual content inside the wrapper */
 .language-transition-root h1,

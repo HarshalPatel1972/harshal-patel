@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { createPortal } from "react-dom";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface CursorHandle {
   getSpherePositions: () => { x: number; y: number }[];
 }
 
 const Cursor = forwardRef<CursorHandle>((_, ref) => {
+  const { language } = useLanguage();
   const [isTouch, setIsTouch] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -156,7 +158,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      const baseColor = PALETTE[colorIndexRef.current];
+      const isEridian = language === 'eridian';
+      const baseColor = isEridian ? "#FFB300" : PALETTE[colorIndexRef.current];
       const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? PALETTE[2] : PALETTE[1]) : hoverType.current !== "none" ? PALETTE[2] : baseColor;
 
       for (let i = 1; i < 20; i++) {
@@ -197,7 +200,19 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       }
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
-        ctx.strokeStyle = baseColor; ctx.globalAlpha = 0.04; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+        ctx.strokeStyle = baseColor; ctx.globalAlpha = isEridian ? (0.1 + Math.sin(Date.now() / 200) * 0.05) : 0.04; ctx.lineWidth = isEridian ? 2 : 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+        
+        // Eridian Sonar Pulse (Inspired by PHM)
+        if (isEridian) {
+          const sonarPulse = (Date.now() % 2000) / 2000;
+          ctx.beginPath();
+          ctx.arc(px.current[0], py.current[0], 20 + sonarPulse * 60, 0, Math.PI * 2);
+          ctx.strokeStyle = "#FFB300";
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = (1 - sonarPulse) * 0.4;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
       }
       for (let i = 0; i < 20; i++) {
         if (i === 0 && hoverType.current === "play") continue;
