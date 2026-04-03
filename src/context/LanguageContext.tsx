@@ -52,7 +52,7 @@ export function LanguageTransitionWrapper({ children, className = "" }: { childr
   const { isTransitioning, language } = useLanguage();
   return (
     <div 
-      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${language === 'ko' ? 'font-korean' : ''} ${language === 'zh-tw' ? 'font-chinese' : ''} ${language === 'eridian' ? 'font-mono' : ''} ${className}`}
+      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${language === 'ko' ? 'font-korean' : ''} ${language === 'zh-tw' ? 'font-chinese' : ''} ${language === 'eridian' ? 'font-mono is-eridian' : ''} ${className}`}
     >
       {children}
     </div>

@@ -323,21 +323,47 @@ body::before {
 }
 
 /* ─── ERIDIAN THEME (Project Hail Mary Easter Egg) ─── */
-.language-transition-root:has(.font-mono) {
-   --accent-blood: #FFB300 !important;
-   --accent-cursed: #FFFFFF !important;
+.language-transition-root.is-eridian {
+   --accent-blood: #FFB300 !important; /* Rocky Yellow */
+   --accent-cursed: #0055ff !important; /* Eridian Blue */
 }
 
-#available-for-opps:has(span.font-mono) {
+/* Global Selection and Scrollbar for Eridian */
+.is-eridian ::selection {
+  background: #FFB300 !important;
+  color: #050505 !important;
+}
+
+.is-eridian ::-webkit-scrollbar-thumb {
+  background: #FFB300 !important;
+  box-shadow: 0 0 10px #0055ff !important;
+}
+
+#available-for-opps:has(span.font-mono),
+.is-eridian [id="available-for-opps"] {
   background-color: #FFB300 !important;
   color: #050505 !important;
 }
 
-.brutal-shadow:has(span.font-mono) {
+.brutal-shadow.is-eridian, .is-eridian .brutal-shadow {
   box-shadow: 8px 8px 0px 0px #FFB300 !important;
 }
-.brutal-shadow-sm:has(span.font-mono) {
+
+.brutal-shadow-sm.is-eridian, .is-eridian .brutal-shadow-sm {
   box-shadow: 4px 4px 0px 0px #FFB300 !important;
+}
+
+/* System Banner specifically for Eridian mode */
+.is-eridian [class*="bg-[#9e1b1b]"] {
+  background-color: #FFB300 !important;
+  color: #050505 !important;
+}
+.is-eridian [class*="text-[#9e1b1b]"] {
+  color: #0055ff !important;
+}
+.is-eridian [class*="bg-white"] {
+  background-color: #0055ff !important;
+  color: #ffffff !important;
 }
 
 /* ─── CASCADING LANGUAGE TEXT SMOKE TRANSITION ─── */
