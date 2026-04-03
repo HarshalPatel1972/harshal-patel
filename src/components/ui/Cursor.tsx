@@ -245,7 +245,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [isTouch]);
+  }, [isTouch, language]);
 
   if (isTouch) return null;
   return createPortal(
