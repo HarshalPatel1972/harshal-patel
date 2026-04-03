@@ -301,52 +301,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }
       }, readTime);
 
-      exitTimeoutRef.current = setTimeout(() => {
-        const exitTl = createTimeline({
-          defaults: {
-            ease: 'easeInQuint'
-          },
-          onComplete: () => {
-            setComplete(true);
-            onComplete?.();
-            document.body.style.overflow = "";
-          }
-        });
-
-        if (pChars.length > 0) {
-          exitTl.add('.p-char', {
-            opacity: 0,
-            translateY: -60,
-            filter: 'blur(30px)',
-            delay: stagger(10, { from: 'center' }),
-            duration: 1000
-          });
-        }
-
-        if (sourceRef.current) {
-          exitTl.add(sourceRef.current, {
-            opacity: 0,
-            duration: 800
-          }, 200);
-        }
-
-        const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
-        if (exitApertureTargets.length > 0) {
-          exitTl.add(exitApertureTargets, {
-            translateY: 0,
-            duration: 1500,
-            ease: 'easeInExpo'
-          }, 600);
-        }
-
-        if (bgImageRef.current) {
-          exitTl.add(bgImageRef.current, {
-            opacity: 0,
-            duration: 800,
-            ease: 'easeOutSine'
-          }, 0);
-        }
-      }, readTime);
     }, 50); // 50ms delay ensures React has painted the p-char spans
 
     return () => {
