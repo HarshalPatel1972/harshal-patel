@@ -360,16 +360,12 @@ body::before {
   color: var(--accent-cursed) !important;
   fill: var(--accent-cursed) !important;
 }
-.is-eridian [class*="bg-white"] {
-  background-color: var(--accent-cursed) !important;
-  color: #ffffff !important;
-}
-
-/* Card Shadows and Highlights for Eridian */
-.is-eridian [class*="shadow-rgba(217,17,17"],
+/* Card Shadows and Highlights for Eridian - Targets remaining hardcoded red RGBA values */
+.is-eridian [class*="rgba(217, 17, 17"],
 .is-eridian [class*="rgba(217,17,17"] {
   box-shadow: 0 0 40px rgba(255, 179, 0, 0.4) !important;
 }
+.is-eridian [class*="rgba(158, 27, 27"],
 .is-eridian [class*="rgba(158,27,27"] {
   box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3) !important;
 }
