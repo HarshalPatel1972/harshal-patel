@@ -161,7 +161,7 @@ export function VelocityWarp() {
       cancelAnimationFrame(rafId);
       if (stateRef.current.warpTimer) clearTimeout(stateRef.current.warpTimer);
     };
-  }, []);
+  }, [language]);
 
   return (
     <div 

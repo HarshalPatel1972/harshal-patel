@@ -118,7 +118,7 @@ export function SpaceWarpTransition() {
       window.removeEventListener("resize", handleResize);
       startTimeRef.current = null;
     };
-  }, [isActive, redirectUrl]);
+  }, [isActive, redirectUrl, language]);
 
   if (!isActive) return null;
 
