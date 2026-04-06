@@ -1,0 +1,3 @@
+## 2024-05-24 - Layout Thrashing in Scroll Listeners
+**Learning:** Synchronously reading `offsetTop` and `offsetHeight` inside a `scroll` event listener after mutating styles causes forced synchronous layout recalculations, resulting in layout thrashing and severe main-thread blocking. This was observed in `Hero.tsx`.
+**Action:** Cache static layout dimensions (like `offsetTop` and `offsetHeight`) during initialization and `window.resize` events rather than reading them synchronously during the `scroll` event. Use `requestAnimationFrame` combined with a `ticking` state boolean to batch DOM reads and prevent layout thrashing.
