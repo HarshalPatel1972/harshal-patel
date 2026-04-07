@@ -40,30 +40,30 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Kinetic Smooth Animation HUB 📽️
+  // Kinetic Unified Shutter Animation HUB 📽️
   useEffect(() => {
     if (!menuRef.current) return;
     
-    // Select all language buttons for staggered reveal
     const menuItems = menuRef.current.querySelectorAll('button');
     
     if (isOpen) {
-      // Container Animation
+      // 1. Shutter Container Reveal
       const containerAnim = anime(menuRef.current, {
         opacity: [0, 1],
-        scaleY: [0.9, 1],
-        translateY: [-15, 0],
-        duration: 400,
+        translateX: [-10, 0],
+        clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0% 0)'],
+        duration: 500,
         easing: 'easeOutExpo'
       });
 
-      // Staggered Items Animation
+      // 2. Synchronized Item Materialization
       const itemsAnim = anime(menuItems as any, {
         opacity: [0, 1],
-        translateX: [-10, 0],
-        duration: 350,
-        delay: utils.stagger(25, { start: 100 }),
-        easing: 'easeOutCubic'
+        translateX: [-30, 0],
+        filter: ['blur(12px)', 'blur(0px)'],
+        duration: 450,
+        delay: utils.stagger(20),
+        easing: 'easeOutQuart'
       });
 
       return () => {
@@ -73,9 +73,9 @@ export function LanguageSelector() {
     } else {
       const exitAnim = anime(menuRef.current, {
         opacity: [1, 0],
-        translateY: [0, -10],
-        scaleY: [1, 0.95],
-        duration: 250,
+        clipPath: ['inset(0 0 0% 0)', 'inset(0 0 100% 0)'],
+        translateX: [0, -10],
+        duration: 300,
         easing: 'easeInExpo'
       });
 
