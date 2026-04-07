@@ -25,7 +25,7 @@ export function Footer() {
         </div>
 
         {/* INNOVATIVE "VOID-FRAGMENT" COFFEE PORTAL ☕ */}
-        <div className="relative group">
+        <div className="relative group md:-translate-x-[100px] transition-transform duration-500">
           {/* THE AURA GLOW (trigger on hover) */}
           <div className="absolute inset-[-40px] bg-[var(--accent-blood)] opacity-0 group-hover:opacity-10 blur-[60px] transition-opacity duration-700 pointer-events-none" />
           
@@ -56,10 +56,10 @@ export function Footer() {
                    </div>
                    {/* ACTION STATE */}
                    <div className="h-full absolute top-full flex items-center gap-3 text-black font-black uppercase tracking-[0.2em] text-sm italic">
-                      {hoverText}
                       <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                         <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4v-2z" />
                       </svg>
+                      {hoverText}
                    </div>
                 </div>
             </div>
