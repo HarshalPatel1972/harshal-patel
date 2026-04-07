@@ -14,6 +14,7 @@ export function VelocityWarp() {
     isPetrovaMode: false,
     warpTimer: null as ReturnType<typeof setTimeout> | null
   });
+  const drawingActive = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -75,7 +76,6 @@ export function VelocityWarp() {
     resize();
 
     let rafId: number | null = null;
-    const drawingActive = useRef(false);
 
     const animate = () => {
       if (!drawingActive.current) return;
