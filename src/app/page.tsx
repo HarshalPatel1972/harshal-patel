@@ -67,18 +67,9 @@ function HomeContent() {
         <SystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
         <Hero />
         
-        {/* Priority 5: High-Performance Off-Screen Rendering */}
-        <section style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' } as any}>
-          <Projects />
-        </section>
-        
-        <section style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' } as any}>
-          <About />
-        </section>
-        
-        <section style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' } as any}>
-          <Contact />
-        </section>
+        <Projects />
+        <About />
+        <Contact />
         
         <Footer />
       </LanguageTransitionWrapper>

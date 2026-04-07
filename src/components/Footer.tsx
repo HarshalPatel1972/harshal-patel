@@ -44,16 +44,16 @@ export function Footer() {
             href="https://www.chai4.me/harshalpatel" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="relative flex items-center justify-center w-full md:w-[320px] h-[60px] md:h-[75px] bg-[#000000] border-2 border-[#d91111] overflow-hidden transition-all duration-300 hover:border-[#0ee0c3] brutal-shadow"
+            className="relative flex items-center justify-center w-full md:w-[350px] h-[70px] md:h-[85px] bg-[#000000] border-2 border-[#d91111] overflow-hidden transition-all duration-300 hover:border-[#0ee0c3] brutal-shadow"
           >
-            {/* THE LOOPING CONTENT */}
+            {/* THE LOOPING CONTENT - FIXED HEIGHT ALIGNMENT */}
             <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
                 {/* STATE 1: ENJOY MY DESIGNS? */}
-                <div className="h-full min-h-[60px] md:min-h-[75px] flex items-center justify-center text-[#FFFFFF] font-black font-display uppercase tracking-[0.2em] text-[10px] md:text-xs">
+                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#FFFFFF] font-black font-display uppercase tracking-[0.2em] text-sm md:text-xl">
                     {initialText}
                 </div>
                 {/* STATE 2: BUY ME A COFFEE */}
-                <div className="h-full min-h-[60px] md:min-h-[75px] flex items-center justify-center text-[#0ee0c3] font-black font-display uppercase tracking-[0.2em] text-[10px] md:text-xs italic">
+                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#0ee0c3] font-black font-display uppercase tracking-[0.2em] text-sm md:text-xl italic">
                     {actionText}
                 </div>
             </div>
@@ -69,7 +69,7 @@ export function Footer() {
       <style>{`
         @keyframes kinetic-loop {
           0%, 45% { transform: translateY(0); }
-          50%, 95% { transform: translateY(-50%); }
+          50%, 95% { transform: translateY(-100%); }
           100% { transform: translateY(0); }
         }
         .animate-kinetic-loop {

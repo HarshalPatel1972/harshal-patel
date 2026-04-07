@@ -105,12 +105,12 @@ export function Hero() {
 
   return (
     <section
+      id="hero"
       ref={trackRef}
       className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
       <div 
-        id="hero" 
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
       >
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
