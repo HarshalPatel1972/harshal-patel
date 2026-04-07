@@ -17,9 +17,9 @@ export function Footer() {
       {/* Halftone Texture (Pure White/Black) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-5 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-16 relative z-10">
-        <div className="flex flex-col gap-2">
-            <div className="text-[12px] md:text-[16px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF]">
+      <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-12 md:gap-24 relative z-10">
+        <div className="flex flex-col gap-2 text-center md:text-left">
+            <div className="text-[12px] md:text-[14px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF] opacity-50">
                 {currentProfile.name} <span className="text-[#d91111] ml-4 italic">© {new Date().getFullYear()}</span>
             </div>
         </div>
