@@ -171,15 +171,15 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
-/* ─── DIGITAL SHIMMER (BLUR EXP) ─── */
-@keyframes text-shimmer {
-  0% { filter: blur(0px) brightness(1); opacity: 1; }
-  50% { filter: blur(4px) brightness(1.5); opacity: 0.7; }
-  100% { filter: blur(0px) brightness(1); opacity: 1; }
+/* ─── ORGANIC DISSOLVE (MINIMALIST EXP) ─── */
+@keyframes organic-fade {
+  0% { opacity: 1; filter: brightness(1); }
+  50% { opacity: 0; filter: brightness(1.2); }
+  100% { opacity: 1; filter: brightness(1); }
 }
 
-.shimmer-active {
-  animation: text-shimmer 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.fade-active {
+  animation: organic-fade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* Force hover animations for KineticLink during delay */

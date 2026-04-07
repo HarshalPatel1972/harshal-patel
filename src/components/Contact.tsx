@@ -104,7 +104,7 @@ export function Contact() {
       setTimeout(() => {
         setLoopIdx((prev) => (prev + 1) % 3);
         setIsGlitching(false);
-      }, 600); // 600ms smooth shimmer
+      }, 800); // 800ms clean organic fade
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -251,7 +251,7 @@ export function Contact() {
                         {link.label}
                       </div>
 
-                      <div className={`text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none ${link.id === 'feedback' && isGlitching ? 'shimmer-active' : ''}`}>
+                      <div className={`text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none ${link.id === 'feedback' && isGlitching ? 'fade-active' : ''}`}>
                         {link.id === "feedback" && link.values ? (
                            link.values[loopIdx]
                         ) : (
