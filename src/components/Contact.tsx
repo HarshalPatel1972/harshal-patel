@@ -101,13 +101,18 @@ export function Contact() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIsGlitching(true);
+      // Wait for nebula center (1s into 2s wipe)
       setTimeout(() => {
         setLoopIdx((prev) => (prev + 1) % 3);
+      }, 1000);
+
+      // Reset after full wipe
+      setTimeout(() => {
         setIsGlitching(false);
-      }, 800); // 800ms clean organic fade
+      }, 2000);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loopIdx, language]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     if (id === "email") {
@@ -251,9 +256,16 @@ export function Contact() {
                         {link.label}
                       </div>
 
-                      <div className={`text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none ${link.id === 'feedback' && isGlitching ? 'fade-active' : ''}`}>
+                      <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none relative flex items-center">
                         {link.id === "feedback" && link.values ? (
-                           link.values[loopIdx]
+                           <div className="relative">
+                             <span className={isGlitching ? "opacity-40 blur-[1px]" : ""}>
+                               {link.values[loopIdx]}
+                             </span>
+                             {isGlitching && (
+                               <div className="absolute inset-y-0 left-0 w-[150px] nebula-active z-10 pointer-events-none" />
+                             )}
+                           </div>
                         ) : (
                           textValue
                         )}

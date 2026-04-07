@@ -171,15 +171,17 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
-/* ─── ORGANIC DISSOLVE (MINIMALIST EXP) ─── */
-@keyframes organic-fade {
-  0% { opacity: 1; filter: brightness(1); }
-  50% { opacity: 0; filter: brightness(1.2); }
-  100% { opacity: 1; filter: brightness(1); }
+/* ─── NEBULA Scan (ATMOSPHERIC EXP) ─── */
+@keyframes nebula-scan {
+  0% { transform: translateX(-150%); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateX(150%); opacity: 0; }
 }
 
-.fade-active {
-  animation: organic-fade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.nebula-active {
+  animation: nebula-scan 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  background: linear-gradient(90deg, transparent, var(--text-bone), transparent);
+  filter: blur(10px);
 }
 
 /* Force hover animations for KineticLink during delay */
