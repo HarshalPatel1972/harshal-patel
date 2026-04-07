@@ -113,7 +113,7 @@ export function Hero() {
       <div 
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
       >
-        <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
+        <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-10 pointer-events-none flex items-center justify-center">
           <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
             <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
@@ -159,7 +159,7 @@ export function Hero() {
             <ExorcistsScroll />
           </div>
 
-          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+          <div id="hero-content-fadeout" className="relative z-50 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
             <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
               <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                 {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : language === 'eridian' ? "HARSHAL READY FOR NEW MISSION" : "अवसरों के लिए उपलब्ध"}
