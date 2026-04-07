@@ -25,26 +25,13 @@ export function Footer() {
         </div>
 
         {/* THE 4-COLOR KINETIC PORTAL (RED/CYAN/BLACK/WHITE) 🏮 */}
-        <div className="relative group flex items-center justify-center w-full md:w-auto md:-translate-x-[500px]">
-          
-          {/* THE PURE RADIATION (CYAN/RED PULSE) */}
-          <motion.div 
-            animate={{ 
-              boxShadow: [
-                "0 0 20px var(--accent-blood)",
-                "0 0 40px var(--accent-cursed)",
-                "0 0 20px var(--accent-blood)"
-              ]
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-none pointer-events-none" 
-          />
+        <div className="relative group flex items-center justify-center w-full md:w-auto">
 
           <a 
             href="https://www.chai4.me/harshalpatel" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="relative flex items-center justify-center w-full md:w-[260px] h-[50px] md:h-[60px] bg-[#000000] border-2 border-[var(--accent-blood)] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] brutal-shadow"
+            className="relative flex items-center justify-center w-full md:w-[260px] h-[50px] md:h-[60px] bg-[#000000] border-2 border-[#FFFFFF] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] shadow-[4px_4px_0px_rgba(255,255,255,1)] hover:shadow-[2px_2px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
           >
             {/* THE LOOPING CONTENT - FIXED HEIGHT ALIGNMENT */}
             <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
@@ -68,12 +55,12 @@ export function Footer() {
 
       <style>{`
         @keyframes kinetic-loop {
-          0%, 45% { transform: translateY(0); }
-          50%, 95% { transform: translateY(-100%); }
-          100% { transform: translateY(0); }
+          0%, 40% { transform: translateY(0); }
+          50%, 90% { transform: translateY(-100%); }
+          100% { transform: translateY(-0%); }
         }
         .animate-kinetic-loop {
-          animation: kinetic-loop 6s cubic-bezier(0.87, 0, 0.13, 1) infinite;
+          animation: kinetic-loop 5s cubic-bezier(0.8, 0, 0.2, 1) infinite;
         }
       `}</style>
     </footer>
