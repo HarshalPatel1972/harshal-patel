@@ -13,19 +13,19 @@ export function Footer() {
   const actionText = language === 'hi' ? "कॉफी पिलाएँ" : "Buy me a Coffee";
 
   return (
-    <footer className="relative bg-[#000000] border-t-4 border-[#FFFFFF] px-4 py-8 md:px-12 md:py-24 overflow-hidden">
+    <footer className="relative bg-[#000000] border-t-4 border-[#FFFFFF] px-4 py-4 md:px-12 md:py-10 overflow-hidden">
       {/* Halftone Texture (Pure White/Black) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-5 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-16 relative z-10">
         <div className="flex flex-col gap-2">
-            <div className="text-[14px] md:text-[20px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF]">
+            <div className="text-[12px] md:text-[16px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF]">
                 {currentProfile.name} <span className="text-[#d91111] ml-4 italic">© {new Date().getFullYear()}</span>
             </div>
         </div>
 
         {/* THE 4-COLOR KINETIC PORTAL (RED/CYAN/BLACK/WHITE) 🏮 */}
-        <div className="relative group flex items-center justify-center w-full md:w-auto">
+        <div className="relative group flex items-center justify-center w-full md:w-auto md:-translate-x-[500px]">
           
           {/* THE PURE RADIATION (CYAN/RED PULSE) */}
           <motion.div 
@@ -44,16 +44,16 @@ export function Footer() {
             href="https://www.chai4.me/harshalpatel" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="relative flex items-center justify-center w-full md:w-[350px] h-[70px] md:h-[85px] bg-[#000000] border-2 border-[var(--accent-blood)] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] brutal-shadow md:-translate-x-[500px]"
+            className="relative flex items-center justify-center w-full md:w-[260px] h-[50px] md:h-[60px] bg-[#000000] border-2 border-[var(--accent-blood)] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] brutal-shadow"
           >
             {/* THE LOOPING CONTENT - FIXED HEIGHT ALIGNMENT */}
             <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
                 {/* STATE 1: ENJOY MY DESIGNS? */}
-                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#FFFFFF] font-black font-display uppercase tracking-[0.2em] text-sm md:text-xl">
+                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#FFFFFF] font-black font-display uppercase tracking-[0.2em] text-xs md:text-lg">
                     {initialText}
                 </div>
                 {/* STATE 2: BUY ME A COFFEE */}
-                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[var(--accent-cursed)] font-black font-display uppercase tracking-[0.2em] text-sm md:text-xl italic">
+                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[var(--accent-cursed)] font-black font-display uppercase tracking-[0.2em] text-xs md:text-lg italic">
                     {actionText}
                 </div>
             </div>
