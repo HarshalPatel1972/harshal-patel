@@ -8,8 +8,8 @@ export function Footer() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
 
-  // SERENE & REFINED NARRATIVES 🌸
-  const supportText = language === 'hi' ? "एक कॉफी भेंट करें" : language === 'eridian' ? "SUPPORT-CRAFT" : "Support the Journey";
+  // RECOGNIZABLE BRANDING ☕
+  const supportText = language === 'hi' ? "कॉफी पिलाएँ" : language === 'eridian' ? "BUY-COFFEE" : "Buy me a Coffee";
 
   return (
     <footer className="relative bg-[#050505] border-t-4 border-[var(--text-bone)] px-4 py-8 md:px-12 md:py-24 overflow-hidden">
