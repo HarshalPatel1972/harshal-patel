@@ -40,18 +40,22 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Instant reveal transition 🎞️
+  // Pure Top-to-Bottom Staggered Reveal 🎞️
   useEffect(() => {
     if (!menuRef.current) return;
     const menuItems = menuRef.current.querySelectorAll('.lang-item');
     
     if (isOpen) {
-      // Set instantly to visible
-      animate(menuItems as any, {
-        opacity: 1,
-        translateY: 0,
-        duration: 0
+      // 1. Items Stagger (The only animation)
+      const itemsAnim = animate(menuItems as any, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 450,
+        delay: stagger(40),
+        easing: 'easeOutCubic'
       });
+
+      return () => { itemsAnim.pause(); };
     } else {
       // Instant clear on close
       animate(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
