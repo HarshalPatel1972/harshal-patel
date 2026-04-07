@@ -118,8 +118,7 @@ export function Contact() {
     <section 
       id="contact" 
       ref={containerRef}
-      className="relative pt-[14px] md:pt-[78px] pb-[34px] md:pb-12 px-4 md:px-8 bg-white flex flex-col items-center overflow-hidden z-30 isolate transform-gpu
-                 before:absolute before:-top-[150px] before:left-0 before:right-0 before:h-[150px] before:bg-white before:pointer-events-none"
+      className="relative pt-12 md:pt-20 pb-[34px] md:pb-12 px-4 md:px-8 bg-white flex flex-col items-center overflow-hidden z-30 isolate transform-gpu"
     >
       {/* Halftone / Grain Texture Base */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.05] pointer-events-none invert mix-blend-multiply" />
