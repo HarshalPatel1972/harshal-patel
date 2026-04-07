@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { animate as anime, utils } from "animejs";
+import { animate, stagger, utils } from "animejs";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
@@ -40,21 +40,26 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Instant reveal transition 🎞️
+  // Cinematic staggered reveal transition 🎞️
   useEffect(() => {
     if (!menuRef.current) return;
     const menuItems = menuRef.current.querySelectorAll('.lang-item');
     
     if (isOpen) {
-      // Set instantly to visible
-      anime(menuItems as any, {
-        opacity: 1,
-        translateY: 0,
-        duration: 0
+      animate(menuItems as any, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        delay: stagger(40),
+        duration: 500,
+        easing: 'easeOutQuart'
       });
     } else {
-      // Instant clear on close
-      anime(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
+      animate(menuItems as any, {
+        opacity: 0,
+        translateY: 10,
+        duration: 300,
+        easing: 'easeInQuad'
+      });
     }
   }, [isOpen]);
 
@@ -63,7 +68,7 @@ export function LanguageSelector() {
     if (!globeRef.current) return;
     let pulse: any = null;
     if (language === 'eridian') {
-      pulse = anime(globeRef.current, {
+      pulse = animate(globeRef.current, {
         borderColor: ['#FFB300', '#FF8C00', '#FFB300'],
         duration: 1400,
         easing: 'easeInOutSine',
