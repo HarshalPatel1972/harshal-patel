@@ -43,7 +43,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-12 md:pt-20 pb-[10vh] px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate transform-gpu"
+      className="relative pt-8 md:pt-12 pb-[10vh] px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate transform-gpu"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
 

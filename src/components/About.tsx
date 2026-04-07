@@ -251,7 +251,7 @@ export function About() {
     <section 
       id="about" 
       ref={sectionRef} 
-      className="relative z-20 pt-12 md:pt-20 pb-[64px] md:pb-[98px] px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden isolate transform-gpu"
+      className="relative z-20 pt-8 md:pt-12 pb-[64px] md:pb-[98px] px-4 md:px-8 section-fade bg-[var(--bg-ink)] flex flex-col items-center overflow-hidden isolate transform-gpu"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-20 pointer-events-none" />
 
