@@ -63,7 +63,7 @@ function HomeContent() {
         </div>
       </div>
 
-      <LanguageTransitionWrapper className={`mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
+      <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
         <SystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
         <Hero />
         
