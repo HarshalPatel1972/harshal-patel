@@ -200,7 +200,7 @@ export function Hero() {
             </p>
 
             <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
-              <a ref={cta1Ref} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
+              <a ref={cta1Ref} href="#projects" className="mobile-glow group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                    <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
@@ -208,7 +208,7 @@ export function Hero() {
                   </span>
                 </div>
               </a>
-              <a ref={cta2Ref} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
+              <a ref={cta2Ref} href="#contact" className="mobile-glow group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
                    <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
@@ -230,6 +230,20 @@ export function Hero() {
           transform: translateY(calc((1 - var(--progress)) * 25px));
           filter: blur(calc((1 - var(--progress)) * 12px));
           will-change: transform, opacity;
+        }
+
+        /* 📱 MOBILE GLOW PULSE - TRIGGERING AWE FROM THE FIRST MOMENT */
+        @media (max-width: 1024px) {
+          .mobile-glow {
+            animation: mobile-button-pulse 3s infinite;
+            border-color: var(--accent-blood) !important;
+          }
+        }
+
+        @keyframes mobile-button-pulse {
+          0% { box-shadow: 0 0 0 0 rgba(var(--accent-blood-rgb), 0.4); }
+          50% { box-shadow: 0 0 20px 2px rgba(var(--accent-blood-rgb), 0.7); }
+          100% { box-shadow: 0 0 0 0 rgba(var(--accent-blood-rgb), 0.4); }
         }
       `}</style>
     </section>

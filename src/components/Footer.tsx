@@ -24,32 +24,55 @@ export function Footer() {
             </div>
         </div>
 
-        {/* KINETIC BRUTALIST COFFEE SUPPORT BUTTON ☕ */}
-        <a 
-          href="https://www.chai4.me/harshalpatel" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="group relative h-[60px] md:h-[70px] px-8 md:px-12 bg-[var(--accent-blood)] border-4 border-black text-white font-black uppercase text-lg md:text-xl tracking-widest brutal-shadow hover:translate-x-[-4px] hover:translate-y-[-4px] md:hover:-translate-x-[64px] active:translate-x-0 active:translate-y-0 transition-all duration-300 overflow-hidden flex items-center justify-center md:-translate-x-[60px]"
-        >
-          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* INNOVATIVE "VOID-FRAGMENT" COFFEE PORTAL ☕ */}
+        <div className="relative group">
+          {/* THE AURA GLOW (trigger on hover) */}
+          <div className="absolute inset-[-40px] bg-[var(--accent-blood)] opacity-0 group-hover:opacity-10 blur-[60px] transition-opacity duration-700 pointer-events-none" />
           
-          <div className="relative h-full w-full flex flex-col items-center transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full mobile-kinetic-loop-v2">
-            {/* INITIAL STATE 🏮 */}
-            <div className={`h-full flex items-center justify-center whitespace-nowrap gap-3 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4v-2z" />
-              </svg>
-              {initialText}
+          <a 
+            href="https://www.chai4.me/harshalpatel" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="relative flex items-center justify-center w-[280px] h-[70px] bg-black border-2 border-white/10 overflow-hidden brutal-shadow transition-all duration-500 hover:border-[var(--accent-blood)]"
+          >
+            {/* THE FREQUENCY SCAN LINE 📡 */}
+            <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+               <div className="w-full h-[2px] bg-[var(--accent-blood)] shadow-[0_0_15px_var(--accent-blood)] absolute top-0 left-0 animate-frequency-scan opacity-0 group-hover:opacity-100" />
             </div>
-            
-            {/* HOVER REVEAL 📽️ */}
-            <div className={`h-full absolute top-full left-0 right-0 flex items-center justify-center whitespace-nowrap gap-3 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-              {hoverText}
-            </div>
-          </div>
 
-          <div className="absolute -bottom-2 -right-2 w-full h-full border-4 border-black -z-10 bg-black/20" />
-        </a>
+            {/* DIGITAL SHUTTER BACKGROUND 🎞️ */}
+            <div className="absolute inset-0 flex flex-col z-0">
+               <div className="flex-1 bg-white translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]" />
+               <div className="flex-1 bg-white translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] delay-75" />
+            </div>
+
+            {/* CONTENT LAYER */}
+            <div className="relative z-20 flex items-center justify-center w-full h-full px-6 overflow-hidden">
+                <div className="flex flex-col items-center justify-center h-full transition-transform duration-500 group-hover:-translate-y-full">
+                   {/* IDLE STATE */}
+                   <div className="h-full flex items-center gap-3 text-white font-black uppercase tracking-[0.2em] text-sm">
+                      <span className="w-2 h-2 bg-[var(--accent-blood)] rounded-full animate-pulse" />
+                      {initialText}
+                   </div>
+                   {/* ACTION STATE */}
+                   <div className="h-full absolute top-full flex items-center gap-3 text-black font-black uppercase tracking-[0.2em] text-sm italic">
+                      {hoverText}
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4v-2z" />
+                      </svg>
+                   </div>
+                </div>
+            </div>
+
+            {/* DECORATIVE DATA OVERLAY (AWE FACTOR) */}
+            <div className="absolute top-1 left-2 text-[6px] font-mono text-[var(--accent-blood)] opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none">
+              SYSTEM_HEARTBEAT: OK // TRANSMISSION_ACTIVE
+            </div>
+            <div className="absolute bottom-1 right-2 text-[6px] font-mono text-black opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none">
+              COFFEE_PROTOCOL_v4.2 // HARSHAL_PATEL
+            </div>
+          </a>
+        </div>
       </div>
 
       {/* Decorative System Label */}
@@ -58,15 +81,20 @@ export function Footer() {
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
-           .mobile-kinetic-loop-v2 {
-              animation: mobile-text-slide-custom 11s cubic-bezier(0.19, 1, 0.22, 1) infinite;
-           }
+        @keyframes frequency-scan {
+          0% { top: -10%; }
+          100% { top: 110%; }
         }
-        @keyframes mobile-text-slide-custom {
-           0%, 27% { transform: translateY(0); } /* Enjoy my work? (3s) */
-           30%, 97% { transform: translateY(-100%); } /* Buy me a Coffee ☕ (8s) */
-           100% { transform: translateY(0); }
+        .animate-frequency-scan {
+          animation: frequency-scan 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @media (max-width: 768px) {
+           /* AUTO-ANIMATE ON MOBILE TO SHOWCASE INNOVATION WITHOUT HOVER */
+           .animate-frequency-scan {
+              opacity: 0.5 !important;
+              animation-duration: 3s;
+           }
         }
       `}</style>
     </footer>
