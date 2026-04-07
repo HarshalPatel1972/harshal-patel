@@ -12,31 +12,31 @@ const LINKS = {
     { id: "email", label: "01 // EMAIL", value: "SEND MESSAGE", href: `mailto:${profile.en.email}` },
     { id: "github", label: "02 // GITHUB", value: "VIEW REPOSITORY", href: profile.en.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "VISIT PROFILE", href: profile.en.linkedin },
-    { id: "feedback", label: "04 // FEEDBACK", value: "SUBMIT REVIEW", href: `mailto:${profile.en.email}?subject=Feedback` },
+    { id: "feedback", label: "04 // FEEDBACK", values: ["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"], href: `mailto:${profile.en.email}?subject=Feedback` },
   ],
   ja: [
     { id: "email", label: "01 // メール", value: "メッセージを送信", href: `mailto:${profile.ja.email}` },
     { id: "github", label: "02 // GITHUB", value: "リポジトリを見る", href: profile.ja.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "プロフィールを見る", href: profile.ja.linkedin },
-    { id: "feedback", label: "04 // フィードバック", value: "感想を送る", href: `mailto:${profile.ja.email}?subject=Feedback` },
+    { id: "feedback", label: "04 // フィードバック", values: ["感想を送る", "バグを報告", "機能リクエスト"], href: `mailto:${profile.ja.email}?subject=Feedback` },
   ],
   ko: [
     { id: "email", label: "01 // 이메일", value: "메시지 보내기", href: `mailto:${profile.ko.email}` },
     { id: "github", label: "02 // GITHUB", value: "저장소 보기", href: profile.ko.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "프로필 보기", href: profile.ko.linkedin },
-    { id: "feedback", label: "04 // 피드백", value: "의견 보내기", href: `mailto:${profile.ko.email}?subject=Feedback` },
+    { id: "feedback", label: "04 // 피드백", values: ["의견 보내기", "버그 신고", "기능 요청"], href: `mailto:${profile.ko.email}?subject=Feedback` },
   ],
   "zh-tw": [
     { id: "email", label: "01 // 電子郵件", value: "發送消息", href: `mailto:${profile["zh-tw"].email}` },
     { id: "github", label: "02 // GITHUB", value: "查看存儲庫", href: profile["zh-tw"].github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "訪問個人資料", href: profile["zh-tw"].linkedin },
-    { id: "feedback", label: "04 // 反饋", value: "提供意見", href: `mailto:${profile["zh-tw"].email}?subject=Feedback` },
+    { id: "feedback", label: "04 // 反饋", values: ["提供意見", "報告錯誤", "功能請求"], href: `mailto:${profile["zh-tw"].email}?subject=Feedback` },
   ],
   hi: [
     { id: "email", label: "01 // ईमेल", value: "संदेश भेजें", href: `mailto:${profile.hi.email}` },
     { id: "github", label: "02 // GITHUB", value: "रिपॉजिटरी देखें", href: profile.hi.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "प्रोफ़ाइल देखें", href: profile.hi.linkedin },
-    { id: "feedback", label: "04 // फीडबैक", value: "प्रतिक्रिया दें", href: `mailto:${profile.hi.email}?subject=Feedback` },
+    { id: "feedback", label: "04 // फीडबैक", values: ["प्रतिक्रिया दें", "बग रिपोर्ट करें", "सुविधा का अनुरोध"], href: `mailto:${profile.hi.email}?subject=Feedback` },
   ],
   fr: [
     { id: "email", label: "01 // E-MAIL", value: "ENVOYER UN MESSAGE", href: `mailto:${profile.fr.email}` },
@@ -69,7 +69,7 @@ const LINKS = {
     { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile["es-419"].linkedin },
   ],
   es: [
-    { id: "email", label: "01 // E-MAIL", value: "ENVIAR MENSAJE", href: `mailto:${profile.es.email}` },
+    { id: "email", label: "01 // E-MAIL", value: "ENVOJAR UN MENSAJE", href: `mailto:${profile.es.email}` },
     { id: "github", label: "02 // GITHUB", value: "VER REPOSITORIO", href: profile.es.github },
     { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile.es.linkedin },
   ],
@@ -77,14 +77,15 @@ const LINKS = {
     { id: "email", label: "01 // SIGNAL-SEND", value: "MAKE NOISE TO HARSHAL", href: `mailto:${profile.eridian.email}` },
     { id: "github", label: "02 // CODE-PLACE", value: "LOOK AT BUGS", href: profile.eridian.github },
     { id: "linkedin", label: "03 // SUIT-PLACE", value: "SEE HUMAN SUIT", href: profile.eridian.linkedin },
-    { id: "feedback", label: "04 // NOISE-REPORT", value: "SEND VIBRATIONS", href: `mailto:${profile.eridian.email}?subject=Feedback` },
+    { id: "feedback", label: "04 // NOISE-REPORT", values: ["SEND VIBRATIONS", "FIX FREQUENCY", "WANT MORE NOISE"], href: `mailto:${profile.eridian.email}?subject=Feedback` },
   ]
 };
 
 interface LinkItem {
   id: string;
   label: string;
-  value: string;
+  value?: string;
+  values?: string[];
   href: string;
 }
 
