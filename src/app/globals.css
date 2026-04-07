@@ -171,14 +171,23 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
-/* ─── CRYSTAL UNScramble (DATA EXP) ─── */
-@keyframes crystal-settle {
-  0% { filter: blur(4px); opacity: 0.5; letter-spacing: 0.2em; }
-  100% { filter: blur(0px); opacity: 1; letter-spacing: -0.04em; }
+/* ─── STABILIZED HORIZONTAL SLIDE (FINAL) ─── */
+@keyframes slide-exit-left {
+  0% { transform: translateX(0); opacity: 1; filter: blur(0); }
+  100% { transform: translateX(-100%); opacity: 0; filter: blur(4px); }
 }
 
-.crystal-active {
-  animation: crystal-settle 0.4s ease-out forwards;
+@keyframes slide-enter-right {
+  0% { transform: translateX(100%); opacity: 0; filter: blur(4px); }
+  100% { transform: translateX(0); opacity: 1; filter: blur(0); }
+}
+
+.slide-out-left {
+  animation: slide-exit-left 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.slide-in-right {
+  animation: slide-enter-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Force hover animations for KineticLink during delay */

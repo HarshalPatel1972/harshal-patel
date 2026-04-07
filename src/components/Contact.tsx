@@ -96,30 +96,17 @@ export function Contact() {
   const [copied, setCopied] = useState(false);
 
   const [loopIdx, setLoopIdx] = useState(0);
+  const [prevIdx, setPrevIdx] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
-
-  const [scrambled, setScrambled] = useState("");
-  const glyphs = "X%/&?@$!<>_";
 
   useEffect(() => {
     const interval = setInterval(() => {
+      setPrevIdx(loopIdx);
       setIsGlitching(true);
-      const feedbackLink = currentLinks.find(l => l.id === "feedback") as any;
-      const target = feedbackLink?.values?.[(loopIdx + 1) % 3] || "";
-      
-      // Shuffle phase
-      let iterations = 0;
-      const shuffle = setInterval(() => {
-        setScrambled(target.split("").map(() => glyphs[Math.floor(Math.random() * glyphs.length)]).join(""));
-        iterations++;
-        if (iterations > 6) {
-           clearInterval(shuffle);
-           setLoopIdx((prev) => (prev + 1) % 3);
-           setIsGlitching(false);
-           setScrambled("");
-        }
-      }, 60);
-
+      setTimeout(() => {
+        setLoopIdx((prev) => (prev + 1) % 3);
+        setIsGlitching(false);
+      }, 400); // 400ms sharp slide
     }, 4000);
     return () => clearInterval(interval);
   }, [loopIdx, language]);
@@ -149,6 +136,27 @@ export function Contact() {
       }, 2000);
     }
   };
+
+  const renderSlideText = (vals: string[]) => (
+    <div className="relative group-hover:text-[var(--text-bone)] transition-colors duration-300 flex items-center h-full whitespace-nowrap">
+       {isGlitching ? (
+         <>
+           {/* Old text sliding out left */}
+           <div className="absolute inset-y-0 left-0 slide-out-left">
+             {vals[prevIdx]}
+           </div>
+           {/* New text sliding in right */}
+           <div className="relative slide-in-right">
+             {vals[(prevIdx + 1) % 3]}
+           </div>
+         </>
+       ) : (
+         <div className="relative">
+           {vals[loopIdx]}
+         </div>
+       )}
+    </div>
+  );
 
   return (
     <section 
@@ -268,9 +276,7 @@ export function Contact() {
 
                       <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
                         {link.id === "feedback" && link.values ? (
-                           <div className={!isGlitching ? "crystal-active" : ""}>
-                             {isGlitching ? scrambled : link.values[loopIdx]}
-                           </div>
+                           renderSlideText(link.values)
                         ) : (
                           textValue
                         )}
