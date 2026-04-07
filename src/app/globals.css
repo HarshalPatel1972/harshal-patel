@@ -171,17 +171,15 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
-/* ─── GLITCH FLICKER (INITIAL HIGH-ENERGY) ─── */
-@keyframes glitch-flicker {
-  0% { transform: translate(2px, 2px); filter: hue-rotate(90deg); opacity: 1; }
-  25% { transform: translate(-2px, -2px); filter: hue-rotate(180deg); opacity: 0.8; }
-  50% { transform: translate(-2px, 2px); filter: hue-rotate(270deg); opacity: 1; }
-  75% { transform: translate(2px, -2px); filter: hue-rotate(360deg); opacity: 0.8; }
-  100% { transform: translate(0); filter: hue-rotate(0); opacity: 1; }
+/* ─── SOFTENED GLITCH (REFINED) ─── */
+@keyframes glitch-soft {
+  0% { transform: translate(1px, 1px); opacity: 1; }
+  50% { transform: translate(-1px, -1px); opacity: 0.9; }
+  100% { transform: translate(0); opacity: 1; }
 }
 
 .glitch-active {
-  animation: glitch-flicker 0.2s linear infinite;
+  animation: glitch-soft 0.1s linear infinite;
 }
 
 /* Force hover animations for KineticLink during delay */

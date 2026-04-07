@@ -104,7 +104,7 @@ export function Contact() {
       setTimeout(() => {
         setLoopIdx((prev) => (prev + 1) % 3);
         setIsGlitching(false);
-      }, 300); // 300ms high-intensity glitch
+      }, 2000); // Wait 2s for full cycle
     }, 4000);
     return () => clearInterval(interval);
   }, []);
