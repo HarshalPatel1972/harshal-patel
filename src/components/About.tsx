@@ -280,7 +280,7 @@ export function About() {
           </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-4">
+      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-[70px]">
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className={`absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
