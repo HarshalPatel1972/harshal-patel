@@ -1,29 +1,21 @@
-HARSHAL PATEL CREATIVE LICENSE (HPCL v1.0)
+MIT License
 
-Copyright (c) 2026 Harshal Patel. All Rights Reserved.
+Copyright (c) 2026 Harshal Patel
 
-THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS CREATIVE LICENSE. THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER APPLICABLE LAWS. ANY USE OF THE WORK OTHER THAN AS AUTHORIZED UNDER THIS LICENSE OR COPYRIGHT LAW IS PROHIBITED.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-1. DEFINITIONS
-"The Work" refers to all code, stylesheets, design layouts, aesthetic systems, kinetic motion logic, and creative assets (images, fonts, text) contained within this repository.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. OWNERSHIP & INTELLECTUAL PROPERTY
-The Work is the original creation and intellectual property of Harshal Patel. Every design choice, layout strategy, and functional orchestration is a result of extensive creative effort and is protected under international copyright law.
-
-3. LICENSE GRANT
-Subject to the terms and conditions of this License, Harshal Patel hereby grants you a worldwide, royalty-free, non-exclusive, perpetual (for the duration of the applicable copyright) license to exercise the following rights:
-   a. You may copy and use the Work for strictly PERSONAL or EDUCATIONAL purposes.
-   b. You may study the Work to understand the technical implementation of Cinematic Brutalism.
-
-4. RESTRICTIONS
-The license granted in Section 3 is expressly made subject to and limited by the following restrictions:
-   a. ATTRIBUTION: You must provide clear, prominent, and visible attribution to "Harshal Patel" on any publicly accessible instance that utilizes the Work or its design system. This must include a direct link back to the original repository: https://github.com/HarshalPatel1972/harshal-patel.
-   b. NON-COMMERCIAL: You may NOT use the Work, or any derivative works based on the Work, for commercial purposes. This includes, but is not limited to, using the design for client projects, selling the code/design to others, or generating revenue from its use.
-   c. NO MISATTRIBUTION: You may NOT claim the design, layout, or aesthetic system as your own. You must explicitly state that the visual identity is the property of Harshal Patel.
-   d. NO REDISTRIBUTION FOR PROFIT: You may not host, package, or redistribute the Work in a manner that requires payment or generates profit.
-
-5. TERMINATION
-This License and the rights granted hereunder will terminate automatically upon any breach by you of the terms of this License.
-
-6. DISCLAIMER
-THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE USE OF THE WORK.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
