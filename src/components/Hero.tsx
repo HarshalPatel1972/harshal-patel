@@ -14,7 +14,7 @@ const IntroWord = memo(({ word, i, totalWords, language }: {
   totalWords: number; 
   language: string 
 }) => {
-  const start = (i / totalWords) * 0.8;
+  const start = (i / totalWords) * 0.45;
   const end = start + 0.2;
   
   const cleanWord = word.toUpperCase().replace(/[.,/#!$%^&*;:{}=\-_`~()♩]/g,"");
@@ -87,15 +87,15 @@ export function Hero() {
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
       
-      const scale = 1 - progress * 0.5;
-      const translate = progress * -150;
-      const opacity = Math.max(0, 1 - progress * 3.5);
-      const blur = progress * 20;
+      const scale = progress < 0.85 ? 1 : 1 - ((progress - 0.85) / 0.15) * 0.5;
+      const translate = progress < 0.85 ? 0 : ((progress - 0.85) / 0.15) * -150;
+      const opacity = progress < 0.85 ? 1 : Math.max(0, 1 - ((progress - 0.85) / 0.15) * 3.5);
+      const blur = progress < 0.85 ? 0 : ((progress - 0.85) / 0.15) * 20;
       
       heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
       heroContentRef.current.style.opacity = opacity.toString();
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
-      heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+      heroContentRef.current.style.pointerEvents = progress > 0.9 ? 'none' : 'auto';
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true }); 
@@ -107,7 +107,7 @@ export function Hero() {
     <section
       id="hero"
       ref={trackRef}
-      className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
+      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
       <div 
