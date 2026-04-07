@@ -42,13 +42,13 @@ export function Footer() {
 
             {/* DIGITAL SHUTTER BACKGROUND 🎞️ */}
             <div className="absolute inset-0 flex flex-col z-0">
-               <div className="flex-1 bg-white translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]" />
-               <div className="flex-1 bg-white translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] delay-75" />
+               <div className="flex-1 bg-white translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] mobile-shutter-loop-left" />
+               <div className="flex-1 bg-white translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] delay-75 mobile-shutter-loop-right" />
             </div>
 
             {/* CONTENT LAYER */}
             <div className="relative z-20 flex items-center justify-center w-full h-full px-6 overflow-hidden">
-                <div className="flex flex-col items-center justify-center h-full transition-transform duration-500 group-hover:-translate-y-full">
+                <div className="flex flex-col items-center justify-center h-full transition-transform duration-500 group-hover:-translate-y-full mobile-content-loop">
                    {/* IDLE STATE */}
                    <div className="h-full flex items-center gap-3 text-white font-black uppercase tracking-[0.2em] text-sm">
                       <span className="w-2 h-2 bg-[var(--accent-blood)] rounded-full animate-pulse" />
@@ -65,10 +65,10 @@ export function Footer() {
             </div>
 
             {/* DECORATIVE DATA OVERLAY (AWE FACTOR) */}
-            <div className="absolute top-1 left-2 text-[6px] font-mono text-[var(--accent-blood)] opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none">
+            <div className="absolute top-1 left-2 text-[6px] font-mono text-[var(--accent-blood)] opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none mobile-data-loop">
               SYSTEM_HEARTBEAT: OK // TRANSMISSION_ACTIVE
             </div>
-            <div className="absolute bottom-1 right-2 text-[6px] font-mono text-black opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none">
+            <div className="absolute bottom-1 right-2 text-[6px] font-mono text-black opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none mobile-data-loop">
               COFFEE_PROTOCOL_v4.2 // HARSHAL_PATEL
             </div>
           </a>
@@ -95,6 +95,28 @@ export function Footer() {
               opacity: 0.5 !important;
               animation-duration: 3s;
            }
+           
+           @keyframes shutter-left-loop {
+              0%, 45% { transform: translateX(-100%); }
+              50%, 95% { transform: translateX(0); }
+           }
+           @keyframes shutter-right-loop {
+              0%, 50% { transform: translateX(100%); }
+              55%, 95% { transform: translateX(0); }
+           }
+           @keyframes content-slide-loop {
+              0%, 50% { transform: translateY(0); }
+              55%, 95% { transform: translateY(-100%); }
+           }
+           @keyframes data-fade-loop {
+              0%, 50% { opacity: 0; }
+              55%, 95% { opacity: 0.4; }
+           }
+
+           .mobile-shutter-loop-left { animation: shutter-left-loop 8s infinite ease-in-out; }
+           .mobile-shutter-loop-right { animation: shutter-left-loop 8s infinite ease-in-out; animation-delay: 0.1s; }
+           .mobile-content-loop { animation: content-slide-loop 8s infinite ease-in-out; }
+           .mobile-data-loop { animation: data-fade-loop 8s infinite ease-in-out; }
         }
       `}</style>
     </footer>
