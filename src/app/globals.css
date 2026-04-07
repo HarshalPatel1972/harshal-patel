@@ -171,18 +171,14 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
-/* ─── TACTILE ROLL (MECHANICAL EXP) ─── */
-@keyframes weighty-roll {
-  0% { transform: rotateX(0deg); opacity: 1; }
-  45% { transform: rotateX(-90deg); opacity: 0; }
-  55% { transform: rotateX(90deg); opacity: 0; }
-  100% { transform: rotateX(0deg); opacity: 1; }
+/* ─── CRYSTAL UNScramble (DATA EXP) ─── */
+@keyframes crystal-settle {
+  0% { filter: blur(4px); opacity: 0.5; letter-spacing: 0.2em; }
+  100% { filter: blur(0px); opacity: 1; letter-spacing: -0.04em; }
 }
 
-.roll-active {
-  animation: weighty-roll 1.2s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
-  transform-origin: center;
-  backface-visibility: hidden;
+.crystal-active {
+  animation: crystal-settle 0.4s ease-out forwards;
 }
 
 /* Force hover animations for KineticLink during delay */

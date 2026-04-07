@@ -98,18 +98,28 @@ export function Contact() {
   const [loopIdx, setLoopIdx] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
 
+  const [scrambled, setScrambled] = useState("");
+  const glyphs = "X%/&?@$!<>_";
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIsGlitching(true);
-      // Wait for halfway through the flip
-      setTimeout(() => {
-        setLoopIdx((prev) => (prev + 1) % 3);
-      }, 600); 
+      const feedbackLink = currentLinks.find(l => l.id === "feedback") as any;
+      const target = feedbackLink?.values?.[(loopIdx + 1) % 3] || "";
+      
+      // Shuffle phase
+      let iterations = 0;
+      const shuffle = setInterval(() => {
+        setScrambled(target.split("").map(() => glyphs[Math.floor(Math.random() * glyphs.length)]).join(""));
+        iterations++;
+        if (iterations > 6) {
+           clearInterval(shuffle);
+           setLoopIdx((prev) => (prev + 1) % 3);
+           setIsGlitching(false);
+           setScrambled("");
+        }
+      }, 60);
 
-      // Reset after 1.2s flip
-      setTimeout(() => {
-        setIsGlitching(false);
-      }, 1200);
     }, 4000);
     return () => clearInterval(interval);
   }, [loopIdx, language]);
@@ -256,10 +266,10 @@ export function Contact() {
                         {link.label}
                       </div>
 
-                      <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none perspective-[1000px]">
+                      <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
                         {link.id === "feedback" && link.values ? (
-                           <div className={isGlitching ? "roll-active" : ""}>
-                             {link.values[loopIdx]}
+                           <div className={!isGlitching ? "crystal-active" : ""}>
+                             {isGlitching ? scrambled : link.values[loopIdx]}
                            </div>
                         ) : (
                           textValue
