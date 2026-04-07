@@ -31,7 +31,24 @@ const AbstractBinaryVeil: React.FC = () => {
       ? ["AMAZE!", "ROCKY", "HUMAN", "SIGNAL", "SPACE"] 
       : ["0xDEBT", "0xNULL", "0xCORE", "0xINIT", "0xVOID"];
 
+    let animId: number;
+    let isInView = true;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isInView = entry.isIntersecting;
+        if (isInView) {
+          animId = requestAnimationFrame(draw);
+        } else {
+          cancelAnimationFrame(animId);
+        }
+      },
+      { threshold: 0.01 }
+    );
+
     const draw = () => {
+      if (!isInView) return;
+
       // Semi-transparent black background to create trail effect
       ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -42,25 +59,20 @@ const AbstractBinaryVeil: React.FC = () => {
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        // Determination of "Purification Zone" (Center of screen)
         const centerX = canvas.width / 2;
         const distFromCenter = Math.abs(x - centerX);
-        const inCenter = distFromCenter < 180; // The threshold for the purified zone
+        const inCenter = distFromCenter < 180;
 
-        // Selection of char/string
         let text = chars[Math.floor(Math.random() * chars.length)];
         if (Math.random() > 0.98) {
           text = specialStrings[Math.floor(Math.random() * specialStrings.length)];
         }
 
-        // Color Logic
         if (inCenter) {
-          // Purified Zone: Stable White/Bone with Glow
           ctx.fillStyle = '#E8E8E6';
           ctx.shadowBlur = 8;
           ctx.shadowColor = 'rgba(232, 232, 230, 0.5)';
         } else {
-          // Debt/Chaos Zone: Flickering Blood Red -> Switch to Blue/Yellow flick in Eridian
           const flick = Math.random() > 0.1 
             ? 'var(--accent-blood)' 
             : (isEridian ? '#0033aa' : '#4a0000');
@@ -71,23 +83,23 @@ const AbstractBinaryVeil: React.FC = () => {
 
         ctx.fillText(text, x, y);
 
-        // Reset to top when off screen or randomly
         if (y > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
         
-        // Falling speed depends on depth/zone
         const speed = inCenter ? 0.35 : 0.65;
         drops[i] += speed;
       }
 
-      requestAnimationFrame(draw);
+      animId = requestAnimationFrame(draw);
     };
 
-    const animId = requestAnimationFrame(draw);
+    observer.observe(canvas);
+    animId = requestAnimationFrame(draw);
 
     return () => {
       window.removeEventListener('resize', resize);
+      observer.disconnect();
       cancelAnimationFrame(animId);
     };
   }, []);

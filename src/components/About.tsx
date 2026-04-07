@@ -33,8 +33,9 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
 
   // Initial entry animation
   useEffect(() => {
+    let anim: any = null;
     if (isVisible && fillRef.current) {
-      anime(fillRef.current, {
+      anim = anime(fillRef.current, {
         scaleX: [0, 1],
         opacity: [0, 1],
         duration: 1400,
@@ -42,6 +43,10 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
         easing: 'easeOutElastic(1, .6)'
       });
     }
+    return () => {
+      if (anim) anim.pause();
+      if (animRef.current) animRef.current.pause();
+    };
   }, [isVisible, index]);
 
   const { triggerSignal } = useSignals();
@@ -225,7 +230,7 @@ export function About() {
           <video 
             ref={videoRef}
             src={currentVideoSrc} 
-            preload="auto"
+            preload={skillsVisible ? "auto" : "metadata"}
             playsInline
             onEnded={closePressure}
             className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}

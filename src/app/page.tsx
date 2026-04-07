@@ -7,19 +7,18 @@ import { SystemBanner } from "@/components/SystemBanner";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { LanguageTransitionWrapper } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
-import { Projects } from "@/components/Projects";
-import { About } from "@/components/About";
-import { Contact } from "@/components/Contact";
-import { Footer } from "@/components/Footer";
+const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
+const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(mod => mod.VisitorCounter), { ssr: false });
+const Projects = dynamic(() => import("@/components/Projects").then(mod => mod.Projects), { ssr: false });
+const About = dynamic(() => import("@/components/About").then(mod => mod.About), { ssr: false });
+const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Contact), { ssr: false });
+const Footer = dynamic(() => import("@/components/Footer").then(mod => mod.Footer), { ssr: false });
+
 import { ScrollLine } from "@/components/AnimationKit";
 import Cursor from "@/components/ui/Cursor";
-
 import { useFlipTransition } from "@/context/FlipContext";
 import { FlipTransition } from "@/components/ui/FlipTransition";
 import { SpaceWarpTransition } from "@/components/ui/SpaceWarpTransition";
-
-const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
-const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(mod => mod.VisitorCounter), { ssr: false });
 
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);

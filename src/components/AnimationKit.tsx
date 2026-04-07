@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { animate as anime, utils } from "animejs";
+import { animate as anime, utils, remove } from "animejs";
 
 /**
  * 🧲 Magnetic Cursor — Optimized Throttled Hooks
@@ -23,7 +23,6 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
 
-        // Use 2-arg syntax for TypeScript compatibility
         anime(el, {
           translateX: x * strength,
           translateY: y * strength,
@@ -51,6 +50,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
       if (rafId.current) cancelAnimationFrame(rafId.current);
+      remove(el);
     };
   }, [strength]);
 
@@ -149,7 +149,10 @@ export function TextReveal({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      remove(el.querySelectorAll(".char"));
+    };
   }, [delay, stagger]);
 
   return (

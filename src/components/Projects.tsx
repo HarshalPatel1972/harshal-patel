@@ -29,13 +29,14 @@ export function Projects() {
   useEffect(() => {
     if (!containerRef.current) return;
     const elements = containerRef.current.querySelectorAll(".project-card");
-    anime(elements as any, {
+    const anim = anime(elements as any, {
       opacity: [1, 1],
       translateX: [50, 0],
       duration: 1200,
       delay: utils.stagger(150),
       easing: "outCubic",
     });
+    return () => { anim.pause(); };
   }, []);
 
   return (

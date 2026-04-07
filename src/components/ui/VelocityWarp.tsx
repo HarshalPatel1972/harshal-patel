@@ -74,21 +74,21 @@ export function VelocityWarp() {
     window.addEventListener("resize", resize);
     resize();
 
-    let rafId: number;
+    let rafId: number | null = null;
+    const drawingActive = useRef(false);
 
     const animate = () => {
+      if (!drawingActive.current) return;
+      
       const s = stateRef.current;
       
       // SOLID BRUTALIST BACKGROUND - Hides everything underneath
       ctx.fillStyle = s.isPetrovaMode ? "#000000" : "#050505";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Petrova Central Beam Rendering (The Astrophage line to Tau Ceti)
+      // Petrova Central Beam Rendering
       if (s.isPetrovaMode) {
-        // Render pre-calculated Swarm particles (Oily smooth, no Math.random at runtime)
-        // This is purely the tiny glowing Astrophage microorganisms traveling down the line
         const centerX = canvas.width / 2;
-        
         petrovaSwarm.forEach(p => {
            const movement = -s.direction * p.speed;
            p.y += movement;
@@ -102,20 +102,14 @@ export function VelocityWarp() {
         });
       }
 
-      // ALWAYS render lines so they continue to fly during the CSS fade out!
-      // This prevents the abrupt vanishing of the kinetic lines.
       lines.forEach(line => {
-        // Lines flow strongly in opposite direction of the jump
         const movement = -s.direction * line.speed;
         line.y += movement;
 
-        // Wrap around seamlessly
         if (line.y < -line.length) line.y = canvas.height + line.length;
         if (line.y > canvas.height + line.length) line.y = -line.length;
 
         const renderedX = line.xNorm * canvas.width;
-
-        // Speed lines styling (Standard Brutalist Colors retained)
         ctx.strokeStyle = line.color;
         ctx.lineWidth = 2.0;
         ctx.lineCap = "round";
@@ -128,7 +122,8 @@ export function VelocityWarp() {
       rafId = requestAnimationFrame(animate);
     };
 
-    // Event Listener for Navbar Jumps
+    let stopTimer: ReturnType<typeof setTimeout> | null = null;
+
     const handleWarpJump = (e: Event) => {
       const customEvent = e as CustomEvent;
       const s = stateRef.current;
@@ -137,29 +132,40 @@ export function VelocityWarp() {
       s.direction = dir;
       
       if (!s.isWarpingRef) {
-        // High visibility for active testing Phase
         s.isPetrovaMode = language === 'eridian' ? true : Math.random() < 0.05;
-        
         s.isWarpingRef = true;
         setIsWarping(true);
+        
+        // Start drawing if not already active
+        if (!drawingActive.current) {
+          drawingActive.current = true;
+          rafId = requestAnimationFrame(animate);
+        }
       }
       
-      // Keep warping active for the duration of the smooth scroll (~800ms)
       if (s.warpTimer) clearTimeout(s.warpTimer);
       s.warpTimer = setTimeout(() => {
         s.isWarpingRef = false;
         setIsWarping(false); 
       }, 700); 
+
+      // Reset the stop timer for drawing
+      if (stopTimer) clearTimeout(stopTimer);
+      // Wait for the full 1500ms CSS fade-out to complete before stopping the canvas
+      stopTimer = setTimeout(() => {
+        drawingActive.current = false;
+        if (rafId) cancelAnimationFrame(rafId);
+      }, 2300); // 700ms warp + 1500ms fade + 100ms buffer
     };
 
     window.addEventListener("WARP_JUMP", handleWarpJump);
-    rafId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("WARP_JUMP", handleWarpJump);
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
       if (stateRef.current.warpTimer) clearTimeout(stateRef.current.warpTimer);
+      if (stopTimer) clearTimeout(stopTimer);
     };
   }, [language]);
 

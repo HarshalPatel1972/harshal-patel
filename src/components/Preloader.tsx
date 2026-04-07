@@ -306,6 +306,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     return () => {
       clearTimeout(initTimeout);
       if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+      if (timelineRef.current) timelineRef.current.pause();
       document.body.style.overflow = "";
     };
   }, [complete, onComplete, quote, readTime, language, mounted]);
