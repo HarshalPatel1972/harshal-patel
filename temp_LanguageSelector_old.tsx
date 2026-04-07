@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { animate, stagger, utils } from "animejs";
+import { animate as anime, utils } from "animejs";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
@@ -47,14 +47,14 @@ export function LanguageSelector() {
     
     if (isOpen) {
       // Set instantly to visible
-      animate(menuItems as any, {
+      anime(menuItems as any, {
         opacity: 1,
         translateY: 0,
         duration: 0
       });
     } else {
       // Instant clear on close
-      animate(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
+      anime(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
     }
   }, [isOpen]);
 
@@ -63,7 +63,7 @@ export function LanguageSelector() {
     if (!globeRef.current) return;
     let pulse: any = null;
     if (language === 'eridian') {
-      pulse = animate(globeRef.current, {
+      pulse = anime(globeRef.current, {
         borderColor: ['#FFB300', '#FF8C00', '#FFB300'],
         duration: 1400,
         easing: 'easeInOutSine',
