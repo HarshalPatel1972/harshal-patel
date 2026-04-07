@@ -78,14 +78,14 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
              className="relative flex-1 overflow-hidden h-full flex items-center cursor-pointer group"
             >
              <div className="animate-marquee flex items-center gap-12 group-hover:[animation-play-state:paused]">
-               <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase whitespace-nowrap drop-shadow-sm flex items-center gap-2">
-                  <span className="opacity-50">[CLICK TO READ]</span> {notice}
+               <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase whitespace-nowrap drop-shadow-sm">
+                  {notice}
                </span>
-               <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase whitespace-nowrap drop-shadow-sm flex items-center gap-2">
-                  <span className="opacity-50">[CLICK TO READ]</span> {notice}
+               <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase whitespace-nowrap drop-shadow-sm">
+                  {notice}
                </span>
-               <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase whitespace-nowrap drop-shadow-sm flex items-center gap-2">
-                  <span className="opacity-50">[CLICK TO READ]</span> {notice}
+               <span className="font-mono text-[9px] md:text-[11px] text-white font-bold tracking-wide uppercase whitespace-nowrap drop-shadow-sm">
+                  {notice}
                </span>
              </div>
            </div>
@@ -123,12 +123,9 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
               className="relative w-full max-w-4xl bg-white border-8 border-black brutal-shadow-lg p-8 md:p-16 flex flex-col gap-8 md:gap-12 manga-cut-tr"
             >
                {/* Label Header */}
-               <div className="flex items-center justify-between border-b-4 border-black pb-6 md:pb-8">
+               <div className="flex items-center border-b-4 border-black pb-6 md:pb-8">
                   <div className="bg-[var(--accent-blood)] text-white font-black font-display text-xl md:text-3xl px-6 py-2 tracking-widest uppercase">
                     {label}
-                  </div>
-                  <div className="text-black font-mono font-black text-xs md:text-sm tracking-[0.35em] hidden sm:block">
-                    SYSTEM_TRANSMISSION_v2.0
                   </div>
                </div>
 
@@ -138,9 +135,6 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
                     {notice}
                   </p>
                   <div className="h-[2px] w-full bg-black/10" />
-                  <p className="font-mono text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">
-                    Harshal Patel Portfolio Infrastructure | Status: Maintenance | Node: {language.toUpperCase()}
-                  </p>
                </div>
 
                {/* Close Action */}
