@@ -2,3 +2,10 @@ Navbar idea 1 (Film Strip): A vertical film strip sidebar on the left edge with 
 Navbar idea 2 (HUD Viewfinder): 4 dynamic framing brackets positioned in the corners of the viewport with mix-blend-difference text. No centralized bar, immersive targeting reticle in the center.
 Navbar idea 3 (Manga Grid): A strict top-aligned grid layout resembling manga panels.
 Animation idea 1 (Scene Cut): A quick flash animation style when navigating from one section to another.
+
+Visual idea 1 (Petrova Swarm / Astrophage Line): A cluster-based golden-yellow particle storm that replaces standard warp lines during Eridian mode or 5% chance. 
+Implementation Details:
+  - Pre-allocate 2.5x density in generateLines()
+  - Math.pow(depth, 5) * (window.innerWidth / 1.5) for narrow central clustering
+  - Fast, gold/yellow/red particles with varying radii
+  - Activated by s.isPetrovaMode = true

@@ -442,7 +442,7 @@ export function Navbar() {
                 {[
                   { name: "Eridian Language Mode", desc: "A musical, complete thematic shift." },
                   { name: "Terminal Pressure Protocol", desc: "Triggered by extreme UI interaction." },
-                  { name: "Vector Space-Warp Jump", desc: "A cinematic high-distance navigation jump." },
+                  { name: "Warp Space Pathway", desc: "A cinematic high-distance navigation jump." },
                   { name: "詛咒 / Ofuda Archive", desc: "Paper charms and hidden exorcist themes." },
                   { name: "Kinetic Dot Interaction", desc: "Physics-based dot dragging and flinging." }
                 ].map((egg, idx) => (

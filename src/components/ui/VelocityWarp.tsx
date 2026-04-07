@@ -11,7 +11,6 @@ export function VelocityWarp() {
   const stateRef = useRef({ 
     direction: 1, 
     isWarpingRef: false,
-    isPetrovaMode: false,
     warpTimer: null as ReturnType<typeof setTimeout> | null
   });
   const drawingActive = useRef(false);
@@ -26,16 +25,13 @@ export function VelocityWarp() {
 
     // Use state-bound lines so they can be regenerated dynamically or use normalized horizontal placement
     let lines: { xNorm: number; y: number; length: number; speed: number; color: string }[] = [];
-    let petrovaSwarm: { offsetX: number; y: number; speed: number; radius: number; color: string }[] = [];
     const isEridian = language === 'eridian';
     const colors = isEridian ? ['#E8E8E6', '#FFB300', '#0055ff'] : ['#E8E8E6', '#d91111', '#0ee0c3']; 
     
     // Dynamic Density: Generate lines based on viewport area (Scales perfectly from Mobile to 4K Desktop)
     const generateLines = () => {
       lines = [];
-      petrovaSwarm = [];
       const density = Math.floor((window.innerWidth * window.innerHeight) / 7000); 
-      // e.g. 1920x1080 -> ~296 lines (immersion on desktop). 375x812 -> ~43 lines. (immersion on mobile).
       
       for (let i = 0; i < density; i++) {
           lines.push({
@@ -44,23 +40,6 @@ export function VelocityWarp() {
               length: 100 + Math.random() * 250, // Cinematic length
               speed: 10 + Math.random() * 20, // Cinematic speed
               color: colors[Math.floor(Math.random() * colors.length)]
-          });
-      }
-
-      // Pre-allocate Astrophage Swarm for Zero-Lag (Oily Smooth) running
-      const swarmDensity = density * 2.5; 
-      for(let i=0; i < swarmDensity; i++) {
-          const depth = Math.random(); 
-          // 5th power pushes 80% to cluster heavily around the center
-          const stretch = Math.pow(depth, 5) * (window.innerWidth / 1.5);
-          const directionMap = Math.random() > 0.5 ? 1 : -1;
-          
-          petrovaSwarm.push({
-             offsetX: stretch * directionMap,
-             y: Math.random() * window.innerHeight,
-             speed: 15 + Math.random() * 30, // Faster than normal lines
-             radius: 0.5 + Math.random() * 2.5,
-             color: isEridian ? '#FFB300' : (Math.random() > 0.7 ? '#FFFDE7' : (Math.random() > 0.4 ? '#FFD700' : '#FF3300'))
           });
       }
     };
@@ -83,25 +62,9 @@ export function VelocityWarp() {
       const s = stateRef.current;
       
       // SOLID BRUTALIST BACKGROUND - Hides everything underneath
-      ctx.fillStyle = s.isPetrovaMode ? "#000000" : "#050505";
+      ctx.fillStyle = "#050505";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Petrova Central Beam Rendering
-      if (s.isPetrovaMode) {
-        const centerX = canvas.width / 2;
-        petrovaSwarm.forEach(p => {
-           const movement = -s.direction * p.speed;
-           p.y += movement;
-           if (p.y < -50) p.y = canvas.height + 50;
-           if (p.y > canvas.height + 50) p.y = -50;
-
-           ctx.beginPath();
-           ctx.arc(centerX + p.offsetX, p.y, p.radius, 0, Math.PI * 2);
-           ctx.fillStyle = p.color;
-           ctx.fill();
-        });
-      }
-
       lines.forEach(line => {
         const movement = -s.direction * line.speed;
         line.y += movement;
@@ -132,7 +95,6 @@ export function VelocityWarp() {
       s.direction = dir;
       
       if (!s.isWarpingRef) {
-        s.isPetrovaMode = language === 'eridian' ? true : Math.random() < 0.05;
         s.isWarpingRef = true;
         setIsWarping(true);
         
