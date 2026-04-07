@@ -40,41 +40,26 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Unified 1-Second Staggered Reveal 📽️
+  // Pure Top-to-Bottom Staggered Reveal 🎞️
   useEffect(() => {
     if (!menuRef.current) return;
     
-    const menuItems = menuRef.current.querySelectorAll('button');
+    const menuItems = menuRef.current.querySelectorAll('.lang-item');
     
     if (isOpen) {
-      // 1. Container appears almost instantly
-      const containerAnim = anime(menuRef.current, {
-        opacity: [0, 1],
-        duration: 200,
-        easing: 'linear'
-      });
-
-      // 2. Clear Top-to-Bottom Staggered Reveal
+      // 1. Items Stagger (The only animation)
       const itemsAnim = anime(menuItems as any, {
         opacity: [0, 1],
-        translateY: [15, 0],
-        duration: 400,
-        delay: utils.stagger(45), // (12 items * 45) + 400 = 940ms total.
+        translateY: [20, 0],
+        duration: 450,
+        delay: utils.stagger(40), // (13 items * 40) + 450 = ~970ms total.
         easing: 'easeOutCubic'
       });
 
-      return () => {
-        containerAnim.pause();
-        itemsAnim.pause();
-      };
+      return () => { itemsAnim.pause(); };
     } else {
-      const exitAnim = anime(menuRef.current, {
-        opacity: [1, 0],
-        duration: 200,
-        easing: 'easeInQuad'
-      });
-
-      return () => exitAnim.pause();
+      // Instant clear on close
+      anime(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
     }
   }, [isOpen]);
 
@@ -133,10 +118,10 @@ export function LanguageSelector() {
         )}
       </button>
 
-      {/* Expanded Container - Kinetic Vertical List 🎞️ */}
+      {/* Expanded Container - Instant Pop-in without transitions 🎞️ */}
       <div
         ref={menuRef}
-        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border overflow-hidden transform-gpu origin-top ${isEridian ? 'border-[#FFB300]/40' : 'border-white/20'} ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none'}`}
+        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border overflow-hidden ${isEridian ? 'border-[#FFB300]/40' : 'border-white/20'} ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none'}`}
         style={{ width: '220px', zIndex: 100 }}
       >
         <div className="flex flex-col w-full overflow-y-auto max-h-[70vh]">
@@ -145,7 +130,7 @@ export function LanguageSelector() {
           {isEridian && (
             <button
               onClick={() => { setLanguage('en'); setIsOpen(false); }}
-              className="relative font-mono text-sm font-bold tracking-widest h-12 flex items-center justify-start px-6 border-b transition-all duration-300 hover:bg-[#FFB300]/10 text-[#FFB300] bg-[#FFB300]/5 border-[#FFB300]/30"
+              className="lang-item opacity-0 relative font-mono text-sm font-bold tracking-widest h-12 flex items-center justify-start px-6 border-b transition-all duration-300 hover:bg-[#FFB300]/10 text-[#FFB300] bg-[#FFB300]/5 border-[#FFB300]/30"
             >
               <span className="shrink-0">♩ ERIDIAN</span>
               <div className="ml-auto w-1.5 h-1.5 bg-[#FFB300]" />
@@ -156,7 +141,7 @@ export function LanguageSelector() {
             <button
               key={lang.code}
               onClick={() => { setLanguage(lang.code); setIsOpen(false); }}
-              className={`relative font-mono text-sm font-bold tracking-widest h-12 flex items-center justify-start px-6 border-b border-white/5 transition-all duration-300 hover:bg-white/10 hover:text-white ${!isEridian && language === lang.code ? 'text-[var(--accent-blood)] bg-white/5' : 'text-white/80'}`}
+              className={`lang-item opacity-0 relative font-mono text-sm font-bold tracking-widest h-12 flex items-center justify-start px-6 border-b border-white/5 transition-colors duration-300 hover:bg-white/10 hover:text-white ${!isEridian && language === lang.code ? 'text-[var(--accent-blood)] bg-white/5' : 'text-white/80'}`}
             >
               <span className="shrink-0">{lang.label}</span>
               {!isEridian && language === lang.code && <div className="ml-auto w-1.5 h-1.5 bg-[var(--accent-blood)]" />}
