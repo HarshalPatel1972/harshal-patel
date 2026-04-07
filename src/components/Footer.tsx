@@ -13,11 +13,11 @@ export function Footer() {
   const actionText = language === 'hi' ? "कॉफी पिलाएँ" : "Buy me a Coffee";
 
   return (
-    <footer className="relative bg-[#000000] border-t-4 border-[#FFFFFF] px-4 py-4 md:px-12 md:py-10 overflow-hidden">
+    <footer className="relative bg-[#000000] border-t-4 border-[#FFFFFF] px-4 py-4 md:px-12 md:py-6 overflow-hidden">
       {/* Halftone Texture (Pure White/Black) */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-5 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-12 md:gap-24 relative z-10">
+      <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-8 md:gap-12 relative z-10">
         <div className="flex flex-col gap-2 text-center md:text-left">
             <div className="text-[12px] md:text-[14px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF] opacity-50">
                 {currentProfile.name} <span className="text-[#d91111] ml-4 italic">© {new Date().getFullYear()}</span>
