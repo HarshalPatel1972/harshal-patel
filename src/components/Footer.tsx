@@ -64,13 +64,6 @@ export function Footer() {
                 </div>
             </div>
 
-            {/* DECORATIVE DATA OVERLAY (AWE FACTOR) */}
-            <div className="absolute top-1 left-2 text-[6px] font-mono text-[var(--accent-blood)] opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none mobile-data-loop">
-              SYSTEM_HEARTBEAT: OK // TRANSMISSION_ACTIVE
-            </div>
-            <div className="absolute bottom-1 right-2 text-[6px] font-mono text-black opacity-0 group-hover:opacity-40 transition-opacity uppercase tracking-tighter pointer-events-none mobile-data-loop">
-              COFFEE_PROTOCOL_v4.2 // HARSHAL_PATEL
-            </div>
           </a>
         </div>
       </div>
@@ -108,15 +101,10 @@ export function Footer() {
               0%, 50% { transform: translateY(0); }
               55%, 95% { transform: translateY(-100%); }
            }
-           @keyframes data-fade-loop {
-              0%, 50% { opacity: 0; }
-              55%, 95% { opacity: 0.4; }
-           }
 
            .mobile-shutter-loop-left { animation: shutter-left-loop 8s infinite ease-in-out; }
            .mobile-shutter-loop-right { animation: shutter-left-loop 8s infinite ease-in-out; animation-delay: 0.1s; }
            .mobile-content-loop { animation: content-slide-loop 8s infinite ease-in-out; }
-           .mobile-data-loop { animation: data-fade-loop 8s infinite ease-in-out; }
         }
       `}</style>
     </footer>
