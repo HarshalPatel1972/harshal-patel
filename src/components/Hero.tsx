@@ -48,8 +48,9 @@ IntroWord.displayName = "IntroWord";
 export function Hero() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
-  const cta1Ref = useRef<HTMLAnchorElement>(null);
-  const cta2Ref = useRef<HTMLAnchorElement>(null);
+  const titlesRef = useRef<HTMLDivElement>(null);
+  const cta1Ref = useMagnetic<HTMLAnchorElement>(0.2);
+  const cta2Ref = useMagnetic<HTMLAnchorElement>(0.2);
   const trackRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
 
@@ -103,51 +104,95 @@ export function Hero() {
   }, []);
 
   return (
-    <section 
-      ref={trackRef} 
-      id="hero" 
-      className="relative w-full h-[150vh] bg-black overflow-visible"
-      style={{ "--scroll-progress": 0 } as React.CSSProperties}
+    <section
+      id="hero"
+      ref={trackRef}
+      className="h-[250vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
+      style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
-      <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-        <div 
-          ref={heroContentRef}
-          className="relative z-10 w-full px-6 md:px-12 flex flex-col items-center md:items-start will-change-transform"
-        >
-          <div className="max-w-[90vw] md:max-w-[70vw]">
-            <div className="mb-6 md:mb-8">
+      <div 
+        className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
+      >
+        <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
+          <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
+            <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
               {allWords.map((word, i) => (
-                <IntroWord key={`${language}-${i}`} word={word} i={i} totalWords={allWords.length} language={language} />
+                <IntroWord key={i} word={word} i={i} totalWords={allWords.length} language={language} />
               ))}
             </div>
+          </div>
+        </div>
+          
+        <div 
+          className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
+          style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as any}
+        >
+          <div className="relative h-20 w-8 flex flex-col items-center justify-center">
+            {[0, 1, 2, 3, 4].map((i) => {
+              const themeColors = ['var(--accent-blood)', 'var(--accent-cursed)', 'var(--text-bone)', 'var(--accent-blood)', 'var(--accent-cursed)'];
+              return (
+                <svg 
+                  key={i} 
+                  className="absolute animate-arrow-flow" 
+                  style={{ animationDelay: `${i * 0.4}s` }} 
+                  width="24"
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none"
+                >
+                  <path 
+                    d="M12 4L12 20M12 20L5 13M12 20L19 13" 
+                    stroke={themeColors[i]} 
+                    strokeWidth="3.2" 
+                    strokeLinecap="square" 
+                    className="opacity-70"
+                  />
+                </svg>
+              );
+            })}
+          </div>
+        </div>
 
-            <div className="flex flex-col mb-12">
-               <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-[var(--text-bone)] select-none relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                 {language === 'hi' ? (
+        <div ref={heroContentRef} className="w-full h-full flex items-center justify-center">
+          <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
+          <div className="md:hidden">
+            <ExorcistsScroll />
+          </div>
+
+          <div id="hero-content-fadeout" className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center md:items-start text-center md:text-left justify-center mt-12 md:mt-24 pointer-events-none">
+            <div id="available-for-opps" className="cinematic-in inline-flex items-center gap-3 mb-8 px-5 py-2 border-l-4 border-[var(--accent-blood)] bg-white text-[var(--bg-ink)] brutal-shadow transform -rotate-1">
+              <span className={`uppercase tracking-[0.2em] text-[10px] sm:text-xs font-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                {language === 'en' ? "Available for Opportunities" : language === 'ja' ? "仕事の依頼を受付中" : language === 'ko' ? "업무 의뢰 가능" : language === 'zh-tw' ? "開放合作機會" : language === 'fr' ? "Disponible pour des Opportunités" : language === 'id' ? "Tersedia untuk Peluang" : language === 'de' ? "Verfügbar für Möglichkeiten" : language === 'it' ? "Disponibile per Opportunità" : language === 'pt-br' ? "Disponível para Oportunidades" : (language === 'es-419' || language === 'es') ? "Disponible para Oportunidades" : language === 'eridian' ? "HARSHAL READY FOR NEW MISSION" : "अवसरों के लिए उपलब्ध"}
+              </span>
+            </div>
+
+            <div ref={titlesRef} className="relative mb-8 w-full group/title pointer-events-auto">
+              <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
+                {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
                     {currentProfile.name.split(" ")[0]}
                   </span>
+                ) : (
+                  currentProfile.name.split(" ")[0].split("").map((char, i) => (
+                    <span key={i} className="inline-block transition-all duration-300">
+                      {char}
+                    </span>
+                  ))
+                )}
+              </h1>
+              <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                 {language === 'hi' ? (
+                  <span className="inline-block transition-all duration-300">
+                    {currentProfile.name.split(" ").slice(1).join(" ")}
+                  </span>
                  ) : (
-                   currentProfile.name.split(" ")[0].split("").map((char, i) => (
+                   currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
                   ))
                  )}
-               </h1>
-               <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                  {language === 'hi' ? (
-                   <span className="inline-block transition-all duration-300">
-                     {currentProfile.name.split(" ").slice(1).join(" ")}
-                   </span>
-                  ) : (
-                    currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
-                     <span key={i} className="inline-block transition-all duration-300">
-                       {char}
-                     </span>
-                   ))
-                  )}
-               </h1>
+              </h1>
             </div>
 
             <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
@@ -158,7 +203,7 @@ export function Hero() {
               <a ref={cta1Ref} href="#projects" className="mobile-glow group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                   <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                     {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : language === 'de' ? "Arbeit ansehen" : language === 'it' ? "Vedi Lavori" : language === 'pt-br' ? "Ver Trabalhos" : (language === 'es-419' || language === 'es') ? "Ver Trabajos" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
                   </span>
                 </div>
@@ -166,7 +211,7 @@ export function Hero() {
               <a ref={cta2Ref} href="#contact" className="mobile-glow group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
                 <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                   <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                     {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Hubungi" : language === 'de' ? "Kontakt" : language === 'it' ? "Contatto" : language === 'pt-br' ? "Contato" : (language === 'es-419' || language === 'es') ? "Contacto" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
                   </span>
                 </div>
