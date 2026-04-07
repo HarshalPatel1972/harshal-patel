@@ -213,48 +213,45 @@ export function Navbar() {
     chargingLogoRef.current = true;
     longPressActiveRef.current = false;
 
-    if (dotMode === 'LOCKED') {
-      setDotScale(1.5);
+    if (dotMode === 'LOCKED' || dotMode === 'RELEASED') {
+      setDotScale(1.2);
       chargeTimerRef.current = setTimeout(() => {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true;
         
-        setDotMode('CHARGING');
-        setDotScale(3);
-        const oppsEl = document.getElementById('available-for-opps');
-        const rect = oppsEl?.getBoundingClientRect();
-        const cx = window.innerWidth / 2;
-        const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
-        physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
-        setDotPos({ x: cx, y: cy });
-        setDotMode('RELEASED');
-        setSplashPos({ x: cx, y: cy });
-        setShowSplash(true);
-        setTimeout(() => setShowSplash(false), 1000);
-      }, 1000);
-    } else if (dotMode === 'RELEASED') {
-      chargeTimerRef.current = setTimeout(() => {
-        if (!chargingLogoRef.current) return;
-        longPressActiveRef.current = true;
-        returnToNav();
-      }, 1000);
+        if (dotMode === 'LOCKED') {
+          setDotMode('CHARGING');
+          setDotScale(3);
+          const oppsEl = document.getElementById('available-for-opps');
+          const rect = oppsEl?.getBoundingClientRect();
+          const cx = window.innerWidth / 2;
+          const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
+          physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
+          setDotPos({ x: cx, y: cy });
+          setDotMode('RELEASED');
+          setSplashPos({ x: cx, y: cy });
+          setShowSplash(true);
+          setTimeout(() => setShowSplash(false), 1000);
+        } else {
+          returnToNav();
+        }
+      }, 800); // Slightly faster long-press detection (800ms)
     }
   };
 
   const handleLogoTouchEnd = () => {
     chargingLogoRef.current = false;
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
-    
-    if (!longPressActiveRef.current) {
-       setShowEasterEggs(prev => !prev);
-    }
+    if (dotMode === 'CHARGING') { setDotScale(1); setDotMode('LOCKED'); }
+  };
 
-    if (dotMode === 'CHARGING') { 
-      setDotScale(1); 
-      setDotMode('LOCKED'); 
+  const handleLogoClick = () => {
+    // ONLY toggle if this wasn't a long-press session
+    if (!longPressActiveRef.current) {
+      setShowEasterEggs(prev => !prev);
     }
-    
-    setTimeout(() => { longPressActiveRef.current = false; }, 50);
+    // Reset for next interaction
+    longPressActiveRef.current = false;
   };
 
   const handleDotTouchStart = (e: React.TouchEvent) => {
@@ -359,6 +356,7 @@ export function Navbar() {
               onMouseLeave={handleLogoTouchEnd} 
               onTouchStart={handleLogoTouchStart} 
               onTouchEnd={handleLogoTouchEnd} 
+              onClick={handleLogoClick}
               className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation"
             >
                 <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority={true} sizes="44px" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
