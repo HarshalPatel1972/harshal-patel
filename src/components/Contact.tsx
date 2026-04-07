@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
@@ -94,6 +94,20 @@ export function Contact() {
   const currentLinks = LINKS[language as keyof typeof LINKS] || LINKS.en;
   const containerRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
+
+  const [loopIdx, setLoopIdx] = useState(0);
+  const [isGlitching, setIsGlitching] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsGlitching(true);
+      setTimeout(() => {
+        setLoopIdx((prev) => (prev + 1) % 3);
+        setIsGlitching(false);
+      }, 300); // 300ms high-intensity glitch
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     if (id === "email") {
@@ -237,8 +251,12 @@ export function Contact() {
                         {link.label}
                       </div>
 
-                      <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
-                        {textValue}
+                      <div className={`text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none ${link.id === 'feedback' && isGlitching ? 'glitch-active' : ''}`}>
+                        {link.id === "feedback" && link.values ? (
+                           link.values[loopIdx]
+                        ) : (
+                          textValue
+                        )}
                       </div>
                     </div>
 
