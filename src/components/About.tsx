@@ -258,7 +258,7 @@ export function About() {
       {/* PORTALED RESPONSIVE HUB 📽️ */}
       {renderPressureOverlay()}
 
-      <div className="absolute top-10 left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
+      <div className="absolute top-0 md:top-[-2rem] left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`}>
              {(() => {
                 switch(language) {
