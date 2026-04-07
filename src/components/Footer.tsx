@@ -44,7 +44,7 @@ export function Footer() {
             href="https://www.chai4.me/harshalpatel" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="relative flex items-center justify-center w-full md:w-[350px] h-[70px] md:h-[85px] bg-[#000000] border-2 border-[var(--accent-blood)] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] brutal-shadow"
+            className="relative flex items-center justify-center w-full md:w-[350px] h-[70px] md:h-[85px] bg-[#000000] border-2 border-[var(--accent-blood)] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] brutal-shadow md:-translate-x-[500px]"
           >
             {/* THE LOOPING CONTENT - FIXED HEIGHT ALIGNMENT */}
             <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
