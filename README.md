@@ -1,11 +1,11 @@
 # Harshal Patel — Software Engineer Portfolio
 > **Cinematic Brutalism & High-Performance Web Engineering.**
 
-![Next.js](https://img.shields.io/badge/Next.js-14.x-black?style=for-the-badge&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-11.x-black?style=for-the-badge&logo=framer)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Anime.js](https://img.shields.io/badge/Anime.js-4.3-black?style=for-the-badge)
+![License](https://img.shields.io/badge/License-HPCL_v1.0-red?style=for-the-badge)
 
 ## 🌐 Overview
 Welcome to the source code of my digital portfolio. This project isn't just a static resume—it is a deeply engineered **Kinetic System** built to demonstrate advanced proficiency in performance optimization, WebGL/Canvas rendering, and complex state management within the React ecosystem.
@@ -31,18 +31,24 @@ A completely custom global transition router:
 * Built a state machine capable of hijacking hard navigation events.
 * Smoothly transitions the application state to trigger pre-loading mechanisms, execute WebGL-like 3D card flips (`FlipTransition.tsx`), or spatial warps before firing a sanitized redirect.
 
-### 4. Industrial SSR Hardening
-Every component that touches the `window`, `document`, or `navigator` has been structurally guarded with React `useEffect` hydration boundaries and `typeof window !== 'undefined'` sanity checks. The project rigorously passes Vercel's Static Generation (`next build`) without leaking into the Node.js server.
+### 4. Performance Engineering (Heap Memory Management)
+This portfolio has been rigorously optimized to maintain a low memory footprint (Targeting <100MB Heap usage in Chrome):
+* **Lifecycle-Aware Animators**: All `animejs` and Canvas loops in components like `VelocityWarp.tsx` and `BinaryVeil.tsx` are bound to `IntersectionObserver` logic and explicit cleanup handlers (`anime.remove`). They cease all processing when out of view, preventing memory leaks and CPU spikes.
+* **Aggressive Code Splitting**: Utilizing `next/dynamic` for heavy sections (`About`, `Projects`, `Contact`) to minimize initial JS payload and prevent unnecessary script execution on entry.
+* **Resource Throttling**: Video and high-res asset preloading is state-managed (e.g., `preload="metadata"`) to prevent unneeded multi-megabyte downloads during initial hydration.
+
+### 5. Unified Kinetic Motion (`LanguageSelector.tsx`)
+A custom-built "Shutter Unroll" materialization system that replaces standard CSS transforms with a synchronized, physics-driven staggered reveal. By orchestrating individual item materialization with the container's clip-path unroll, the UI feels alive and responsive to user intent.
 
 ---
 
 ## 🛠️ Technology Stack
 
-* **Framework**: [Next.js 14](https://nextjs.org/) (App Directory Architecture)
+* **Framework**: [Next.js 16](https://nextjs.org/) (Turbopack Powered)
 * **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
-* **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom Vanilla CSS Variables (`globals.css`)
-* **Animation**: [Framer Motion](https://www.framer.com/motion/) & [Anime.js](https://animejs.com/)
-* **Rendering**: Canvas API / `requestAnimationFrame` Loops
+* **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
+* **Animation**: [Anime.js 4](https://animejs.com/) & [Framer Motion](https://www.framer.com/motion/)
+* **Rendering**: Native Canvas API / IntersectionObserver
 * **Typography**: Local-hosted custom fonts (Cirka, Season, Victor, Luna) to enforce absolute zero-latency layout shifts.
 
 ---
@@ -86,7 +92,12 @@ All CSS animations conform to user preference media queries (`@media (prefers-re
 ---
 
 ## 📝 License
-This project is open-source and available under the [MIT License](LICENSE).
+This project is proprietary and governed by the [HARSHAL PATEL CREATIVE LICENSE (HPCL v1.0)](LICENSE). 
+
+By accessing this repository, you agree to the terms:
+* **Personal/Educational Use Only**: You may copy and study the Work for learning.
+* **Non-Commercial**: You may NOT use the design, code, or kinetic systems for commercial projects or revenue generation.
+* **Attribution Required**: Clear, prominent credit to Harshal Patel must be provided on any use or study of the Work.
 
 <p align="center">
   <b>Architected by Harshal Patel.</b><br>
