@@ -124,7 +124,17 @@ export function LanguageSelector() {
         className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border overflow-hidden ${isEridian ? 'border-[#FFB300]/40' : 'border-white/20'} ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none'}`}
         style={{ width: '220px', zIndex: 100 }}
       >
-        <div className="flex flex-col w-full overflow-y-auto max-h-[70vh]">
+        <div 
+          className="flex flex-col w-full overflow-y-auto overflow-x-hidden max-h-[70vh]"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
+          <style dangerouslySetInnerHTML={{ __html: `
+            .overflow-y-auto::-webkit-scrollbar { display: none; }
+          ` }} />
 
           {/* ♩ Eridian entry — only surfaces when Rocky's language is active */}
           {isEridian && (
