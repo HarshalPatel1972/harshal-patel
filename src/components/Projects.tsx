@@ -47,7 +47,7 @@ export function Projects() {
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
 
-      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8 mt-[70px]">
+      <div className="w-full max-w-7xl relative flex flex-col md:flex-row justify-between items-end mb-8 md:mb-[41px] border-b-4 border-black pb-8 mt-[50px]">
         <div>
            <div className="bg-black text-white font-black font-mono text-xs tracking-widest px-3 py-1 inline-block mb-4">
              {language === 'en' ? 'CHAPTER 01' : language === 'ja' ? '第一章' : language === 'ko' ? '제 1 장' : language === 'zh-tw' ? '第一章' : language === 'fr' ? 'CHAPITRE 01' : language === 'id' ? 'BAB 01' : language === 'de' ? 'KAPITEL 01' : language === 'it' ? 'CAPITOLO 01' : (language === 'pt-br' || language === 'es-419' || language === 'es') ? 'CAPÍTULO 01' : language === 'eridian' ? 'PART-ONE-THING' : 'अध्याय 01'}

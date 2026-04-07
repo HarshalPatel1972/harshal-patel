@@ -146,7 +146,7 @@ export function Contact() {
          </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative flex flex-col mt-[70px]">
+      <div className="w-full max-w-7xl relative flex flex-col mt-[50px]">
         
         {/* Header Block */}
         <ScrollReveal duration={1000}>

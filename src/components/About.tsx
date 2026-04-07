@@ -258,7 +258,7 @@ export function About() {
       {/* PORTALED RESPONSIVE HUB 📽️ */}
       {renderPressureOverlay()}
 
-      <div className="absolute top-[-2rem] md:top-[-4rem] left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
+      <div className="absolute top-10 md:top-[-2rem] left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 opacity-10 select-none">
           <h2 className={`text-[8rem] md:text-[20rem] font-black uppercase whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--text-bone)]`}>
              {(() => {
                 switch(language) {
@@ -280,7 +280,7 @@ export function About() {
           </h2>
       </div>
 
-      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-[70px]">
+      <div className="w-full max-w-7xl relative flex flex-col gap-12 lg:gap-24 mt-[50px]">
         <ScrollReveal duration={1200} className="w-full">
           <div className="manga-panel p-5 md:p-14 bg-white text-black brutal-shadow manga-cut-tr border-2 md:border-4 border-black relative">
             <div className={`absolute top-0 right-0 bg-[var(--accent-blood)] text-white font-black px-6 py-2 text-xl tracking-widest border-l-4 border-b-4 border-black ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
