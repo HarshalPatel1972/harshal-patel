@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLanguage, type Language } from "@/context/LanguageContext";
-import { animate as anime } from "animejs";
+import { motion, AnimatePresence } from "framer-motion";
 
 type NavItem = {
   id: string;
@@ -87,7 +87,6 @@ const NAV_ITEMS: NavItems = {
     { id: "about", label: "ORIGEN", percent: 65 },
     { id: "contact", label: "CONTACTO", percent: 95 },
   ],
-  // ♫ Rocky translate human page. Amaze! ♫
   eridian: [
     { id: "hero", label: "WHO-IS", percent: 5 },
     { id: "projects", label: "MAKE-THING", percent: 33 },
@@ -102,7 +101,6 @@ export function Navbar() {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language as keyof typeof NAV_ITEMS] || NAV_ITEMS.en;
   const [active, setActive] = useState("hero");
-  const pathname = usePathname();
 
   const [isBallCyan, setIsBallCyan] = useState(false);
   const [dotMode, setDotMode] = useState<DotMode>('LOCKED');
@@ -112,6 +110,7 @@ export function Navbar() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
+  const [showEasterEggs, setShowEasterEggs] = useState(false);
 
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
@@ -211,43 +210,51 @@ export function Navbar() {
   }, [dotMode, isDragging, runPhysics]);
 
   const handleLogoTouchStart = () => {
-    const isMobile = window.innerWidth < 1024;
-    if (!isMobile && dotMode === 'LOCKED') return;
+    chargingLogoRef.current = true;
+    longPressActiveRef.current = false;
 
     if (dotMode === 'LOCKED') {
-      chargingLogoRef.current = true;
-      setDotMode('CHARGING');
-      setDotScale(3);
+      setDotScale(1.5);
       chargeTimerRef.current = setTimeout(() => {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true;
+        
+        setDotMode('CHARGING');
+        setDotScale(3);
         const oppsEl = document.getElementById('available-for-opps');
         const rect = oppsEl?.getBoundingClientRect();
         const cx = window.innerWidth / 2;
         const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
         physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
         setDotPos({ x: cx, y: cy });
-        setDotScale(3);
         setDotMode('RELEASED');
         setSplashPos({ x: cx, y: cy });
         setShowSplash(true);
         setTimeout(() => setShowSplash(false), 1000);
-      }, 2000);
+      }, 1000);
     } else if (dotMode === 'RELEASED') {
-      chargingLogoRef.current = true;
       chargeTimerRef.current = setTimeout(() => {
         if (!chargingLogoRef.current) return;
         longPressActiveRef.current = true;
         returnToNav();
-      }, 2000);
+      }, 1000);
     }
   };
 
   const handleLogoTouchEnd = () => {
     chargingLogoRef.current = false;
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
-    if (dotMode === 'CHARGING') { setDotScale(1); setDotMode('LOCKED'); }
-    setTimeout(() => { longPressActiveRef.current = false; }, 100);
+    
+    if (!longPressActiveRef.current) {
+       setShowEasterEggs(prev => !prev);
+    }
+
+    if (dotMode === 'CHARGING') { 
+      setDotScale(1); 
+      setDotMode('LOCKED'); 
+    }
+    
+    setTimeout(() => { longPressActiveRef.current = false; }, 50);
   };
 
   const handleDotTouchStart = (e: React.TouchEvent) => {
@@ -346,7 +353,14 @@ export function Navbar() {
       <nav ref={navbarRef} className="fixed right-0 top-0 h-[100dvh] z-[100] w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 touch-none shrink-0" style={{ userSelect: 'none' }}>
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
-            <button onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} onMouseUp={handleLogoTouchEnd} onMouseLeave={handleLogoTouchEnd} onTouchStart={handleLogoTouchStart} onTouchEnd={handleLogoTouchEnd} className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation">
+            <button 
+              onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} 
+              onMouseUp={handleLogoTouchEnd} 
+              onMouseLeave={handleLogoTouchEnd} 
+              onTouchStart={handleLogoTouchStart} 
+              onTouchEnd={handleLogoTouchEnd} 
+              className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation"
+            >
                 <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority={true} sizes="44px" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
             </button>
           </div>
@@ -355,9 +369,9 @@ export function Navbar() {
           <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--bg-ink)]/10" />
           <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-40 pointer-events-none">
              {Array.from({ length: 20 }).map((_, i) => (
-               <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-start pl-2"}`}>
-                 <div className={`h-[1px] bg-[var(--bg-ink)] ${i % 5 === 0 ? "w-6" : "w-3"}`} />
-               </div>
+                <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-start pl-2"}`}>
+                  <div className={`h-[1px] bg-[var(--bg-ink)] ${i % 5 === 0 ? "w-6" : "w-3"}`} />
+                </div>
              ))}
           </div>
           {dotMode !== 'RELEASED' && (
@@ -380,20 +394,16 @@ export function Navbar() {
                 style={{ top: `${item.percent}%`, transform: `translateY(-50%)` }} 
                 onClick={(e) => { 
                   e.preventDefault(); 
-                  
                   if (typeof window !== 'undefined') {
                     const currentScrollY = window.scrollY;
                     const targetEl = item.id === 'hero' ? null : document.getElementById(item.id);
                     const targetY = item.id === 'hero' ? 0 : (targetEl ? targetEl.getBoundingClientRect().top + window.scrollY : 0);
-                    
                     const direction = targetY > currentScrollY ? 1 : -1;
                     const distance = Math.abs(targetY - currentScrollY);
-                    
                     if (distance > 300) {
                       window.dispatchEvent(new CustomEvent('WARP_JUMP', { detail: { direction } }));
                     }
                   }
-
                   if (item.id === 'hero') {
                     window.scrollTo({ top: 0, behavior: 'smooth' }); 
                   } else { 
@@ -408,6 +418,57 @@ export function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* EASTER EGG OVERLAY 🎁 */}
+      <AnimatePresence>
+        {showEasterEggs && (
+          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 md:p-12 pointer-events-auto">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowEasterEggs(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              className="relative w-full max-w-2xl bg-white border-8 border-black p-8 md:p-12 brutal-shadow-lg manga-cut-tr z-10"
+            >
+              <h2 className="text-4xl md:text-6xl font-black font-display uppercase tracking-tighter mb-8 border-b-8 border-black pb-4 text-black">
+                Easter Eggs
+              </h2>
+              
+              <ul className="flex flex-col gap-6">
+                {[
+                  { name: "Eridian Language Mode", desc: "A musical, complete thematic shift." },
+                  { name: "Terminal Pressure Protocol", desc: "Triggered by extreme UI interaction." },
+                  { name: "Vector Space-Warp Jump", desc: "A cinematic high-distance navigation jump." },
+                  { name: "詛咒 / Ofuda Archive", desc: "Paper charms and hidden exorcist themes." },
+                  { name: "Kinetic Dot Interaction", desc: "Physics-based dot dragging and flinging." }
+                ].map((egg, idx) => (
+                  <li key={idx} className="flex flex-col gap-1 border-l-4 border-[var(--accent-blood)] pl-4">
+                    <span className="text-xl md:text-2xl font-black font-display uppercase tracking-widest text-black">
+                      {egg.name}
+                    </span>
+                    <span className="text-[10px] md:text-xs font-mono font-bold text-black/50 uppercase tracking-widest">
+                      {egg.desc}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <button 
+                onClick={() => setShowEasterEggs(false)}
+                className="mt-12 w-full py-4 bg-black text-white font-black font-display text-xl uppercase tracking-widest hover:bg-[var(--accent-blood)] transition-colors manga-cut-bl"
+              >
+                Close
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
