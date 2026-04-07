@@ -171,17 +171,18 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
-/* ─── NEBULA Scan (ATMOSPHERIC EXP) ─── */
-@keyframes nebula-scan {
-  0% { transform: translateX(-150%); opacity: 0; }
-  50% { opacity: 0.5; }
-  100% { transform: translateX(150%); opacity: 0; }
+/* ─── TACTILE ROLL (MECHANICAL EXP) ─── */
+@keyframes weighty-roll {
+  0% { transform: rotateX(0deg); opacity: 1; }
+  45% { transform: rotateX(-90deg); opacity: 0; }
+  55% { transform: rotateX(90deg); opacity: 0; }
+  100% { transform: rotateX(0deg); opacity: 1; }
 }
 
-.nebula-active {
-  animation: nebula-scan 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  background: linear-gradient(90deg, transparent, var(--text-bone), transparent);
-  filter: blur(10px);
+.roll-active {
+  animation: weighty-roll 1.2s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+  transform-origin: center;
+  backface-visibility: hidden;
 }
 
 /* Force hover animations for KineticLink during delay */
