@@ -111,21 +111,22 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const isHindi = language === 'hi';
     const fontClass = isHindi ? "font-hindi" : "font-display";
     
-    // CJK and Hindi characters need specific scaling
+    // CJK and Hindi characters need specific scaling (Increased by ~14%)
     if (isCJK || isHindi) {
-      const base = isHindi ? "text-3xl md:text-7xl lg:text-[9rem]" : "text-3xl md:text-7xl lg:text-[8rem]";
-      if (len > 80) return `text-xl md:text-2xl lg:text-[3.5rem] ${fontClass}`;
-      if (len > 60) return `text-xl md:text-3xl lg:text-[4.5rem] ${fontClass}`;
-      if (len > 40) return `text-2xl md:text-4xl lg:text-[5.5rem] ${fontClass}`;
-      if (len > 25) return `text-2xl md:text-5xl lg:text-[6.5rem] ${fontClass}`;
-      if (len > 15) return `text-3xl md:text-6xl lg:text-[7.5rem] ${fontClass}`;
+      const base = isHindi ? "text-3xl md:text-7xl lg:text-[10.26rem]" : "text-3xl md:text-7xl lg:text-[9.12rem]";
+      if (len > 80) return `text-xl md:text-2xl lg:text-[3.99rem] ${fontClass}`;
+      if (len > 60) return `text-xl md:text-3xl lg:text-[5.13rem] ${fontClass}`;
+      if (len > 40) return `text-2xl md:text-4xl lg:text-[6.27rem] ${fontClass}`;
+      if (len > 25) return `text-2xl md:text-5xl lg:text-[7.41rem] ${fontClass}`;
+      if (len > 15) return `text-3xl md:text-6xl lg:text-[8.55rem] ${fontClass}`;
       return `${base} ${fontClass}`;
     } else {
-      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[3.8rem]";
-      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[4.5rem]";
-      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[5.5rem]";
-      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[6.5rem]";
-      return "font-display text-3xl md:text-7xl lg:text-[8rem]";
+      // Standard Latin scaling (Increased by ~14%)
+      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[4.332rem]";
+      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[5.13rem]";
+      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[6.27rem]";
+      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[7.41rem]";
+      return "font-display text-3xl md:text-7xl lg:text-[9.12rem]";
     }
   }, [quote, language]);
 
@@ -357,7 +358,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
          <h1 
           ref={quoteRef} 
-          className={`${quoteFontSizeClass} font-black text-[#E8E8E6] ${language === 'hi' ? '' : 'uppercase italic'} tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
+          className={`${quoteFontSizeClass} font-black text-[#E8E8E6] ${language === 'hi' ? '' : 'uppercase'} tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
          >
            {wrappedChars}
          </h1>
@@ -368,7 +369,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
          >
             <div className="w-12 md:w-48 h-[1px] bg-[var(--accent-blood)]/40 shadow-[0_4px_30px_rgba(var(--accent-blood-rgb),0.5)]" />
             <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
-              <span className={`text-xs md:text-3xl text-[var(--accent-blood)] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase italic'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
+              <span className={`text-xs md:text-3xl text-[var(--accent-blood)] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
                 {source}
               </span>
               <div className="absolute top-0 left-0 w-[5px] h-full bg-[var(--accent-blood)] shadow-[0_0_20px_rgba(var(--accent-blood-rgb),0.8)]" />
