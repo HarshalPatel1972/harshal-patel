@@ -40,30 +40,27 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Kinetic Unified Shutter Animation HUB 📽️
+  // Unified 1-Second Staggered Reveal 📽️
   useEffect(() => {
     if (!menuRef.current) return;
     
     const menuItems = menuRef.current.querySelectorAll('button');
     
     if (isOpen) {
-      // 1. Shutter Container Reveal
+      // 1. Container appears almost instantly
       const containerAnim = anime(menuRef.current, {
         opacity: [0, 1],
-        translateX: [-10, 0],
-        clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0% 0)'],
-        duration: 500,
-        easing: 'easeOutExpo'
+        duration: 200,
+        easing: 'linear'
       });
 
-      // 2. Synchronized Item Materialization
+      // 2. Clear Top-to-Bottom Staggered Reveal
       const itemsAnim = anime(menuItems as any, {
         opacity: [0, 1],
-        translateX: [-30, 0],
-        filter: ['blur(12px)', 'blur(0px)'],
-        duration: 450,
-        delay: utils.stagger(20),
-        easing: 'easeOutQuart'
+        translateY: [15, 0],
+        duration: 400,
+        delay: utils.stagger(45), // (12 items * 45) + 400 = 940ms total.
+        easing: 'easeOutCubic'
       });
 
       return () => {
@@ -73,10 +70,8 @@ export function LanguageSelector() {
     } else {
       const exitAnim = anime(menuRef.current, {
         opacity: [1, 0],
-        clipPath: ['inset(0 0 0% 0)', 'inset(0 0 100% 0)'],
-        translateX: [0, -10],
-        duration: 300,
-        easing: 'easeInExpo'
+        duration: 200,
+        easing: 'easeInQuad'
       });
 
       return () => exitAnim.pause();
