@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
 
 const TRANSLATIONS = {
@@ -54,13 +53,11 @@ export function VisitorCounter() {
 
   return (
     <div className="relative flex items-center pointer-events-auto select-none group/counter h-9">
-      {/* THE MINIMAL PILL BUTTON - MATCHES LANGUAGE SELECTOR STYLE */}
-      <motion.div 
+      {/* THE MINIMAL PILL BUTTON - REMOVED FRAMER MOTION ENTRANCE FOR INSTANT VISIBILITY */}
+      <div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className="flex items-center bg-black border-2 border-white h-9 transition-all duration-500 hover:border-[var(--accent-blood)] overflow-hidden"
-        initial={false}
-        animate={{ width: isHovered ? "auto" : "auto" }}
       >
         {/* ICON & VISITORS (ALWAYS VISIBLE) */}
         <div className="flex items-center px-4 h-full gap-3 border-r border-white/5 whitespace-nowrap">
@@ -78,11 +75,8 @@ export function VisitorCounter() {
         </div>
 
         {/* REVEAL VIEWS ON HOVER */}
-        <motion.div 
-           initial={{ width: 0, opacity: 0 }}
-           animate={{ width: isHovered ? "auto" : 0, opacity: isHovered ? 1 : 0 }}
-           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-           className="flex items-center h-full px-5 bg-white/5 overflow-hidden whitespace-nowrap"
+        <div 
+           className={`flex items-center h-full bg-white/5 overflow-hidden whitespace-nowrap transition-all duration-300 ${isHovered ? "w-auto px-5 opacity-100" : "w-0 opacity-0"}`}
         >
            <div className="flex flex-col justify-center">
              <span className="text-[10px] font-black font-mono text-[var(--accent-blood)] leading-none">
@@ -92,8 +86,8 @@ export function VisitorCounter() {
                 {t.views}
              </span>
            </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }

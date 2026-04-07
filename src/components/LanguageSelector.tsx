@@ -40,23 +40,18 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Pure Top-to-Bottom Staggered Reveal 🎞️
+  // Instant reveal transition 🎞️
   useEffect(() => {
     if (!menuRef.current) return;
-    
     const menuItems = menuRef.current.querySelectorAll('.lang-item');
     
     if (isOpen) {
-      // 1. Items Stagger (The only animation)
-      const itemsAnim = anime(menuItems as any, {
-        opacity: [0, 1],
-        translateY: [20, 0],
-        duration: 450,
-        delay: utils.stagger(40), // (13 items * 40) + 450 = ~970ms total.
-        easing: 'easeOutCubic'
+      // Set instantly to visible
+      anime(menuItems as any, {
+        opacity: 1,
+        translateY: 0,
+        duration: 0
       });
-
-      return () => { itemsAnim.pause(); };
     } else {
       // Instant clear on close
       anime(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
@@ -102,21 +97,23 @@ export function LanguageSelector() {
 
   return (
     <div ref={containerRef} className="relative flex flex-col group">
-      <button
-        ref={globeRef}
-        onClick={handleGlobeClick}
-        style={isEridian ? { borderColor: '#FFB300' } : {}}
-        className={`w-9 h-9 bg-black border-2 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : 'border-white'}`}
-        aria-label="Select Language"
-      >
-        {isEridian ? (
-          <span className="text-[#FFB300] text-base leading-none font-bold select-none" aria-hidden="true">♩</span>
-        ) : (
-          <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white transition-colors group-hover:fill-[var(--accent-blood)]" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17c-.77 2.07-1.86 4-3.27 5.76-1.02-1.13-1.92-2.39-2.61-3.69-.32-.61-.59-1.24-.81-1.84l-.08-.23H3.25l.13.43c.27.87.64 1.76 1.09 2.65.86 1.63 2 3.2 3.33 4.62l-4.7 4.65 1.41 1.41 4.7-4.65 3.1 3.1 1.06-1.07zm5.23-2.57L17 12l-5 12h2l1.25-3h5.5l1.25 3h2l-5-12zm-3.85 7l2.1-5 2.1 5h-4.2z"/>
-          </svg>
-        )}
-      </button>
+      <div className="relative group">
+        <button
+          ref={globeRef}
+          onClick={handleGlobeClick}
+          style={isEridian ? { borderColor: '#FFB300' } : {}}
+          className={`w-9 h-9 bg-black border-2 flex items-center justify-center transition-all duration-500 hover:border-[var(--accent-blood)] ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : 'border-white'}`}
+          aria-label="Select Language"
+        >
+          {isEridian ? (
+            <span className="text-[#FFB300] text-base leading-none font-bold select-none" aria-hidden="true">♩</span>
+          ) : (
+            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white transition-colors group-hover:fill-[var(--accent-blood)]" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17c-.77 2.07-1.86 4-3.27 5.76-1.02-1.13-1.92-2.39-2.61-3.69-.32-.61-.59-1.24-.81-1.84l-.08-.23H3.25l.13.43c.27.87.64 1.76 1.09 2.65.86 1.63 2 3.2 3.33 4.62l-4.7 4.65 1.41 1.41 4.7-4.65 3.1 3.1 1.06-1.07zm5.23-2.57L17 12l-5 12h2l1.25-3h5.5l1.25 3h2l-5-12zm-3.85 7l2.1-5 2.1 5h-4.2z"/>
+            </svg>
+          )}
+        </button>
+      </div>
 
       {/* Expanded Container - Instant Pop-in without transitions 🎞️ */}
       <div

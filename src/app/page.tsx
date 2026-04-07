@@ -8,7 +8,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { LanguageTransitionWrapper } from "@/context/LanguageContext";
 import { Hero } from "@/components/Hero";
 const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
-const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(mod => mod.VisitorCounter), { ssr: false });
+const VisitorCounter = dynamic<{}> (() => import("@/components/VisitorCounter").then(mod => mod.VisitorCounter), { ssr: false });
 const Projects = dynamic(() => import("@/components/Projects").then(mod => mod.Projects), { ssr: false });
 const About = dynamic(() => import("@/components/About").then(mod => mod.About), { ssr: false });
 const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Contact), { ssr: false });
@@ -35,8 +35,8 @@ function HomeContent() {
       {!showContent && <Preloader onComplete={() => setShowContent(true)} />}
       {showContent && <Cursor />}
 
-      {/* Global Interface Overlay */}
-      <div className={`transition-opacity duration-1000 ${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+      {/* Global Interface Overlay - REMOVED FADE-IN DURATION FOR INSTANT VISIBILITY */}
+      <div className={`${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
         <Navbar />
         <ScrollLine isVisible={showContent} />
         
@@ -63,7 +63,7 @@ function HomeContent() {
         </div>
       </div>
 
-      <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
+      <LanguageTransitionWrapper className={`mr-12 md:mr-16 ${showContent ? "opacity-100" : "opacity-0"}`}>
         <SystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
         <Hero />
         
