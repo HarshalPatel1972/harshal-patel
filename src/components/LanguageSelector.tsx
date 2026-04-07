@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { animate as anime } from "animejs";
+import { animate as anime, utils } from "animejs";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
@@ -43,36 +43,61 @@ export function LanguageSelector() {
   // Kinetic Smooth Animation HUB 📽️
   useEffect(() => {
     if (!menuRef.current) return;
+    
+    // Select all language buttons for staggered reveal
+    const menuItems = menuRef.current.querySelectorAll('button');
+    
     if (isOpen) {
-      anime(menuRef.current, {
+      // Container Animation
+      const containerAnim = anime(menuRef.current, {
         opacity: [0, 1],
-        scaleY: [0.95, 1],
-        translateY: [-10, 0],
-        duration: 800,
-        easing: 'easeOutQuart'
-      });
-    } else {
-      anime(menuRef.current, {
-        opacity: [1, 0],
-        translateY: [0, -5],
-        scaleY: [1, 0.98],
+        scaleY: [0.9, 1],
+        translateY: [-15, 0],
         duration: 400,
-        easing: 'easeInQuad'
+        easing: 'easeOutExpo'
       });
+
+      // Staggered Items Animation
+      const itemsAnim = anime(menuItems as any, {
+        opacity: [0, 1],
+        translateX: [-10, 0],
+        duration: 350,
+        delay: utils.stagger(25, { start: 100 }),
+        easing: 'easeOutCubic'
+      });
+
+      return () => {
+        containerAnim.pause();
+        itemsAnim.pause();
+      };
+    } else {
+      const exitAnim = anime(menuRef.current, {
+        opacity: [1, 0],
+        translateY: [0, -10],
+        scaleY: [1, 0.95],
+        duration: 250,
+        easing: 'easeInExpo'
+      });
+
+      return () => exitAnim.pause();
     }
   }, [isOpen]);
 
   // Amber pulse when Eridian is active ♫
   useEffect(() => {
     if (!globeRef.current) return;
+    let pulse: any = null;
     if (language === 'eridian') {
-      anime(globeRef.current, {
+      pulse = anime(globeRef.current, {
         borderColor: ['#FFB300', '#FF8C00', '#FFB300'],
         duration: 1400,
         easing: 'easeInOutSine',
         loop: true
       });
     }
+    return () => {
+      if (pulse) pulse.pause();
+    };
   }, [language]);
 
   // Secret 5-click Eridian activation
