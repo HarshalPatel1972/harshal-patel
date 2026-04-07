@@ -8,52 +8,55 @@ export function Footer() {
   const { language } = useLanguage();
   const currentProfile = profile[language];
 
-  // RECOGNIZABLE BRANDING ☕
-  const supportText = language === 'hi' ? "कॉफी पिलाएँ" : language === 'eridian' ? "BUY-COFFEE" : "Buy me a Coffee";
+  // KINETIC LOOP TEXT ☕
+  const initialText = language === 'hi' ? "काम पसंद आया?" : "Enjoy my designs?";
+  const actionText = language === 'hi' ? "कॉफी पिलाएँ" : "Buy me a Coffee";
 
   return (
-    <footer className="relative bg-[#050505] border-t-4 border-[var(--text-bone)] px-4 py-8 md:px-12 md:py-24 overflow-hidden">
-      {/* Halftone / Grain Texture Base */}
-      <div className="absolute inset-0 halftone-bg z-0 opacity-10 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,var(--accent-blood-alpha)_0%,transparent_80%)] opacity-40" />
+    <footer className="relative bg-[#000000] border-t-4 border-[#FFFFFF] px-4 py-8 md:px-12 md:py-24 overflow-hidden">
+      {/* Halftone Texture (Pure White/Black) */}
+      <div className="absolute inset-0 halftone-bg z-0 opacity-5 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-16 relative z-10">
         <div className="flex flex-col gap-2">
-            <div className="text-[14px] md:text-[20px] font-black font-display uppercase tracking-[0.1em] text-[var(--text-bone)]/80">
-                {currentProfile.name} <span className="text-[var(--accent-blood)] ml-4 opacity-100 italic">© {new Date().getFullYear()}</span>
+            <div className="text-[14px] md:text-[20px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF]">
+                {currentProfile.name} <span className="text-[#d91111] ml-4 italic">© {new Date().getFullYear()}</span>
             </div>
         </div>
 
-        {/* THE SOFT AURA PORTAL 🕯️ */}
+        {/* THE 4-COLOR KINETIC PORTAL (RED/CYAN/BLACK/WHITE) 🏮 */}
         <div className="relative group flex items-center justify-center w-full md:w-auto">
           
-          {/* THE BREATHING AURA (CALMING EFFECT) */}
+          {/* THE PURE RADIATION (CYAN/RED PULSE) */}
           <motion.div 
-            initial={{ opacity: 0.3, scale: 1 }}
             animate={{ 
-              opacity: [0.3, 0.6, 0.3],
-              scale: [1, 1.1, 1] 
+              boxShadow: [
+                "0 0 20px #d91111",
+                "0 0 40px #0ee0c3",
+                "0 0 20px #d91111"
+              ]
             }}
-            transition={{ 
-              duration: 8, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            className="absolute inset-0 bg-[var(--accent-blood)] blur-[100px] rounded-full pointer-events-none group-hover:bg-[var(--accent-blood)] transition-colors duration-1000" 
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 rounded-none pointer-events-none" 
           />
 
           <a 
             href="https://www.chai4.me/harshalpatel" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="relative flex items-center justify-center w-full md:w-[320px] h-[60px] md:h-[75px] bg-[var(--text-bone)] border border-black/5 overflow-hidden transition-all duration-1000 ease-in-out group-hover:shadow-[0_0_50px_rgba(var(--accent-blood-rgb),0.2)]"
+            className="relative flex items-center justify-center w-full md:w-[320px] h-[60px] md:h-[75px] bg-[#000000] border-2 border-[#d91111] overflow-hidden transition-all duration-300 hover:border-[#0ee0c3] brutal-shadow"
           >
-            <span className="relative z-10 text-[var(--bg-ink)] font-black font-display uppercase tracking-[0.4em] text-[10px] md:text-xs">
-                {supportText}
-            </span>
-
-            {/* A GENTLE LIGHT SWEEP (NON-TERMINAL) */}
-            <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[2000ms] pointer-events-none" />
+            {/* THE LOOPING CONTENT */}
+            <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
+                {/* STATE 1: ENJOY MY DESIGNS? */}
+                <div className="h-full min-h-[60px] md:min-h-[75px] flex items-center justify-center text-[#FFFFFF] font-black font-display uppercase tracking-[0.2em] text-[10px] md:text-xs">
+                    {initialText}
+                </div>
+                {/* STATE 2: BUY ME A COFFEE */}
+                <div className="h-full min-h-[60px] md:min-h-[75px] flex items-center justify-center text-[#0ee0c3] font-black font-display uppercase tracking-[0.2em] text-[10px] md:text-xs italic">
+                    {actionText}
+                </div>
+            </div>
           </a>
         </div>
       </div>
@@ -62,6 +65,17 @@ export function Footer() {
       <div className="absolute -bottom-10 -left-10 text-[10rem] font-black text-white/5 uppercase select-none pointer-events-none mix-blend-overlay">
          CREATOR
       </div>
+
+      <style>{`
+        @keyframes kinetic-loop {
+          0%, 45% { transform: translateY(0); }
+          50%, 95% { transform: translateY(-50%); }
+          100% { transform: translateY(0); }
+        }
+        .animate-kinetic-loop {
+          animation: kinetic-loop 6s cubic-bezier(0.87, 0, 0.13, 1) infinite;
+        }
+      `}</style>
     </footer>
   );
 }
