@@ -6,6 +6,7 @@ import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
 import { useLanguage } from "@/context/LanguageContext";
 import { KineticLink } from "./ui/KineticLink";
+import { useRouter } from "next/navigation";
 
 const LINKS = {
   en: [
@@ -98,6 +99,7 @@ export function Contact() {
   const [loopIdx, setLoopIdx] = useState(0);
   const [prevIdx, setPrevIdx] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -134,6 +136,10 @@ export function Contact() {
       setTimeout(() => {
         setCopied(false);
       }, 2000);
+    } else if (id === "feedback") {
+      e.preventDefault();
+      const currentCategory = (currentLinks.find(l => l.id === "feedback")?.values?.[loopIdx]) || "SUBMIT REVIEW";
+      router.push(`/feedback?type=${encodeURIComponent(currentCategory)}`);
     }
   };
 
