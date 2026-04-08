@@ -145,13 +145,13 @@ function FloatingGallery({ entries, onAddMore }: { entries: FeedbackEntry[], onA
       <div className="fixed top-6 right-8 z-[100]"><button onClick={onAddMore} className="bg-black text-white px-6 py-3 font-black text-xs uppercase tracking-[0.2em] shadow-[6px_6px_0px_#D63031] hover:shadow-[2px_2px_0px_#D63031] hover:translate-x-[4px] hover:translate-y-[4px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none">Add More</button></div>
       
       <div className="relative z-10 w-full min-h-screen pt-4">
-        <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.8] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-black">Message<br/>Gallery</h1>
+        <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.85] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-black">Feedback<br/>Gallery</h1>
         
         <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-12 gap-y-32 pt-10 pb-40 px-4 md:px-20 max-w-[1400px] mx-auto">
           <div className="w-full flex justify-center mb-6 pointer-events-none">
              <div className="flex items-center gap-4">
               <div className="h-[2px] w-12 bg-black opacity-10" />
-              <h2 className="text-[12px] font-black uppercase tracking-[0.5em] whitespace-nowrap text-black">Message Gallery</h2>
+              <h2 className="text-[12px] font-black uppercase tracking-[0.5em] whitespace-nowrap text-black">Feedback Collective</h2>
               <div className="h-[2px] w-12 bg-black opacity-10" />
             </div>
           </div>
@@ -167,7 +167,7 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
   const [type, setType] = useState(initialType);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
-  useEffect(() => { const saved = localStorage.getItem("mappa-username"); if (saved) setUserName(saved); }, []);
+  useEffect(() => { const saved = localStorage.getItem("portfolio-username"); if (saved) setUserName(saved); }, []);
   const handleSubmit = () => { if (!message.trim()) return; setIsSending(true); setTimeout(() => { onSend(userName, message, type); setIsSending(false); }, 1200); };
   
   return (
@@ -181,14 +181,14 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
          </h2>
       </div>
 
-      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center"><Link href="/" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity">← Cancel</Link><div className="w-[1px] h-4 bg-black/20" /><button onClick={onViewGallery} className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity whitespace-nowrap">Gallery →</button></div>
+      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center"><Link href="/" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity">← Cancel</Link><div className="w-[1px] h-4 bg-black/20" /><button onClick={onViewGallery} className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity whitespace-nowrap">Enter Gallery →</button></div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl relative z-10 px-2">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6 md:mb-10 text-center">Write Your<br /><span className="bg-black text-white px-3 md:px-4 inline-block mt-2 text-3xl sm:text-5xl">Message</span></h1>
         <div className="space-y-4 md:space-y-8">
           <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Your Name:</label><div className="relative"><input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Anonymous" className="w-full p-4 md:p-5 pr-32 md:pr-40 border-2 border-black font-mono text-xs md:text-sm focus:outline-none focus:ring-0 bg-white transition-all focus:shadow-[8px_8px_0px_#000]" /><button onClick={() => setUserName(RANDOM_ID())} className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 px-3 md:px-4 py-1.5 md:py-2 bg-black text-white font-black text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-[#D63031] transition-colors">RANDOMIZE</button></div></div>
           <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Category:</label><div className="flex flex-wrap gap-2 md:gap-3">{["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"].map((o) => (<button key={o} onClick={() => setType(o)} className={`px-3 md:px-5 py-2 md:py-3 text-[8px] md:text-[10px] font-black border-2 border-black transition-all ${type === o ? "bg-black text-white shadow-[4px_4px_0px_#34C759]" : "bg-transparent hover:bg-black/5"}`}>{o}</button>))}</div></div>
           <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Words:</label><textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Type here..." className="w-full h-32 md:h-48 p-5 md:p-7 border-2 border-black font-mono text-xs md:text-sm focus:outline-none focus:ring-0 resize-none bg-white transition-all focus:shadow-[8px_8px_0px_#000]" /></div>
-          <button onClick={handleSubmit} disabled={isSending || !message.trim()} className={`w-full py-5 md:py-7 font-black tracking-[0.3em] md:tracking-[0.4em] text-md md:text-lg transition-all border-2 border-black relative ${isSending || !message.trim() ? "bg-black/10 text-black/30 opacity-50" : "bg-black text-white hover:bg-white hover:text-black hover:shadow-[10px_10px_0px_#000]"}`}>{isSending ? "SENDING..." : "LAUNCH SIGNAL"}</button>
+          <button onClick={handleSubmit} disabled={isSending || !message.trim()} className={`w-full py-5 md:py-7 font-black tracking-[0.3em] md:tracking-[0.4em] text-md md:text-lg transition-all border-2 border-black relative ${isSending || !message.trim() ? "bg-black/10 text-black/30 opacity-50" : "bg-black text-white hover:bg-white hover:text-black hover:shadow-[10px_10px_0px_#000]"}`}>{isSending ? "SENDING..." : "SEND MESSAGE"}</button>
         </div>
       </motion.div>
     </div>
@@ -204,7 +204,7 @@ export function FeedbackContents() {
 
   useEffect(() => { if (searchParams.toString()) router.replace("/feedback"); }, [searchParams, router]);
   useEffect(() => {
-    const saved = localStorage.getItem("mappa-signals");
+    const saved = localStorage.getItem("portfolio-feedback");
     let userSubmissions: FeedbackEntry[] = [];
     if (saved) { try { userSubmissions = JSON.parse(saved); } catch (e) {} }
     
@@ -235,11 +235,11 @@ export function FeedbackContents() {
       }
     };
     setSubmissions([newEntry, ...submissions]);
-    const saved = localStorage.getItem("mappa-signals");
+    const saved = localStorage.getItem("portfolio-feedback");
     let currentHistory = [];
     if (saved) { try { currentHistory = JSON.parse(saved); } catch(e) {} }
-    localStorage.setItem("mappa-signals", JSON.stringify([newEntry, ...currentHistory]));
-    if (name.trim()) localStorage.setItem("mappa-username", name.trim());
+    localStorage.setItem("portfolio-feedback", JSON.stringify([newEntry, ...currentHistory]));
+    if (name.trim()) localStorage.setItem("portfolio-username", name.trim());
     setView("gallery");
   };
 
