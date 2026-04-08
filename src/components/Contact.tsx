@@ -138,7 +138,8 @@ export function Contact() {
       }, 2000);
     } else if (id === "feedback") {
       e.preventDefault();
-      const currentCategory = (currentLinks.find(l => l.id === "feedback")?.values?.[loopIdx]) || "SUBMIT REVIEW";
+      const feedbackLink = currentLinks.find(l => l.id === "feedback") as LinkItem | undefined;
+      const currentCategory = (feedbackLink?.values?.[loopIdx]) || "SUBMIT REVIEW";
       router.push(`/feedback?type=${encodeURIComponent(currentCategory)}`);
     }
   };
