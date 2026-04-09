@@ -75,16 +75,31 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
+    let ticking = false;
+    let rafId: number | null = null;
+    let cachedOffset = 0;
+    let cachedTrackHeight = 0;
+
+    const updateMetrics = () => {
+      if (!trackRef.current) return;
+      cachedOffset = trackRef.current.offsetTop;
+      cachedTrackHeight = trackRef.current.offsetHeight - window.innerHeight;
+    };
+
+    const updateDOM = () => {
+      if (!trackRef.current || !heroContentRef.current) {
+        ticking = false;
+        return;
+      }
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
-      if (st > sectionOffset + trackHeight + 500) return;
+      if (st > cachedOffset + cachedTrackHeight + 500) {
+        ticking = false;
+        return;
+      }
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+      const progress = Math.max(0, Math.min(1, (st - cachedOffset) / cachedTrackHeight));
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
       
       const scale = 1 - progress * 0.5;
@@ -96,11 +111,29 @@ export function Hero() {
       heroContentRef.current.style.opacity = opacity.toString();
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+      ticking = false;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true }); 
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateDOM);
+        ticking = true;
+      }
+    };
+
+    // Initial metrics
+    updateMetrics();
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    window.addEventListener("resize", updateMetrics);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateMetrics);
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
