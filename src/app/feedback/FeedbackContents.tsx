@@ -132,10 +132,36 @@ function FloatingCard({ entry, idx, mousePos }: { entry: FeedbackEntry, idx: num
 
 function FloatingGallery({ entries, onAddMore }: { entries: FeedbackEntry[], onAddMore: () => void }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // ⚡ Bolt: Optimized high-frequency mousemove event listener
+  // Using requestAnimationFrame ticking pattern to prevent synchronous cascading re-renders
   useEffect(() => {
-    const handleMove = (e: MouseEvent) => setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
+    let ticking = false;
+    let rafId: number;
+    let currentX = 0;
+    let currentY = 0;
+
+    const handleMove = (e: MouseEvent) => {
+      currentX = e.clientX;
+      currentY = e.clientY;
+
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          setMousePos({
+            x: (currentX / window.innerWidth - 0.5) * 40,
+            y: (currentY / window.innerHeight - 0.5) * 40
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
