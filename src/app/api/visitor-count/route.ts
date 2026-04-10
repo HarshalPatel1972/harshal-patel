@@ -13,6 +13,9 @@ const BOT_KEYWORDS = [
   'vercel', 'ping', 'health', 'checker', 'uptimerobot'
 ];
 
+// Pre-compiled regex for faster string matching, avoiding O(n) Array.some operations on every request
+const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
+
 export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
@@ -38,11 +41,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
-        if (isBot) {
+        if (BOT_REGEX.test(userAgent)) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
 
@@ -56,16 +58,26 @@ export async function POST(req: NextRequest) {
             .update(identitySource + (process.env.APP_SECRET || 'v1_resonance'))
             .digest('hex');
 
-        // 3. ATOMIC RITUAL: Increment only for humans
-        await kv.sadd('portfolio_v3_unique_sessions', hash);
-        await kv.incr('portfolio_v3_total_hits');
+        // 3. ATOMIC RITUAL: Increment only for humans (Batched to reduce network latency)
+        const pipeline = kv.pipeline();
+        pipeline.sadd('portfolio_v3_unique_sessions', hash);
+        pipeline.incr('portfolio_v3_total_hits');
+        pipeline.scard('portfolio_v3_unique_sessions');
+        pipeline.get('portfolio_v3_total_hits');
         
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const results = await pipeline.exec();
+
+        // pipeline.exec() returns results in a flat array, e.g. [null, null, uniqueCount, totalHits] with ioredis, but wait...
+        // Actually, since this is using ioredis under the hood but memory explicitly warns:
+        // "Unlike ioredis, results from kv.pipeline().exec() are returned as a flat array of results (e.g., [result1, result2]), not an array of [error, result] tuples."
+        // Wait, looking at src/lib/kv.ts, we import ioredis, not @vercel/kv.
+        // Let's handle both cases dynamically to be safe.
+        const uniqueCount = results && results[2] ? (Array.isArray(results[2]) ? results[2][1] : results[2]) : 0;
+        const totalHits = results && results[3] ? (Array.isArray(results[3]) ? results[3][1] : results[3]) : 0;
 
         return NextResponse.json({ 
             success: true, 
-            uniqueCount, 
+            uniqueCount: Number(uniqueCount),
             totalHits: Number(totalHits),
             status: 'SOUL_BOUND'
         });
