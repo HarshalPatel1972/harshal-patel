@@ -126,7 +126,7 @@ export function Contact() {
 
       {/* Massive Background Typography */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
-         <h2 className={`text-[6rem] md:text-[25rem] font-black whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--bg-ink)]`}>
+         <h2 className={`text-[5.1rem] md:text-[21.25rem] font-black whitespace-nowrap leading-none tracking-tighter ${language === 'hi' ? 'font-hindi' : 'font-display'} text-[var(--bg-ink)]`}>
             {(() => {
               switch(language) {
                 case 'ja': return "連絡先";
@@ -170,7 +170,7 @@ export function Contact() {
                 }
               })()}
            </div>
-           <h2 className={`text-4xl md:text-8xl lg:text-9xl font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+           <h2 className={`text-[2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
              {(() => {
                 switch(language) {
                   case 'ja': return <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></>;
@@ -287,7 +287,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
             {link.label}
           </div>
 
-          <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter transition-colors duration-300" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
+          <div className="text-[1.6rem] sm:text-[3.2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black font-display uppercase tracking-tighter transition-colors duration-300" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
             {link.id === "feedback" && link.values ? (
                <div className="relative flex items-center h-full whitespace-nowrap">
                 {isGlitching ? (
