@@ -170,7 +170,7 @@ export function Contact() {
                 }
               })()}
            </div>
-           <h2 className={`text-[2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-16 md:mb-24 border-b-8 border-black pb-8 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+           <h2 className={`text-[2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black text-[var(--bg-ink)] uppercase tracking-[-0.04em] leading-[0.8] mb-8 md:mb-12 border-b-8 border-black pb-4 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
              {(() => {
                 switch(language) {
                   case 'ja': return <>通信を<br/><span className="text-transparent" style={{ WebkitTextStroke: "2px var(--bg-ink)" }}>開始する</span></>;
@@ -267,7 +267,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
       href={link.href}
       target={link.id !== "email" ? "_blank" : undefined}
       onClick={(e) => handleLinkClick(e, link.id)}
-      className="relative block w-full outline-none py-4 md:py-6 pointer-events-none group"
+      className="relative block w-full outline-none py-1 md:py-2 pointer-events-none group"
     >
       {/* Hover Slash Background - Only reacts to isHovered */}
       <div 
@@ -283,7 +283,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
         >
-          <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-2 transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
+          <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-0 transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
             {link.label}
           </div>
 
