@@ -87,18 +87,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     window.addEventListener("resize", handleResize);
 
     const onMouseMove = (e: MouseEvent) => { 
-      // If we see mouse movement, ensure isTouch is false
       if (isTouch) setIsTouch(false);
-      
-      mouse.current = { x: e.clientX, y: e.clientY }; 
-      if (!tickingMouseRef.current) {
-        window.requestAnimationFrame(() => {
-          document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
-          document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
-          tickingMouseRef.current = false;
-        });
-        tickingMouseRef.current = true;
-      }
+      mouse.current = { x: e.clientX, y: e.clientY };
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
     const onMouseOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
@@ -149,10 +141,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
         }
       }
 
-      vx.current[0] += (mouse.current.x - px.current[0]) * 0.2;
-      vy.current[0] += (mouse.current.y - py.current[0]) * 0.2;
-      vx.current[0] *= 0.68; vy.current[0] *= 0.68;
-      px.current[0] += vx.current[0]; py.current[0] += vy.current[0];
+      // Snap lead particle directly to mouse — zero lag
+      px.current[0] = mouse.current.x;
+      py.current[0] = mouse.current.y;
+      vx.current[0] = 0; vy.current[0] = 0;
       if (burstFlash.current > 0) burstFlash.current--;
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
@@ -249,7 +241,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   return createPortal(
     <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
-      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
     </>,
     document.body
   );
