@@ -29,6 +29,23 @@ function HomeContent() {
   const containerTop = isNoticeVisible ? '50px' : '20px';
   const stickyTarget = isNoticeVisible ? '50px' : '20px';
 
+  // Safe Landing Bridge: Precision navigation after preloader
+  useEffect(() => {
+    if (showContent && typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash === "#contact") {
+        // Small delay to allow the dynamic Contact component to fully render/mount
+        const timer = setTimeout(() => {
+          const section = document.getElementById("contact");
+          if (section) {
+            section.scrollIntoView({ behavior: "auto" });
+          }
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [showContent]);
+
   return (
     <main className="relative">
       {type === 'FLIP' ? <FlipTransition /> : <SpaceWarpTransition />}
