@@ -33,7 +33,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const ERIDIAN_PALETTE = ["#FFB300", "#0055ff", "#FFB300", "#0055ff"]; // Rocky Yellow and Eridian Blue
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
-  const [holdProgress, setHoldProgress] = useState(0);
 
   const PSIZE = 2.2;
   const GAP = PSIZE * 2 + 1.2;
@@ -143,7 +142,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       if (holdStartTimeRef.current) {
         const elapsed = Date.now() - holdStartTimeRef.current;
         const progress = Math.min(1, elapsed / 3000);
-        setHoldProgress(progress);
         if (progress >= 1) {
           colorIndexRef.current = (colorIndexRef.current + 1) % PALETTE.length;
           holdStartTimeRef.current = Date.now();
@@ -251,7 +249,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   return createPortal(
     <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
-      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform" }} />
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
     </>,
     document.body
   );
