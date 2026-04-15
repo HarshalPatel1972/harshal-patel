@@ -39,6 +39,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const tipX = 4 * GAP;
   const tipY = -4 * GAP;
 
+  const arrowSlots = useRef<{ x: number; y: number }[]>([]);
+  const playSlots = useRef<{ x: number; y: number }[]>([]);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
