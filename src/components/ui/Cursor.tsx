@@ -115,7 +115,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
-    const onMouseUp = () => { holdStartTimeRef.current = null; setHoldProgress(0); };
+    const onMouseUp = () => { holdStartTimeRef.current = null; };
 
     const handleScroll = () => {
       if (!isScrolling.current) isScrolling.current = true;
