@@ -115,6 +115,18 @@ body::before {
   pointer-events: none;
   z-index: 5;
   will-change: mask-image;
+  transition: opacity 0.5s ease-out;
+}
+
+/* GLOBAL SLEEP MODE - Zero-Lag Purge 💤 */
+.is-overlay-active .halftone-glow {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease-in;
+}
+
+.is-overlay-active .animate-marquee {
+  animation-play-state: paused !important;
 }
 
 /* ─── GRID UTILITIES ─── */

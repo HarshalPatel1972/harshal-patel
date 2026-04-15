@@ -68,7 +68,19 @@ const ExorcistsScroll: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const [showShutters, setShowShutters] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // GLOBAL SLEEP MODE SIGNALING 💤
+  useEffect(() => {
+    if (activeCard) {
+      document.documentElement.classList.add('is-overlay-active');
+    } else {
+      document.documentElement.classList.remove('is-overlay-active');
+    }
+    return () => document.documentElement.classList.remove('is-overlay-active');
+  }, [activeCard]);
 
   const handleCardClick = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

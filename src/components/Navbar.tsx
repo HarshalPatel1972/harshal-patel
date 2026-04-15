@@ -129,6 +129,16 @@ export function Navbar() {
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
 
+  // GLOBAL SLEEP MODE SIGNALING 💤
+  useEffect(() => {
+    if (showEasterEggs) {
+      document.documentElement.classList.add('is-overlay-active');
+    } else {
+      document.documentElement.classList.remove('is-overlay-active');
+    }
+    return () => document.documentElement.classList.remove('is-overlay-active');
+  }, [showEasterEggs]);
+
   // SECTION TRACKING
   useEffect(() => {
     const sectionIds = currentNavItems.map(item => item.id);

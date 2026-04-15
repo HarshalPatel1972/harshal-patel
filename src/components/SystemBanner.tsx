@@ -59,6 +59,16 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
   const notice = getNoticeText();
   const label = getLabelText();
 
+  // GLOBAL SLEEP MODE SIGNALING 💤
+  useEffect(() => {
+    if (isExpanded) {
+      document.documentElement.classList.add('is-overlay-active');
+    } else {
+      document.documentElement.classList.remove('is-overlay-active');
+    }
+    return () => document.documentElement.classList.remove('is-overlay-active');
+  }, [isExpanded]);
+
   return (
     <>
       <div className="fixed top-0 left-0 right-12 md:right-16 z-[200] bg-[var(--accent-blood)] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_12px_rgba(var(--accent-blood-rgb),0.3)] overflow-hidden">
