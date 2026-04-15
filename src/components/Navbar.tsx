@@ -388,8 +388,8 @@ export function Navbar() {
           <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--bg-ink)]/10" />
           <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-40 pointer-events-none">
              {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className={`w-full flex ${i % 5 === 0 ? "justify-center" : "justify-start pl-2"}`}>
-                  <div className={`h-[1px] bg-[var(--bg-ink)] ${i % 5 === 0 ? "w-6" : "w-3"}`} />
+                <div key={i} className="w-full flex justify-start pl-2">
+                  <div className="h-[1px] bg-[var(--bg-ink)] w-3" />
                 </div>
              ))}
           </div>
