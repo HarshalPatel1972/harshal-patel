@@ -30,16 +30,6 @@ const PALETTE = [
   "#1A1A1A", "#0984E3", "#D63031", "#00B894", "#6C5CE7", "#E17055", "#B33771", "#1B1464"
 ];
 
-const GLOBAL_VOICES = [
-  { id: "v1", userName: "against-an-autumn-wave", message: "The transitions are incredibly smooth. Feels premium.", type: "SUBMIT REVIEW" },
-  { id: "v2", userName: "beyond-a-silent-star", message: "Found a minor alignment issue on mobile tablets.", type: "REPORT A BUG", status: "RESOLVED" },
-  { id: "v3", userName: "across-the-vivid-nova", message: "Would love to see more interactive hover states on projects.", type: "REQUEST FEATURE", status: "IN PROGRESS" },
-  { id: "v4", userName: "within-the-hidden-forest", message: "Absolutely loving the brutalist aesthetic. Bold choice.", type: "SUBMIT REVIEW" },
-  { id: "v5", userName: "along-a-silver-river", message: "The language toggle is lightning fast.", type: "SUBMIT REVIEW" },
-  { id: "v6", userName: "under-the-lunar-arctic", message: "Can we get a dark mode toggle for the text-heavy sections?", type: "REQUEST FEATURE", status: "CONSIDERING" },
-  { id: "v7", userName: "around-a-golden-moon", message: "Brilliant work on the portfolio navigation.", type: "SUBMIT REVIEW" },
-  { id: "v8", userName: "through-the-ancient-zenith", message: "The contrast between fonts is very professional.", type: "SUBMIT REVIEW" },
-];
 
 interface FeedbackEntry {
   id: string;
@@ -130,7 +120,7 @@ function FloatingCard({ entry, idx, mousePos }: { entry: FeedbackEntry, idx: num
   );
 }
 
-function FloatingGallery({ entries, onAddMore }: { entries: FeedbackEntry[], onAddMore: () => void }) {
+function FloatingGallery({ entries, onAddMore, isLoading }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   useEffect(() => {
     const handleMove = (e: MouseEvent) => setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
@@ -147,16 +137,35 @@ function FloatingGallery({ entries, onAddMore }: { entries: FeedbackEntry[], onA
       <div className="relative z-10 w-full min-h-screen pt-4">
         <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.85] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-black">Feedback<br/>Gallery</h1>
         
-        <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-12 gap-y-32 pt-10 pb-40 px-4 md:px-20 max-w-[1400px] mx-auto">
-          <div className="w-full flex justify-center mb-6 pointer-events-none">
-             <div className="flex items-center gap-4">
-              <div className="h-[2px] w-12 bg-black opacity-10" />
-              <h2 className="text-[12px] font-black uppercase tracking-[0.5em] whitespace-nowrap text-black">Feedback Collective</h2>
-              <div className="h-[2px] w-12 bg-black opacity-10" />
-            </div>
+        {isLoading ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-50">
+            <div className="w-12 h-12 border-4 border-black border-t-transparent animate-spin rounded-full" />
+            <span className="font-black text-[10px] uppercase tracking-[0.4em]">Retrieving Collective Voice...</span>
           </div>
-          {entries.map((entry, idx) => <FloatingCard key={entry.id} entry={entry} idx={idx} mousePos={mousePos} />)}
-        </div>
+        ) : (
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-12 gap-y-32 pt-10 pb-40 px-4 md:px-20 max-w-[1400px] mx-auto">
+            <div className="w-full flex justify-center mb-6 pointer-events-none">
+               <div className="flex items-center gap-4">
+                <div className="h-[2px] w-12 bg-black opacity-10" />
+                <h2 className="text-[12px] font-black uppercase tracking-[0.5em] whitespace-nowrap text-black">Feedback Collective</h2>
+                <div className="h-[2px] w-12 bg-black opacity-10" />
+              </div>
+            </div>
+            <AnimatePresence>
+              {entries.length === 0 ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-6 mt-20 text-center">
+                  <div className="p-12 border-4 border-black border-dashed opacity-20">
+                    <span className="font-black text-xl uppercase tracking-tighter leading-none block">Silence Is</span>
+                    <span className="font-black text-4xl uppercase tracking-tighter leading-none block">Loud</span>
+                  </div>
+                  <p className="font-black text-[10px] uppercase tracking-[0.2em] opacity-40">Be the first to leave a mark.</p>
+                </motion.div>
+              ) : (
+                entries.map((entry, idx) => <FloatingCard key={entry.id} entry={entry} idx={idx} mousePos={mousePos} />)
+              )}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -201,26 +210,44 @@ export function FeedbackContents() {
   const initialType = searchParams.get("type") || "SUBMIT REVIEW";
   const [view, setView] = useState<"writing" | "gallery">("writing");
   const [submissions, setSubmissions] = useState<FeedbackEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => { if (searchParams.toString()) router.replace("/feedback"); }, [searchParams, router]);
-  useEffect(() => {
-    const saved = localStorage.getItem("portfolio-feedback");
-    let userSubmissions: FeedbackEntry[] = [];
-    if (saved) { try { userSubmissions = JSON.parse(saved); } catch (e) {} }
-    
-    // Distribute messages across the viewport in a scattered pattern
-    const combined = [...userSubmissions, ...GLOBAL_VOICES].map((v, i) => ({ 
-      ...v, 
-      timestamp: Date.now(),
-      pos: {
-        left: `${10 + (i * 27) % 75}%`,
-        top: `${15 + (i * 19) % 70}%`
+
+  // Global Sync: Fetch from Cloud
+  const fetchFeedbacks = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/feedback", { cache: "no-store" });
+      const data = await res.json();
+      
+      if (Array.isArray(data)) {
+        const enriched = data.map((v, i) => ({
+          ...v,
+          pos: {
+            left: `${10 + (i * 27) % 75}%`,
+            top: `${15 + (i * 19) % 70}%`
+          }
+        }));
+        setSubmissions(enriched);
       }
-    }));
-    setSubmissions(combined);
+    } catch (e) {
+      console.error("Fetch failed:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Check if we should jump straight to gallery
+    if (localStorage.getItem("view-gallery-once") === "true") {
+      setView("gallery");
+      localStorage.removeItem("view-gallery-once");
+    }
+    fetchFeedbacks();
   }, []);
 
-  const handleNewSend = (name: string, msg: string, cat: string) => {
+  const handleNewSend = async (name: string, msg: string, cat: string) => {
     const newEntry: FeedbackEntry = { 
       id: Math.random().toString(36).substring(2, 9), 
       timestamp: Date.now(), 
@@ -228,19 +255,29 @@ export function FeedbackContents() {
       message: msg.trim(), 
       userName: name.trim() || RANDOM_ID(), 
       color: PALETTE[Math.floor(Math.random() * PALETTE.length)], 
-      status: (cat === "REPORT A BUG" || cat === "REQUEST FEATURE") ? "PENDING" : undefined,
-      pos: {
-        left: `${20 + Math.random() * 60}%`,
-        top: `${20 + Math.random() * 60}%`
-      }
+      status: (cat === "REPORT A BUG" || cat === "REQUEST FEATURE") ? "PENDING" : undefined
     };
-    setSubmissions([newEntry, ...submissions]);
-    const saved = localStorage.getItem("portfolio-feedback");
-    let currentHistory = [];
-    if (saved) { try { currentHistory = JSON.parse(saved); } catch(e) {} }
-    localStorage.setItem("portfolio-feedback", JSON.stringify([newEntry, ...currentHistory]));
-    if (name.trim()) localStorage.setItem("portfolio-username", name.trim());
+
+    // Optimistic Update
+    setSubmissions(prev => [newEntry, ...prev]);
     setView("gallery");
+
+    try {
+      // Global Save: Push to Cloud
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEntry)
+      });
+      
+      // Save username locally for convenience
+      if (name.trim()) localStorage.setItem("portfolio-username", name.trim());
+      
+      // Refresh to ensure sync
+      fetchFeedbacks();
+    } catch (e) {
+      console.error("Save failed:", e);
+    }
   };
 
   return (
@@ -251,7 +288,7 @@ export function FeedbackContents() {
          </motion.div>
       ) : (
         <motion.div key="gallery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}>
-           <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} />
+           <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} isLoading={isLoading} />
          </motion.div>
       )}
     </AnimatePresence>
