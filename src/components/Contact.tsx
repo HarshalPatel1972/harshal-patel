@@ -269,12 +269,12 @@ export function Contact() {
                   href={link.href}
                   target={link.id !== "email" ? "_blank" : undefined}
                   onClick={(e) => handleLinkClick(e, link.id)}
-                  className="group relative block w-full outline-none"
+                  className="group relative block w-fit outline-none"
                 >
                   {/* Hover Slash Background */}
-                  <div className="absolute top-0 bottom-0 left-[-20px] right-[-20%] bg-[var(--accent-blood)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" />
+                  <div className="absolute top-0 bottom-0 left-[-20px] right-[-40px] bg-[var(--accent-blood)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" />
 
-                  <div className="relative z-10 flex flex-row items-center md:items-end justify-between border-b-4 border-black group-hover:border-transparent pb-4 transition-colors">
+                  <div className="relative z-10 flex flex-row items-center md:items-end gap-12 md:gap-24 border-b-4 border-black group-hover:border-transparent pb-4 transition-colors">
                     
                     <div>
                       <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-2 group-hover:text-black/80 transition-colors">
