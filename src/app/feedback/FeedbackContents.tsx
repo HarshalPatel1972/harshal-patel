@@ -267,19 +267,25 @@ export function FeedbackContents() {
 
     try {
       // Global Save: Push to Cloud
-      await fetch("/api/feedback", {
+      const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newEntry)
       });
       
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Cloud synchronization failed");
+      }
+      
       // Save username locally for convenience
       if (name.trim()) localStorage.setItem("portfolio-username", name.trim());
       
       // Refresh to ensure sync
-      fetchFeedbacks();
-    } catch (e) {
+      await fetchFeedbacks();
+    } catch (e: any) {
       console.error("Save failed:", e);
+      alert(`SYNC ERROR: ${e.message}\n\nPlease verify your Supabase RLS policies and table structure.`);
     }
   };
 
