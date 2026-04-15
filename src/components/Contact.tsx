@@ -99,10 +99,12 @@ export function Contact() {
   const [loopIdx, setLoopIdx] = useState(0);
   const [prevIdx, setPrevIdx] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (isPaused) return;
       setPrevIdx(loopIdx);
       setIsGlitching(true);
       setTimeout(() => {
@@ -111,7 +113,7 @@ export function Contact() {
       }, 400); 
     }, 4000);
     return () => clearInterval(interval);
-  }, [loopIdx, language]);
+  }, [loopIdx, language, isPaused]);
 
   return (
     <section 
@@ -202,6 +204,9 @@ export function Contact() {
                 prevIdx={prevIdx}
                 isGlitching={isGlitching}
                 router={router}
+                onHoverChange={(hovering: boolean) => {
+                  if (link.id === 'feedback') setIsPaused(hovering);
+                }}
                />
             </ScrollReveal>
           ))}
@@ -215,9 +220,14 @@ export function Contact() {
 /**
  * CONTACT LINK ITEM - Surgical Interaction Logic 🧬
  */
-function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, isGlitching, router }: any) {
+function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, isGlitching, router, onHoverChange }: any) {
   const [isHovered, setIsHovered] = useState(false);
   const isEmailCopied = copied && link.id === "email";
+
+  const handleHover = (hovering: boolean) => {
+    setIsHovered(hovering);
+    if (onHoverChange) onHoverChange(hovering);
+  };
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     if (id === "email") {
@@ -270,8 +280,8 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
         {/* TEXT TRIGGER ZONE */}
         <div 
           className="pointer-events-auto"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseEnter={() => handleHover(true)}
+          onMouseLeave={() => handleHover(false)}
         >
           <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-2 transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
             {link.label}
@@ -298,8 +308,8 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
         {/* ARROW TRIGGER ZONE */}
         <div 
           className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow transition-all duration-300 origin-center self-end mb-0 md:mb-4 pointer-events-auto cursor-pointer"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseEnter={() => handleHover(true)}
+          onMouseLeave={() => handleHover(false)}
           style={{ 
             backgroundColor: isHovered ? 'var(--bg-ink)' : 'black',
             transform: isHovered ? 'rotate(-45deg)' : 'none'
