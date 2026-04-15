@@ -1,6 +1,6 @@
-"use client";
 import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { createPortal } from "react-dom";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 
 export interface CursorHandle {
@@ -39,13 +39,19 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const tipX = 4 * GAP;
   const tipY = -4 * GAP;
 
-  const arrowSlots = useRef<{ x: number; y: number }[]>([]);
-  const playSlots = useRef<{ x: number; y: number }[]>([]);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useImperativeHandle(ref, () => ({
     getSpherePositions: () =>
       Array.from({ length: 20 }, (_, i) => ({ x: px.current[i], y: py.current[i] })),
   }));
+
+  // ATOMIC RESET ON NAVIGATION 🛰️
+  useEffect(() => {
+    hoverType.current = "none";
+    locked.current.fill(0);
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     // Improved touch detection: only disable if it's primarily a touch device
@@ -100,8 +106,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       if (t.closest('a, button, [role="button"], [data-cursor]')) { hoverType.current = "none"; locked.current.fill(0); }
     };
     const onMouseDown = () => {
+      // FORCE RESET ON CLICK: Kill stale link hover states immediately
+      hoverType.current = "none";
+      locked.current.fill(0);
+      
       holdStartTimeRef.current = Date.now();
-      totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
+      totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18;
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
