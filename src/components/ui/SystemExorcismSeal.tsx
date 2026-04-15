@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 
 const SystemExorcismSeal: React.FC = () => {
   const { language } = useLanguage();
   const isEridian = language === 'eridian';
+
+  const [isOverlayActive, setIsOverlayActive] = useState(false);
+
+  useEffect(() => {
+    const checkOverlay = () => {
+      setIsOverlayActive(document.documentElement.classList.contains('is-overlay-active'));
+    };
+    checkOverlay();
+    const observer = new MutationObserver(checkOverlay);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
   
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none opacity-45 overflow-hidden">
       <svg 
         viewBox="0 0 1000 1000" 
-        className="w-[150%] h-[150%] md:w-[100%] md:h-[100%] animate-pulse-slow"
-        style={{ filter: `drop-shadow(0 0 30px ${isEridian ? 'rgba(255,179,0,0.4)' : 'rgba(217,17,17,0.4)'})` }}
+        className={`w-[150%] h-[150%] md:w-[100%] md:h-[100%] ${isOverlayActive ? '' : 'animate-pulse-slow'}`}
+        style={{ filter: isOverlayActive ? 'none' : `drop-shadow(0 0 30px ${isEridian ? 'rgba(255,179,0,0.4)' : 'rgba(217,17,17,0.4)'})` }}
       >
         <defs>
           <linearGradient id="sealGradient" x1="0%" y1="0%" x2="100%" y2="100%">

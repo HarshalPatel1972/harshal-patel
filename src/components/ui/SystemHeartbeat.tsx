@@ -1,6 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 const SystemHeartbeat: React.FC = () => {
+  const [isOverlayActive, setIsOverlayActive] = useState(false);
+
+  useEffect(() => {
+    const checkOverlay = () => {
+      setIsOverlayActive(document.documentElement.classList.contains('is-overlay-active'));
+    };
+    
+    // Initial check
+    checkOverlay();
+
+    // Observe class changes on root
+    const observer = new MutationObserver(checkOverlay);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
+
   // Generate background "Nerve Network" lines
   const nerves = useMemo(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
@@ -24,8 +41,6 @@ const SystemHeartbeat: React.FC = () => {
           </filter>
         </defs>
         
-        {/* Chaotic background nerves (Red) */}
-        {nerves.map((n, i) => (
           <path
             key={i}
             d={`M${n.x1},${n.y1} Q${(n.x1+n.x2)/2 + 50},${(n.y1+n.y2)/2 - 50} ${n.x2},${n.y2}`}
@@ -35,9 +50,10 @@ const SystemHeartbeat: React.FC = () => {
             filter="url(#nerveGlow)"
             className="opacity-40"
           >
-            <animate attributeName="stroke-dasharray" values="0,1000;1000,0;0,1000" dur={`${n.duration}s`} repeatCount="indefinite" begin={`${n.delay}s`} />
+            {!isOverlayActive && (
+              <animate attributeName="stroke-dasharray" values="0,1000;1000,0;0,1000" dur={`${n.duration}s`} repeatCount="indefinite" begin={`${n.delay}s`} />
+            )}
           </path>
-        ))}
 
         {/* The Underlying Blueprint Grid (White - only visible during pulse) */}
         <g className="opacity-10">
@@ -53,7 +69,7 @@ const SystemHeartbeat: React.FC = () => {
       {/* ─── LAYER 2: THE HEARTBEAT RIPPLE (PURIFICATION WAVE) ─── */}
       <div className="absolute inset-0 flex items-center justify-center">
         {/* Three concentric shockwaves */}
-        {[0, 1, 2].map((i) => (
+        {!isOverlayActive && [0, 1, 2].map((i) => (
           <div 
             key={i}
             className="absolute border-[4px] border-white rounded-full opacity-0"

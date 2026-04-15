@@ -120,13 +120,22 @@ body::before {
 
 /* GLOBAL SLEEP MODE - Zero-Lag Purge 💤 */
 .is-overlay-active .halftone-glow {
-  opacity: 0 !important;
+  display: none !important;
   pointer-events: none !important;
-  transition: opacity 0.3s ease-in;
 }
 
-.is-overlay-active .animate-marquee {
+.is-overlay-active .animate-marquee,
+.is-overlay-active .animate-pulse,
+.is-overlay-active .animate-pulse-slow,
+.is-overlay-active [style*="animation: heartbeat"],
+.is-overlay-active [style*="animation: heartbeat-ripple"],
+.is-overlay-active [class*="animate-[spin_"] {
   animation-play-state: paused !important;
+}
+
+.is-overlay-active [style*="filter: drop-shadow"],
+.is-overlay-active [class*="drop-shadow-"] {
+  filter: none !important;
 }
 
 /* ─── GRID UTILITIES ─── */
