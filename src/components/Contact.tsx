@@ -267,7 +267,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
       href={link.href}
       target={link.id !== "email" ? "_blank" : undefined}
       onClick={(e) => handleLinkClick(e, link.id)}
-      className="relative block w-full outline-none py-1 md:py-2 pointer-events-none group"
+      className="relative block w-full outline-none py-6 md:py-10 pointer-events-none group"
     >
       {/* Hover Slash Background - Only reacts to isHovered */}
       <div 
@@ -283,11 +283,11 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
         >
-          <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-0 transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
+          <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-[-4px] md:mb-[-8px] transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
             {link.label}
           </div>
 
-          <div className="text-[1.6rem] sm:text-[3.2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black font-display uppercase tracking-tighter transition-colors duration-300" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
+          <div className="text-[1.6rem] sm:text-[3.2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black font-display uppercase tracking-tighter leading-none transition-colors duration-300" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
             {link.id === "feedback" && link.values ? (
                <div className="relative flex items-center h-full whitespace-nowrap">
                 {isGlitching ? (
