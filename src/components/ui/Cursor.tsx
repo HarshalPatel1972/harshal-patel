@@ -258,7 +258,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   return createPortal(
     <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
-      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", mixBlendMode: 'difference', willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
     </>,
     document.body
   );
