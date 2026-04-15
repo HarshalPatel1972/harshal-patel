@@ -222,13 +222,16 @@ export function FeedbackContents() {
       const data = await res.json();
       
       if (Array.isArray(data)) {
-        const enriched = data.map((v, i) => ({
-          ...v,
-          pos: {
-            left: `${10 + (i * 27) % 75}%`,
-            top: `${15 + (i * 19) % 70}%`
-          }
-        }));
+        // Filter out any invalid entries and distribute across the viewport
+        const enriched = data
+          .filter(v => v.message && v.userName)
+          .map((v, i) => ({
+            ...v,
+            pos: {
+              left: `${10 + (i * 27) % 75}%`,
+              top: `${15 + (i * 19) % 70}%`
+            }
+          }));
         setSubmissions(enriched);
       }
     } catch (e) {

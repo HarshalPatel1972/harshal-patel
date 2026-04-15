@@ -13,7 +13,7 @@
     "test:bun": "bun test"
   },
   "dependencies": {
-    "@vercel/kv": "^3.0.0",
+    "@supabase/supabase-js": "^2.103.2",
     "animejs": "^4.3.6",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
