@@ -267,7 +267,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
       href={link.href}
       target={link.id !== "email" ? "_blank" : undefined}
       onClick={(e) => handleLinkClick(e, link.id)}
-      className="relative block w-full outline-none py-8 md:py-12 pointer-events-none group"
+      className="relative block w-full outline-none py-4 md:py-6 pointer-events-none group"
     >
       {/* Hover Slash Background - Only reacts to isHovered */}
       <div 
