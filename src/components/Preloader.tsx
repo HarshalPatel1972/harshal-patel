@@ -113,20 +113,20 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     
     // CJK and Hindi characters need specific scaling (Increased by ~14%)
     if (isCJK || isHindi) {
-      const base = isHindi ? "text-3xl md:text-7xl lg:text-[10.26rem]" : "text-3xl md:text-7xl lg:text-[9.12rem]";
-      if (len > 80) return `text-xl md:text-2xl lg:text-[3.99rem] ${fontClass}`;
-      if (len > 60) return `text-xl md:text-3xl lg:text-[5.13rem] ${fontClass}`;
-      if (len > 40) return `text-2xl md:text-4xl lg:text-[6.27rem] ${fontClass}`;
-      if (len > 25) return `text-2xl md:text-5xl lg:text-[7.41rem] ${fontClass}`;
-      if (len > 15) return `text-3xl md:text-6xl lg:text-[8.55rem] ${fontClass}`;
+      const base = isHindi ? "text-3xl md:text-7xl lg:text-[9.03rem]" : "text-3xl md:text-7xl lg:text-[8.03rem]";
+      if (len > 80) return `text-xl md:text-2xl lg:text-[3.51rem] ${fontClass}`;
+      if (len > 60) return `text-xl md:text-3xl lg:text-[4.51rem] ${fontClass}`;
+      if (len > 40) return `text-2xl md:text-4xl lg:text-[5.52rem] ${fontClass}`;
+      if (len > 25) return `text-2xl md:text-5xl lg:text-[6.52rem] ${fontClass}`;
+      if (len > 15) return `text-3xl md:text-6xl lg:text-[7.52rem] ${fontClass}`;
       return `${base} ${fontClass}`;
     } else {
-      // Standard Latin scaling (Increased by ~14%)
-      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[4.332rem]";
-      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[5.13rem]";
-      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[6.27rem]";
-      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[7.41rem]";
-      return "font-display text-3xl md:text-7xl lg:text-[9.12rem]";
+      // Standard Latin scaling (Reduced by 12% from previous increase)
+      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[3.81rem]";
+      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[4.51rem]";
+      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[5.52rem]";
+      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[6.52rem]";
+      return "font-display text-3xl md:text-7xl lg:text-[8.03rem]";
     }
   }, [quote, language]);
 

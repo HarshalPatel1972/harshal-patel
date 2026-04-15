@@ -88,9 +88,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
     const onMouseMove = (e: MouseEvent) => { 
       if (isTouch) setIsTouch(false);
-      mouse.current = { x: e.clientX, y: e.clientY };
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+      mouse.current = { x: e.clientX, y: e.clientY }; 
     };
     const onMouseOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
@@ -140,6 +138,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           burstFlash.current = 15;
         }
       }
+
+      // Sync CSS properties for elements following the cursor
+      document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
 
       // Snap lead particle directly to mouse — zero lag
       px.current[0] = mouse.current.x;
@@ -235,7 +237,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [isTouch, language]);
+  }, [language]); // Removed isTouch to prevent engine restarts during interaction
 
   if (isTouch) return null;
   return createPortal(
