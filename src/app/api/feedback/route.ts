@@ -54,3 +54,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message || "Failed to save feedback" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    const key = searchParams.get("key");
+
+    // Security Gate: Only allow deletion if the key matches the secret environment variable
+    if (key !== process.env.NEXT_PUBLIC_ADMIN_KEY) {
+      return NextResponse.json({ error: "Unauthorized: Invalid Security Key" }, { status: 401 });
+    }
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+    }
+
+    const { error } = await supabase
+      .from('feedbacks')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error("Supabase Delete Error:", error);
+      throw error;
+    }
+    
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Feedback API DELETE Error:", error);
+    return NextResponse.json({ error: error.message || "Failed to erase feedback" }, { status: 500 });
+  }
+}

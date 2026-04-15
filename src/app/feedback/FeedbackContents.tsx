@@ -43,7 +43,7 @@ interface FeedbackEntry {
   pos?: { top: string, left: string };
 }
 
-function FloatingCard({ entry, idx, mousePos }: { entry: FeedbackEntry, idx: number, mousePos: { x: number, y: number } }) {
+function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: FeedbackEntry, idx: number, mousePos: { x: number, y: number }, isAdmin: boolean, onDelete: (id: string) => void }) {
   const cardColor = entry.color || PALETTE[idx % PALETTE.length];
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -115,12 +115,27 @@ function FloatingCard({ entry, idx, mousePos }: { entry: FeedbackEntry, idx: num
         </div>
         <h3 className="text-xl font-black uppercase tracking-tight mb-2 text-black truncate">{entry.userName}</h3>
         <p className="text-[13px] font-medium leading-tight text-black/80 group-hover:text-black transition-colors line-clamp-4">{entry.message}</p>
+        
+        {/* Ghost Admin Deletion Control */}
+        {isAdmin && (
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (confirm("Permanently erase this report from the cloud?")) {
+                onDelete(entry.id);
+              }
+            }}
+            className="absolute -top-3 -right-3 w-8 h-8 bg-black text-white font-black text-xs flex items-center justify-center brutal-shadow hover:bg-[#D63031] transition-colors z-[1001]"
+          >
+            ✕
+          </button>
+        )}
       </div>
     </motion.div>
   );
 }
 
-function FloatingGallery({ entries, onAddMore, isLoading }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean }) {
+function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean, isAdmin: boolean, onDelete: (id: string) => void }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   useEffect(() => {
     const handleMove = (e: MouseEvent) => setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
@@ -161,7 +176,7 @@ function FloatingGallery({ entries, onAddMore, isLoading }: { entries: FeedbackE
                   <p className="font-black text-[10px] uppercase tracking-[0.2em] opacity-40">Be the first to leave a mark.</p>
                 </motion.div>
               ) : (
-                entries.map((entry, idx) => <FloatingCard key={entry.id} entry={entry} idx={idx} mousePos={mousePos} />)
+                entries.map((entry, idx) => <FloatingCard key={entry.id} entry={entry} idx={idx} mousePos={mousePos} isAdmin={isAdmin} onDelete={onDelete} />)
               )}
             </AnimatePresence>
           </div>
@@ -194,7 +209,26 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl relative z-10 px-2">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6 md:mb-10 text-center">Write Your<br /><span className="bg-black text-white px-3 md:px-4 inline-block mt-2 text-3xl sm:text-5xl">Message</span></h1>
         <div className="space-y-4 md:space-y-8">
-          <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Your Name:</label><div className="relative"><input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Anonymous" className="w-full p-4 md:p-5 pr-32 md:pr-40 border-2 border-black font-mono text-xs md:text-sm focus:outline-none focus:ring-0 bg-white transition-all focus:shadow-[8px_8px_0px_#000]" /><button onClick={() => setUserName(RANDOM_ID())} className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 px-3 md:px-4 py-1.5 md:py-2 bg-black text-white font-black text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-[#D63031] transition-colors">RANDOMIZE</button></div></div>
+          <div>
+            <label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Your Name:</label>
+            <div className="relative">
+              <input 
+                type="text" 
+                value={userName} 
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setUserName(val);
+                  // Stealth Trigger: Instantly detect admin if the name matches the secret key
+                  if (val === process.env.NEXT_PUBLIC_ADMIN_KEY && val.length > 0) {
+                    onSend("ADMIN_SESSION_INIT", "GHOST_MODE_ACTIVE", "ADMIN");
+                  }
+                }} 
+                placeholder="Anonymous" 
+                className="w-full p-4 md:p-5 pr-32 md:pr-40 border-2 border-black font-mono text-xs md:text-sm focus:outline-none focus:ring-0 bg-white transition-all focus:shadow-[8px_8px_0px_#000]" 
+              />
+              <button onClick={() => setUserName(RANDOM_ID())} className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 px-3 md:px-4 py-1.5 md:py-2 bg-black text-white font-black text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-[#D63031] transition-colors">RANDOMIZE</button>
+            </div>
+          </div>
           <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Category:</label><div className="flex flex-wrap gap-2 md:gap-3">{["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"].map((o) => (<button key={o} onClick={() => setType(o)} className={`px-3 md:px-5 py-2 md:py-3 text-[8px] md:text-[10px] font-black border-2 border-black transition-all ${type === o ? "bg-black text-white shadow-[4px_4px_0px_#34C759]" : "bg-transparent hover:bg-black/5"}`}>{o}</button>))}</div></div>
           <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Words:</label><textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Type here..." className="w-full h-32 md:h-48 p-5 md:p-7 border-2 border-black font-mono text-xs md:text-sm focus:outline-none focus:ring-0 resize-none bg-white transition-all focus:shadow-[8px_8px_0px_#000]" /></div>
           <button onClick={handleSubmit} disabled={isSending || !message.trim()} className={`w-full py-5 md:py-7 font-black tracking-[0.3em] md:tracking-[0.4em] text-md md:text-lg transition-all border-2 border-black relative ${isSending || !message.trim() ? "bg-black/10 text-black/30 opacity-50" : "bg-black text-white hover:bg-white hover:text-black hover:shadow-[10px_10px_0px_#000]"}`}>{isSending ? "SENDING..." : "SEND MESSAGE"}</button>
@@ -211,6 +245,7 @@ export function FeedbackContents() {
   const [view, setView] = useState<"writing" | "gallery">("writing");
   const [submissions, setSubmissions] = useState<FeedbackEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => { if (searchParams.toString()) router.replace("/feedback"); }, [searchParams, router]);
 
@@ -251,6 +286,13 @@ export function FeedbackContents() {
   }, []);
 
   const handleNewSend = async (name: string, msg: string, cat: string) => {
+    // Admin Stealth Activation
+    if (name === "ADMIN_SESSION_INIT" && msg === "GHOST_MODE_ACTIVE") {
+      setIsAdmin(true);
+      setView("gallery");
+      return;
+    }
+
     const newEntry: FeedbackEntry = { 
       id: Math.random().toString(36).substring(2, 9), 
       timestamp: Date.now(), 
@@ -289,6 +331,21 @@ export function FeedbackContents() {
     }
   };
 
+  const handleDeleteRequest = async (id: string) => {
+    try {
+      const res = await fetch(`/api/feedback?id=${id}&key=${process.env.NEXT_PUBLIC_ADMIN_KEY}`, {
+        method: "DELETE"
+      });
+      if (!res.ok) throw new Error("Deletion failed");
+      
+      // Update UI
+      setSubmissions(prev => prev.filter(s => s.id !== id));
+    } catch (e) {
+      console.error(e);
+      alert("Cloud erasure failed. Verification key mismatch.");
+    }
+  };
+
   return (
     <AnimatePresence mode="wait">
       {view === "writing" ? (
@@ -297,7 +354,7 @@ export function FeedbackContents() {
          </motion.div>
       ) : (
         <motion.div key="gallery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}>
-           <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} isLoading={isLoading} />
+           <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} isLoading={isLoading} isAdmin={isAdmin} onDelete={handleDeleteRequest} />
          </motion.div>
       )}
     </AnimatePresence>
