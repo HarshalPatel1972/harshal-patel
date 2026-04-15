@@ -191,7 +191,7 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
   const [type, setType] = useState(initialType);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
-  useEffect(() => { const saved = localStorage.getItem("portfolio-username"); if (saved) setUserName(saved); }, []);
+  
   const handleSubmit = () => { if (!message.trim()) return; setIsSending(true); setTimeout(() => { onSend(userName, message, type); setIsSending(false); }, 1200); };
   
   return (
