@@ -113,20 +113,20 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     
     // CJK and Hindi characters need specific scaling (Increased by ~14%)
     if (isCJK || isHindi) {
-      const base = isHindi ? "text-3xl md:text-7xl lg:text-[9.03rem]" : "text-3xl md:text-7xl lg:text-[8.03rem]";
-      if (len > 80) return `text-xl md:text-2xl lg:text-[3.51rem] ${fontClass}`;
-      if (len > 60) return `text-xl md:text-3xl lg:text-[4.51rem] ${fontClass}`;
-      if (len > 40) return `text-2xl md:text-4xl lg:text-[5.52rem] ${fontClass}`;
-      if (len > 25) return `text-2xl md:text-5xl lg:text-[6.52rem] ${fontClass}`;
-      if (len > 15) return `text-3xl md:text-6xl lg:text-[7.52rem] ${fontClass}`;
+      const base = isHindi ? "text-3xl md:text-7xl lg:text-[7.22rem]" : "text-3xl md:text-7xl lg:text-[6.42rem]";
+      if (len > 80) return `text-xl md:text-2xl lg:text-[2.81rem] ${fontClass}`;
+      if (len > 60) return `text-xl md:text-3xl lg:text-[3.61rem] ${fontClass}`;
+      if (len > 40) return `text-2xl md:text-4xl lg:text-[4.42rem] ${fontClass}`;
+      if (len > 25) return `text-2xl md:text-5xl lg:text-[5.22rem] ${fontClass}`;
+      if (len > 15) return `text-3xl md:text-6xl lg:text-[6.02rem] ${fontClass}`;
       return `${base} ${fontClass}`;
     } else {
-      // Standard Latin scaling (Reduced by 12% from previous increase)
-      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[3.81rem]";
-      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[4.51rem]";
-      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[5.52rem]";
-      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[6.52rem]";
-      return "font-display text-3xl md:text-7xl lg:text-[8.03rem]";
+      // Standard Latin scaling (Reduced by 20% on top of previous 12%)
+      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[3.05rem]";
+      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[3.61rem]";
+      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[4.42rem]";
+      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[5.22rem]";
+      return "font-display text-3xl md:text-7xl lg:text-[6.42rem]";
     }
   }, [quote, language]);
 
@@ -330,7 +330,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       {bgImage && (
         <div 
           ref={bgImageRef}
-          className="absolute inset-0 z-0 opacity-0 pointer-events-none"
+          className="absolute inset-0 bg-black/90 backdrop-blur-lg z-0 opacity-0 pointer-events-none"
         >
           <Image 
             src={bgImage} 

@@ -112,7 +112,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsExpanded(false)}
-              className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
+              className="absolute inset-0 bg-black/90 backdrop-blur-lg"
             />
 
             {/* Brutalist Notice Card */}
