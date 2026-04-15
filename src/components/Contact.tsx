@@ -108,62 +108,10 @@ export function Contact() {
       setTimeout(() => {
         setLoopIdx((prev) => (prev + 1) % 3);
         setIsGlitching(false);
-      }, 400); // 400ms sharp slide
+      }, 400); 
     }, 4000);
     return () => clearInterval(interval);
   }, [loopIdx, language]);
-
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    if (id === "email") {
-      // Still prevent default for email to handle copy
-      e.preventDefault();
-      navigator.clipboard.writeText(profile[language as keyof typeof profile].email);
-      setCopied(true);
-
-      const targetEl = e.currentTarget;
-      
-      // Brutalist shatter shake on copy
-      anime(targetEl, {
-        translateX: [
-           { value: 10, duration: 50 },
-           { value: -10, duration: 50 },
-           { value: 10, duration: 50 },
-           { value: 0, duration: 50 }
-        ],
-        easing: 'easeInOutSine'
-      });
-
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } else if (id === "feedback") {
-      e.preventDefault();
-      const feedbackLink = currentLinks.find(l => l.id === "feedback") as LinkItem | undefined;
-      const currentCategory = (feedbackLink?.values?.[loopIdx]) || "SUBMIT REVIEW";
-      router.push(`/feedback?type=${encodeURIComponent(currentCategory)}`);
-    }
-  };
-
-  const renderSlideText = (vals: string[]) => (
-    <div className="relative group-hover:text-[var(--text-bone)] transition-colors duration-300 flex items-center h-full whitespace-nowrap">
-       {isGlitching ? (
-         <>
-           {/* Old text sliding out left */}
-           <div className="absolute inset-y-0 left-0 slide-out-left">
-             {vals[prevIdx]}
-           </div>
-           {/* New text sliding in right */}
-           <div className="relative slide-in-right">
-             {vals[(prevIdx + 1) % 3]}
-           </div>
-         </>
-       ) : (
-         <div className="relative">
-           {vals[loopIdx]}
-         </div>
-       )}
-    </div>
-  );
 
   return (
     <section 
@@ -242,69 +190,126 @@ export function Contact() {
         </ScrollReveal>
 
         {/* Links Container */}
-        <div className="flex flex-col gap-8 md:gap-12 pl-0 md:pl-24">
-          {currentLinks.map((link: LinkItem, i: number) => {
-            const isEmailCopied = copied && link.id === "email";
-            const textValue = isEmailCopied ? (() => {
-              switch(language) {
-                case 'ja': return "コピー完了";
-                case 'ko': return "이메일 복사됨";
-                case 'zh-tw': return "電子郵件已複製";
-                case 'fr': return "E-MAIL COPIÉ";
-                case 'id': return "EMAIL DISALIN";
-                case 'de': return "E-MAIL KOPIERT";
-                case 'it': return "E-MAIL COPIATA";
-                case 'pt-br':
-                case 'es-419':
-                case 'es': return "E-MAIL COPIADO";
-                case 'hi': return "ईमेल कॉपी किया गया";
-                case 'eridian': return "DATA-STORED-IN-BRAIN";
-                default: return "EMAIL COPIED";
-              }
-            })() : link.value;
-
-            return (
-              <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
-                <KineticLink
-                  href={link.href}
-                  target={link.id !== "email" ? "_blank" : undefined}
-                  onClick={(e) => handleLinkClick(e, link.id)}
-                  className="group relative block w-fit outline-none"
-                >
-                  {/* Hover Slash Background */}
-                  <div className="absolute top-0 bottom-0 left-[-20px] right-[-40px] bg-[var(--accent-blood)] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" />
-
-                  <div className="relative z-10 flex flex-row items-center md:items-end gap-12 md:gap-24 border-b-4 border-black group-hover:border-transparent pb-4 transition-colors">
-                    
-                    <div>
-                      <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-2 group-hover:text-black/80 transition-colors">
-                        {link.label}
-                      </div>
-
-                      <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] group-hover:text-[var(--text-bone)] transition-colors duration-300 pointer-events-none">
-                        {link.id === "feedback" && link.values ? (
-                           renderSlideText(link.values)
-                        ) : (
-                          textValue
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Brutalist Arrow/CTA */}
-                    <div className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow group-hover:bg-[var(--bg-ink)] group-hover:-rotate-45 transition-transform duration-300 origin-center self-end mb-0 md:mb-4 mr-[55px] md:mr-0">
-                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
-                         <path d="M5 12h14M12 5l7 7-7 7"/>
-                       </svg>
-                    </div>
-
-                  </div>
-                </KineticLink>
-              </ScrollReveal>
-            );
-          })}
+        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full">
+          {currentLinks.map((link: LinkItem, i: number) => (
+            <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
+               <ContactLinkItem 
+                link={link} 
+                language={language} 
+                copied={copied} 
+                setCopied={setCopied}
+                loopIdx={loopIdx}
+                prevIdx={prevIdx}
+                isGlitching={isGlitching}
+                router={router}
+               />
+            </ScrollReveal>
+          ))}
         </div>
 
       </div>
     </section>
+}
+
+/**
+ * CONTACT LINK ITEM - Surgical Interaction Logic 🧬
+ */
+function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, isGlitching, router }: any) {
+  const [isHovered, setIsHovered] = useState(false);
+  const isEmailCopied = copied && link.id === "email";
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    if (id === "email") {
+      e.preventDefault();
+      navigator.clipboard.writeText(profile[language as keyof typeof profile].email);
+      setCopied(true);
+      const targetEl = e.currentTarget;
+      anime(targetEl, {
+        translateX: [{ value: 10, duration: 50 }, { value: -10, duration: 50 }, { value: 10, duration: 50 }, { value: 0, duration: 50 }],
+        easing: 'easeInOutSine'
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } else if (id === "feedback") {
+      e.preventDefault();
+      const currentCategory = (link.values?.[loopIdx]) || "SUBMIT REVIEW";
+      router.push(`/feedback?type=${encodeURIComponent(currentCategory)}`);
+    }
+  };
+
+  const textValue = isEmailCopied ? (() => {
+    switch(language) {
+      case 'ja': return "コピー完了";
+      case 'ko': return "이메일 복사됨";
+      case 'zh-tw': return "電子郵件已複製";
+      case 'fr': return "E-MAIL COPIÉ";
+      case 'id': return "EMAIL DISALIN";
+      case 'de': return "E-MAIL KOPIERT";
+      case 'it': return "E-MAIL COPIATA";
+      case 'hi': return "ईमेल कॉपी किया गया";
+      case 'eridian': return "DATA-STORED-IN-BRAIN";
+      default: return "EMAIL COPIED";
+    }
+  })() : link.value;
+
+  return (
+    <KineticLink
+      href={link.href}
+      target={link.id !== "email" ? "_blank" : undefined}
+      onClick={(e) => handleLinkClick(e, link.id)}
+      className="relative block w-full outline-none py-8 md:py-12 pointer-events-none group"
+    >
+      {/* Hover Slash Background - Only reacts to isHovered */}
+      <div 
+        className="absolute top-0 bottom-0 left-[-20px] right-[-20px] bg-[var(--accent-blood)] origin-left transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" 
+        style={{ transform: isHovered ? 'scaleX(1)' : 'scaleX(0)' }}
+      />
+
+      <div className="relative z-10 flex flex-row items-center md:items-end justify-between border-b-4 border-black transition-colors" style={{ borderColor: isHovered ? 'transparent' : 'black' }}>
+        
+        {/* TEXT TRIGGER ZONE */}
+        <div 
+          className="pointer-events-auto"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-2 transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
+            {link.label}
+          </div>
+
+          <div className="text-3xl sm:text-6xl md:text-8xl lg:text-9xl font-black font-display uppercase tracking-tighter transition-colors duration-300" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
+            {link.id === "feedback" && link.values ? (
+               <div className="relative flex items-center h-full whitespace-nowrap">
+                {isGlitching ? (
+                  <>
+                    <div className="absolute inset-y-0 left-0 slide-out-left">{link.values[prevIdx]}</div>
+                    <div className="relative slide-in-right">{link.values[(prevIdx + 1) % 3]}</div>
+                  </>
+                ) : (
+                  <div className="relative">{link.values[loopIdx]}</div>
+                )}
+               </div>
+            ) : (
+              textValue
+            )}
+          </div>
+        </div>
+
+        {/* ARROW TRIGGER ZONE */}
+        <div 
+          className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow transition-all duration-300 origin-center self-end mb-0 md:mb-4 pointer-events-auto cursor-pointer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          style={{ 
+            backgroundColor: isHovered ? 'var(--bg-ink)' : 'black',
+            transform: isHovered ? 'rotate(-45deg)' : 'none'
+          }}
+        >
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+             <path d="M5 12h14M12 5l7 7-7 7"/>
+           </svg>
+        </div>
+
+      </div>
+    </KineticLink>
   );
 }
