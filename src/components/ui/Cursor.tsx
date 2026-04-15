@@ -12,12 +12,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const [isTouch, setIsTouch] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const px = useRef(new Float32Array(12));
-  const py = useRef(new Float32Array(12));
-  const vx = useRef(new Float32Array(12));
-  const vy = useRef(new Float32Array(12));
-  const locked = useRef(new Uint8Array(12));
-  const pt = useRef(new Float32Array(12));
+  const px = useRef(new Float32Array(20));
+  const py = useRef(new Float32Array(20));
+  const vx = useRef(new Float32Array(20));
+  const vy = useRef(new Float32Array(20));
+  const locked = useRef(new Uint8Array(20));
+  const pt = useRef(new Float32Array(20));
 
   const mouse = useRef({ x: 0, y: 0 });
   const hoverType = useRef<"none" | "standard" | "play">("none");
@@ -44,7 +44,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     getSpherePositions: () =>
-      Array.from({ length: 12 }, (_, i) => ({ x: px.current[i], y: py.current[i] })),
+      Array.from({ length: 20 }, (_, i) => ({ x: px.current[i], y: py.current[i] })),
   }));
 
   useEffect(() => {
@@ -75,11 +75,11 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
     // Init particles
     const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 20; i++) {
       const a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 100;
       px.current[i] = cx + Math.cos(a) * d; py.current[i] = cy + Math.sin(a) * d;
       vx.current[i] = -Math.sin(a) * 2; vy.current[i] = Math.cos(a) * 2;
-      pt.current[i] = (Math.PI * 2 / 11) * (i - 1);
+      pt.current[i] = (Math.PI * 2 / 19) * (i - 1);
     }
 
     const handleResize = () => { if (canvasRef.current) { canvasRef.current.width = window.innerWidth; canvasRef.current.height = window.innerHeight; } };
@@ -103,7 +103,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       holdStartTimeRef.current = Date.now();
       totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
       const force = 6 + totalClicks.current * 5;
-      for (let i = 0; i < 12; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
+      for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
     };
     const onMouseUp = () => { holdStartTimeRef.current = null; };
 
@@ -159,7 +159,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
         ? (colorIndexRef.current === 1 ? activePalette[2] : activePalette[1]) 
         : hoverType.current !== "none" ? activePalette[2] : baseColor;
 
-      for (let i = 1; i < 12; i++) {
+      for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
           const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
           const slot = slots[i - 1];
@@ -211,17 +211,32 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           ctx.globalAlpha = 1;
         }
       }
-      for (let i = 0; i < 12; i++) {
+      ctx.save();
+      for (let i = 0; i < 20; i++) {
         if (i === 0 && hoverType.current === "play") continue;
         const x = px.current[i], y = py.current[i];
-        ctx.beginPath(); ctx.arc(x, y, PSIZE, 0, Math.PI * 2); ctx.fillStyle = currentColor; ctx.fill();
+        ctx.beginPath(); 
+        ctx.arc(x, y, PSIZE, 0, Math.PI * 2); 
+        ctx.fillStyle = currentColor; 
+        ctx.fill();
+        ctx.closePath();
+
         if (burstFlash.current === 0) {
-          ctx.beginPath(); ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
-          ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
-          ctx.lineWidth = 0.6; ctx.strokeStyle = hoverType.current !== "none" ? activePalette[2] : `${baseColor}15`; ctx.stroke();
+          ctx.beginPath(); 
+          ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.70)"; 
+          ctx.fill();
+          ctx.closePath();
+
+          ctx.beginPath(); 
+          ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
+          ctx.lineWidth = 0.6; 
+          ctx.strokeStyle = hoverType.current !== "none" ? activePalette[2] : `${baseColor}15`; 
+          ctx.stroke();
+          ctx.closePath();
         }
       }
+      ctx.restore();
       rafId = requestAnimationFrame(loop);
     };
     rafId = requestAnimationFrame(loop);
@@ -239,26 +254,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     };
   }, [language]); // Removed isTouch to prevent engine restarts during interaction
 
+  if (isTouch) return null;
   return createPortal(
-    <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 9999999, pointerEvents: "none", isolation: "isolate" }}>
+    <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
-      <div 
-        style={{ 
-          position: "fixed", 
-          left: 0, 
-          top: 0, 
-          width: "6px", 
-          height: "6px", 
-          backgroundColor: language === 'eridian' ? "#FFB300" : (hoverType.current !== "none" ? "#0ee0c3" : "#E8E8E6"),
-          borderRadius: "50%",
-          transform: "translate3d(var(--mouse-x, -100px), var(--mouse-y, -100px), 0) translate(-50%, -50%)",
-          willChange: "transform",
-          zIndex: 99999,
-          boxShadow: "0 0 10px rgba(255,255,255,0.3)"
-        }} 
-      />
-      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", pointerEvents: "none", willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
-    </div>,
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
+    </>,
     document.body
   );
 });

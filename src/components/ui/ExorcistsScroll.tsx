@@ -186,14 +186,14 @@ const ExorcistsScroll: React.FC = () => {
       </div>
 
       {mounted && activeCard && createPortal(
-        <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto' }}>
+        <div className="fixed inset-0" style={{ zIndex: 999999, pointerEvents: 'auto', isolation: 'isolate', willChange: 'transform' }}>
           <div 
             className={`fixed inset-0 bg-black/90 transition-opacity duration-[1000ms] ${showShutters ? 'opacity-100' : 'opacity-0'}`}
             onClick={handleDismiss}
           />
 
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] md:w-[320px] h-[50vh] md:h-[460px] pointer-events-none" style={{ zIndex: 9999991 }}>
-             <div className={`absolute inset-0 bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(var(--accent-blood-rgb),0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict' }}>
+             <div className={`absolute inset-0 bg-[#050505] border-2 border-[var(--accent-blood)] flex items-center justify-center overflow-hidden transition-all duration-700 ${activeCard.isAssembled ? 'opacity-100 scale-100 shadow-[0_0_40px_rgba(var(--accent-blood-rgb),0.4)]' : 'opacity-0 scale-102'}`} style={{ contain: 'strict', willChange: 'transform, opacity' }}>
                 <div className="absolute inset-4 border border-[var(--accent-blood)]/15 bg-gradient-to-br from-[var(--accent-blood)]/5 via-black to-black" />
                 
                 <div className="absolute inset-0 blood-grid opacity-10" />

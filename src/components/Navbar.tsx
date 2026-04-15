@@ -149,6 +149,10 @@ export function Navbar() {
     let loopRaf: number;
     let speedTimeout: NodeJS.Timeout;
     const smoothLoop = () => {
+      if (showEasterEggs) {
+        loopRaf = requestAnimationFrame(smoothLoop);
+        return;
+      }
       const p = dotPhysicsRef.current;
       p.currentY += (p.targetY - p.currentY) * p.lerp;
       if (navbarRef.current) {
@@ -175,12 +179,19 @@ export function Navbar() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const updateHeight = () => setDocHeight(document.documentElement.scrollHeight);
-    const resizer = new ResizeObserver(updateHeight);
+    let timer: NodeJS.Timeout;
+    const updateHeight = () => {
+      if (showEasterEggs) return;
+      setDocHeight(document.documentElement.scrollHeight);
+    };
+    const resizer = new ResizeObserver(() => {
+      clearTimeout(timer);
+      timer = setTimeout(updateHeight, 200);
+    });
     resizer.observe(document.body);
     updateHeight();
-    return () => resizer.disconnect();
-  }, []);
+    return () => { resizer.disconnect(); clearTimeout(timer); };
+  }, [showEasterEggs]);
 
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
@@ -420,7 +431,7 @@ export function Navbar() {
       {/* EASTER EGG OVERLAY 🎁 */}
       <AnimatePresence>
         {showEasterEggs && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 md:p-12 pointer-events-auto">
+          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 md:p-12 pointer-events-auto" style={{ isolation: 'isolate', willChange: 'transform' }}>
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
