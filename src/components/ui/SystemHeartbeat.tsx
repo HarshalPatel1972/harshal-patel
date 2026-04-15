@@ -41,6 +41,8 @@ const SystemHeartbeat: React.FC = () => {
           </filter>
         </defs>
         
+        {/* Chaotic background nerves (Red) */}
+        {nerves.map((n, i) => (
           <path
             key={i}
             d={`M${n.x1},${n.y1} Q${(n.x1+n.x2)/2 + 50},${(n.y1+n.y2)/2 - 50} ${n.x2},${n.y2}`}
@@ -54,6 +56,7 @@ const SystemHeartbeat: React.FC = () => {
               <animate attributeName="stroke-dasharray" values="0,1000;1000,0;0,1000" dur={`${n.duration}s`} repeatCount="indefinite" begin={`${n.delay}s`} />
             )}
           </path>
+        ))}
 
         {/* The Underlying Blueprint Grid (White - only visible during pulse) */}
         <g className="opacity-10">
