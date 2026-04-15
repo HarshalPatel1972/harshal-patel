@@ -146,7 +146,7 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
   return (
     <div className="relative w-full min-h-screen bg-white overflow-y-auto overflow-x-hidden p-4 md:p-8 cursor-default custom-scrollbar">
       <div className="fixed inset-0 halftone-bg opacity-[0.05] pointer-events-none" />
-      <div className="fixed top-6 left-8 z-[100] flex gap-8 items-center"><Link href="/" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity text-black">← Back</Link></div>
+      <div className="fixed top-6 left-8 z-[100] flex gap-8 items-center"><Link href="/#contact" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity text-black">← Back</Link></div>
       <div className="fixed top-6 right-8 z-[100]"><button onClick={onAddMore} className="bg-black text-white px-6 py-3 font-black text-xs uppercase tracking-[0.2em] shadow-[6px_6px_0px_#D63031] hover:shadow-[2px_2px_0px_#D63031] hover:translate-x-[4px] hover:translate-y-[4px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none">Add More</button></div>
       
       <div className="relative z-10 w-full min-h-screen pt-4">
@@ -205,7 +205,7 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
          </h2>
       </div>
 
-      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center"><Link href="/" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity">← Cancel</Link><div className="w-[1px] h-4 bg-black/20" /><button onClick={onViewGallery} className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity whitespace-nowrap">Enter Gallery →</button></div>
+      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center"><Link href="/#contact" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity">← Cancel</Link><div className="w-[1px] h-4 bg-black/20" /><button onClick={onViewGallery} className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity whitespace-nowrap">Enter Gallery →</button></div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl relative z-10 px-2">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6 md:mb-10 text-center">Write Your<br /><span className="bg-black text-white px-3 md:px-4 inline-block mt-2 text-3xl sm:text-5xl">Message</span></h1>
         <div className="space-y-4 md:space-y-8">
