@@ -1,0 +1,3 @@
+## 2024-04-16 - Pre-compiled RegExp for Server-Side Route Filtering
+**Learning:** Using iterative array methods (`.some()`) coupled with string checks (`.includes()`) and `.toLowerCase()` inside a Next.js App Router API endpoint (e.g., `visitor-count/route.ts`) adds unnecessary CPU overhead on every request. High-frequency API routes can bypass these repeated allocations by compiling a single case-insensitive Regular Expression outside the handler scope.
+**Action:** Default to pre-compiled `RegExp` matching (`BOT_REGEX.test(string)`) over Array/String iterative methods inside high-traffic serverless API routes to save CPU cycles and prevent redundant object creation.
