@@ -48,7 +48,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     
-    return NextResponse.json({ success: true });
+    // Return the actual inserted data (including the ID Supabase used)
+    const { data: insertedData } = await supabase
+      .from('feedbacks')
+      .select('*')
+      .eq('timestamp', entry.timestamp)
+      .limit(1)
+      .single();
+
+    return NextResponse.json({ success: true, data: insertedData });
   } catch (error: any) {
     console.error("Feedback API POST Error:", error);
     return NextResponse.json({ error: error.message || "Failed to save feedback" }, { status: 500 });
@@ -70,17 +78,21 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "Missing ID" }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const { error, count } = await supabase
       .from('feedbacks')
-      .delete()
+      .delete({ count: 'exact' })
       .eq('id', id);
 
     if (error) {
       console.error("Supabase Delete Error:", error);
       throw error;
     }
+
+    if (count === 0) {
+      return NextResponse.json({ error: "No matching record found to delete. This usually means the record is already gone or permissions are missing." }, { status: 404 });
+    }
     
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, count });
   } catch (error: any) {
     console.error("Feedback API DELETE Error:", error);
     return NextResponse.json({ error: error.message || "Failed to erase feedback" }, { status: 500 });

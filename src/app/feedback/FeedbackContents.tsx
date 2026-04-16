@@ -336,13 +336,17 @@ export function FeedbackContents() {
       const res = await fetch(`/api/feedback?id=${id}&key=${process.env.NEXT_PUBLIC_ADMIN_KEY}`, {
         method: "DELETE"
       });
-      if (!res.ok) throw new Error("Deletion failed");
       
-      // Update UI
+      const result = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(result.error || "Deletion failed");
+      }
+      
       setSubmissions(prev => prev.filter(s => s.id !== id));
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Cloud erasure failed. Verification key mismatch.");
+      alert(`Cloud Erasure Failed: ${e.message}`);
     }
   };
 
