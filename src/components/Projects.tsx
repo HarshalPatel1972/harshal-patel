@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { projects } from "@/data/projects";
 import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
@@ -24,6 +25,27 @@ export function Projects() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isOverridden, setIsOverridden] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
+
+  // Memoize expand text arrays to avoid complex inline splitting on every render
+  const expandTextWords = React.useMemo(() => {
+    const text = language === 'en' ? "EXPAND" :
+                 language === 'ja' ? "展開" :
+                 language === 'ko' ? "전개" :
+                 language === 'zh-tw' ? "展開" :
+                 language === 'fr' ? "DÉPLOYER" :
+                 language === 'id' ? "PERLUAS" :
+                 language === 'de' ? "ERWEITERN" :
+                 language === 'it' ? "ESPANDI" :
+                 language === 'pt-br' ? "EXPANDIR" :
+                 (language === 'es-419' || language === 'es') ? "EXPANDIR" :
+                 language === 'eridian' ? "MAKE_BIG_YES" :
+                 "विस्तार";
+
+    return text.split("_").map(word => ({
+      word,
+      chars: word.split("")
+    }));
+  }, [language]);
 
   // Entrance staggered animation
   useEffect(() => {
@@ -98,32 +120,9 @@ export function Projects() {
                    <div className="relative w-1.5 h-1.5 bg-[var(--accent-blood)] group-hover/btn:bg-white shrink-0 z-10" />
                 </div>
                 <div className="flex flex-col items-center">
-                  {(language === 'en' 
-                    ? "EXPAND" 
-                    : language === 'ja' 
-                    ? "展開" 
-                    : language === 'ko' 
-                    ? "전개" 
-                    : language === 'zh-tw'
-                    ? "展開"
-                    : language === 'fr'
-                    ? "DÉPLOYER"
-                    : language === 'id'
-                    ? "PERLUAS"
-                    : language === 'de'
-                    ? "ERWEITERN"
-                    : language === 'it'
-                    ? "ESPANDI"
-                    : language === 'pt-br'
-                    ? "EXPANDIR"
-                    : (language === 'es-419' || language === 'es')
-                    ? "EXPANDIR"
-                    : language === 'eridian'
-                    ? "MAKE_BIG_YES"
-                    : "विस्तार"
-                  ).split("_").map((word, wIdx) => (
+                  {expandTextWords.map((item, wIdx) => (
                     <div key={wIdx} className={`flex flex-col items-center ${wIdx === 0 ? "mb-3 md:mb-4" : ""}`}>
-                      {word.split("").map((char, cIdx) => (
+                      {item.chars.map((char, cIdx) => (
                         <span key={cIdx} className="font-display text-[9px] md:text-[11px] font-black uppercase leading-none mb-[2px] last:mb-0">
                           {char}
                         </span>
