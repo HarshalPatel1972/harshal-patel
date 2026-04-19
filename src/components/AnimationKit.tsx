@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { animate as anime, utils, remove } from "animejs";
 
@@ -155,13 +155,15 @@ export function TextReveal({
     };
   }, [delay, stagger]);
 
+  const charArray = useMemo(() => text.split(""), [text]);
+
   return (
     <Tag
       ref={containerRef as any}
       className={className}
       style={{ perspective: "600px" }}
     >
-      {text.split("").map((char, i) => (
+      {charArray.map((char, i) => (
         <span
           key={i}
           className="char inline-block"
