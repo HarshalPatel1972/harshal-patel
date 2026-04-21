@@ -1,0 +1,3 @@
+## 2024-05-24 - [Fix Layout Thrashing in Scroll Loop]
+**Learning:** Reading layout properties like `offsetTop` and `offsetHeight` synchronously within high-frequency event listeners (like scroll) causes immediate layout thrashing (forced synchronous layout) when mixed with style mutations. This is especially problematic for performance on slower devices.
+**Action:** When creating high-frequency scroll trackers, always cache static element dimensions during initialization and `window.resize` events. Read from these cached values in the scroll handler, and wrap all style mutations in a `requestAnimationFrame` using a `ticking` boolean pattern to batch operations.
