@@ -75,32 +75,63 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
-      
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      if (st > sectionOffset + trackHeight + 500) return;
+    let ticking = false;
+    let rafId: number;
+    let cachedOffsetTop = 0;
+    let cachedTrackHeight = 0;
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      trackRef.current.style.setProperty('--scroll-progress', progress.toString());
-      
-      const scale = 1 - progress * 0.5;
-      const translate = progress * -150;
-      const opacity = Math.max(0, 1 - progress * 3.5);
-      const blur = progress * 20;
-      
-      heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
-      heroContentRef.current.style.opacity = opacity.toString();
-      heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
-      heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+    const updateDimensions = () => {
+      if (!trackRef.current) return;
+      // Cache layout dimensions to prevent layout thrashing on scroll
+      cachedOffsetTop = trackRef.current.offsetTop;
+      cachedTrackHeight = trackRef.current.offsetHeight - window.innerHeight;
     };
 
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = window.requestAnimationFrame(() => {
+          if (!trackRef.current || !heroContentRef.current) {
+            ticking = false;
+            return;
+          }
+
+          const st = window.scrollY;
+
+          if (st > cachedOffsetTop + cachedTrackHeight + 500) {
+            ticking = false;
+            return;
+          }
+
+          const progress = Math.max(0, Math.min(1, (st - cachedOffsetTop) / cachedTrackHeight));
+          trackRef.current.style.setProperty('--scroll-progress', progress.toString());
+
+          const scale = 1 - progress * 0.5;
+          const translate = progress * -150;
+          const opacity = Math.max(0, 1 - progress * 3.5);
+          const blur = progress * 20;
+
+          heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
+          heroContentRef.current.style.opacity = opacity.toString();
+          heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
+          heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("resize", updateDimensions, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true }); 
+
+    updateDimensions();
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
