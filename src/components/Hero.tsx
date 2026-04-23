@@ -73,16 +73,30 @@ export function Hero() {
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
-  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
+  // SCROLL ENGINE (OPTIMIZED WITH rAF AND CACHED DIMENSIONS)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 1; // Prevent divide by zero
+
+    const updateDimensions = () => {
+      if (!trackRef.current) return;
+      sectionOffset = trackRef.current.offsetTop;
+      trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+    };
+
+    const updateStyles = () => {
+      if (!trackRef.current || !heroContentRef.current) {
+        ticking = false;
+        return;
+      }
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
-      if (st > sectionOffset + trackHeight + 500) return;
+      if (st > sectionOffset + trackHeight + 500) {
+        ticking = false;
+        return;
+      }
 
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
@@ -96,11 +110,35 @@ export function Hero() {
       heroContentRef.current.style.opacity = opacity.toString();
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+      ticking = false;
     };
 
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateStyles);
+        ticking = true;
+      }
+    };
+
+    // Initialize dimensions
+    // Note: Do not observe `trackRef.current` with ResizeObserver as updating
+    // the CSS variable --scroll-progress inside `updateStyles` can trigger an infinite resize loop
+    // leading to browser crash or blank screen.
+    window.addEventListener('resize', updateDimensions);
+
+    // We defer initial calculation slightly to ensure layout is complete
+    requestAnimationFrame(() => {
+      updateDimensions();
+      handleScroll();
+    });
+
     window.addEventListener("scroll", handleScroll, { passive: true }); 
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
 
   return (
