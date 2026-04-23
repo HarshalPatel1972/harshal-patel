@@ -1,0 +1,3 @@
+## 2024-04-04 - [Optimize high-frequency static keyword checks]
+**Learning:** For high-frequency string matching against static keyword lists (like User-Agent bot detection), using a pre-compiled `RegExp` with the `i` (case-insensitive) flag defined outside the request handler is significantly more performant than iterative `Array.prototype.some` combined with `String.prototype.includes` and `String.prototype.toLowerCase()`. The array method approach incurs redundant CPU cycles for iteration and string allocation on every single request.
+**Action:** Always prefer pre-compiled regular expressions for checking static keyword sets in high-frequency paths to minimize CPU utilization and memory overhead.
