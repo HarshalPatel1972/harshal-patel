@@ -184,23 +184,35 @@ export function TextReveal({
  */
 export function useTilt(intensity: number = 10) {
   const ref = useRef<HTMLElement>(null);
+  const rafId = useRef<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const rotateX = (0.5 - y) * intensity;
-      const rotateY = (x - 0.5) * intensity;
+      if (rafId.current) return;
 
-      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      el.style.transition = "transform 0.1s ease-out";
+      // ⚡ Bolt: Batch DOM reads (getBoundingClientRect) and writes inside requestAnimationFrame
+      // to prevent synchronous layout thrashing during high-frequency mousemove events.
+      rafId.current = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const rotateX = (0.5 - y) * intensity;
+        const rotateY = (x - 0.5) * intensity;
+
+        el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        el.style.transition = "transform 0.1s ease-out";
+
+        rafId.current = null;
+      });
     };
 
     const handleLeave = () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -210,6 +222,7 @@ export function useTilt(intensity: number = 10) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, [intensity]);
 
