@@ -73,34 +73,66 @@ export function Hero() {
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
-  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
-      
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      if (st > sectionOffset + trackHeight + 500) return;
+  // Cache layout dimensions to prevent layout thrashing on scroll
+  const layoutCache = useRef({ offsetTop: 0, trackHeight: 0 });
+  const ticking = useRef(false);
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      trackRef.current.style.setProperty('--scroll-progress', progress.toString());
-      
-      const scale = 1 - progress * 0.5;
-      const translate = progress * -150;
-      const opacity = Math.max(0, 1 - progress * 3.5);
-      const blur = progress * 20;
-      
-      heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
-      heroContentRef.current.style.opacity = opacity.toString();
-      heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
-      heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER WITH RAF BATCHING)
+  useEffect(() => {
+    const updateLayout = () => {
+      if (!trackRef.current) return;
+      layoutCache.current = {
+        offsetTop: trackRef.current.offsetTop,
+        trackHeight: trackRef.current.offsetHeight - window.innerHeight
+      };
     };
 
+    // Initial measure
+    updateLayout();
+
+    const handleScroll = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          if (!trackRef.current || !heroContentRef.current) {
+            ticking.current = false;
+            return;
+          }
+
+          const st = window.scrollY;
+          const sectionOffset = layoutCache.current.offsetTop;
+          const trackHeight = layoutCache.current.trackHeight;
+
+          if (st <= sectionOffset + trackHeight + 500) {
+            // Avoid division by zero
+            const safeTrackHeight = trackHeight > 0 ? trackHeight : 1;
+            const progress = Math.max(0, Math.min(1, (st - sectionOffset) / safeTrackHeight));
+            trackRef.current.style.setProperty('--scroll-progress', progress.toString());
+
+            const scale = 1 - progress * 0.5;
+            const translate = progress * -150;
+            const opacity = Math.max(0, 1 - progress * 3.5);
+            const blur = progress * 20;
+
+            heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
+            heroContentRef.current.style.opacity = opacity.toString();
+            heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
+            heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+          }
+
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
+    };
+
+    window.addEventListener("resize", updateLayout, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true }); 
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", updateLayout);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
