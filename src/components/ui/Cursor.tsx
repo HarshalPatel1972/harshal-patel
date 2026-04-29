@@ -119,10 +119,17 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     };
     const onMouseUp = () => { holdStartTimeRef.current = null; };
 
+    let scrollTicking = false;
     const handleScroll = () => {
-      if (!isScrolling.current) isScrolling.current = true;
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => { isScrolling.current = false; }, 150);
+      if (!scrollTicking) {
+        window.requestAnimationFrame(() => {
+          if (!isScrolling.current) isScrolling.current = true;
+          if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+          scrollTimeout.current = setTimeout(() => { isScrolling.current = false; }, 150);
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
