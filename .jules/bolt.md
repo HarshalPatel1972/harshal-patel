@@ -1,0 +1,3 @@
+## 2024-05-18 - Caching Static Layout Metrics
+**Learning:** Computing layout dimensions like `offsetTop` or `offsetHeight` within high-frequency event handlers such as `scroll` or `mousemove` is a major performance anti-pattern. It triggers forced synchronous layout (layout thrashing) which blocks the main thread and impacts the frame rate.
+**Action:** Move static dimension calculations into initialization blocks or `resize` event handlers. Cache these values in refs or variables, and use them within the high-frequency event handlers coupled with `requestAnimationFrame` to decouple read and write DOM operations effectively.
