@@ -73,34 +73,61 @@ export function Hero() {
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
-  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
+  // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER WITH LAYOUT CACHING)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
-      
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      if (st > sectionOffset + trackHeight + 500) return;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+    let isTicking = false;
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      trackRef.current.style.setProperty('--scroll-progress', progress.toString());
-      
-      const scale = 1 - progress * 0.5;
-      const translate = progress * -150;
-      const opacity = Math.max(0, 1 - progress * 3.5);
-      const blur = progress * 20;
-      
-      heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
-      heroContentRef.current.style.opacity = opacity.toString();
-      heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
-      heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+    const updateDimensions = () => {
+      if (!trackRef.current) return;
+      sectionOffset = trackRef.current.offsetTop;
+      trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+
+    const handleScroll = () => {
+      if (!isTicking) {
+        requestAnimationFrame(() => {
+          if (!trackRef.current || !heroContentRef.current) {
+            isTicking = false;
+            return;
+          }
+
+          const st = window.scrollY;
+
+          if (st > sectionOffset + trackHeight + 500) {
+            isTicking = false;
+            return;
+          }
+
+          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+          trackRef.current.style.setProperty('--scroll-progress', progress.toString());
+
+          const scale = 1 - progress * 0.5;
+          const translate = progress * -150;
+          const opacity = Math.max(0, 1 - progress * 3.5);
+          const blur = progress * 20;
+
+          heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
+          heroContentRef.current.style.opacity = opacity.toString();
+          heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
+          heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+          isTicking = false;
+        });
+        isTicking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true }); 
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateDimensions);
+    };
   }, []);
 
   return (

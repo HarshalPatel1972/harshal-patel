@@ -18,15 +18,22 @@ export default function InertiaMarquee({ text, baseVelocity = 1, className = "",
   useEffect(() => {
     scrollYRef.current = window.scrollY;
 
+    let isTicking = false;
     const onScroll = () => {
-      const currentScrollY = window.scrollY;
-      const delta = currentScrollY - scrollYRef.current;
-      scrollYRef.current = currentScrollY;
+      if (!isTicking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const delta = currentScrollY - scrollYRef.current;
+          scrollYRef.current = currentScrollY;
 
-      // Add scroll velocity to base velocity
-      // If scrolling down, move left faster, if scrolling up, move right (or just slow down/reverse)
-      // Usually, we just want it to speed up in either direction, but let's make it directional
-      velocityRef.current = baseVelocity + delta * 0.1;
+          // Add scroll velocity to base velocity
+          // If scrolling down, move left faster, if scrolling up, move right (or just slow down/reverse)
+          // Usually, we just want it to speed up in either direction, but let's make it directional
+          velocityRef.current = baseVelocity + delta * 0.1;
+          isTicking = false;
+        });
+        isTicking = true;
+      }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
