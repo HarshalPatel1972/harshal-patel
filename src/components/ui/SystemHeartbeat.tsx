@@ -1,4 +1,18 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const STATIC_GRID = Array.from({ length: 20 }).map((_, i) => ({
+  x1: i * 50,
+  y1: i * 50
+}));
+
+const NERVE_SEED = Array.from({ length: 15 }).map((_, i) => ({
+  x1: Math.random() * 1000,
+  y1: Math.random() * 1000,
+  x2: Math.random() * 1000,
+  y2: Math.random() * 1000,
+  duration: 5 + Math.random() * 5,
+  delay: Math.random() * -5
+}));
 
 const SystemHeartbeat: React.FC = () => {
   const [isOverlayActive, setIsOverlayActive] = useState(false);
@@ -18,17 +32,8 @@ const SystemHeartbeat: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Generate background "Nerve Network" lines
-  const nerves = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
-      x1: Math.random() * 1000,
-      y1: Math.random() * 1000,
-      x2: Math.random() * 1000,
-      y2: Math.random() * 1000,
-      duration: 5 + Math.random() * 5,
-      delay: Math.random() * -5
-    }));
-  }, []);
+  // Use pre-generated seeded network lines outside of render
+  const nerves = NERVE_SEED;
 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
@@ -60,10 +65,10 @@ const SystemHeartbeat: React.FC = () => {
 
         {/* The Underlying Blueprint Grid (White - only visible during pulse) */}
         <g className="opacity-10">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {STATIC_GRID.map((line, i) => (
             <React.Fragment key={i}>
-              <line x1={i * 50} y1="0" x2={i * 50} y2="1000" stroke="white" strokeWidth="0.5" />
-              <line x1="0" y1={i * 50} x2="1000" y2={i * 50} stroke="white" strokeWidth="0.5" />
+              <line x1={line.x1} y1="0" x2={line.x1} y2="1000" stroke="white" strokeWidth="0.5" />
+              <line x1="0" y1={line.y1} x2="1000" y2={line.y1} stroke="white" strokeWidth="0.5" />
             </React.Fragment>
           ))}
         </g>
