@@ -1,0 +1,3 @@
+## 2024-05-18 - Caching static layout dimensions during scroll events
+**Learning:** Reading layout properties like `offsetTop` and `offsetHeight` directly within high-frequency event handlers like `scroll` can cause significant layout thrashing, even if mutations are batched.
+**Action:** When implementing scroll listeners, cache static layout dimensions (like `offsetTop` and `offsetHeight`) during initialization and `window.resize` events rather than reading them synchronously during the `scroll` event to prevent layout thrashing. Combine this with `requestAnimationFrame` and a `ticking` flag to batch DOM mutations.
