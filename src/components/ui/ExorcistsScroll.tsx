@@ -4,6 +4,18 @@ import { useLanguage } from '@/context/LanguageContext';
 import { OFUDA_FACTS } from '@/lib/ofudaFacts';
 import { getNextFact } from '@/lib/ofudaMemory';
 
+const STATIC_SEGMENTS_ERIDIAN = Array.from({ length: 12 }).map((_, i) => ({
+  id: i,
+  hex: ["♩ROCKY", "♫JAZZ", "♩AMAZE", "♫SIGNAL", "♩P.H.M.", "♫LIGHT"][i % 6],
+  delay: i * -1.25
+}));
+
+const STATIC_SEGMENTS_HUMAN = Array.from({ length: 12 }).map((_, i) => ({
+  id: i,
+  hex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
+  delay: i * -1.25
+}));
+
 interface ActiveCard {
   id: number;
   fact: string;
@@ -62,6 +74,16 @@ const CharacterInscription: React.FC<{ text: string, language: string }> = ({ te
   );
 };
 
+
+const SystemNodes = () => (
+  <>
+    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
+    <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
+    <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
+    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
+  </>
+);
+
 const ExorcistsScroll: React.FC = () => {
   const { language } = useLanguage();
   const [activeCard, setActiveCard] = useState<ActiveCard | null>(null);
@@ -113,24 +135,8 @@ const ExorcistsScroll: React.FC = () => {
     return () => { document.body.style.overflow = ''; };
   }, [activeCard]);
 
-  const segments = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => ({
-      id: i,
-      hex: language === 'eridian' 
-        ? ["♩ROCKY", "♫JAZZ", "♩AMAZE", "♫SIGNAL", "♩P.H.M.", "♫LIGHT"][i % 6]
-        : ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
-      delay: i * -1.25 
-    }));
-  }, []);
+  const segments = language === 'eridian' ? STATIC_SEGMENTS_ERIDIAN : STATIC_SEGMENTS_HUMAN;
 
-  const SystemNodes = () => (
-    <>
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
-    </>
-  );
 
   const [isInView, setIsInView] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
