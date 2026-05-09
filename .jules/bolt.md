@@ -1,0 +1,3 @@
+## 2024-05-09 - Layout Thrashing in Parallax Scroll Listeners
+**Learning:** Reading layout dimensions like `offsetTop` and `offsetHeight` synchronously within high-frequency `scroll` event listeners forces the browser to recalculate layouts (layout thrashing) before applying subsequent inline style changes, dramatically dropping frame rates.
+**Action:** Always separate DOM layout reads from DOM style writes. Cache static or slow-changing dimensions (like element heights and offsets) during initialization and `window.resize` events. Batch all rapid DOM style writes into a `requestAnimationFrame` loop protected by a `ticking` boolean to cap execution at the display refresh rate.
