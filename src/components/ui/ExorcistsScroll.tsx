@@ -1,8 +1,17 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
+
 import { createPortal } from 'react-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { OFUDA_FACTS } from '@/lib/ofudaFacts';
 import { getNextFact } from '@/lib/ofudaMemory';
+
+// Static base arrays hoisted to improve performance
+const STATIC_SEGMENTS_BASE = Array.from({ length: 12 }).map((_, i) => ({
+  id: i,
+  delay: i * -1.25,
+  eridianHex: ["♩ROCKY", "♫JAZZ", "♩AMAZE", "♫SIGNAL", "♩P.H.M.", "♫LIGHT"][i % 6],
+  defaultHex: ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6]
+}));
 
 interface ActiveCard {
   id: number;
@@ -114,14 +123,11 @@ const ExorcistsScroll: React.FC = () => {
   }, [activeCard]);
 
   const segments = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => ({
-      id: i,
-      hex: language === 'eridian' 
-        ? ["♩ROCKY", "♫JAZZ", "♩AMAZE", "♫SIGNAL", "♩P.H.M.", "♫LIGHT"][i % 6]
-        : ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
-      delay: i * -1.25 
+    return STATIC_SEGMENTS_BASE.map(s => ({
+      ...s,
+      hex: language === 'eridian' ? s.eridianHex : s.defaultHex
     }));
-  }, []);
+  }, [language]);
 
   const SystemNodes = () => (
     <>
