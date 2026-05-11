@@ -1,4 +1,20 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Generate background "Nerve Network" lines statically outside render cycle
+const nerves = Array.from({ length: 15 }).map((_, i) => ({
+  x1: Math.random() * 1000,
+  y1: Math.random() * 1000,
+  x2: Math.random() * 1000,
+  y2: Math.random() * 1000,
+  duration: 5 + Math.random() * 5,
+  delay: Math.random() * -5
+}));
+
+// Pre-calculate the underlying blueprint grid lines
+const blueprintGrid = Array.from({ length: 20 }).map((_, i) => ({
+  vX: i * 50,
+  hY: i * 50
+}));
 
 const SystemHeartbeat: React.FC = () => {
   const [isOverlayActive, setIsOverlayActive] = useState(false);
@@ -16,18 +32,6 @@ const SystemHeartbeat: React.FC = () => {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     
     return () => observer.disconnect();
-  }, []);
-
-  // Generate background "Nerve Network" lines
-  const nerves = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
-      x1: Math.random() * 1000,
-      y1: Math.random() * 1000,
-      x2: Math.random() * 1000,
-      y2: Math.random() * 1000,
-      duration: 5 + Math.random() * 5,
-      delay: Math.random() * -5
-    }));
   }, []);
 
   return (
@@ -60,10 +64,10 @@ const SystemHeartbeat: React.FC = () => {
 
         {/* The Underlying Blueprint Grid (White - only visible during pulse) */}
         <g className="opacity-10">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {blueprintGrid.map((line, i) => (
             <React.Fragment key={i}>
-              <line x1={i * 50} y1="0" x2={i * 50} y2="1000" stroke="white" strokeWidth="0.5" />
-              <line x1="0" y1={i * 50} x2="1000" y2={i * 50} stroke="white" strokeWidth="0.5" />
+              <line x1={line.vX} y1="0" x2={line.vX} y2="1000" stroke="white" strokeWidth="0.5" />
+              <line x1="0" y1={line.hY} x2="1000" y2={line.hY} stroke="white" strokeWidth="0.5" />
             </React.Fragment>
           ))}
         </g>
