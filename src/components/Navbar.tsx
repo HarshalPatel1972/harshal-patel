@@ -339,7 +339,7 @@ export function Navbar() {
 
   return (
     <>
-      <div className="absolute top-0 left-0 w-full pointer-events-none" style={{ height: docHeight || '100%', zIndex: 999 }}>
+      <div className="absolute inset-0 w-full pointer-events-none" style={{ zIndex: 999 }}>
         {showSplash && (
           <div className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: splashPos.x, top: splashPos.y }}>
             {[0, 1, 2].map((i) => (
