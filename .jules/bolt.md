@@ -1,0 +1,3 @@
+## 2024-05-12 - Hoisting Static Arrays out of Render Cycle
+**Learning:** For truly static arrays (e.g., SVG grids or particle shards) that do not depend on props or state, generating them with `Array.from()` inside the render cycle or wrapping them in `useMemo` with impure functions like `Math.random()` can cause performance bottlenecks and ESLint violations (`react-hooks/exhaustive-deps` or purity rules).
+**Action:** Extract these arrays into top-level constants outside the React component. This prevents unnecessary memory allocation on every render, avoids pure-component invalidations, and improves runtime performance by generating the values only once during module initialization.
