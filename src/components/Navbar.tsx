@@ -6,6 +6,9 @@ import { usePathname } from "next/navigation";
 import { useLanguage, type Language } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 
+const NAV_TICK_MARKS = Array.from({ length: 20 });
+
+
 type NavItem = {
   id: string;
   label: string;
@@ -387,7 +390,7 @@ export function Navbar() {
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
           <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--bg-ink)]/10" />
           <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-40 pointer-events-none">
-             {Array.from({ length: 20 }).map((_, i) => (
+             {NAV_TICK_MARKS.map((_, i) => (
                 <div key={i} className="w-full flex justify-start pl-2">
                   <div className="h-[1px] bg-[var(--bg-ink)] w-3" />
                 </div>
