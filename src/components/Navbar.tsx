@@ -97,6 +97,8 @@ const NAV_ITEMS: NavItems = {
 
 type DotMode = 'LOCKED' | 'CHARGING' | 'RELEASED';
 
+const STATIC_GRID_LINES = Array.from({ length: 20 }, (_, i) => i);
+
 export function Navbar() {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language as keyof typeof NAV_ITEMS] || NAV_ITEMS.en;
@@ -387,7 +389,7 @@ export function Navbar() {
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
           <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--bg-ink)]/10" />
           <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-40 pointer-events-none">
-             {Array.from({ length: 20 }).map((_, i) => (
+             {STATIC_GRID_LINES.map((i) => (
                 <div key={i} className="w-full flex justify-start pl-2">
                   <div className="h-[1px] bg-[var(--bg-ink)] w-3" />
                 </div>

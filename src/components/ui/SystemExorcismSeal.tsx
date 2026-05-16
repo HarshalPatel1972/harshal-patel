@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 
+const STATIC_BITS = Array.from({ length: 12 }, (_, i) => i);
+const STATIC_GRID_LINES = Array.from({ length: 10 }, (_, i) => i);
+
 const SystemExorcismSeal: React.FC = () => {
   const { language } = useLanguage();
   const isEridian = language === 'eridian';
@@ -58,7 +61,7 @@ const SystemExorcismSeal: React.FC = () => {
           
           {/* Binary/Hex Bits orbiting the seal */}
           <g className="font-mono text-[10px] fill-[var(--accent-blood)] font-bold opacity-80">
-            {Array.from({ length: 12 }).map((_, i) => {
+            {STATIC_BITS.map((i) => {
               const angle = (i / 12) * Math.PI * 2;
               const x = 500 + Math.cos(angle) * 380;
               const y = 500 + Math.sin(angle) * 380;
@@ -93,14 +96,14 @@ const SystemExorcismSeal: React.FC = () => {
           
           {/* The Inner "Logic" Grid */}
           <g opacity="0.5">
-            {Array.from({ length: 10 }).map((_, i) => (
+            {STATIC_GRID_LINES.map((i) => (
               <line 
                 key={`v-${i}`} 
                 x1={350 + i * 30} y1="350" x2={350 + i * 30} y2="650" 
                 stroke="var(--accent-blood)" strokeWidth="1" 
               />
             ))}
-            {Array.from({ length: 10 }).map((_, i) => (
+            {STATIC_GRID_LINES.map((i) => (
               <line 
                 key={`h-${i}`} 
                 x1="350" y1={350 + i * 30} x2="650" y2={350 + i * 30} 
