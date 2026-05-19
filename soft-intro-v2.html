@@ -35,8 +35,16 @@
     filter: grayscale(100%);
     opacity: 1;
   }
-  /* Disabled overlays to make the image fully visible */
-  .img-bleed::before, .img-bleed::after {
+  /* Overlay to soften the contrast/brightness of the image */
+  .img-bleed::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(242, 234, 224, 0.45); /* 45% paper wash overlay */
+    display: block;
+  }
+  .img-bleed::after {
     display: none;
   }
 
