@@ -1,4 +1,14 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Precomputed static nerves array to prevent GC pressure and hook impurity issues
+const STATIC_NERVES = Array.from({ length: 15 }).map(() => ({
+  x1: Math.random() * 1000,
+  y1: Math.random() * 1000,
+  x2: Math.random() * 1000,
+  y2: Math.random() * 1000,
+  duration: 5 + Math.random() * 5,
+  delay: Math.random() * -5
+}));
 
 const SystemHeartbeat: React.FC = () => {
   const [isOverlayActive, setIsOverlayActive] = useState(false);
@@ -18,18 +28,6 @@ const SystemHeartbeat: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Generate background "Nerve Network" lines
-  const nerves = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
-      x1: Math.random() * 1000,
-      y1: Math.random() * 1000,
-      x2: Math.random() * 1000,
-      y2: Math.random() * 1000,
-      duration: 5 + Math.random() * 5,
-      delay: Math.random() * -5
-    }));
-  }, []);
-
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
       {/* ─── LAYER 1: THE NERVE NETWORK (BIO-TECH CHAOS) ─── */}
@@ -42,7 +40,7 @@ const SystemHeartbeat: React.FC = () => {
         </defs>
         
         {/* Chaotic background nerves (Red) */}
-        {nerves.map((n, i) => (
+        {STATIC_NERVES.map((n, i) => (
           <path
             key={i}
             d={`M${n.x1},${n.y1} Q${(n.x1+n.x2)/2 + 50},${(n.y1+n.y2)/2 - 50} ${n.x2},${n.y2}`}
