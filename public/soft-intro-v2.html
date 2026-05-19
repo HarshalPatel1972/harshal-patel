@@ -321,11 +321,11 @@
     will-change: transform;
   }
 
-  /* ── EXIT ─────────────────────────────────────────────── */
-  .out { animation: exitFade 0.65s ease forwards !important; }
-  @keyframes exitFade {
+  /* ── EXIT (Temporarily disabled animation) ─────────────── */
+  .out { display: none !important; }
+  /* @keyframes exitFade {
     to { opacity:0; transform:translateY(-18px); }
-  }
+  } */
 </style>
 </head>
 <body>
