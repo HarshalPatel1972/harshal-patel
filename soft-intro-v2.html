@@ -302,6 +302,30 @@
     transition: transform 0.45s cubic-bezier(0.1, 0.8, 0.3, 1);
     will-change: transform;
   }
+
+  /* ── MOCK PORTFOLIO CANVAS (behind intro) ──────────────── */
+  .mock-portfolio {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-void);
+    opacity: 0;
+    transform: scale(0.96);
+    filter: blur(15px);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    padding: 2rem;
+  }
+  .mock-portfolio.reveal {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+    pointer-events: auto;
+  }
 </style>
 </head>
 <body>
@@ -343,12 +367,61 @@
 <div class="progress"></div>
 <div class="skip" id="skip">skip ↗</div>
 
+<!-- mock portfolio landing simulation -->
+<div class="mock-portfolio" id="portfolio">
+  <!-- mock header -->
+  <header style="position: absolute; top: 0; left: 0; right: 0; padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <div style="font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.2em; color: var(--text-stellar);">HP.SYS</div>
+    <div style="display: flex; gap: 2rem; font-family: 'Outfit', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: var(--text-twilight);">
+      <span>INDEX</span>
+      <span>WORKS</span>
+      <span>ABOUT</span>
+      <span style="color: var(--accent-iris); font-weight: 500;">CONNECT</span>
+    </div>
+  </header>
+  
+  <!-- mock main card -->
+  <div style="background: rgba(26, 26, 39, 0.45); backdrop-filter: blur(16px); border: 1px solid rgba(46, 46, 69, 0.4); padding: 4rem; border-radius: 16px; max-width: 680px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 1.5rem; transform: translateY(20px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;" id="port-card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--glow-glacial); border: 1px solid rgba(103,232,249,0.3); padding: 4px 8px; border-radius: 4px;">SYSTEM TELEMETRY</span>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent-surge); box-shadow: 0 0 8px var(--accent-surge);"></span>
+        <span style="font-family: 'Outfit', sans-serif; font-size: 9px; letter-spacing: 0.1em; color: var(--text-twilight); text-transform: uppercase;">ONLINE</span>
+      </div>
+    </div>
+    
+    <h2 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 42px; color: var(--text-stellar); margin: 0;">Harshal Patel</h2>
+    <p style="font-family: 'Outfit', sans-serif; font-weight: 200; font-size: 14px; color: var(--text-silver); line-height: 1.6; margin: 0;">
+      Crafting resilient digital structures, full-stack pipelines, and visually arresting user interfaces. Focused on performance, design fidelity, and architectural elegance.
+    </p>
+    
+    <div style="display: flex; gap: 8px; margin-top: 1rem;">
+      <span style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 400; color: var(--accent-iris); background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); padding: 6px 12px; border-radius: 20px;">TYPESCRIPT</span>
+      <span style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 400; color: var(--accent-arctic); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); padding: 6px 12px; border-radius: 20px;">NEXT.JS</span>
+      <span style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 400; color: var(--accent-petal); background: rgba(244,114,182,0.1); border: 1px solid rgba(244,114,182,0.2); padding: 6px 12px; border-radius: 20px;">GO / WASM</span>
+    </div>
+  </div>
+</div>
+
 <script>
   const dismiss = () => {
     ['stage','bleed'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.add('out');
     });
+    
+    // Reveal mock portfolio
+    const portfolio = document.getElementById('portfolio');
+    if (portfolio) {
+      portfolio.classList.add('reveal');
+      setTimeout(() => {
+        const card = document.getElementById('port-card');
+        if (card) {
+          card.style.transform = 'translateY(0)';
+          card.style.opacity = '1';
+        }
+      }, 150);
+    }
   };
   const t = setTimeout(dismiss, 3800);
   document.getElementById('stage').addEventListener('click', () => { clearTimeout(t); dismiss(); });
