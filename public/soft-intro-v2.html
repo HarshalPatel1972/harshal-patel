@@ -94,37 +94,7 @@
     align-items:center;
   }
 
-  /* ── LEFT VERTICAL NAME ───────────────────────────────── */
-  .name-vert {
-    position:fixed;
-    left: 22px;
-    top: 50%;
-    transform: translateY(-50%) rotate(-90deg);
-    transform-origin: center center;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 200;
-    font-size: 10px;
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
-    color: var(--accent-iris);
-    opacity:0;
-    white-space: nowrap;
-    animation: fadeOnly 1s ease 2.2s forwards;
-    z-index:10;
-  }
 
-  /* small rose dot accent beside name */
-  .name-dot {
-    position:fixed;
-    left: 17px;
-    top: calc(50% + 52px);
-    width: 4px; height: 4px;
-    border-radius:50%;
-    background: var(--accent-petal);
-    opacity:0;
-    animation: fadeOnly 1s ease 2.5s forwards;
-    z-index:10;
-  }
 
   /* ── QUOTE BLOCK — deconstructed ─────────────────────── */
   .quote-field {
@@ -343,9 +313,7 @@
 <!-- decorative oversized quote mark -->
 <div class="big-quote">"</div>
 
-<!-- vertical name (left rail) -->
-<div class="name-vert">Toji Fushiguro</div>
-<div class="name-dot"></div>
+
 
 <!-- main stage -->
 <div class="stage" id="stage">
