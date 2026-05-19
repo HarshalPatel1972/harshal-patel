@@ -9,28 +9,15 @@
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
   :root {
-    --bg-abyss:      #08080E;
-    --bg-void:       #111118;
-    --bg-obsidian:   #1A1A27;
-    --bg-graphite:   #242436;
-    --bg-storm:      #2E2E45;
-    
-    --text-stellar:  #F2F2FA;
-    --text-silver:   #C4C4D8;
-    --text-twilight: #7A7A96;
-    
-    --accent-iris:   #8B5CF6;
-    --accent-petal:  #F472B6;
-    --accent-arctic: #06B6D4;
-    --accent-ember:  #F97316;
-    --accent-surge:  #10B981;
-    --accent-crimson:#EF4444;
-    
-    --glow-aurora:   #C084FC;
-    --glow-glacial:  #67E8F9;
+    --paper:  #F2EAE0;
+    --paper2: #E8DDD0;
+    --ink:    #1A1410;
+    --rose:   #C4735A;
+    --rose-lt:#E8A898;
+    --mist:   rgba(196,115,90,0.12);
   }
 
-  html, body { width:100%; height:100%; overflow:hidden; background:var(--bg-abyss); }
+  html, body { width:100%; height:100%; overflow:hidden; background:var(--paper); }
 
   /* ── IMAGE — washed bleed, not a portrait ─────────────── */
   .img-bleed {
@@ -46,7 +33,8 @@
     width:100%; height:100%;
     object-fit:cover;
     object-position:40% 18%;
-    filter: grayscale(0.5) contrast(1.15) brightness(0.4) sepia(0.05);
+    filter: saturate(0.15) brightness(1.1) contrast(0.82);
+    mix-blend-mode: multiply;
     opacity: 0;
     transform: scale(1.06);
     animation: imgReveal 2s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
@@ -56,10 +44,10 @@
     content:''; position:absolute; inset:0; z-index:1;
     background: linear-gradient(
       105deg,
-      var(--bg-abyss) 0%,
-      var(--bg-abyss) 22%,
-      rgba(8,8,14,0.85) 40%,
-      rgba(8,8,14,0.3) 65%,
+      var(--paper) 0%,
+      var(--paper) 18%,
+      rgba(242,234,224,0.85) 35%,
+      rgba(242,234,224,0.3) 60%,
       transparent 100%
     );
   }
@@ -67,7 +55,7 @@
   .img-bleed::after {
     content:''; position:absolute; inset:0; z-index:1;
     background:
-      linear-gradient(180deg, var(--bg-abyss) 0%, transparent 14%, transparent 82%, var(--bg-abyss) 100%);
+      linear-gradient(180deg, var(--paper) 0%, transparent 14%, transparent 82%, var(--paper) 100%);
   }
 
   /* ── DECORATIVE BIG " ─────────────────────────────────── */
@@ -79,7 +67,7 @@
     font-style: italic;
     line-height:1;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(139,92,246,0.15); /* Iris accent-based stroke */
+    -webkit-text-stroke: 1px rgba(196,115,90,0.18);
     z-index: 1;
     pointer-events:none;
     user-select:none;
@@ -94,7 +82,37 @@
     align-items:center;
   }
 
+  /* ── LEFT VERTICAL NAME ───────────────────────────────── */
+  .name-vert {
+    position:fixed;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: 10px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--rose);
+    opacity:0;
+    white-space: nowrap;
+    animation: fadeOnly 1s ease 2.2s forwards;
+    z-index:10;
+  }
 
+  /* small rose dot accent beside name */
+  .name-dot {
+    position:fixed;
+    left: 17px;
+    top: calc(50% + 52px);
+    width: 4px; height: 4px;
+    border-radius:50%;
+    background: var(--rose);
+    opacity:0;
+    animation: fadeOnly 1s ease 2.5s forwards;
+    z-index:10;
+  }
 
   /* ── QUOTE BLOCK — deconstructed ─────────────────────── */
   .quote-field {
@@ -111,7 +129,7 @@
     font-family: 'Playfair Display', serif;
     font-style: italic;
     font-weight: 400;
-    color: var(--text-stellar);
+    color: var(--ink);
     line-height: 1.15;
     opacity:0;
     white-space: nowrap;
@@ -150,7 +168,7 @@
   /* highlight accent on key word */
   .ql em {
     font-style: italic;
-    color: var(--accent-petal);
+    color: var(--rose);
     position:relative;
   }
   .ql em::after {
@@ -158,7 +176,7 @@
     position:absolute;
     bottom:2px; left:0; right:0;
     height:1.5px;
-    background: var(--accent-iris);
+    background: var(--rose-lt);
     transform:scaleX(0);
     transform-origin:left;
     animation: underlineIn 0.6s ease 2s forwards;
@@ -176,8 +194,8 @@
   }
   .attr-line {
     width: 36px; height: 1px;
-    background: var(--accent-iris);
-    opacity:0.6;
+    background: var(--rose);
+    opacity:0.5;
     flex-shrink:0;
   }
   .attr-name {
@@ -186,7 +204,7 @@
     font-size: 12px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--accent-petal);
+    color: var(--rose);
   }
 
   /* ── BOTTOM PROGRESS LINE ─────────────────────────────── */
@@ -194,7 +212,7 @@
     position:fixed;
     bottom:0; left:0;
     height:2px;
-    background: linear-gradient(90deg, var(--accent-iris), var(--accent-petal));
+    background: linear-gradient(90deg, var(--rose), var(--rose-lt));
     width:0%;
     z-index:20;
     animation: prog 2.8s cubic-bezier(0.4,0,0.6,1) 0.1s forwards;
@@ -205,33 +223,22 @@
     position:fixed; bottom:20px; right:28px; z-index:30;
     font-family:'Outfit',sans-serif; font-size:9px;
     letter-spacing:0.28em; text-transform:uppercase;
-    color:var(--text-twilight); cursor:pointer;
+    color:rgba(196,115,90,0.4); cursor:pointer;
     opacity:0; animation:fadeOnly 1s ease 2.5s forwards;
     transition:color 0.3s;
   }
-  .skip:hover { color:var(--accent-petal); }
+  .skip:hover { color:var(--rose); }
 
   /* ── FLOATING SOFT CIRCLES (atmosphere) ──────────────── */
   .orb {
     position:fixed; border-radius:50%;
+    background: radial-gradient(circle, var(--mist) 0%, transparent 70%);
     pointer-events:none; z-index:1;
     animation:orbFloat 8s ease-in-out infinite;
   }
-  .orb-1 { 
-    width:380px;height:380px; top:-80px; left:30%; 
-    background: radial-gradient(circle, rgba(192,132,252,0.08) 0%, transparent 70%); /* Aurora-based */
-    animation-delay:0s;   opacity:0.6; 
-  }
-  .orb-2 { 
-    width:260px;height:260px; bottom:-60px;left:14%; 
-    background: radial-gradient(circle, rgba(103,232,249,0.08) 0%, transparent 70%); /* Glacial-based */
-    animation-delay:-3s; opacity:0.5; 
-  }
-  .orb-3 { 
-    width:180px;height:180px; top:55%; right:30%; 
-    background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%); /* Iris-based */
-    animation-delay:-5s; opacity:0.4; 
-  }
+  .orb-1 { width:380px;height:380px; top:-80px; left:30%;  animation-delay:0s;   opacity:0.6; }
+  .orb-2 { width:260px;height:260px; bottom:-60px;left:14%; animation-delay:-3s; opacity:0.5; }
+  .orb-3 { width:180px;height:180px; top:55%; right:30%;   animation-delay:-5s; opacity:0.4; }
 
   /* ── KEYFRAMES ────────────────────────────────────────── */
   @keyframes imgReveal {
@@ -256,45 +263,11 @@
     0%,100% { transform:translateY(0); }
     50%     { transform:translateY(-18px); }
   }
-  @keyframes sparkleFloat {
-    0%, 100% { transform: translateY(0) scale(1); opacity: 0.15; }
-    50% { transform: translateY(-40px) scale(1.4); opacity: 0.65; }
-  }
 
   /* ── EXIT ─────────────────────────────────────────────── */
   .out { animation: exitFade 0.65s ease forwards !important; }
   @keyframes exitFade {
     to { opacity:0; transform:translateY(-18px); }
-  }
-
-  /* ── SMOOTH PARALLAX SUPPORT ── */
-  .stage, .img-bleed {
-    transition: transform 0.45s cubic-bezier(0.1, 0.8, 0.3, 1);
-    will-change: transform;
-  }
-
-  /* ── MOCK PORTFOLIO CANVAS (behind intro) ──────────────── */
-  .mock-portfolio {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: var(--bg-void);
-    opacity: 0;
-    transform: scale(0.96);
-    filter: blur(15px);
-    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    padding: 2rem;
-  }
-  .mock-portfolio.reveal {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0px);
-    pointer-events: auto;
   }
 </style>
 </head>
@@ -313,7 +286,9 @@
 <!-- decorative oversized quote mark -->
 <div class="big-quote">"</div>
 
-
+<!-- vertical name (left rail) -->
+<div class="name-vert">Toji Fushiguro</div>
+<div class="name-dot"></div>
 
 <!-- main stage -->
 <div class="stage" id="stage">
@@ -335,110 +310,13 @@
 <div class="progress"></div>
 <div class="skip" id="skip">skip ↗</div>
 
-<!-- mock portfolio landing simulation -->
-<div class="mock-portfolio" id="portfolio">
-  <!-- mock header -->
-  <header style="position: absolute; top: 0; left: 0; right: 0; padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-    <div style="font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.2em; color: var(--text-stellar);">HP.SYS</div>
-    <div style="display: flex; gap: 2rem; font-family: 'Outfit', sans-serif; font-size: 11px; letter-spacing: 0.1em; color: var(--text-twilight);">
-      <span>INDEX</span>
-      <span>WORKS</span>
-      <span>ABOUT</span>
-      <span style="color: var(--accent-iris); font-weight: 500;">CONNECT</span>
-    </div>
-  </header>
-  
-  <!-- mock main card -->
-  <div style="background: rgba(26, 26, 39, 0.45); backdrop-filter: blur(16px); border: 1px solid rgba(46, 46, 69, 0.4); padding: 4rem; border-radius: 16px; max-width: 680px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 1.5rem; transform: translateY(20px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;" id="port-card">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <span style="font-family: 'Outfit', sans-serif; font-size: 9px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--glow-glacial); border: 1px solid rgba(103,232,249,0.3); padding: 4px 8px; border-radius: 4px;">SYSTEM TELEMETRY</span>
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent-surge); box-shadow: 0 0 8px var(--accent-surge);"></span>
-        <span style="font-family: 'Outfit', sans-serif; font-size: 9px; letter-spacing: 0.1em; color: var(--text-twilight); text-transform: uppercase;">ONLINE</span>
-      </div>
-    </div>
-    
-    <h2 style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 42px; color: var(--text-stellar); margin: 0;">Harshal Patel</h2>
-    <p style="font-family: 'Outfit', sans-serif; font-weight: 200; font-size: 14px; color: var(--text-silver); line-height: 1.6; margin: 0;">
-      Crafting resilient digital structures, full-stack pipelines, and visually arresting user interfaces. Focused on performance, design fidelity, and architectural elegance.
-    </p>
-    
-    <div style="display: flex; gap: 8px; margin-top: 1rem;">
-      <span style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 400; color: var(--accent-iris); background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); padding: 6px 12px; border-radius: 20px;">TYPESCRIPT</span>
-      <span style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 400; color: var(--accent-arctic); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.2); padding: 6px 12px; border-radius: 20px;">NEXT.JS</span>
-      <span style="font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 400; color: var(--accent-petal); background: rgba(244,114,182,0.1); border: 1px solid rgba(244,114,182,0.2); padding: 6px 12px; border-radius: 20px;">GO / WASM</span>
-    </div>
-  </div>
-</div>
-
 <script>
   const dismiss = () => {
-    ['stage','bleed'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('out');
-    });
-    
-    // Reveal mock portfolio
-    const portfolio = document.getElementById('portfolio');
-    if (portfolio) {
-      portfolio.classList.add('reveal');
-      setTimeout(() => {
-        const card = document.getElementById('port-card');
-        if (card) {
-          card.style.transform = 'translateY(0)';
-          card.style.opacity = '1';
-        }
-      }, 150);
-    }
+    ['stage','bleed'].forEach(id => document.getElementById(id).classList.add('out'));
   };
-  const t = setTimeout(dismiss, 3800);
+  const t = setTimeout(dismiss, 3400);
   document.getElementById('stage').addEventListener('click', () => { clearTimeout(t); dismiss(); });
   document.getElementById('skip').addEventListener('click',  () => { clearTimeout(t); dismiss(); });
-
-  // Parallax Depth Effect
-  document.addEventListener('mousemove', (e) => {
-    const x = (window.innerWidth / 2 - e.clientX) / 45;
-    const y = (window.innerHeight / 2 - e.clientY) / 45;
-    
-    const stage = document.getElementById('stage');
-    const bleed = document.getElementById('bleed');
-    
-    if (stage) {
-      stage.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    }
-    if (bleed) {
-      bleed.style.transform = `translate3d(${-x * 0.4}px, ${-y * 0.4}px, 0) scale(1.02)`;
-    }
-  });
-
-  // Generate subtle glowing sparkles (Lantern color)
-  const createSparkles = () => {
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.inset = '0';
-    container.style.pointerEvents = 'none';
-    container.style.zIndex = '1';
-    document.body.appendChild(container);
-
-    for (let i = 0; i < 20; i++) {
-      const sparkle = document.createElement('div');
-      const size = Math.random() * 3 + 1.5;
-      sparkle.style.width = `${size}px`;
-      sparkle.style.height = `${size}px`;
-      sparkle.style.background = '#FDE68A'; // Lantern color
-      sparkle.style.borderRadius = '50%';
-      sparkle.style.position = 'absolute';
-      sparkle.style.top = `${Math.random() * 100}%`;
-      sparkle.style.left = `${Math.random() * 100}%`;
-      sparkle.style.opacity = Math.random() * 0.45 + 0.15;
-      sparkle.style.boxShadow = '0 0 10px #FDE68A';
-      sparkle.style.animation = `sparkleFloat ${Math.random() * 7 + 5}s ease-in-out infinite`;
-      sparkle.style.animationDelay = `${Math.random() * -5}s`;
-      container.appendChild(sparkle);
-    }
-  };
-  
-  window.addEventListener('DOMContentLoaded', createSparkles);
 </script>
 
 </body>
