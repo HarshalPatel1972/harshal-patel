@@ -385,16 +385,16 @@
       if (el) el.classList.add('out');
     });
   };
-  const t = setTimeout(dismiss, 5500); // Extended slightly so the user can enjoy the interactive elements
+  // const t = setTimeout(dismiss, 5500); // Disabled auto-dismiss to inspect design
   
   const stageEl = document.getElementById('stage');
   const skipEl = document.getElementById('skip');
   
   if (stageEl) {
-    stageEl.addEventListener('click', () => { clearTimeout(t); dismiss(); });
+    stageEl.addEventListener('click', () => { dismiss(); });
   }
   if (skipEl) {
-    skipEl.addEventListener('click',  () => { clearTimeout(t); dismiss(); });
+    skipEl.addEventListener('click',  () => { dismiss(); });
   }
 
   // Interactive 3D Parallax Movement
