@@ -265,64 +265,6 @@
     will-change: transform;
   }
 
-  /* ── CUSTOM INERTIAL CURSOR ── */
-  html.has-hover, html.has-hover body {
-    cursor: none;
-  }
-  html.has-hover a, html.has-hover button, html.has-hover .skip, html.has-hover #stage {
-    cursor: none !important;
-  }
-  .cursor-trailer {
-    width: 24px;
-    height: 24px;
-    border: 1px solid var(--rose);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: width 0.25s ease, height 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
-    will-change: width, height, transform;
-    display: none;
-  }
-  .cursor-dot {
-    width: 6px;
-    height: 6px;
-    background-color: var(--rose);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    will-change: transform;
-    display: none;
-  }
-  body.cursor-hover .cursor-trailer {
-    width: 48px;
-    height: 48px;
-    background-color: rgba(196, 115, 90, 0.08);
-    border-color: var(--rose-lt);
-  }
-
-  /* ── CLICK PARTICLES ── */
-  .click-mote {
-    position: fixed;
-    width: 5px;
-    height: 5px;
-    background-color: var(--rose);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    animation: clickExplode 0.75s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-  }
-  @keyframes clickExplode {
-    to {
-      transform: translate(var(--tx), var(--ty)) scale(0);
-      opacity: 0;
-    }
-  }
-
   /* ── EXIT ─────────────────────────────────────────────── */
   .out { animation: exitFade 0.65s ease forwards !important; }
   @keyframes exitFade {
@@ -332,9 +274,7 @@
 </head>
 <body>
 
-<!-- Custom cursor markup -->
-<div class="cursor-trailer" id="c-trailer"></div>
-<div class="cursor-dot" id="c-dot"></div>
+
 
 <!-- atmospheric orbs -->
 <div class="orb orb-1"></div>
@@ -393,28 +333,8 @@
     skipEl.addEventListener('click',  () => { clearTimeout(t); dismiss(); });
   }
 
-  // Custom Cursor Inertial Physics
-  const trailer = document.getElementById('c-trailer');
-  const dot = document.getElementById('c-dot');
-  
-  let mouse = { x: 0, y: 0 };
-  let trailerPos = { x: 0, y: 0 };
-  let dotPos = { x: 0, y: 0 };
-  let hasHoverInitialized = false;
-
+  // Interactive 3D Parallax Movement
   document.addEventListener('mousemove', (e) => {
-    // Enable custom cursor styles only on devices with mouse hovering support
-    if (!hasHoverInitialized) {
-      document.documentElement.classList.add('has-hover');
-      if (trailer) trailer.style.display = 'block';
-      if (dot) dot.style.display = 'block';
-      hasHoverInitialized = true;
-    }
-
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-
-    // Interactive 3D Parallax Movement
     const x = (window.innerWidth / 2 - e.clientX) / 45;
     const y = (window.innerHeight / 2 - e.clientY) / 45;
     
@@ -426,68 +346,6 @@
     }
     if (stage) {
       stage.style.transform = `translate3d(${x * 0.8}px, ${y * 0.8}px, 0)`;
-    }
-  });
-
-  // LERP logic for premium cursor lag/inertia
-  const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
-  
-  const animateCursor = () => {
-    trailerPos.x = lerp(trailerPos.x, mouse.x, 0.12);
-    trailerPos.y = lerp(trailerPos.y, mouse.y, 0.12);
-    
-    dotPos.x = lerp(dotPos.x, mouse.x, 0.35);
-    dotPos.y = lerp(dotPos.y, mouse.y, 0.35);
-
-    if (trailer) {
-      trailer.style.left = `${trailerPos.x}px`;
-      trailer.style.top = `${trailerPos.y}px`;
-    }
-    if (dot) {
-      dot.style.left = `${dotPos.x}px`;
-      dot.style.top = `${dotPos.y}px`;
-    }
-    requestAnimationFrame(animateCursor);
-  };
-  requestAnimationFrame(animateCursor);
-
-  // Hover animations for magnetic elements
-  const addHoverEffects = () => {
-    const hoverTargets = [skipEl, stageEl, document.querySelector('.big-quote'), document.querySelector('.attribution')];
-    hoverTargets.forEach(el => {
-      if (!el) return;
-      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-    });
-  };
-  addHoverEffects();
-
-  // Click Particle Burst Animation
-  document.addEventListener('click', (e) => {
-    const count = 12;
-    for (let i = 0; i < count; i++) {
-      const mote = document.createElement('div');
-      mote.className = 'click-mote';
-      mote.style.left = `${e.clientX}px`;
-      mote.style.top = `${e.clientY}px`;
-
-      // Set target explosion offsets as CSS variables
-      const angle = (i / count) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
-      const distance = Math.random() * 65 + 30;
-      const tx = Math.cos(angle) * distance;
-      const ty = Math.sin(angle) * distance;
-
-      mote.style.setProperty('--tx', `${tx}px`);
-      mote.style.setProperty('--ty', `${ty}px`);
-      
-      // Randomize background palette matching
-      const colors = ['#C4735A', '#E8A898', '#1A1410'];
-      mote.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-      document.body.appendChild(mote);
-      
-      // Remove mote once animation completes
-      setTimeout(() => mote.remove(), 750);
     }
   });
 
