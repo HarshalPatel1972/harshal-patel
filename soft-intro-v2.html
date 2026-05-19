@@ -38,13 +38,13 @@
     transform: scale(1.06);
     animation: imgReveal 2s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
   }
-  /* paper-wash radial gradient over image to blend to edges */
+  /* paper-wash radial gradient over image to blend to edges full page */
   .img-bleed::before {
     content:''; position:absolute; inset:0; z-index:1;
     background: radial-gradient(
       circle at center,
-      rgba(242,234,224,0.3) 0%,
-      rgba(242,234,224,0.75) 50%,
+      rgba(242,234,224,0.2) 0%,
+      rgba(242,234,224,0.7) 45%,
       var(--paper) 100%
     );
   }
