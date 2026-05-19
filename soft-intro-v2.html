@@ -133,19 +133,6 @@
     position: relative;
     display: inline-block;
     filter: url(#chrome-filter);
-    background: linear-gradient(
-      180deg, 
-      #9f1239 0%,   
-      #dc2626 35%,  
-      #f8fafc 48%,  
-      #450a0a 52%,  
-      #7f1d1d 65%,  
-      #9f1239 100%  
-    );
-    background-size: 100% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shineSweep 15s ease-in-out infinite;
   }
 
   .chrome-text::before,
@@ -167,7 +154,7 @@
   }
 
   .chrome-text::before {
-    color: #e11d48;
+    color: var(--rose);
     transform: translate(1px, 1px);
     filter: blur(2px);
     opacity: 0.25;
@@ -175,10 +162,10 @@
   }
 
   .chrome-text::after {
-    color: #1e1b4b;
+    color: var(--ink);
     transform: translate(-1px, -1px);
     filter: blur(2px);
-    opacity: 0.25;
+    opacity: 0.15;
     animation: aberration 0.5s infinite reverse;
   }
 
