@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Intro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&family=Outfit:wght@100;200;300&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg-abyss:      #08080E;
+    --bg-void:       #111118;
+    --bg-obsidian:   #1A1A27;
+    --bg-graphite:   #242436;
+    --bg-storm:      #2E2E45;
+    
+    --text-stellar:  #F2F2FA;
+    --text-silver:   #C4C4D8;
+    --text-twilight: #7A7A96;
+    
+    --accent-iris:   #8B5CF6;
+    --accent-petal:  #F472B6;
+    --accent-arctic: #06B6D4;
+    --accent-ember:  #F97316;
+    --accent-surge:  #10B981;
+    --accent-crimson:#EF4444;
+    
+    --glow-aurora:   #C084FC;
+    --glow-glacial:  #67E8F9;
+  }
+
+  html, body { width:100%; height:100%; overflow:hidden; background:var(--bg-abyss); }
+
+  /* ── IMAGE — washed bleed, not a portrait ─────────────── */
+  .img-bleed {
+    position:fixed;
+    right: -4%;
+    top: -4%;
+    width: 68%;
+    height: 108%;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .img-bleed img {
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:40% 18%;
+    filter: grayscale(0.5) contrast(1.15) brightness(0.4) sepia(0.05);
+    opacity: 0;
+    transform: scale(1.06);
+    animation: imgReveal 2s cubic-bezier(0.4,0,0.2,1) 0.2s forwards;
+  }
+  /* paper-wash gradient over image — left fade */
+  .img-bleed::before {
+    content:''; position:absolute; inset:0; z-index:1;
+    background: linear-gradient(
+      105deg,
+      var(--bg-abyss) 0%,
+      var(--bg-abyss) 22%,
+      rgba(8,8,14,0.85) 40%,
+      rgba(8,8,14,0.3) 65%,
+      transparent 100%
+    );
+  }
+  /* top & bottom paper fade */
+  .img-bleed::after {
+    content:''; position:absolute; inset:0; z-index:1;
+    background:
+      linear-gradient(180deg, var(--bg-abyss) 0%, transparent 14%, transparent 82%, var(--bg-abyss) 100%);
+  }
+
+  /* ── DECORATIVE BIG " ─────────────────────────────────── */
+  .big-quote {
+    position:fixed;
+    top: -20px; left: 32px;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(220px, 28vw, 320px);
+    font-style: italic;
+    line-height:1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(139,92,246,0.15); /* Iris accent-based stroke */
+    z-index: 1;
+    pointer-events:none;
+    user-select:none;
+    opacity:0;
+    animation: fadeOnly 1.4s ease 0.5s forwards;
+  }
+
+  /* ── STAGE ────────────────────────────────────────────── */
+  .stage {
+    position:fixed; inset:0; z-index:2;
+    display:flex;
+    align-items:center;
+  }
+
+  /* ── LEFT VERTICAL NAME ───────────────────────────────── */
+  .name-vert {
+    position:fixed;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--accent-iris);
+    opacity:0;
+    white-space: nowrap;
+    animation: fadeOnly 1s ease 2.2s forwards;
+    z-index:10;
+  }
+
+  /* small rose dot accent beside name */
+  .name-dot {
+    position:fixed;
+    left: 17px;
+    top: calc(50% + 52px);
+    width: 4px; height: 4px;
+    border-radius:50%;
+    background: var(--accent-petal);
+    opacity:0;
+    animation: fadeOnly 1s ease 2.5s forwards;
+    z-index:10;
+  }
+
+  /* ── QUOTE BLOCK — deconstructed ─────────────────────── */
+  .quote-field {
+    position:relative;
+    left: 8%;
+    display:flex;
+    flex-direction:column;
+    gap: 4px;
+    z-index:5;
+  }
+
+  /* each line is offset + arrives from its own direction */
+  .ql {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-stellar);
+    line-height: 1.15;
+    opacity:0;
+    white-space: nowrap;
+  }
+  .ql-1 {
+    font-size: clamp(28px, 4.2vw, 52px);
+    margin-left: 0px;
+    transform: translateX(-40px) rotate(-0.6deg);
+    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 0.7s forwards;
+  }
+  .ql-2 {
+    font-size: clamp(28px, 4.2vw, 52px);
+    margin-left: clamp(32px, 4vw, 64px);
+    transform: translateX(-50px) rotate(0.4deg);
+    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 0.92s forwards;
+  }
+  .ql-3 {
+    font-size: clamp(28px, 4.2vw, 52px);
+    margin-left: clamp(12px, 2vw, 28px);
+    transform: translateX(-36px) rotate(-0.3deg);
+    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 1.12s forwards;
+  }
+  .ql-4 {
+    font-size: clamp(28px, 4.2vw, 52px);
+    margin-left: clamp(52px, 6vw, 96px);
+    transform: translateX(-44px) rotate(0.5deg);
+    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 1.32s forwards;
+  }
+  .ql-5 {
+    font-size: clamp(28px, 4.2vw, 52px);
+    margin-left: clamp(20px, 3vw, 44px);
+    transform: translateX(-30px) rotate(-0.4deg);
+    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 1.5s forwards;
+  }
+
+  /* highlight accent on key word */
+  .ql em {
+    font-style: italic;
+    color: var(--accent-petal);
+    position:relative;
+  }
+  .ql em::after {
+    content:'';
+    position:absolute;
+    bottom:2px; left:0; right:0;
+    height:1.5px;
+    background: var(--accent-iris);
+    transform:scaleX(0);
+    transform-origin:left;
+    animation: underlineIn 0.6s ease 2s forwards;
+  }
+
+  /* ── THIN RULE + INLINE NAME ──────────────────────────── */
+  .attribution {
+    margin-top: 32px;
+    display:flex;
+    align-items:center;
+    gap: 16px;
+    opacity:0;
+    transform: translateY(10px);
+    animation: riseIn 0.8s ease 1.9s forwards;
+  }
+  .attr-line {
+    width: 36px; height: 1px;
+    background: var(--accent-iris);
+    opacity:0.6;
+    flex-shrink:0;
+  }
+  .attr-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-petal);
+  }
+
+  /* ── BOTTOM PROGRESS LINE ─────────────────────────────── */
+  .progress {
+    position:fixed;
+    bottom:0; left:0;
+    height:2px;
+    background: linear-gradient(90deg, var(--accent-iris), var(--accent-petal));
+    width:0%;
+    z-index:20;
+    animation: prog 2.8s cubic-bezier(0.4,0,0.6,1) 0.1s forwards;
+  }
+
+  /* ── SKIP ─────────────────────────────────────────────── */
+  .skip {
+    position:fixed; bottom:20px; right:28px; z-index:30;
+    font-family:'Outfit',sans-serif; font-size:9px;
+    letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--text-twilight); cursor:pointer;
+    opacity:0; animation:fadeOnly 1s ease 2.5s forwards;
+    transition:color 0.3s;
+  }
+  .skip:hover { color:var(--accent-petal); }
+
+  /* ── FLOATING SOFT CIRCLES (atmosphere) ──────────────── */
+  .orb {
+    position:fixed; border-radius:50%;
+    pointer-events:none; z-index:1;
+    animation:orbFloat 8s ease-in-out infinite;
+  }
+  .orb-1 { 
+    width:380px;height:380px; top:-80px; left:30%; 
+    background: radial-gradient(circle, rgba(192,132,252,0.08) 0%, transparent 70%); /* Aurora-based */
+    animation-delay:0s;   opacity:0.6; 
+  }
+  .orb-2 { 
+    width:260px;height:260px; bottom:-60px;left:14%; 
+    background: radial-gradient(circle, rgba(103,232,249,0.08) 0%, transparent 70%); /* Glacial-based */
+    animation-delay:-3s; opacity:0.5; 
+  }
+  .orb-3 { 
+    width:180px;height:180px; top:55%; right:30%; 
+    background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%); /* Iris-based */
+    animation-delay:-5s; opacity:0.4; 
+  }
+
+  /* ── KEYFRAMES ────────────────────────────────────────── */
+  @keyframes imgReveal {
+    to { opacity:1; transform:scale(1); }
+  }
+  @keyframes fadeOnly {
+    to { opacity:1; }
+  }
+  @keyframes lineIn {
+    to { opacity:1; transform:translateX(0) rotate(var(--r,0deg)); }
+  }
+  @keyframes riseIn {
+    to { opacity:1; transform:translateY(0); }
+  }
+  @keyframes underlineIn {
+    to { transform:scaleX(1); }
+  }
+  @keyframes prog {
+    0%   { width:0%; }   60%  { width:70%; }  100% { width:100%; }
+  }
+  @keyframes orbFloat {
+    0%,100% { transform:translateY(0); }
+    50%     { transform:translateY(-18px); }
+  }
+  @keyframes sparkleFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.15; }
+    50% { transform: translateY(-40px) scale(1.4); opacity: 0.65; }
+  }
+
+  /* ── EXIT ─────────────────────────────────────────────── */
+  .out { animation: exitFade 0.65s ease forwards !important; }
+  @keyframes exitFade {
+    to { opacity:0; transform:translateY(-18px); }
+  }
+
+  /* ── SMOOTH PARALLAX SUPPORT ── */
+  .stage, .img-bleed {
+    transition: transform 0.45s cubic-bezier(0.1, 0.8, 0.3, 1);
+    will-change: transform;
+  }
+</style>
+</head>
+<body>
+
+<!-- atmospheric orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- washed image bleed from right -->
+<div class="img-bleed" id="bleed">
+  <img src="/mnt/user-data/uploads/1779211607142_image.png" alt=""/>
+</div>
+
+<!-- decorative oversized quote mark -->
+<div class="big-quote">"</div>
+
+<!-- vertical name (left rail) -->
+<div class="name-vert">Toji Fushiguro</div>
+<div class="name-dot"></div>
+
+<!-- main stage -->
+<div class="stage" id="stage">
+  <div class="quote-field">
+
+    <span class="ql ql-1">Talent is just</span>
+    <span class="ql ql-2">the starting</span>
+    <span class="ql ql-3"><em>point.</em></span>
+    <span class="ql ql-4">Will is what</span>
+    <span class="ql ql-5">finishes it.</span>
+
+    <div class="attribution">
+      <div class="attr-line"></div>
+      <span class="attr-name">Toji Fushiguro</span>
+    </div>
+  </div>
+</div>
+
+<div class="progress"></div>
+<div class="skip" id="skip">skip ↗</div>
+
+<script>
+  const dismiss = () => {
+    ['stage','bleed'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('out');
+    });
+  };
+  const t = setTimeout(dismiss, 3800);
+  document.getElementById('stage').addEventListener('click', () => { clearTimeout(t); dismiss(); });
+  document.getElementById('skip').addEventListener('click',  () => { clearTimeout(t); dismiss(); });
+
+  // Parallax Depth Effect
+  document.addEventListener('mousemove', (e) => {
+    const x = (window.innerWidth / 2 - e.clientX) / 45;
+    const y = (window.innerHeight / 2 - e.clientY) / 45;
+    
+    const stage = document.getElementById('stage');
+    const bleed = document.getElementById('bleed');
+    
+    if (stage) {
+      stage.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+    if (bleed) {
+      bleed.style.transform = `translate3d(${-x * 0.4}px, ${-y * 0.4}px, 0) scale(1.02)`;
+    }
+  });
+
+  // Generate subtle glowing sparkles (Lantern color)
+  const createSparkles = () => {
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.inset = '0';
+    container.style.pointerEvents = 'none';
+    container.style.zIndex = '1';
+    document.body.appendChild(container);
+
+    for (let i = 0; i < 20; i++) {
+      const sparkle = document.createElement('div');
+      const size = Math.random() * 3 + 1.5;
+      sparkle.style.width = `${size}px`;
+      sparkle.style.height = `${size}px`;
+      sparkle.style.background = '#FDE68A'; // Lantern color
+      sparkle.style.borderRadius = '50%';
+      sparkle.style.position = 'absolute';
+      sparkle.style.top = `${Math.random() * 100}%`;
+      sparkle.style.left = `${Math.random() * 100}%`;
+      sparkle.style.opacity = Math.random() * 0.45 + 0.15;
+      sparkle.style.boxShadow = '0 0 10px #FDE68A';
+      sparkle.style.animation = `sparkleFloat ${Math.random() * 7 + 5}s ease-in-out infinite`;
+      sparkle.style.animationDelay = `${Math.random() * -5}s`;
+      container.appendChild(sparkle);
+    }
+  };
+  
+  window.addEventListener('DOMContentLoaded', createSparkles);
+</script>
+
+</body>
+</html>
