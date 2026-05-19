@@ -253,6 +253,18 @@
     50%     { transform:translateY(-18px); }
   }
 
+  /* ambient dust particles floating animation */
+  @keyframes sparkleFloat {
+    0%, 100% { transform: translateY(0) translateX(0) scale(1); }
+    50% { transform: translateY(-60px) translateX(25px) scale(1.12); }
+  }
+
+  /* ── SMOOTH PARALLAX SUPPORT ── */
+  .stage, .img-bleed {
+    transition: transform 0.45s cubic-bezier(0.1, 0.8, 0.3, 1);
+    will-change: transform;
+  }
+
   /* ── EXIT ─────────────────────────────────────────────── */
   .out { animation: exitFade 0.65s ease forwards !important; }
   @keyframes exitFade {
@@ -300,12 +312,71 @@
 <div class="skip" id="skip">skip ↗</div>
 
 <script>
+  // Dismiss/Skip handler
   const dismiss = () => {
-    ['stage','bleed'].forEach(id => document.getElementById(id).classList.add('out'));
+    ['stage','bleed'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('out');
+    });
   };
-  const t = setTimeout(dismiss, 3400);
-  document.getElementById('stage').addEventListener('click', () => { clearTimeout(t); dismiss(); });
-  document.getElementById('skip').addEventListener('click',  () => { clearTimeout(t); dismiss(); });
+  const t = setTimeout(dismiss, 5000); // Extended slightly so the user can enjoy the interactive elements
+  
+  const stageEl = document.getElementById('stage');
+  const skipEl = document.getElementById('skip');
+  
+  if (stageEl) {
+    stageEl.addEventListener('click', () => { clearTimeout(t); dismiss(); });
+  }
+  if (skipEl) {
+    skipEl.addEventListener('click',  () => { clearTimeout(t); dismiss(); });
+  }
+
+  // Interactive 3D Parallax Movement
+  document.addEventListener('mousemove', (e) => {
+    const x = (window.innerWidth / 2 - e.clientX) / 45;
+    const y = (window.innerHeight / 2 - e.clientY) / 45;
+    
+    const bleed = document.getElementById('bleed');
+    const stage = document.getElementById('stage');
+    
+    if (bleed) {
+      bleed.style.transform = `translate3d(${-x * 0.5}px, ${-y * 0.5}px, 0) scale(1.02)`;
+    }
+    if (stage) {
+      stage.style.transform = `translate3d(${x * 0.8}px, ${y * 0.8}px, 0)`;
+    }
+  });
+
+  // Ambient floating ink/sparkle motes
+  const createSparkles = () => {
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.inset = '0';
+    container.style.pointerEvents = 'none';
+    container.style.zIndex = '1';
+    document.body.appendChild(container);
+
+    const colors = ['#C4735A', '#E8A898', '#1A1410']; // Theme-matching color palette
+    for (let i = 0; i < 24; i++) {
+      const sparkle = document.createElement('div');
+      const size = Math.random() * 4 + 1.5;
+      sparkle.style.width = `${size}px`;
+      sparkle.style.height = `${size}px`;
+      sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      sparkle.style.borderRadius = '50%';
+      sparkle.style.position = 'absolute';
+      sparkle.style.top = `${Math.random() * 100}%`;
+      sparkle.style.left = `${Math.random() * 100}%`;
+      sparkle.style.opacity = Math.random() * 0.22 + 0.05;
+      sparkle.style.filter = 'blur(0.5px)';
+      sparkle.style.animation = `sparkleFloat ${Math.random() * 10 + 8}s ease-in-out infinite`;
+      sparkle.style.animationDelay = `${Math.random() * -10}s`;
+      container.appendChild(sparkle);
+    }
+  };
+
+  // Initialize particles
+  createSparkles();
 </script>
 
 </body>
