@@ -1,0 +1,4 @@
+## 2024-06-25 - React Hooks Purity and Math.random()
+
+**Learning:** When generating configuration arrays or complex state structures inside functional components, using `Math.random()` triggers ESLint errors (`react-hooks/purity`) because it violates the rule that components and their hooks must be pure and idempotent. `Math.random()` produces unstable results that update unpredictably when the component re-renders.
+**Action:** To resolve these purity errors while maintaining the intended visual randomness per component mount, the array generation should be moved out of the `useMemo` block and executed *once* either inside a `useState` initializer or wrapped in a `useRef`. For static arrays that do *not* require unique randomness per mount (e.g. standard grid lines), hoist them entirely outside the component body.

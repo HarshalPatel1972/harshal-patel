@@ -1,5 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
 
+// ⚡ Bolt: Hoisted static blueprint grid to prevent recreation during renders
+// This array contains NO random logic, making it safe to pull out of the component cycle.
+const STATIC_BLUEPRINT_GRID = Array.from({ length: 20 }).map((_, i) => i);
+
 const SystemHeartbeat: React.FC = () => {
   const [isOverlayActive, setIsOverlayActive] = useState(false);
 
@@ -19,7 +23,13 @@ const SystemHeartbeat: React.FC = () => {
   }, []);
 
   // Generate background "Nerve Network" lines
-  const nerves = useMemo(() => {
+  // ⚡ Bolt: Retained inside component using useMemo to preserve fresh random layouts
+  // upon remount, which is intended visual behavior. Hoisting to module scope would
+  // break this by freezing the randomness for the entire application lifecycle.
+  // ⚡ Bolt: Moved array generation to useState initializers to satisfy React Hook
+  // purity rules (avoiding Math.random inside render/useMemo) while maintaining
+  // fresh random layouts upon remount.
+  const [nerves] = React.useState(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
       x1: Math.random() * 1000,
       y1: Math.random() * 1000,
@@ -28,7 +38,7 @@ const SystemHeartbeat: React.FC = () => {
       duration: 5 + Math.random() * 5,
       delay: Math.random() * -5
     }));
-  }, []);
+  });
 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
@@ -60,7 +70,7 @@ const SystemHeartbeat: React.FC = () => {
 
         {/* The Underlying Blueprint Grid (White - only visible during pulse) */}
         <g className="opacity-10">
-          {Array.from({ length: 20 }).map((_, i) => (
+          {STATIC_BLUEPRINT_GRID.map((i) => (
             <React.Fragment key={i}>
               <line x1={i * 50} y1="0" x2={i * 50} y2="1000" stroke="white" strokeWidth="0.5" />
               <line x1="0" y1={i * 50} x2="1000" y2={i * 50} stroke="white" strokeWidth="0.5" />

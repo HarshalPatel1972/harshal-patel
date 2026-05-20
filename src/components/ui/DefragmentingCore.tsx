@@ -2,7 +2,13 @@ import React, { useMemo } from 'react';
 
 const DefragmentingCore: React.FC = () => {
   // Generate 150 chaotic shards for more density
-  const shards = useMemo(() => {
+  // ⚡ Bolt: Retained inside component using useMemo to preserve fresh random layouts
+  // upon remount, which is intended visual behavior. Hoisting to module scope would
+  // break this by freezing the randomness for the entire application lifecycle.
+  // ⚡ Bolt: Moved array generation to useState initializers to satisfy React Hook
+  // purity rules (avoiding Math.random inside render/useMemo) while maintaining
+  // fresh random layouts upon remount.
+  const [shards] = React.useState(() => {
     return Array.from({ length: 150 }).map((_, i) => {
       const angle = Math.random() * Math.PI * 2;
       // Increased distance to cover much larger area of the viewport
@@ -18,7 +24,7 @@ const DefragmentingCore: React.FC = () => {
       
       return { angle, distance, size, duration, delay, points: `${p1} ${p2} ${p3}`, id: i };
     });
-  }, []);
+  });
 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden opacity-75">
