@@ -129,6 +129,17 @@
     z-index:5;
   }
 
+  #quote-canvas {
+    display: block;
+    width: 900px;
+    max-width: 90vw;
+    height: 160px;
+    z-index: 6;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeOnly 1.2s ease 0.6s forwards;
+  }
+
   /* each line is centered + arrives from alternate directions */
   .ql {
     font-family: 'Fraunces', serif;
@@ -401,8 +412,11 @@
 <div class="stage" id="stage">
   <div class="quote-field">
     <div class="quote-halo"></div>
-    <span class="ql ql-1 chrome-text" data-text="Talent is just the starting point.">Talent is just the starting <em>point.</em></span>
-    <span class="ql ql-2 chrome-text" data-text="Will is what finishes it.">Will is what finishes it.</span>
+    <canvas id="quote-canvas" width="900" height="160"></canvas>
+    <div class="quote-text-hidden" style="position: absolute; opacity: 0; pointer-events: none; height: 0; overflow: hidden;">
+      <span class="ql ql-1 chrome-text" data-text="Talent is just the starting point.">Talent is just the starting <em>point.</em></span>
+      <span class="ql ql-2 chrome-text" data-text="Will is what finishes it.">Will is what finishes it.</span>
+    </div>
 
     <div class="attribution">
       <div class="attr-line"></div>
@@ -480,6 +494,192 @@
   };
 
   createSparkles();
+
+  // Interactive Physics Particle Canvas for Quote Text
+  const initCanvasParticles = () => {
+    const canvas = document.getElementById('quote-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    const offscreen = document.createElement('canvas');
+    const offCtx = offscreen.getContext('2d');
+    offscreen.width = 900;
+    offscreen.height = 160;
+    
+    // Draw text to offscreen canvas
+    offCtx.fillStyle = '#ffffff';
+    offCtx.textAlign = 'left';
+    offCtx.textBaseline = 'middle';
+    
+    // We want "Fraunces" normal weight
+    offCtx.font = 'normal 400 34px "Fraunces", serif';
+    
+    const text1 = "Talent is just the starting ";
+    const text2 = "point.";
+    const w1 = offCtx.measureText(text1).width;
+    const w2 = offCtx.measureText(text2).width;
+    const totalW = w1 + w2;
+    
+    const startX = 450 - totalW / 2;
+    offCtx.fillText(text1, startX, 48);
+    
+    // Accent text
+    offCtx.fillStyle = '#feffff';
+    offCtx.fillText(text2, startX + w1, 48);
+    
+    // Accent underline
+    offCtx.fillRect(startX + w1, 70, w2, 2);
+    
+    // Line 2
+    offCtx.fillStyle = '#ffffff';
+    offCtx.textAlign = 'center';
+    offCtx.fillText("Will is what finishes it.", 450, 108);
+    
+    // Scan pixels
+    const imgData = offCtx.getImageData(0, 0, 900, 160);
+    const data = imgData.data;
+    const particles = [];
+    const step = 3;
+    
+    for (let y = 0; y < 160; y += step) {
+      for (let x = 0; x < 900; x += step) {
+        const idx = (y * 900 + x) * 4;
+        const r = data[idx];
+        const g = data[idx+1];
+        const b = data[idx+2];
+        const a = data[idx+3];
+        
+        if (a > 120) {
+          const isAccent = (r === 254 && g === 255 && b === 255);
+          particles.push({
+            x: Math.random() * 900,
+            y: Math.random() * 160,
+            originX: x,
+            originY: y,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.5) * 4,
+            isAccent: isAccent,
+            size: Math.random() * 1.2 + 1.0,
+            density: Math.random() * 18 + 8
+          });
+        }
+      }
+    }
+    
+    let mouse = { x: -1000, y: -1000, active: false };
+    
+    window.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+      mouse.y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+      mouse.active = true;
+    });
+    
+    window.addEventListener('mouseleave', () => {
+      mouse.active = false;
+    });
+    
+    // Support touch devices
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = ((e.touches[0].clientX - rect.left) / rect.width) * canvas.width;
+        mouse.y = ((e.touches[0].clientY - rect.top) / rect.height) * canvas.height;
+        mouse.active = true;
+      }
+    }, { passive: true });
+    window.addEventListener('touchend', () => {
+      mouse.active = false;
+    });
+    
+    const stiffness = 0.09;
+    const damping = 0.84;
+    const repulsionRadius = 75;
+    const repulsionForce = 60;
+    
+    let active = true;
+    
+    const animate = () => {
+      if (!active) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        
+        // Return to origin spring force
+        let dx = p.originX - p.x;
+        let dy = p.originY - p.y;
+        p.vx += dx * stiffness;
+        p.vy += dy * stiffness;
+        
+        // Mouse interaction
+        if (mouse.active) {
+          let mdx = p.x - mouse.x;
+          let mdy = p.y - mouse.y;
+          let distSq = mdx * mdx + mdy * mdy;
+          let dist = Math.sqrt(distSq);
+          
+          if (dist < repulsionRadius) {
+            let force = (repulsionRadius - dist) / repulsionRadius;
+            let angle = Math.atan2(mdy, mdx);
+            
+            p.vx += Math.cos(angle) * force * repulsionForce * (1 / p.density) * 10;
+            p.vy += Math.sin(angle) * force * repulsionForce * (1 / p.density) * 10;
+          }
+        }
+        
+        // Brownian noise (shimmer)
+        p.vx += (Math.random() - 0.5) * 0.15;
+        p.vy += (Math.random() - 0.5) * 0.15;
+        
+        p.vx *= damping;
+        p.vy *= damping;
+        
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        // Draw particle
+        if (p.isAccent) {
+          ctx.fillStyle = '#F472B6'; // Petal Flame
+        } else {
+          // Iris to Arctic Pulse color scheme based on origin x position
+          const ratio = p.originX / canvas.width;
+          if (ratio < 0.42) {
+            ctx.fillStyle = '#8B5CF6'; // Iris
+          } else if (ratio < 0.72) {
+            ctx.fillStyle = '#F2F2FA'; // Stellar White
+          } else {
+            ctx.fillStyle = '#06B6D4'; // Arctic Pulse
+          }
+        }
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      
+      requestAnimationFrame(animate);
+    };
+    
+    // Start animation loop
+    animate();
+    
+    // Allow clean dynamic scale or resize
+    window.addEventListener('resize', () => {
+      mouse.active = false;
+    });
+  };
+
+  // Run when fonts are fully loaded to ensure precise layout measurements
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      setTimeout(initCanvasParticles, 100);
+    });
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(initCanvasParticles, 100);
+    });
+  }
 </script>
 
 </body>
