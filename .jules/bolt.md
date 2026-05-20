@@ -1,0 +1,3 @@
+## 2024-05-14 - [Layout Thrashing in React Scroll Listeners]
+**Learning:** Reading layout properties (`offsetTop`, `offsetHeight`) and writing styles synchronously inside a high-frequency `scroll` event listener causes severe layout thrashing, as it forces the browser to recalculate layouts unnecessarily on every tick.
+**Action:** Always cache static or semi-static layout dimensions (like `offsetTop` and `offsetHeight`) during component initialization and `window.resize` events. Wrap style DOM mutations in a `requestAnimationFrame` loop protected by a `ticking` boolean to throttle updates to the display refresh rate.
