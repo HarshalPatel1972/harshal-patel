@@ -148,6 +148,23 @@ body::before {
   transition: opacity 0.5s ease-out;
 }
 
+/* ─── BLUEPRINT GRID TEXTURES ─── */
+.blueprint-grid-warm {
+  background-color: var(--studio-warm);
+  background-image: 
+    linear-gradient(rgba(138, 127, 114, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 127, 114, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.blueprint-grid-dark {
+  background-color: var(--dark-walnut);
+  background-image: 
+    linear-gradient(rgba(74, 127, 165, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 127, 165, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
 /* GLOBAL SLEEP MODE - Zero-Lag Purge 💤 */
 .is-overlay-active .halftone-glow {
   display: none !important;
