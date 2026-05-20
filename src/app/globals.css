@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 /* ═══════════════════════════════════════════
    🩸 MAPPA CINEMATIC BRUTALISM
@@ -29,6 +30,12 @@
   --sumi-ink:        #1A1714;   /* body text on light sections */
   --muted-label:     #8A7F72;   /* captions, subtext */
   --critical-red:    #D91111;   /* ONLY for the marquee notice bar */
+
+  /* V2 Font Family CSS Variables */
+  --font-big-shoulders: 'Big Shoulders Display', sans-serif;
+  --font-dm-serif:      'DM Serif Display', serif;
+  --font-dm-sans:       'DM Sans', sans-serif;
+  --font-jetbrains-mono:'JetBrains Mono', monospace;
 }
 
 @theme inline {
