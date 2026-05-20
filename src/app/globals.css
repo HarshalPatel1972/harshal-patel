@@ -16,20 +16,50 @@
   --accent-cursed-rgb: 14, 224, 195;
   --panel-border: rgba(232, 232, 230, 0.15);
   --radius: 0px; /* Brutalist sharp edges */
+
+  /* V2 Redesign — Studio Colors */
+  --studio-warm:     #F5EDE0;   /* warm wall / light sections */
+  --aged-paper:      #EDE4D3;   /* card / surface backgrounds */
+  --dark-walnut:     #0F0D0A;   /* deep bg, same depth as v1 */
+  --studio-mid:      #1C1814;   /* slightly lifted dark */
+  --forge-orange:    #E8703A;   /* PRIMARY accent — replaces Blood Red */
+  --blueprint-blue:  #4A7FA5;   /* SECONDARY accent — cool balance */
+  --copper:          #C4843A;   /* metallic warmth */
+  --chalk:           #F0EDE8;   /* annotation / overlay text */
+  --sumi-ink:        #1A1714;   /* body text on light sections */
+  --muted-label:     #8A7F72;   /* captions, subtext */
+  --critical-red:    #D91111;   /* ONLY for the marquee notice bar */
 }
 
 @theme inline {
-  --font-serif: var(--font-cirka);
+  --font-serif: var(--font-dm-serif);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
-  --font-sans: var(--font-season);
+  --font-sans: var(--font-dm-sans);
   --font-cirka: var(--font-cirka);
   --font-season: var(--font-season);
-  --font-mono: var(--font-season);
-  --font-display: var(--font-cirka);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-big-shoulders);
   --font-hindi: var(--font-season);
   --font-luna: var(--font-luna);
   --font-victor: var(--font-victor);
+
+  --font-big-shoulders: var(--font-big-shoulders);
+  --font-dm-serif: var(--font-dm-serif);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-jetbrains-mono: var(--font-jetbrains-mono);
+
+  --color-studio-warm: var(--studio-warm);
+  --color-aged-paper: var(--aged-paper);
+  --color-dark-walnut: var(--dark-walnut);
+  --color-studio-mid: var(--studio-mid);
+  --color-forge-orange: var(--forge-orange);
+  --color-blueprint-blue: var(--blueprint-blue);
+  --color-copper: var(--copper);
+  --color-chalk: var(--chalk);
+  --color-sumi-ink: var(--sumi-ink);
+  --color-muted-label: var(--muted-label);
+  --color-critical-red: var(--critical-red);
 }
 
 /* ─── BASE ─── */
