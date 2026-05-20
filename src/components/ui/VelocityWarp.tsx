@@ -38,7 +38,7 @@ export function VelocityWarp() {
               xNorm: Math.random(), // 0 to 1
               y: Math.random() * window.innerHeight,
               length: 100 + Math.random() * 250, // Cinematic length
-              speed: 10 + Math.random() * 20, // Cinematic speed
+              speed: (10 + Math.random() * 20) * 0.8, // Cinematic speed (slowed 20%)
               color: colors[Math.floor(Math.random() * colors.length)]
           });
       }

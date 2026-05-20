@@ -298,7 +298,7 @@ body::before {
 .animate-marquee {
   display: inline-flex;
   white-space: nowrap;
-  animation: marquee 30s linear infinite;
+  animation: marquee 36s linear infinite;
   padding-left: 2rem;
 }
 
