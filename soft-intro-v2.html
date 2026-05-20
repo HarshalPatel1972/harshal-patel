@@ -321,9 +321,13 @@
   }
 
   /* ambient dust particles floating animation */
-  @keyframes sparkleFloat {
+  @keyframes sparkleFloat-1 {
     0%, 100% { transform: translateY(0) translateX(0) scale(1); }
-    50% { transform: translateY(-60px) translateX(25px) scale(1.12); }
+    50% { transform: translateY(-80px) translateX(30px) scale(1.15); }
+  }
+  @keyframes sparkleFloat-2 {
+    0%, 100% { transform: translateY(0) translateX(0) scale(1.15); }
+    50% { transform: translateY(-60px) translateX(-30px) scale(0.85); }
   }
 
   /* ── SMOOTH PARALLAX SUPPORT ── */
@@ -468,7 +472,8 @@
       sparkle.style.left = `${Math.random() * 100}%`;
       sparkle.style.opacity = Math.random() * 0.22 + 0.05;
       sparkle.style.filter = 'blur(0.5px)';
-      sparkle.style.animation = `sparkleFloat ${Math.random() * 10 + 8}s ease-in-out infinite`;
+      const animName = Math.random() > 0.5 ? 'sparkleFloat-1' : 'sparkleFloat-2';
+      sparkle.style.animation = `${animName} ${Math.random() * 10 + 8}s ease-in-out infinite`;
       sparkle.style.animationDelay = `${Math.random() * -10}s`;
       container.appendChild(sparkle);
     }
