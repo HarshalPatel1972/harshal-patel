@@ -318,10 +318,10 @@
 <!-- invisible SVG filter for liquid/chrome displacement -->
 <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
   <filter id="chrome-filter">
-    <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" seed="5">
-      <animate attributeName="baseFrequency" dur="10s" values="0.015;0.025;0.015" repeatCount="indefinite" />
+    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="5">
+      <animate attributeName="baseFrequency" dur="8s" values="0.04;0.05;0.04" repeatCount="indefinite" />
     </feTurbulence>
-    <feDisplacementMap in="SourceGraphic" scale="15" />
+    <feDisplacementMap in="SourceGraphic" scale="8" />
   </filter>
 </svg>
 
