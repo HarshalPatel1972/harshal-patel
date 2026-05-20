@@ -87,36 +87,35 @@
     justify-content:center;
   }
 
-  /* ── LEFT VERTICAL NAME ───────────────────────────────── */
-  .name-vert {
-    position:fixed;
-    left: 22px;
-    top: 50%;
-    transform: translateY(-50%) rotate(-90deg);
-    transform-origin: center center;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: 10px;
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
-    color: var(--rose);
-    opacity:0;
-    white-space: nowrap;
-    animation: fadeOnly 1s ease 2.2s forwards;
-    z-index:10;
+  /* ── QUOTE HALO BACKLIGHT ────────────────────────────── */
+  .quote-halo {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, rgba(244, 114, 182, 0.03) 45%, transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    animation: haloReveal 1.6s ease 1s forwards, haloBreathe 8s ease-in-out infinite 2.6s;
   }
 
-  /* small rose dot accent beside name */
-  .name-dot {
-    position:fixed;
-    left: 17px;
-    top: calc(50% + 52px);
-    width: 4px; height: 4px;
-    border-radius:50%;
-    background: var(--rose);
-    opacity:0;
-    animation: fadeOnly 1s ease 2.5s forwards;
-    z-index:10;
+  @keyframes haloReveal {
+    to { opacity: 1; }
+  }
+
+  @keyframes haloBreathe {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.12);
+      opacity: 0.75;
+    }
   }
 
   /* ── QUOTE BLOCK — deconstructed ─────────────────────── */
@@ -397,7 +396,7 @@
 <!-- main stage -->
 <div class="stage" id="stage">
   <div class="quote-field">
-
+    <div class="quote-halo"></div>
     <span class="ql ql-1 chrome-text" data-text="Talent is just the starting point.">Talent is just the starting <em>point.</em></span>
     <span class="ql ql-2 chrome-text" data-text="Will is what finishes it.">Will is what finishes it.</span>
 
