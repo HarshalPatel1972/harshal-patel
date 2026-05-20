@@ -343,7 +343,7 @@ export function Navbar() {
         {showSplash && (
           <div className="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{ left: splashPos.x, top: splashPos.y }}>
             {[0, 1, 2].map((i) => (
-              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '100px', height: '100px', margin: '-50px 0 0 -50px', borderColor: isBallCyan ? 'var(--accent-cursed)' : 'var(--accent-blood)' }} />
+              <div key={i} className="absolute inset-0 rounded-full border-2 animate-ping" style={{ animationDuration: '1s', animationDelay: `${i * 0.2}s`, width: '100px', height: '100px', margin: '-50px 0 0 -50px', borderColor: isBallCyan ? 'var(--accent-cursed)' : 'var(--forge-orange)' }} />
             ))}
           </div>
         )}
@@ -368,7 +368,7 @@ export function Navbar() {
         )}
       </div>
 
-      <nav ref={navbarRef} className="fixed right-0 top-0 h-[100dvh] z-[100] w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 touch-none shrink-0" style={{ userSelect: 'none' }}>
+      <nav ref={navbarRef} className="fixed right-0 top-0 h-[100dvh] z-[100] w-12 md:w-16 bg-[var(--aged-paper)] border-l border-[var(--muted-label)]/20 flex flex-col justify-between items-center py-4 md:py-8 touch-none shrink-0" style={{ userSelect: 'none' }}>
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px]">
             <button 
@@ -378,30 +378,26 @@ export function Navbar() {
               onTouchStart={handleLogoTouchStart} 
               onTouchEnd={handleLogoTouchEnd} 
               onClick={handleLogoClick}
-              className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation"
+              className="w-9 h-9 md:w-11 md:h-11 bg-[var(--sumi-ink)] flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 group overflow-hidden touch-manipulation"
             >
                 <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority={true} sizes="44px" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
             </button>
           </div>
         </div>
         <div className="relative flex-1 w-full my-6 flex flex-col items-center justify-between">
-          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--bg-ink)]/10" />
-          <div className="absolute inset-0 flex flex-col justify-between py-[10%] opacity-40 pointer-events-none">
-             {Array.from({ length: 20 }).map((_, i) => (
-                <div key={i} className="w-full flex justify-start pl-2">
-                  <div className="h-[1px] bg-[var(--bg-ink)] w-3" />
-                </div>
-             ))}
-          </div>
+          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] -translate-x-1/2 bg-[var(--muted-label)]/25" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-3 -translate-x-1/2 pointer-events-none opacity-30" 
+               style={{
+                 backgroundImage: `
+                   repeating-linear-gradient(to bottom, var(--muted-label) 0px, var(--muted-label) 1px, transparent 1px, transparent 10px),
+                   repeating-linear-gradient(to bottom, var(--muted-label) 0px, var(--muted-label) 2px, transparent 2px, transparent 50px)
+                 `,
+                 backgroundSize: '100% 100%',
+               }} 
+          />
           {dotMode !== 'RELEASED' && (
-            <div className="absolute left-0 right-0 flex items-center justify-center pointer-events-none" style={{ top: `var(--nav-scroll, 0%)`, transform: `translateY(-50%)`, height: `calc(8px + (var(--nav-speed, 0) * 0.4px))`, width: '100%', zIndex: 10 }}>
-              <div className="rounded-full transition-all duration-300" 
-                   style={{ 
-                     width: `calc(8px - (var(--nav-speed, 0) * 0.04px))`, 
-                     height: '100%', 
-                     backgroundColor: isBallCyan ? 'var(--accent-cursed)' : 'var(--accent-blood)', 
-                     boxShadow: isBallCyan ? '0 0 15px rgba(var(--accent-cursed-rgb), 0.8)' : '0 0 15px rgba(var(--accent-blood-rgb), 0.8)' 
-                   }} />
+            <div className="absolute left-0 right-0 flex items-center justify-center pointer-events-none transition-all duration-75" style={{ top: `var(--nav-scroll, 0%)`, transform: `translateY(-50%)`, zIndex: 10 }}>
+              <span className="text-[var(--forge-orange)] font-mono text-[10px] font-bold translate-x-[4px] select-none">◄──</span>
             </div>
           )}
           <div className="flex flex-col justify-between w-full h-full relative z-20 pointer-events-none">
@@ -431,7 +427,7 @@ export function Navbar() {
                   } 
                 }}
               >
-                <span className={`font-display font-bold ${language === 'ja' ? 'text-xl md:text-2xl' : 'text-sm md:text-base'} uppercase tracking-widest transition-all duration-300 ${active === item.id ? "text-[var(--bg-ink)] drop-shadow-[0_0_8px_rgba(5,5,5,0.4)] scale-110" : "text-[var(--bg-ink)]/40 group-hover:text-[var(--bg-ink)]/80"}`} style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>{item.label}</span>
+                <span className={`font-mono text-[9px] uppercase tracking-[0.25em] transition-all duration-300 ${active === item.id ? "text-[var(--forge-orange)] font-black scale-110" : "text-[var(--muted-label)] group-hover:text-[var(--sumi-ink)]"}`} style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>{item.label}</span>
               </a>
             ))}
           </div>
@@ -467,7 +463,7 @@ export function Navbar() {
                   { name: "詛咒 / Ofuda Archive", desc: "Paper charms and hidden exorcist themes." },
                   { name: "Kinetic Dot Interaction", desc: "Physics-based dot dragging and flinging." }
                 ].map((egg, idx) => (
-                  <li key={idx} className="flex flex-col gap-1 border-l-4 border-[var(--accent-blood)] pl-4">
+                  <li key={idx} className="flex flex-col gap-1 border-l-4 border-[var(--forge-orange)] pl-4">
                     <span className="text-xl md:text-2xl font-black font-display uppercase tracking-widest text-black">
                       {egg.name}
                     </span>
@@ -480,7 +476,7 @@ export function Navbar() {
 
               <button 
                 onClick={() => setShowEasterEggs(false)}
-                className="mt-12 w-full py-4 bg-black text-white font-black font-display text-xl uppercase tracking-widest hover:bg-[var(--accent-blood)] transition-colors manga-cut-bl"
+                className="mt-12 w-full py-4 bg-black text-white font-black font-display text-xl uppercase tracking-widest hover:bg-[var(--forge-orange)] transition-colors manga-cut-bl"
               >
                 Close
               </button>
