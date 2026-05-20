@@ -47,6 +47,7 @@
     object-position:center;
     filter: grayscale(100%);
     opacity: 1;
+    animation: kenBurns 28s ease-in-out infinite;
   }
   /* Overlay to soften the contrast/brightness of the image */
   .img-bleed::before {
@@ -313,6 +314,11 @@
   @keyframes orbFloat {
     0%,100% { transform:translateY(0); }
     50%     { transform:translateY(-18px); }
+  }
+
+  @keyframes kenBurns {
+    0%, 100% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.08) translate(-1%, -0.5%); }
   }
 
   /* ambient dust particles floating animation */
