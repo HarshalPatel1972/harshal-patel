@@ -1,0 +1,3 @@
+## 2024-04-24 - Layout Thrashing in Hero Scroll Handler
+**Learning:** The `Hero.tsx` component was reading `offsetTop` and `offsetHeight` synchronously on every scroll event before updating DOM styles. This is a classic layout thrashing anti-pattern because the browser is forced to calculate layout in the middle of a scroll frame when properties are mutated down the line. It also didn't use `requestAnimationFrame` to batch DOM updates, causing jank.
+**Action:** When creating high-frequency scroll handlers, cache static dimensions like `offsetTop` on mount and window resize. Always wrap DOM updates in a `requestAnimationFrame` loop protected by a `ticking` flag to batch reads and writes and avoid frame drops.
