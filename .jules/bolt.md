@@ -1,0 +1,3 @@
+## 2024-05-22 - Prevent Layout Thrashing in Scroll Handlers
+**Learning:** High-frequency event listeners (like scroll) that synchronously read layout properties (`offsetTop`, `offsetHeight`) and immediately update inline styles cause severe layout thrashing (forced synchronous layout recalculations), blocking the main thread and severely dropping FPS.
+**Action:** Always cache static layout dimensions (like section offset and height) on initialization and window `resize` events. For DOM updates triggered by scroll, wrap the mutations inside a `requestAnimationFrame` callback protected by a `ticking` boolean flag to batch reads/writes efficiently.
