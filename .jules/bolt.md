@@ -1,0 +1,3 @@
+## 2024-05-24 - [Avoid layout thrashing on scroll events]
+**Learning:** Calling `offsetTop` or `offsetHeight` synchronously inside a `scroll` event handler can cause severe layout thrashing (forced synchronous layout recalculation) if followed by style mutations (like `style.transform` or `style.setProperty`) on the same frame.
+**Action:** Always cache these layout values during an `updateDimensions` initialization phase and on `resize` events. Only use the cached values inside the `scroll` event handler. Then, batch the style writes inside a `requestAnimationFrame` block guarded by a `ticking` boolean.
