@@ -137,10 +137,32 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
 
 function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean, isAdmin: boolean, onDelete: (id: string) => void }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // OPTIMIZATION: Throttle mousemove events to prevent massive React re-render cascades
+  // on every pixel moved, maxing out main thread. Use RAF ticking mechanism.
+  const ticking = useRef(false);
+  const latestMouse = useRef({ x: 0, y: 0 });
+
   useEffect(() => {
-    const handleMove = (e: MouseEvent) => setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
-    window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    let rafId: number;
+    const handleMove = (e: MouseEvent) => {
+      latestMouse.current = { x: e.clientX, y: e.clientY };
+      if (!ticking.current) {
+        rafId = window.requestAnimationFrame(() => {
+          setMousePos({
+            x: (latestMouse.current.x / window.innerWidth - 0.5) * 40,
+            y: (latestMouse.current.y / window.innerHeight - 0.5) * 40
+          });
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
+    };
+    window.addEventListener("mousemove", handleMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
