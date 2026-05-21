@@ -75,32 +75,51 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
-      
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      if (st > sectionOffset + trackHeight + 500) return;
+    let ticking = false;
+    let rafId: number;
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      trackRef.current.style.setProperty('--scroll-progress', progress.toString());
-      
-      const scale = 1 - progress * 0.5;
-      const translate = progress * -150;
-      const opacity = Math.max(0, 1 - progress * 3.5);
-      const blur = progress * 20;
-      
-      heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
-      heroContentRef.current.style.opacity = opacity.toString();
-      heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
-      heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(() => {
+          if (!trackRef.current || !heroContentRef.current) {
+            ticking = false;
+            return;
+          }
+
+          const st = window.scrollY;
+          const sectionOffset = trackRef.current.offsetTop;
+          const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+
+          if (st > sectionOffset + trackHeight + 500) {
+            ticking = false;
+            return;
+          }
+
+          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+          trackRef.current.style.setProperty('--scroll-progress', progress.toString());
+
+          const scale = 1 - progress * 0.5;
+          const translate = progress * -150;
+          const opacity = Math.max(0, 1 - progress * 3.5);
+          const blur = progress * 20;
+
+          heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
+          heroContentRef.current.style.opacity = opacity.toString();
+          heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
+          heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true }); 
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
