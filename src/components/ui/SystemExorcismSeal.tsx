@@ -1,5 +1,23 @@
-import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import React, { useState, useEffect } from 'react';
+
+const STATIC_ORBIT_ERIDIAN = Array.from({ length: 12 }).map((_, i) => {
+  const angle = (i / 12) * Math.PI * 2;
+  const x = 500 + Math.cos(angle) * 380;
+  const y = 500 + Math.sin(angle) * 380;
+  const hex = ['ROCKY', 'AMAZE', 'JAZZ', 'SIGNAL', 'P.H.M.', 'LIGHT'][i % 6];
+  return { id: i, x, y, transform: `rotate(${(angle * 180) / Math.PI + 90}, ${x}, ${y})`, hex };
+});
+
+const STATIC_ORBIT_HUMAN = Array.from({ length: 12 }).map((_, i) => {
+  const angle = (i / 12) * Math.PI * 2;
+  const x = 500 + Math.cos(angle) * 380;
+  const y = 500 + Math.sin(angle) * 380;
+  const hex = ['0xDEBT', '0xNULL', '0xMEM', '0xVOID', '0xSYS', '0xINIT'][i % 6];
+  return { id: i, x, y, transform: `rotate(${(angle * 180) / Math.PI + 90}, ${x}, ${y})`, hex };
+});
+
+const STATIC_LOGIC_GRID = Array.from({ length: 10 }).map((_, i) => i);
 
 const SystemExorcismSeal: React.FC = () => {
   const { language } = useLanguage();
@@ -58,25 +76,17 @@ const SystemExorcismSeal: React.FC = () => {
           
           {/* Binary/Hex Bits orbiting the seal */}
           <g className="font-mono text-[10px] fill-[var(--accent-blood)] font-bold opacity-80">
-            {Array.from({ length: 12 }).map((_, i) => {
-              const angle = (i / 12) * Math.PI * 2;
-              const x = 500 + Math.cos(angle) * 380;
-              const y = 500 + Math.sin(angle) * 380;
-              const hex = isEridian 
-                ? ['ROCKY', 'AMAZE', 'JAZZ', 'SIGNAL', 'P.H.M.', 'LIGHT'][i % 6]
-                : ['0xDEBT', '0xNULL', '0xMEM', '0xVOID', '0xSYS', '0xINIT'][i % 6];
-              return (
+            {(isEridian ? STATIC_ORBIT_ERIDIAN : STATIC_ORBIT_HUMAN).map((item) => (
                 <text 
-                  key={i} 
-                  x={x} 
-                  y={y} 
+                  key={item.id}
+                  x={item.x}
+                  y={item.y}
                   textAnchor="middle" 
-                  transform={`rotate(${(angle * 180) / Math.PI + 90}, ${x}, ${y})`}
+                  transform={item.transform}
                 >
-                  {hex}
+                  {item.hex}
                 </text>
-              );
-            })}
+              ))}
           </g>
         </g>
 
@@ -93,14 +103,14 @@ const SystemExorcismSeal: React.FC = () => {
           
           {/* The Inner "Logic" Grid */}
           <g opacity="0.5">
-            {Array.from({ length: 10 }).map((_, i) => (
+            {STATIC_LOGIC_GRID.map((i) => (
               <line 
                 key={`v-${i}`} 
                 x1={350 + i * 30} y1="350" x2={350 + i * 30} y2="650" 
                 stroke="var(--accent-blood)" strokeWidth="1" 
               />
             ))}
-            {Array.from({ length: 10 }).map((_, i) => (
+            {STATIC_LOGIC_GRID.map((i) => (
               <line 
                 key={`h-${i}`} 
                 x1="350" y1={350 + i * 30} x2="650" y2={350 + i * 30} 
