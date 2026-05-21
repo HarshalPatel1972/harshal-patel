@@ -1,0 +1,4 @@
+
+## 2024-04-09 - High-Frequency Event Throttling with requestAnimationFrame in Feedback Gallery
+**Learning:** Found a critical performance bottleneck in `src/app/feedback/FeedbackContents.tsx` where React state (`setMousePos`) was being updated synchronously on every single `mousemove` event without throttling. This is a severe anti-pattern in React as it forces full re-renders of the component tree up to 120 times per second, blocking the main thread and causing significant layout thrashing on complex pages.
+**Action:** Always wrap high-frequency event listeners (like `mousemove` or `scroll`) that update React state with a `requestAnimationFrame` ticking pattern. Cache the latest event coordinates in mutable variables to ensure the state update accurately reflects the latest position when the browser is ready to paint, avoiding stale closures. Track the `rafId` to cleanly cancel pending animation frames during cleanup.
