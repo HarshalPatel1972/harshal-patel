@@ -171,15 +171,23 @@ export function Navbar() {
       }
       loopRaf = requestAnimationFrame(smoothLoop);
     };
+    let isTicking = false;
     const handleScroll = () => {
-      const p = dotPhysicsRef.current;
-      const currentScrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      p.targetY = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
-      p.speed = Math.min(Math.abs(currentScrollY - p.lastScrollY), 50);
-      p.lastScrollY = currentScrollY;
-      if (speedTimeout) clearTimeout(speedTimeout);
-      speedTimeout = setTimeout(() => { p.speed = 0; }, 200);
+      if (!isTicking) {
+        requestAnimationFrame(() => {
+          const p = dotPhysicsRef.current;
+          const currentScrollY = window.scrollY;
+          // Note: using document.documentElement.scrollHeight dynamically here as total height can change dynamically
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          p.targetY = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
+          p.speed = Math.min(Math.abs(currentScrollY - p.lastScrollY), 50);
+          p.lastScrollY = currentScrollY;
+          if (speedTimeout) clearTimeout(speedTimeout);
+          speedTimeout = setTimeout(() => { p.speed = 0; }, 200);
+          isTicking = false;
+        });
+        isTicking = true;
+      }
     };
     loopRaf = requestAnimationFrame(smoothLoop);
     window.addEventListener("scroll", handleScroll, { passive: true });
