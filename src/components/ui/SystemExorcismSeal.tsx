@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 
+// Hoisted static arrays for performance
+const STATIC_ORBITALS = Array.from({ length: 12 }).map((_, i) => {
+  const angle = (i / 12) * Math.PI * 2;
+  const x = 500 + Math.cos(angle) * 380;
+  const y = 500 + Math.sin(angle) * 380;
+  return { id: i, angle, x, y };
+});
+
+const STATIC_GRID_LINES = Array.from({ length: 10 }).map((_, i) => i);
+
 const SystemExorcismSeal: React.FC = () => {
   const { language } = useLanguage();
   const isEridian = language === 'eridian';
@@ -58,16 +68,13 @@ const SystemExorcismSeal: React.FC = () => {
           
           {/* Binary/Hex Bits orbiting the seal */}
           <g className="font-mono text-[10px] fill-[var(--accent-blood)] font-bold opacity-80">
-            {Array.from({ length: 12 }).map((_, i) => {
-              const angle = (i / 12) * Math.PI * 2;
-              const x = 500 + Math.cos(angle) * 380;
-              const y = 500 + Math.sin(angle) * 380;
+            {STATIC_ORBITALS.map(({ id, angle, x, y }) => {
               const hex = isEridian 
-                ? ['ROCKY', 'AMAZE', 'JAZZ', 'SIGNAL', 'P.H.M.', 'LIGHT'][i % 6]
-                : ['0xDEBT', '0xNULL', '0xMEM', '0xVOID', '0xSYS', '0xINIT'][i % 6];
+                ? ['ROCKY', 'AMAZE', 'JAZZ', 'SIGNAL', 'P.H.M.', 'LIGHT'][id % 6]
+                : ['0xDEBT', '0xNULL', '0xMEM', '0xVOID', '0xSYS', '0xINIT'][id % 6];
               return (
                 <text 
-                  key={i} 
+                  key={id}
                   x={x} 
                   y={y} 
                   textAnchor="middle" 
@@ -93,14 +100,14 @@ const SystemExorcismSeal: React.FC = () => {
           
           {/* The Inner "Logic" Grid */}
           <g opacity="0.5">
-            {Array.from({ length: 10 }).map((_, i) => (
+            {STATIC_GRID_LINES.map((i) => (
               <line 
                 key={`v-${i}`} 
                 x1={350 + i * 30} y1="350" x2={350 + i * 30} y2="650" 
                 stroke="var(--accent-blood)" strokeWidth="1" 
               />
             ))}
-            {Array.from({ length: 10 }).map((_, i) => (
+            {STATIC_GRID_LINES.map((i) => (
               <line 
                 key={`h-${i}`} 
                 x1="350" y1={350 + i * 30} x2="650" y2={350 + i * 30} 
