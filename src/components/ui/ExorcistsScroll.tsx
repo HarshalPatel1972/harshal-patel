@@ -12,7 +12,12 @@ interface ActiveCard {
 }
 
 const CharacterInscription: React.FC<{ text: string, language: string }> = ({ text, language }) => {
-  const words = useMemo(() => text.split(" "), [text]);
+  const wordsWithChars = useMemo(() => {
+    return text.split(" ").map(word => ({
+      word,
+      chars: word.split("")
+    }));
+  }, [text]);
   const [isVisible, setIsVisible] = useState(false);
   const isHindi = language === 'hi';
 
@@ -27,7 +32,7 @@ const CharacterInscription: React.FC<{ text: string, language: string }> = ({ te
         className={`text-[#F5F5F0] ${isHindi ? 'font-hindi' : 'font-inter'} text-lg md:text-xl lg:text-3xl leading-[1.3] font-black tracking-tighter text-center uppercase`} 
         style={{ textShadow: `0 0 10px rgba(var(--accent-blood-rgb), 0.5)` }}
       >
-        {words.map((word, wi) => {
+        {wordsWithChars.map((item, wi) => {
           const delay = wi * 45; // Stagger by word for Hindi, or by cumulative chars for others
           
           if (isHindi) {
@@ -37,7 +42,7 @@ const CharacterInscription: React.FC<{ text: string, language: string }> = ({ te
                 className={`inline-block whitespace-nowrap mr-[0.34em] transition-all duration-700 ease-out will-change-transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
                 style={{ transitionDelay: `${delay}ms` }}
               >
-                {word}
+                {item.word}
               </span>
             );
           }
@@ -45,7 +50,7 @@ const CharacterInscription: React.FC<{ text: string, language: string }> = ({ te
           // Non-Hindi character splitting logic
           return (
             <span key={wi} className="inline-block whitespace-nowrap mr-[0.34em]">
-              {word.split("").map((char, ci) => (
+              {item.chars.map((char, ci) => (
                 <span 
                   key={ci} 
                   className={`inline-block transition-all duration-700 ease-out will-change-transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}

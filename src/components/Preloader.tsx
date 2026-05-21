@@ -132,6 +132,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
+  const quoteWords = useMemo(() => quote.split(" "), [quote]);
+  const quoteChars = useMemo(() => quote.split(""), [quote]);
+  const quoteWordsWithChars = useMemo(() => quoteWords.map(w => w.split("")), [quoteWords]);
+
   // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
   const wrappedChars = useMemo(() => {
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
@@ -141,7 +145,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     // MOBILE OPTIMIZATION: On mobile, split by words only, NEVER characters. 
     // This reduces DOM nodes from 150+ to ~15, slashing 2s of render delay.
     if (isMobile) {
-      return quote.split(" ").map((word, i) => (
+      return quoteWords.map((word, i) => (
         <span key={i} className="p-char inline-block will-change-transform mr-[0.25em]" style={charStyle}>
           {word}
         </span>
@@ -151,7 +155,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     if (isHindi) {
       // For Hindi, we MUST NOT split by character because matras (vowels) will break 
       // from their base consonants. We split by words instead.
-      return quote.split(" ").map((word, i) => (
+      return quoteWords.map((word, i) => (
         <span key={i} className="p-char inline-block will-change-transform mr-[0.25em]" style={charStyle}>
           {word}
         </span>
@@ -159,15 +163,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }
 
     if (isCJK) {
-      return quote.split("").map((char, i) => (
+      return quoteChars.map((char, i) => (
         <span key={i} className="p-char inline-block will-change-transform" style={charStyle}>
           {char === ' ' || char === '　' ? '\u00A0' : char}
         </span>
       ));
     } else {
-      const wordList = quote.split(" ");
       const elements: React.ReactNode[] = [];
-      wordList.forEach((word, wi) => {
+      quoteWordsWithChars.forEach((chars, wi) => {
         if (wi > 0) {
           elements.push(
             <span key={`sp-${wi}`} className="p-char inline-block will-change-transform" style={charStyle}>{'\u00A0'}</span>
@@ -176,7 +179,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }
         elements.push(
           <span key={`w-${wi}`} className="inline-block whitespace-nowrap">
-            {word.split("").map((char, ci) => (
+            {chars.map((char, ci) => (
               <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>{char}</span>
             ))}
           </span>
@@ -184,7 +187,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       });
       return elements;
     }
-  }, [quote, language]);
+  }, [language, isMobile, quoteWords, quoteChars, quoteWordsWithChars]);
 
   useEffect(() => {
     setMounted(true);
