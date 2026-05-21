@@ -74,33 +74,62 @@ export function Hero() {
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
+  // ⚡ Bolt: Cache DOM properties to prevent synchronous layout thrashing during scroll events.
+  // We use requestAnimationFrame to batch the mutation updates without blocking the main thread.
   useEffect(() => {
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    const updateMetrics = () => {
+      if (!trackRef.current) return;
+      sectionOffset = trackRef.current.offsetTop;
+      trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+    };
+
     const handleScroll = () => {
       if (!trackRef.current || !heroContentRef.current) return;
       
-      const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-      
-      if (st > sectionOffset + trackHeight + 500) return;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!trackRef.current || !heroContentRef.current) return;
+          const st = window.scrollY;
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
-      trackRef.current.style.setProperty('--scroll-progress', progress.toString());
-      
-      const scale = 1 - progress * 0.5;
-      const translate = progress * -150;
-      const opacity = Math.max(0, 1 - progress * 3.5);
-      const blur = progress * 20;
-      
-      heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
-      heroContentRef.current.style.opacity = opacity.toString();
-      heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
-      heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+          if (st > sectionOffset + trackHeight + 500) {
+            ticking = false;
+            return;
+          }
+
+          const progress = trackHeight > 0 ? Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight)) : 0;
+          trackRef.current.style.setProperty('--scroll-progress', progress.toString());
+
+          const scale = 1 - progress * 0.5;
+          const translate = progress * -150;
+          const opacity = Math.max(0, 1 - progress * 3.5);
+          const blur = progress * 20;
+
+          heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
+          heroContentRef.current.style.opacity = opacity.toString();
+          heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
+          heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
+    window.addEventListener("resize", updateMetrics, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true }); 
+
+    // Initial setup
+    updateMetrics();
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", updateMetrics);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (

@@ -1,0 +1,3 @@
+## 2025-04-05 - Caching DOM Read Operations in Scroll Event Listeners
+**Learning:** Reading layout properties (`offsetTop`, `offsetHeight`) synchronously inside a passive scroll listener forces the browser to recalculate layouts, leading to severe layout thrashing and dropped frames, particularly in high-frequency event loops like scroll.
+**Action:** When implementing scroll-based UI updates, cache the necessary DOM dimensions (`offsetTop`, `offsetHeight`, etc.) outside the scroll listener, update them on `resize` events, and wrap all style mutations inside `requestAnimationFrame` with a `ticking` lock flag.
