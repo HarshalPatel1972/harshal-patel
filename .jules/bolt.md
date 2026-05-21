@@ -1,0 +1,3 @@
+## 2024-05-24 - [Hoisting Static Arrays in React]
+**Learning:** For components that generate identical, state-independent UI elements (like SVG grids, static shards, and decorative background arrays), evaluating `Array.from` inline or inside `useMemo` is an anti-pattern when it could be computed exactly once at module evaluation time. This leads to unnecessary garbage collection and initialization overhead, particularly when there are 100+ elements.
+**Action:** When a static array does not depend on component props or state, hoist its generation completely out of the component scope into a module-level constant.
