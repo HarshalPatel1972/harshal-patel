@@ -75,12 +75,23 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    // Cache layout dimensions to prevent layout thrashing
+    const cacheDimensions = () => {
+      if (trackRef.current) {
+        sectionOffset = trackRef.current.offsetTop;
+        trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+      }
+    };
+
+    const updateScroll = () => {
+      ticking = false;
       if (!trackRef.current || !heroContentRef.current) return;
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
       if (st > sectionOffset + trackHeight + 500) return;
 
@@ -98,9 +109,25 @@ export function Hero() {
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
     };
 
+    const handleScroll = () => {
+      // Use requestAnimationFrame to batch DOM reads and writes
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    };
+
+    // Initialize dimensions
+    cacheDimensions();
+
     window.addEventListener("scroll", handleScroll, { passive: true }); 
+    window.addEventListener("resize", cacheDimensions);
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", cacheDimensions);
+    };
   }, []);
 
   return (
