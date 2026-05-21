@@ -73,6 +73,24 @@ export function Hero() {
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
 
+  // ⚡ Bolt Optimization:
+  // Previously, `currentProfile.name.split(" ")` and `.map()` were executed inline within the JSX
+  // on every render cycle. Since `Hero.tsx` runs a high-frequency `requestAnimationFrame` loop
+  // on scroll, this caused redundant object/array allocations and unnecessary CPU cycles.
+  // We now cache the split strings and character arrays using `useMemo` so they are only computed
+  // once per language switch.
+  const { firstName, lastName, firstNameChars, lastNameChars } = useMemo(() => {
+    const parts = currentProfile.name.split(" ");
+    const fName = parts[0] || "";
+    const lName = parts.slice(1).join(" ");
+    return {
+      firstName: fName,
+      lastName: lName,
+      firstNameChars: fName.split(""),
+      lastNameChars: lName.split(""),
+    };
+  }, [currentProfile.name]);
+
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
     const handleScroll = () => {
@@ -170,10 +188,10 @@ export function Hero() {
               <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
-                    {currentProfile.name.split(" ")[0]}
+                    {firstName}
                   </span>
                 ) : (
-                  currentProfile.name.split(" ")[0].split("").map((char, i) => (
+                  firstNameChars.map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
@@ -183,10 +201,10 @@ export function Hero() {
               <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
-                    {currentProfile.name.split(" ").slice(1).join(" ")}
+                    {lastName}
                   </span>
                  ) : (
-                   currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
+                   lastNameChars.map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
