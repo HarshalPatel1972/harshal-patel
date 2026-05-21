@@ -1,0 +1,3 @@
+## 2025-02-23 - Throttle and cache layout dimensions in scroll event listeners
+**Learning:** Directly querying DOM layout dimensions like `offsetTop` and `offsetHeight` synchronously within a high-frequency `scroll` event handler will trigger expensive layout recalculations (thrashing), blocking the main thread and resulting in choppy animation.
+**Action:** When creating high-frequency scroll or resize listeners, always use a `ticking` boolean flag alongside `window.requestAnimationFrame()` to throttle DOM read/write batches to the screen refresh rate, and cache static or infrequent dimensions via initialization and `window.resize` handlers instead of checking them dynamically inside the `scroll` event.
