@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useDesignVersion } from "@/components/shared/DesignVersionContext";
 
 export function VelocityWarp() {
   const { language } = useLanguage();
+  const { designVersion } = useDesignVersion();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isWarping, setIsWarping] = useState(false);
   
@@ -26,7 +28,12 @@ export function VelocityWarp() {
     // Use state-bound lines so they can be regenerated dynamically or use normalized horizontal placement
     let lines: { xNorm: number; y: number; length: number; speed: number; color: string }[] = [];
     const isEridian = language === 'eridian';
-    const colors = isEridian ? ['#E8E8E6', '#FFB300', '#0055ff'] : ['#E8E8E6', '#d91111', '#0ee0c3']; 
+    const isNew = designVersion === 'new';
+    const colors = isEridian 
+      ? ['#FFB300', '#0055ff', '#FFB300'] 
+      : isNew 
+        ? ['#EDE4D3', '#D91111', '#E8703A'] // V2 color palette: aged-paper (#EDE4D3), critical-red (#D91111), forge-orange (#E8703A)
+        : ['#E8E8E6', '#d91111', '#0ee0c3']; // V1 color palette 
     
     // Dynamic Density: Generate lines based on viewport area (Scales perfectly from Mobile to 4K Desktop)
     const generateLines = () => {
@@ -122,14 +129,15 @@ export function VelocityWarp() {
 
     window.addEventListener("WARP_JUMP", handleWarpJump);
 
+    const refVal = stateRef.current;
     return () => {
       window.removeEventListener("resize", resize);
       window.removeEventListener("WARP_JUMP", handleWarpJump);
       if (rafId) cancelAnimationFrame(rafId);
-      if (stateRef.current.warpTimer) clearTimeout(stateRef.current.warpTimer);
+      if (refVal.warpTimer) clearTimeout(refVal.warpTimer);
       if (stopTimer) clearTimeout(stopTimer);
     };
-  }, [language]);
+  }, [language, designVersion]);
 
   return (
     <div 

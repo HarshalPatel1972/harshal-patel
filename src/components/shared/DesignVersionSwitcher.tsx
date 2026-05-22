@@ -7,7 +7,7 @@ export function DesignVersionSwitcher() {
   const { designVersion, setDesignVersion, isMounted } = useDesignVersion();
   const { language } = useLanguage();
 
-  if (!isMounted) return null;
+  if (!isMounted || designVersion === "new") return null;
 
   const handleToggle = () => {
     setDesignVersion(designVersion === "old" ? "new" : "old");

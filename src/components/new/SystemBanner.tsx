@@ -68,7 +68,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
           {/* Tag / Badge */}
           <div 
             onClick={() => setIsExpanded(true)}
-            className="bg-cyan-500 hover:bg-cyan-400 text-black text-[9px] font-mono tracking-wider font-extrabold px-2 py-0.5 rounded cursor-pointer transition-colors duration-300"
+            className="bg-[var(--critical-red)] hover:bg-[var(--critical-red)]/85 text-white text-[9px] font-mono tracking-wider font-extrabold px-2 py-0.5 rounded cursor-pointer transition-colors duration-300 animate-pulse"
           >
             {label}
           </div>
@@ -122,11 +122,11 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
               className="relative w-full max-w-2xl bg-neutral-900 border border-white/[0.08] p-8 rounded-3xl flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden"
             >
               {/* Pulsing visual core decor */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--critical-red)]/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-                <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-                <span className="text-[10px] font-mono tracking-widest text-cyan-400 uppercase">
+                <span className="h-2 w-2 rounded-full bg-[var(--critical-red)] animate-pulse" />
+                <span className="text-[10px] font-mono tracking-widest text-[var(--critical-red)] uppercase">
                   {label}
                 </span>
               </div>

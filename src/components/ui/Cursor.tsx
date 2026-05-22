@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "re
 import { createPortal } from "react-dom";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
+import { useDesignVersion } from "@/components/shared/DesignVersionContext";
 
 export interface CursorHandle {
   getSpherePositions: () => { x: number; y: number }[];
@@ -9,6 +10,7 @@ export interface CursorHandle {
 
 const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const { language } = useLanguage();
+  const { designVersion } = useDesignVersion();
   const [isTouch, setIsTouch] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -29,7 +31,9 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const tickingMouseRef = useRef(false);
 
   // Color Cycling State
-  const PALETTE = ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
+  const PALETTE = designVersion === "new"
+    ? ["#EDE4D3", "#D91111", "#E8703A", "#ffffff"]
+    : ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
   const ERIDIAN_PALETTE = ["#FFB300", "#0055ff", "#FFB300", "#0055ff"]; // Rocky Yellow and Eridian Blue
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
@@ -264,7 +268,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [language]); // Removed isTouch to prevent engine restarts during interaction
+  }, [language, designVersion]); // Removed isTouch to prevent engine restarts during interaction
 
   if (isTouch) return null;
   return createPortal(
