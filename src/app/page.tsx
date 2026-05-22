@@ -112,13 +112,27 @@ function HomeContent() {
         <>
           <div className={`${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
             <NewNavbar />
+            
+            {/* Zero-Lag Utility Container - Full height track */}
+            <div 
+              className="absolute left-4 bottom-0 z-[100] flex flex-col items-start pointer-events-none"
+              style={{ top: containerTop }}
+            >
+              <div className="pointer-events-auto">
+                <VisitorCounter />
+              </div>
+              <div className="h-[10px]" />
+              <div 
+                className="sticky transition-all duration-700 pointer-events-auto"
+                style={{ top: stickyTarget }}
+              >
+                <LanguageSelector />
+              </div>
+            </div>
           </div>
 
-          <LanguageTransitionWrapper className={`transition-opacity duration-700 w-full overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
             <NewSystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
-            
-            {/* Structural top-gap padding to accommodate top floating glassy Navbar */}
-            <div className="pt-20" />
             
             <NewHero />
             <NewManifesto />

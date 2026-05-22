@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useRef } from "react";
+import Image from "next/image";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMagnetic } from "../AnimationKit";
@@ -12,8 +13,65 @@ export function Hero() {
   const cta1Ref = useMagnetic<HTMLAnchorElement>(0.15);
   const cta2Ref = useMagnetic<HTMLAnchorElement>(0.15);
 
+  const trackRef = useRef<HTMLDivElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+
   const firstWord = currentProfile.name.split(" ")[0] || "Harshal";
   const remainingWords = currentProfile.name.split(" ").slice(1).join(" ") || "Patel";
+
+  // SCROLL ENGINE & PROGRESS METER
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      // 1. Update Scroll Meter text (000 to 100 based on overall page height)
+      if (textRef.current) {
+        const scrollY = window.scrollY;
+        const totalH = document.documentElement.scrollHeight - window.innerHeight;
+        let p = Math.round((scrollY / totalH) * 100);
+        if (isNaN(p)) p = 0;
+        if (p < 0) p = 0;
+        if (p > 100) p = 100;
+        textRef.current.innerText = String(p).padStart(3, "0");
+      }
+
+      // 2. Perform parallax/scale/opacity/blur updates on the Hero section content
+      if (trackRef.current && heroContentRef.current) {
+        const st = window.scrollY;
+        const sectionOffset = trackRef.current.offsetTop;
+        const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+
+        if (st <= sectionOffset + trackHeight + 500) {
+          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+          trackRef.current.style.setProperty("--scroll-progress", progress.toString());
+
+          const scale = 1 - progress * 0.5;
+          const translate = progress * -150;
+          const opacity = Math.max(0, 1 - progress * 3.5);
+          const blur = progress * 20;
+
+          heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
+          heroContentRef.current.style.opacity = opacity.toString();
+          heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
+          heroContentRef.current.style.pointerEvents = progress > 0.4 ? "none" : "auto";
+        }
+      }
+
+      ticking = false;
+    };
+
+    const handleScrollThrottled = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollThrottled, { passive: true });
+    handleScroll(); // initial call
+    return () => window.removeEventListener("scroll", handleScrollThrottled);
+  }, []);
 
   const availableText = (() => {
     switch (language) {
@@ -28,10 +86,44 @@ export function Hero() {
 
   return (
     <section
+      ref={trackRef}
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-20 px-6 md:px-16 lg:px-24 blueprint-grid-warm text-[var(--sumi-ink)] z-10"
+      className="h-[300vh] relative z-0 isolate transform-gpu overflow-visible blueprint-grid-warm text-[var(--sumi-ink)]"
+      style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-6 md:px-16 lg:px-24 w-full">
+        {/* Scroll Indicator Arrows */}
+        <div 
+          className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
+          style={{ opacity: 'calc(1 - (var(--scroll-progress) * 10))' } as React.CSSProperties}
+        >
+          <div className="relative h-20 w-8 flex flex-col items-center justify-center">
+            {[0, 1, 2, 3, 4].map((i) => {
+              const themeColors = ['var(--forge-orange)', 'var(--blueprint-blue)', 'var(--sumi-ink)', 'var(--forge-orange)', 'var(--blueprint-blue)'];
+              return (
+                <svg 
+                  key={i} 
+                  className="absolute animate-arrow-flow" 
+                  style={{ animationDelay: `${i * 0.4}s` }} 
+                  width="24"
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none"
+                >
+                  <path 
+                    d="M12 4L12 20M12 20L5 13M12 20L19 13" 
+                    stroke={themeColors[i]} 
+                    strokeWidth="3.2" 
+                    strokeLinecap="square" 
+                    className="opacity-70"
+                  />
+                </svg>
+              );
+            })}
+          </div>
+        </div>
+
+        <div ref={heroContentRef} className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
         
         {/* Left Side: Name and Tagline */}
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6 md:space-y-8">
@@ -150,114 +242,33 @@ export function Hero() {
 
         </div>
 
-        {/* Right Side: Tactile Dossier & Sketch Plan */}
-        <div className="lg:col-span-5 relative flex items-center justify-center">
-          <div
-            className="w-full max-w-sm rounded-lg p-8 relative overflow-hidden flex flex-col justify-between aspect-[3/4]"
-            style={{
-              background: "var(--aged-paper)",
-              boxShadow: "0 10px 40px rgba(15,13,10,0.12), inset 0 0 0 1px rgba(138,127,114,0.15)",
-            }}
-          >
-            {/* Accent color top-strip */}
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-[var(--forge-orange)]" />
-
-            {/* Folder tab indicator */}
-            <div
-              className="absolute top-0 right-8 h-4 w-24"
-              style={{
-                background: "var(--muted-label)",
-                opacity: 0.15,
-                clipPath: "polygon(10px 0, 80px 0, 90px 100%, 0 100%)",
-              }}
+        {/* Right Side: Scroll progress image and meter */}
+        <div className="lg:col-span-5 relative flex items-center justify-center pointer-events-none select-none w-full h-full">
+          <div className="relative flex flex-col items-end transform lg:scale-100 md:scale-90 scale-75 origin-center">
+            <Image 
+              src="/Lying Down.png" 
+              alt="Resting on the scroll" 
+              width={606}
+              height={404}
+              sizes="(max-width: 768px) 208px, 606px"
+              priority
+              className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
             />
-
-            {/* Corner paper pins */}
-            {["top-2 left-2", "bottom-2 left-2", "bottom-2 right-2"].map((pos) => (
-              <div
-                key={pos}
-                className={`absolute w-2 h-2 rounded-full ${pos}`}
-                style={{ background: "rgba(138,127,114,0.4)" }}
-              />
-            ))}
-
-            <div className="space-y-6">
-              {/* Card Header */}
-              <div className="flex justify-between items-center border-b border-[var(--muted-label)]/20 pb-4">
-                <span
-                  className="text-[9px] font-bold tracking-widest uppercase"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--blueprint-blue)" }}
-                >
-                  SYSTEM_DRAFT_NO_04
-                </span>
-                <span className="h-2 w-2 rounded-full bg-[var(--forge-orange)] animate-ping" />
-              </div>
-
-              {/* Blueprint Schematic Traces */}
-              <div className="relative h-28 w-full border border-dashed border-[var(--muted-label)]/30 rounded flex items-center justify-center overflow-hidden bg-white/20">
-                <svg className="absolute inset-0 w-full h-full opacity-35" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="card-grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="var(--blueprint-blue)" strokeWidth="0.5" />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#card-grid)" />
-                  {/* Schematic circles and vectors */}
-                  <circle cx="50" cy="56" r="30" fill="none" stroke="var(--forge-orange)" strokeWidth="1.5" />
-                  <circle cx="150" cy="56" r="18" fill="none" stroke="var(--blueprint-blue)" strokeWidth="1" />
-                  <path d="M 80 56 L 132 56" stroke="var(--forge-orange)" strokeWidth="1.2" strokeDasharray="3,3" />
-                  <path d="M 50 15 L 50 40" stroke="var(--blueprint-blue)" strokeWidth="1" />
-                  <path d="M 150 15 L 150 38" stroke="var(--blueprint-blue)" strokeWidth="1" />
-                </svg>
-                <div
-                  className="text-[12px] uppercase tracking-wider font-bold z-10"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--sumi-ink)" }}
-                >
-                  // LATENCY_MAP_OK
-                </div>
-              </div>
-
-              {/* Data specifications */}
-              <div className="space-y-4 font-mono text-[11px] text-[var(--sumi-ink)] opacity-85">
-                <div className="flex justify-between items-center py-1.5 border-b border-dashed border-[var(--muted-label)]/15">
-                  <span className="font-bold">ENGINEER:</span>
-                  <span style={{ color: "var(--forge-orange)" }}>{currentProfile.name.toUpperCase()}</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-dashed border-[var(--muted-label)]/15">
-                  <span className="font-bold">LATENCY:</span>
-                  <span style={{ color: "var(--blueprint-blue)" }}>SUB_200MS_TARGET</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="font-bold">ORIGIN:</span>
-                  <span>CU_ALUMNI_NET</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Stamp indicator */}
-            <div className="mt-8 pt-4 border-t border-[var(--muted-label)]/25 flex justify-between items-center">
-              <div
-                className="text-[9px] tracking-wider uppercase font-bold"
-                style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--muted-label)" }}
-              >
-                STATUS_VERIFIED
-              </div>
-              {/* Circular Stamp */}
-              <div
-                className="relative border-2 border-dashed border-[#E8703A]/80 text-[#E8703A] rounded-full w-[72px] h-[72px] flex flex-col items-center justify-center transform -rotate-8 select-none p-1 shrink-0"
-                style={{ fontFamily: "var(--font-dm-serif), serif" }}
-              >
-                <div className="border border-[#E8703A]/40 rounded-full w-full h-full flex flex-col items-center justify-center">
-                  <span className="text-[6px] uppercase tracking-tighter leading-none mb-0.5" style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}>VERIFIED</span>
-                  <span className="text-[8px] font-black leading-none tracking-tight uppercase">STUDIO</span>
-                  <span className="text-[8px] font-black leading-none tracking-tight uppercase mt-0.5">APPROVED</span>
-                </div>
-              </div>
+            <div 
+              ref={textRef} 
+              className="relative z-10 font-victor font-black text-[3.4rem] md:text-[11.8rem] tracking-[-0.1em] leading-[0.8] flex items-end w-[4.5rem] md:w-[16rem] justify-end text-transparent"
+              style={{ 
+                WebkitTextStroke: '2.5px var(--sumi-ink)', 
+                fontWeight: 900 
+              }}
+            >
+              000
             </div>
           </div>
         </div>
 
       </div>
+    </div>
 
       {/* Tactile Workbench Measuring Tape Bottom Edge */}
       <div

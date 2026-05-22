@@ -62,13 +62,13 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
   return (
     <>
       {/* Top Glass Ticker Strip */}
-      <div className="fixed top-0 left-0 right-0 z-[1000] bg-neutral-950/80 border-b border-white/[0.06] backdrop-blur-md flex items-center h-9 px-4 md:px-8">
+      <div className="fixed top-0 left-0 right-12 md:right-16 z-[200] bg-[var(--critical-red)] border-b border-black/20 flex items-center h-9 px-4">
         <div className="flex items-center gap-3 flex-1 overflow-hidden h-full">
           
           {/* Tag / Badge */}
           <div 
             onClick={() => setIsExpanded(true)}
-            className="bg-[var(--critical-red)] hover:bg-[var(--critical-red)]/85 text-white text-[9px] font-mono tracking-wider font-extrabold px-2 py-0.5 rounded cursor-pointer transition-colors duration-300 animate-pulse"
+            className="bg-white text-[var(--critical-red)] text-[9px] font-mono tracking-wider font-extrabold px-2 py-0.5 rounded cursor-pointer transition-colors duration-300 animate-pulse shadow-sm"
           >
             {label}
           </div>
@@ -79,10 +79,10 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
             className="relative flex-1 overflow-hidden h-full flex items-center cursor-pointer group"
           >
             <div className="animate-marquee flex items-center gap-12 group-hover:[animation-play-state:paused]">
-              <span className="font-mono text-[10px] text-neutral-400 font-medium tracking-wide uppercase whitespace-nowrap">
+              <span className="font-mono text-[10px] text-white font-bold tracking-wide uppercase whitespace-nowrap">
                 {notice}
               </span>
-              <span className="font-mono text-[10px] text-neutral-400 font-medium tracking-wide uppercase whitespace-nowrap">
+              <span className="font-mono text-[10px] text-white font-bold tracking-wide uppercase whitespace-nowrap">
                 {notice}
               </span>
             </div>
@@ -93,7 +93,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
         <div className="flex items-center pl-4">
           <button 
             onClick={onDismiss} 
-            className="text-neutral-500 hover:text-white transition-colors font-mono text-xs px-2 shrink-0 font-bold"
+            className="text-white/60 hover:text-white transition-colors font-mono text-xs px-2 shrink-0 font-bold"
             aria-label="Dismiss system notice"
           >
             ✕
