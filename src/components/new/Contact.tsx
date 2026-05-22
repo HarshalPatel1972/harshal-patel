@@ -259,7 +259,7 @@ export function Contact() {
         <div className="relative w-full max-w-7xl mt-12 flex flex-col lg:flex-row gap-16 items-start">
           
           {/* Left: Contact rows */}
-          <div className="w-full lg:w-[68%] z-10">
+          <div className="w-full z-10">
             <ScrollReveal duration={1000} direction="left">
               <div className="flex flex-col w-full border-b border-[#8A7F72]/20">
                 {links.map((link, idx) => {
@@ -369,22 +369,6 @@ export function Contact() {
                     </div>
                   );
                 })}
-              </div>
-            </ScrollReveal>
-          </div>
-
-          {/* Right: Anime Character (Nanami Kento) absolutely placed next to layout */}
-          <div className="hidden lg:block lg:absolute lg:right-0 lg:bottom-[-24px] lg:w-[28%] pointer-events-none z-0">
-            <ScrollReveal duration={1200} delay={200} direction="right">
-              <div 
-                className="relative w-full aspect-[3/4]"
-              >
-                {/* Character Image */}
-                <img
-                  src="/NANAMI KENTO.png"
-                  alt="Nanami Kento in the studio"
-                  className="w-full h-full object-contain filter saturate-[0.6] brightness-[0.95] select-none transform hover:scale-[1.03] transition-transform duration-700"
-                />
               </div>
             </ScrollReveal>
           </div>
