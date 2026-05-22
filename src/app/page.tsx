@@ -112,6 +112,7 @@ function HomeContent() {
         <>
           <div className={`${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
             <NewNavbar />
+            <ScrollLine isVisible={showContent} theme="new" />
             
             {/* Zero-Lag Utility Container - Full height track */}
             <div 

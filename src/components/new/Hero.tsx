@@ -15,28 +15,16 @@ export function Hero() {
 
   const trackRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
 
   const firstWord = currentProfile.name.split(" ")[0] || "Harshal";
   const remainingWords = currentProfile.name.split(" ").slice(1).join(" ") || "Patel";
 
-  // SCROLL ENGINE & PROGRESS METER
+  // SCROLL ENGINE
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
-      // 1. Update Scroll Meter text (000 to 100 based on overall page height)
-      if (textRef.current) {
-        const scrollY = window.scrollY;
-        const totalH = document.documentElement.scrollHeight - window.innerHeight;
-        let p = Math.round((scrollY / totalH) * 100);
-        if (isNaN(p)) p = 0;
-        if (p < 0) p = 0;
-        if (p > 100) p = 100;
-        textRef.current.innerText = String(p).padStart(3, "0");
-      }
-
-      // 2. Perform parallax/scale/opacity/blur updates on the Hero section content
+      // Perform parallax/scale/opacity/blur updates on the Hero section content
       if (trackRef.current && heroContentRef.current) {
         const st = window.scrollY;
         const sectionOffset = trackRef.current.offsetTop;
@@ -240,31 +228,6 @@ export function Hero() {
             </a>
           </div>
 
-        </div>
-
-        {/* Right Side: Scroll progress image and meter */}
-        <div className="lg:col-span-5 relative flex items-center justify-center pointer-events-none select-none w-full h-full">
-          <div className="relative flex flex-col items-end transform lg:scale-100 md:scale-90 scale-75 origin-center">
-            <Image 
-              src="/Lying Down.png" 
-              alt="Resting on the scroll" 
-              width={606}
-              height={404}
-              sizes="(max-width: 768px) 208px, 606px"
-              priority
-              className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
-            />
-            <div 
-              ref={textRef} 
-              className="relative z-10 font-victor font-black text-[3.4rem] md:text-[11.8rem] tracking-[-0.1em] leading-[0.8] flex items-end w-[4.5rem] md:w-[16rem] justify-end text-transparent"
-              style={{ 
-                WebkitTextStroke: '2.5px var(--sumi-ink)', 
-                fontWeight: 900 
-              }}
-            >
-              000
-            </div>
-          </div>
         </div>
 
       </div>

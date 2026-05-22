@@ -249,7 +249,13 @@ export function useParallax(speed: number = 0.3) {
 /**
  * 🎞️ Manga Reading Progress — Massive fixed percentage reading with color inversion
  */
-export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
+export function ScrollLine({ 
+  isVisible = true,
+  theme = "old"
+}: { 
+  isVisible?: boolean;
+  theme?: "old" | "new";
+}) {
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -280,8 +286,12 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isNew = theme === "new";
+
   return (
-    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none flex flex-col items-end leading-none select-none transition-opacity duration-300 ${
+      isNew ? "" : "mix-blend-difference text-white"
+    } ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
        <div className="relative flex flex-col items-end">
           <Image 
             src="/Lying Down.png" 
@@ -293,8 +303,13 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
             className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
           />
           <div ref={textRef} 
-               className="relative z-10 font-victor font-black text-[3.4rem] md:text-[11.8rem] tracking-[-0.1em] leading-[0.8] flex items-end w-[4.5rem] md:w-[16rem] justify-end"
-               style={{ WebkitTextStroke: '2.5px currentColor', fontWeight: 900 }}
+               className={`relative z-10 font-victor font-black text-[3.4rem] md:text-[11.8rem] tracking-[-0.1em] leading-[0.8] flex items-end w-[4.5rem] md:w-[16rem] justify-end ${
+                 isNew ? "text-transparent" : ""
+               }`}
+               style={{ 
+                 WebkitTextStroke: isNew ? '2.5px var(--sumi-ink)' : '2.5px currentColor', 
+                 fontWeight: 900 
+               }}
           >
             000
           </div>

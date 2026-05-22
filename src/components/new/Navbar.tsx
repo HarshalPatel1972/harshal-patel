@@ -503,8 +503,8 @@ export function Navbar() {
                   }}
                 >
                   <span 
-                    className={`font-mono text-[9px] uppercase tracking-[0.25em] transition-all duration-300 select-none ${
-                      isActive ? "text-[var(--forge-orange)] font-black scale-110 drop-shadow-[0_1px_4px_rgba(232,112,58,0.15)]" : "text-[var(--sumi-ink)]/40 group-hover:text-[var(--sumi-ink)]/80"
+                    className={`font-mono text-xs md:text-sm uppercase tracking-[0.25em] transition-all duration-300 select-none font-bold ${
+                      isActive ? "text-[var(--forge-orange)] font-black scale-110 drop-shadow-[0_1px_4px_rgba(232,112,58,0.15)]" : "text-[var(--sumi-ink)]/65 group-hover:text-[var(--sumi-ink)]/90"
                     }`} 
                     style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                   >
