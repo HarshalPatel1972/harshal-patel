@@ -28,21 +28,21 @@ export function Hero() {
       if (trackRef.current && heroContentRef.current) {
         const st = window.scrollY;
         const sectionOffset = trackRef.current.offsetTop;
-        const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+        const trackHeight = window.innerHeight; // Track over 1 full screen scroll
 
         if (st <= sectionOffset + trackHeight + 500) {
           const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
           trackRef.current.style.setProperty("--scroll-progress", progress.toString());
 
-          const scale = 1 - progress * 0.5;
-          const translate = progress * -150;
-          const opacity = Math.max(0, 1 - progress * 3.5);
-          const blur = progress * 20;
+          const scale = 1 - progress * 0.3;
+          const translate = progress * -100;
+          const opacity = Math.max(0, 1 - progress * 2.0);
+          const blur = progress * 15;
 
           heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
           heroContentRef.current.style.opacity = opacity.toString();
           heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : "none";
-          heroContentRef.current.style.pointerEvents = progress > 0.4 ? "none" : "auto";
+          heroContentRef.current.style.pointerEvents = progress > 0.6 ? "none" : "auto";
         }
       }
 
@@ -63,7 +63,7 @@ export function Hero() {
 
   const availableText = (() => {
     switch (language) {
-      case "ja": return "AVAILABLE FOR OPPORTUNITIES // 仕事受付中";
+      case "ja": return "AVAILABLE FOR OPPORTUNITIES // 工作受付中";
       case "ko": return "AVAILABLE FOR OPPORTUNITIES // 의뢰 가능";
       case "zh-tw": return "AVAILABLE FOR OPPORTUNITIES // 合作開放";
       case "hi": return "AVAILABLE FOR OPPORTUNITIES // उपलब्ध";
@@ -76,10 +76,10 @@ export function Hero() {
     <section
       ref={trackRef}
       id="hero"
-      className="h-[300vh] relative z-0 isolate transform-gpu overflow-visible blueprint-grid-warm text-[var(--sumi-ink)]"
+      className="h-screen relative z-0 isolate transform-gpu overflow-hidden blueprint-grid-warm text-[var(--sumi-ink)]"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-6 md:px-16 lg:px-24 w-full">
+      <div className="relative h-full flex items-center justify-center overflow-hidden px-6 md:px-16 lg:px-24 w-full">
         {/* Scroll Indicator Arrows */}
         <div 
           className="absolute bottom-[44px] md:bottom-[-6px] left-0 right-0 flex flex-col items-center transition-opacity duration-700 pointer-events-none z-30"
