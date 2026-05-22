@@ -56,32 +56,40 @@ export function Contact() {
   // Localized Titles
   const titleData = {
     en: {
-      sub: "CHAPTER 03 // INITIATE TRANSMISSION",
+      sub: "CHAPTER 03 · INITIATE TRANSMISSION",
       desc: "Reach out to discuss system architecture, Go/TypeScript optimizations, or collaborative opportunities.",
       watermark: "CONTACT"
     },
     ja: {
-      sub: "第三章 // 通信を開始する",
+      sub: "第三章 · 通信を開始する",
       desc: "システムアーキテクチャ、Go/TypeScriptの最適化、またはコラボレーションの機会についてお気軽にご連絡ください。",
       watermark: "連絡先"
     },
     ko: {
-      sub: "제 3 장 // 통신을 시작하기",
-      desc: "시스템 아키텍처, Go/TypeScript 최적화 또는 협업 기회에 대해 논의하려면 연락하십시오.",
+      sub: "제 3 장 · 통신을 시작하기",
+      desc: "시스템 아키텍첲, Go/TypeScript 최적화 또는 협업 기회에 대해 논의하려면 연락하십시오.",
       watermark: "연락처"
     },
     "zh-tw": {
-      sub: "第三章 // 發起通信",
+      sub: "第三章 · 發起通信",
       desc: "隨時聯繫以討論系統架構、Go/TypeScript 優化或合作機會。",
       watermark: "聯繫方式"
     },
     hi: {
-      sub: "अध्याय 03 // संपर्क शुरू करें",
+      sub: "अध्याय 03 · संपर्क शुरू करें",
       desc: "सिस्टम आर्किटेक्चर, Go/TypeScript अनुकूलन, या सहयोग के अवसरों पर चर्चा करने के लिए संपर्क करें।",
       watermark: "संपर्क"
     },
     eridian: {
-      sub: "PART-THREE-THING // MAKE NOISE TO HARSHAL NOW",
+      sub: "PART-THREE-THING · MAKE NOISE TO HARSHAL NOW",
+      desc: "MAKE WAVES. DO NOT SILENCE.",
+      watermark: "SEND-SIGNAL"
+    }��ं",
+      desc: "सिस्टम आर्किटेक्चर, Go/TypeScript अनुकूलन, या सहयोग के अवसरों पर चर्चा करने के लिए संपर्क करें।",
+      watermark: "संपर्क"
+    },
+    eridian: {
+      sub: "PART-THREE-THING — MAKE NOISE TO HARSHAL NOW",
       desc: "MAKE WAVES. DO NOT SILENCE.",
       watermark: "SEND-SIGNAL"
     }
@@ -95,12 +103,12 @@ export function Contact() {
       id: "email",
       label: (() => {
         switch (language) {
-          case "ja": return "01 // メール";
-          case "ko": return "01 // 이메일";
-          case "zh-tw": return "01 // 電子郵件";
-          case "hi": return "01 // ईमेल";
-          case "eridian": return "01 // SIGNAL-SEND";
-          default: return "01 // EMAIL";
+          case "ja": return "01 · メール";
+          case "ko": return "01 · 이메일";
+          case "zh-tw": return "01 · 電子郵件";
+          case "hi": return "01 · ईमेल";
+          case "eridian": return "01 · SIGNAL-SEND";
+          default: return "01 · EMAIL";
         }
       })(),
       value: currentProfile.email,
@@ -118,12 +126,12 @@ export function Contact() {
       id: "github",
       label: (() => {
         switch (language) {
-          case "ja": return "02 // GITHUB";
-          case "ko": return "02 // GITHUB";
-          case "zh-tw": return "02 // GITHUB";
-          case "hi": return "02 // GITHUB";
-          case "eridian": return "02 // CODE-PLACE";
-          default: return "02 // GITHUB";
+          case "ja": return "02 · GITHUB";
+          case "ko": return "02 · GITHUB";
+          case "zh-tw": return "02 · GITHUB";
+          case "hi": return "02 · GITHUB";
+          case "eridian": return "02 · CODE-PLACE";
+          default: return "02 · GITHUB";
         }
       })(),
       value: "github.com/HarshalPatel1972",
@@ -141,12 +149,12 @@ export function Contact() {
       id: "linkedin",
       label: (() => {
         switch (language) {
-          case "ja": return "03 // LINKEDIN";
-          case "ko": return "03 // LINKEDIN";
-          case "zh-tw": return "03 // LINKEDIN";
-          case "hi": return "03 // LINKEDIN";
-          case "eridian": return "03 // SUIT-PLACE";
-          default: return "03 // LINKEDIN";
+          case "ja": return "03 · LINKEDIN";
+          case "ko": return "03 · LINKEDIN";
+          case "zh-tw": return "03 · LINKEDIN";
+          case "hi": return "03 · LINKEDIN";
+          case "eridian": return "03 · SUIT-PLACE";
+          default: return "03 · LINKEDIN";
         }
       })(),
       value: "linkedin.com/in/harshal-patel",
@@ -164,12 +172,12 @@ export function Contact() {
       id: "feedback",
       label: (() => {
         switch (language) {
-          case "ja": return "04 // フィードバック";
-          case "ko": return "04 // 피드백";
-          case "zh-tw": return "04 // 反饋";
-          case "hi": return "04 // फीडबैक";
-          case "eridian": return "04 // NOISE-REPORT";
-          default: return "04 // FEEDBACK";
+          case "ja": return "04 — フィードバック";
+          case "ko": return "04 — 피드백";
+          case "zh-tw": return "04 — 反饋";
+          case "hi": return "04 — फीडबैक";
+          case "eridian": return "04 — NOISE-REPORT";
+          default: return "04 — FEEDBACK";
         }
       })(),
       values: (() => {
@@ -264,8 +272,8 @@ export function Contact() {
               <div className="flex flex-col w-full border-b border-[#8A7F72]/20">
                 {links.map((link, idx) => {
                   const isFeedback = link.id === "feedback";
-                  const displayLabel = link.label.split(" // ")[0];
-                  const labelSuffix = link.label.split(" // ")[1];
+                  const displayLabel = link.label.split(" · ")[0];
+                  const labelSuffix = link.label.split(" · ")[1];
 
                   const cellContent = (
                     <div
@@ -285,7 +293,7 @@ export function Contact() {
                         >
                           {displayLabel}
                         </span>
-                        <span className="text-[#8A7F72]/40 font-mono text-[11px] font-bold">//</span>
+                        <span className="text-[#8A7F72]/40 font-mono text-[11px] font-bold">·</span>
                         <span 
                           className="text-[11px] font-bold font-mono uppercase tracking-wider text-[var(--muted-label)]"
                           style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}

@@ -179,7 +179,7 @@ export function Manifesto() {
               border: "1px solid rgba(240, 237, 232, 0.2)",
             }}
           >
-            // THE_MANIFESTO
+            The Manifesto
           </div>
 
           {/* Large Chalk Quote with scroll-reveal dynamic text */}
@@ -304,9 +304,9 @@ export function Manifesto() {
           {/* Tactile Workbench Measuring Tape timeline at bottom */}
           <div className="w-full max-w-3xl mt-24 font-mono text-[9px] tracking-[0.25em] text-[#8A7F72] uppercase">
             <div className="flex justify-between items-center mb-3">
-              <span>// DEV_LOG_INIT: 2022</span>
-              <span className="hidden sm:inline">WORKBENCH ACTIVE STREAM</span>
-              <span>PRESENT</span>
+              <span>Since 2022</span>
+              <span className="hidden sm:inline">Active</span>
+              <span>Present</span>
             </div>
             <div className="relative h-6 border-t border-b border-[#8A7F72]/30 flex items-center justify-between">
               <div

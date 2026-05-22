@@ -111,9 +111,8 @@ function GaugeDial({
           <path
             d={pathD}
             fill="none"
-            stroke="var(--studio-mid)"
+            stroke="rgba(22, 29, 26, 0.1)"
             strokeWidth="6"
-            opacity="0.4"
             strokeLinecap="round"
           />
           {/* Fill arc */}
@@ -138,7 +137,7 @@ function GaugeDial({
             dominantBaseline="middle"
             fontSize="16"
             fontWeight="700"
-            fill="var(--chalk)"
+            fill="var(--sumi-ink)"
             fontFamily="var(--font-big-shoulders), sans-serif"
           >
             {displayed}%
@@ -168,40 +167,42 @@ function TimelineNode({
   isLast: boolean;
   isFirst: boolean;
 }) {
+  const items = job.description.split(";").map(item => item.trim()).filter(Boolean);
+
   return (
-    <div className="relative pl-8">
+    <div className="relative pl-10">
       {/* Circuit trace vertical line */}
       {!isLast && (
         <div
-          className="absolute left-[11px] top-5 w-[2px]"
+          className="absolute left-[13px] top-6 w-[2px]"
           style={{
-            bottom: "-24px",
+            bottom: "-20px",
             background: "linear-gradient(to bottom, var(--forge-orange) 0%, var(--muted-label) 100%)",
-            opacity: 0.4,
+            opacity: 0.35,
           }}
         />
       )}
       {/* Node circle */}
       <div
-        className={`absolute left-0 top-1 w-[22px].5 h-[22px] rounded-full border-2 flex items-center justify-center ${isFirst ? "animate-pulse" : ""}`}
+        className={`absolute left-[4px] top-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${isFirst ? "animate-pulse" : ""}`}
         style={{
           borderColor: "var(--forge-orange)",
           background: isFirst ? "var(--forge-orange)" : "var(--aged-paper)",
-          boxShadow: isFirst ? "0 0 12px rgba(232,112,58,0.5)" : "none",
+          boxShadow: isFirst ? "0 0 12px rgba(232,112,58,0.4)" : "none",
         }}
       >
         <div
-          className="w-[6px] h-[6px] rounded-full"
+          className="w-1.5 h-1.5 rounded-full"
           style={{ background: isFirst ? "white" : "var(--forge-orange)" }}
         />
       </div>
 
       <div className="pb-8">
-        <div className="flex flex-wrap items-baseline gap-3 mb-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
           <h4
             className="uppercase leading-none"
             style={{
-              fontSize: "clamp(1.2rem,2.5vw,1.8rem)",
+              fontSize: "clamp(1.1rem, 2.2vw, 1.4rem)",
               fontFamily: "var(--font-big-shoulders), sans-serif",
               fontWeight: 900,
               color: "var(--sumi-ink)",
@@ -210,38 +211,35 @@ function TimelineNode({
             {job.company}
           </h4>
           <span
-            className="px-2 py-0.5 text-[9px] uppercase tracking-[0.2em]"
+            className="px-2.5 py-0.5 text-[9px] uppercase tracking-[0.2em] font-mono border border-[var(--muted-label)]/25 rounded-sm"
             style={{
               fontFamily: "var(--font-jetbrains-mono), monospace",
-              background: "var(--sumi-ink)",
-              color: "var(--chalk)",
+              color: "var(--sumi-ink)",
+              opacity: 0.8,
             }}
           >
             {job.period}
           </span>
         </div>
         <div
-          className="mb-2 text-sm uppercase tracking-wider"
+          className="mb-3 text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5"
           style={{
             fontFamily: "var(--font-dm-sans), sans-serif",
-            fontWeight: 600,
             color: "var(--forge-orange)",
           }}
         >
+          <span className="w-1.5 h-1.5 bg-[var(--forge-orange)] rotate-45 shrink-0" />
           {job.role}
         </div>
-        <p
-          className="text-sm leading-relaxed border-l-[3px] pl-3"
-          style={{
-            fontFamily: "var(--font-dm-sans), sans-serif",
-            fontWeight: 300,
-            color: "var(--sumi-ink)",
-            borderColor: "var(--muted-label)",
-            opacity: 0.8,
-          }}
-        >
-          {job.description}
-        </p>
+        
+        <ul className="space-y-2 mt-2">
+          {items.map((item, idx) => (
+            <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed" style={{ color: "var(--sumi-ink)", opacity: 0.85 }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--forge-orange)]/60 mt-[7px] shrink-0" />
+              <span className="font-sans font-light">{item}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -463,7 +461,7 @@ export function About() {
                         color: "var(--blueprint-blue)",
                       }}
                     >
-                      {"// EDUCATION_HISTORY"}
+                      Education
                     </div>
                     <div
                       className="font-black uppercase italic text-xl md:text-2xl"
@@ -568,20 +566,19 @@ export function About() {
 
               {/* Instrument panel */}
               <div
-                className="p-[28px]"
+                className="p-[28px] relative"
                 ref={gaugesRef}
                 style={{
-                  background: "var(--studio-mid)",
+                  background: "rgba(22, 29, 26, 0.015)",
                   borderRadius: "8px",
-                  boxShadow: "inset 0 2px 12px rgba(0,0,0,0.4), 0 4px 24px rgba(0,0,0,0.2)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  border: "1px dashed rgba(22, 29, 26, 0.2)",
                 }}
               >
                 <div
-                  className="text-[9px] uppercase tracking-[0.3em] mb-6 opacity-50"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--chalk)" }}
+                  className="text-[9px] uppercase tracking-[0.3em] mb-6 opacity-60"
+                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--sumi-ink)" }}
                 >
-                  {"// CORE_EXPERTISE — INSTRUMENT_PANEL"}
+                  Core Expertise
                 </div>
                 <div className="grid grid-cols-3 gap-6 justify-items-center">
                   {currentProfile.skills.map((skill, i) => (
@@ -599,14 +596,14 @@ export function About() {
                   className="mt-6 w-full text-center text-[9px] uppercase tracking-[0.3em] hover:opacity-100 transition-opacity"
                   style={{
                     fontFamily: "var(--font-jetbrains-mono), monospace",
-                    color: "var(--muted-label)",
-                    opacity: 0.5,
+                    color: "var(--sumi-ink)",
+                    opacity: 0.6,
                     background: "transparent",
                     border: "none",
                     cursor: "pointer",
                   }}
                 >
-                  {"// SCROLL_TO_CALIBRATE"}
+                  Scroll to calibrate
                 </button>
               </div>
             </div>

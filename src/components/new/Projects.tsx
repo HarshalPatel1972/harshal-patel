@@ -245,7 +245,6 @@ function DossierCard({
                       color: "var(--sumi-ink)",
                     }}
                   >
-                    <span style={{ color: "var(--blueprint-blue)" }}>{"// "}</span>
                     {spec}
                   </span>
                 ))}

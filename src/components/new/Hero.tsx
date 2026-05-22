@@ -63,12 +63,12 @@ export function Hero() {
 
   const availableText = (() => {
     switch (language) {
-      case "ja": return "AVAILABLE FOR OPPORTUNITIES // 工作受付中";
-      case "ko": return "AVAILABLE FOR OPPORTUNITIES // 의뢰 가능";
-      case "zh-tw": return "AVAILABLE FOR OPPORTUNITIES // 合作開放";
-      case "hi": return "AVAILABLE FOR OPPORTUNITIES // उपलब्ध";
-      case "eridian": return "MISSION STATUS // READY";
-      default: return "AVAILABLE FOR OPPORTUNITIES // ACTIVE";
+      case "ja": return "AVAILABLE FOR OPPORTUNITIES · 工作受付中";
+      case "ko": return "AVAILABLE FOR OPPORTUNITIES · 의뢰 가능";
+      case "zh-tw": return "AVAILABLE FOR OPPORTUNITIES · 合作開放";
+      case "hi": return "AVAILABLE FOR OPPORTUNITIES · उपलब्ध";
+      case "eridian": return "MISSION STATUS · READY";
+      default: return "AVAILABLE FOR OPPORTUNITIES · ACTIVE";
     }
   })();
 
@@ -167,7 +167,7 @@ export function Hero() {
               fontWeight: 700,
             }}
           >
-            {"// STUDIO_OPEN_SINCE 2022"}
+            Studio open since 2022
           </div>
 
           {/* Tagline */}

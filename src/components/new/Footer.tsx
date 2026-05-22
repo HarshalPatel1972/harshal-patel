@@ -89,7 +89,7 @@ export function Footer() {
               <span 
                 className="text-[#8A7F72]/60 text-[8px] font-mono tracking-widest select-none"
               >
-                // VER
+                Version
               </span>
               <button
                 onClick={handleVersionToggle}
