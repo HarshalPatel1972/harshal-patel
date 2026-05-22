@@ -25,6 +25,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [exiting, setExiting] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -47,6 +48,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const rawMouseRef = useRef({ x: 0.5, y: 0.5 });
   const smoothMouseRef = useRef({ x: 0.5, y: 0.5 });
+  const rawGazeRef = useRef({ x: 0.5, y: 0.5 });
+  const smoothGazeRef = useRef({ x: 0.5, y: 0.5 });
 
   const { language } = useLanguage();
 
@@ -110,7 +113,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     };
   }, [language, activeQuote]);
 
-  const { text: quote = "", author: source = "", image: bgImage = "" } = quoteData || {};
+  const { text: quote = "", author: source = "", image: bgImage = "", overrideOpacity = 0.3 } = quoteData || {};
 
   const readTime = 3500;
 
@@ -385,14 +388,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       }
     `;
 
-    // Grayscale + Dim overlay (14% brightness) + Abyss Dark Tint + Vignette applied directly inside Fragment Shader
+    // Grayscale + Dim overlay (with character-specific opacity) + Abyss Dark Tint + Vignette applied directly inside Fragment Shader
     const fragmentShader = `
       uniform sampler2D u_portrait;
       uniform sampler2D u_displacement;
       uniform float u_time;
       uniform vec2 u_mouse;
+      uniform vec2 u_gaze;
       uniform vec2 u_uv_scale;
       uniform float u_blink;
+      uniform float u_opacity;
       varying vec2 vUv;
 
       float waveNoise(vec2 p) {
@@ -425,7 +430,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         vec2 gazeOffset = vec2(0.0);
         if (distToFace < 0.28) {
           float fWeight = smoothstep(0.28, 0.0, distToFace);
-          gazeOffset = (u_mouse - 0.5) * 0.011 * fWeight;
+          gazeOffset = (u_gaze - 0.5) * 0.011 * fWeight;
         }
 
         // Blinking
@@ -441,7 +446,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         float gray = dot(portraitColor.rgb, vec3(0.299, 0.587, 0.114));
 
         // Dim & Tint (Overlay effect matching var(--bg-abyss))
-        vec3 targetBg = vec3(gray) * 0.14;
+        vec3 targetBg = vec3(gray) * u_opacity;
         vec3 tintColor = vec3(0.012, 0.012, 0.02);
         vec3 dimPortrait = mix(tintColor, targetBg, 0.7);
 
@@ -471,16 +476,17 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       }
     `;
 
+    // Unified cleanup handler for WebGL
+    let cleanupWebGL: (() => void) | null = null;
+
     try {
       renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       scene = new THREE.Scene();
       camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
       const img = new window.Image();
-      img.src = bgImage;
       portraitTexture = new THREE.Texture(img);
       portraitTexture.minFilter = THREE.LinearFilter;
       portraitTexture.magFilter = THREE.LinearFilter;
@@ -491,6 +497,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         imgAspect = img.naturalWidth / img.naturalHeight;
         handleResize();
       };
+      img.onerror = () => {
+        setImgFailed(true);
+      };
+      img.src = bgImage;
+
+      if (!bgImage) {
+        setImgFailed(true);
+      }
 
       dispTexture = new THREE.CanvasTexture(dispCanvas);
       dispTexture.minFilter = THREE.LinearFilter;
@@ -504,8 +518,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           u_displacement: { value: dispTexture },
           u_time: { value: 0 },
           u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+          u_gaze: { value: new THREE.Vector2(0.5, 0.5) },
           u_uv_scale: { value: new THREE.Vector2(1.0, 1.0) },
-          u_blink: { value: 0 }
+          u_blink: { value: 0 },
+          u_opacity: { value: overrideOpacity }
         }
       });
 
@@ -514,32 +530,75 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       scene.add(textureMesh);
 
       const handleResize = () => {
-        if (!renderer || !material) return;
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        renderer.setSize(w, h);
+        const currentCanvas = canvasRef.current;
+        if (!renderer || !material || !currentCanvas) return;
         
-        const aspectWindow = w / h;
+        const rect = currentCanvas.getBoundingClientRect();
+        const w = currentCanvas.clientWidth || rect.width || 296;
+        const h = currentCanvas.clientHeight || rect.height || 360;
+        
+        renderer.setSize(w, h, false);
+        
+        const aspectCanvas = w / h;
         let scaleX = 1;
         let scaleY = 1;
-        if (aspectWindow > imgAspect) {
-          scaleY = aspectWindow / imgAspect;
+        
+        if (aspectCanvas > imgAspect) {
+          scaleX = 1;
+          scaleY = imgAspect / aspectCanvas;
         } else {
-          scaleX = imgAspect / aspectWindow;
+          scaleX = aspectCanvas / imgAspect;
+          scaleY = 1;
         }
         material.uniforms.u_uv_scale.value.set(scaleX, scaleY);
       };
       window.addEventListener("resize", handleResize);
+      
+      // Compute correct initial size
+      handleResize();
 
       const handleMouseMove = (e: MouseEvent) => {
-        rawMouseRef.current.x = e.clientX / window.innerWidth;
-        rawMouseRef.current.y = 1.0 - (e.clientY / window.innerHeight);
-        
-        if (audioCtxRef.current && Math.random() < 0.04) {
-          playBrushNoise();
+        // Window-relative gaze coordinates
+        rawGazeRef.current.x = e.clientX / window.innerWidth;
+        rawGazeRef.current.y = 1.0 - (e.clientY / window.innerHeight);
+
+        // Canvas-relative mouse coordinates
+        const currentCanvas = canvasRef.current;
+        if (currentCanvas) {
+          const rect = currentCanvas.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = 1.0 - ((e.clientY - rect.top) / rect.height);
+          
+          rawMouseRef.current.x = Math.max(0, Math.min(1, x));
+          rawMouseRef.current.y = Math.max(0, Math.min(1, y));
+          
+          if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+            if (audioCtxRef.current && Math.random() < 0.08) {
+              playBrushNoise();
+            }
+          }
         }
       };
       window.addEventListener("mousemove", handleMouseMove);
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          rawGazeRef.current.x = touch.clientX / window.innerWidth;
+          rawGazeRef.current.y = 1.0 - (touch.clientY / window.innerHeight);
+
+          const currentCanvas = canvasRef.current;
+          if (currentCanvas) {
+            const rect = currentCanvas.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) / rect.width;
+            const y = 1.0 - ((touch.clientY - rect.top) / rect.height);
+            
+            rawMouseRef.current.x = Math.max(0, Math.min(1, x));
+            rawMouseRef.current.y = Math.max(0, Math.min(1, y));
+          }
+        }
+      };
+      window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
       let blinkCounter = 0;
       let blinkVal = 0.0;
@@ -550,6 +609,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         // Smooth mouse coordinates
         smoothMouseRef.current.x += (rawMouseRef.current.x - smoothMouseRef.current.x) * 0.08;
         smoothMouseRef.current.y += (rawMouseRef.current.y - smoothMouseRef.current.y) * 0.08;
+
+        smoothGazeRef.current.x += (rawGazeRef.current.x - smoothGazeRef.current.x) * 0.08;
+        smoothGazeRef.current.y += (rawGazeRef.current.y - smoothGazeRef.current.y) * 0.08;
 
         // Blink controller
         blinkCounter++;
@@ -568,6 +630,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         if (material) {
           material.uniforms.u_time.value = performance.now() * 0.001;
           material.uniforms.u_mouse.value.set(smoothMouseRef.current.x, smoothMouseRef.current.y);
+          material.uniforms.u_gaze.value.set(smoothGazeRef.current.x, smoothGazeRef.current.y);
           material.uniforms.u_blink.value = blinkVal;
         }
 
@@ -576,10 +639,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
       animate();
 
-      return () => {
+      cleanupWebGL = () => {
         if (requestRef.current) cancelAnimationFrame(requestRef.current);
         window.removeEventListener("resize", handleResize);
         window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("touchmove", handleTouchMove);
         if (renderer) renderer.dispose();
         if (geometry) geometry.dispose();
         if (material) material.dispose();
@@ -588,11 +652,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       };
     } catch(e) {
       console.warn("WebGL initialization failed:", e);
+      setImgFailed(true);
     }
 
     return () => {
       window.removeEventListener("click", handleUserInteraction);
       window.removeEventListener("touchmove", handleUserInteraction);
+      if (cleanupWebGL) cleanupWebGL();
     };
   }, [mounted, bgImage]);
 
@@ -621,11 +687,20 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             className="w-[260px] h-[340px] md:w-[320px] md:h-[420px] bg-[#EDE4D3] p-3 pb-12 shadow-[0_20px_60px_rgba(0,0,0,0.7)] border border-white/5 overflow-hidden rotate-[-2deg] opacity-0"
             style={{ transformOrigin: 'center center' }}
           >
-            <canvas 
-              ref={canvasRef} 
-              id="webgl-canvas"
-              className="w-full h-full block pointer-events-none" 
-            />
+            {imgFailed ? (
+              <div 
+                className="w-full h-full bg-gradient-to-tr from-[#050505] via-[#12100e] to-[#1e130f] flex flex-col items-center justify-center relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,112,58,0.2)_0%,transparent_80%)] animate-[pulse_3s_infinite_ease-in-out]" />
+                <span className="text-[#8A7F72]/50 font-mono text-[9px] uppercase tracking-widest z-10 select-none">// DATA_OFFLINE</span>
+              </div>
+            ) : (
+              <canvas 
+                ref={canvasRef} 
+                id="webgl-canvas"
+                className="w-full h-full block pointer-events-none" 
+              />
+            )}
           </div>
         </div>
 
