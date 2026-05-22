@@ -13,7 +13,7 @@ interface DesignVersionContextType {
 const DesignVersionContext = createContext<DesignVersionContextType | undefined>(undefined);
 
 export function DesignVersionProvider({ children }: { children: React.ReactNode }) {
-  const [designVersion, setDesignVersionState] = useState<DesignVersion>("new");
+  const [designVersion, setDesignVersionState] = useState<DesignVersion>("old");
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -21,8 +21,8 @@ export function DesignVersionProvider({ children }: { children: React.ReactNode 
     if (saved === "old" || saved === "new") {
       setDesignVersionState(saved);
     } else {
-      // Default to "new"
-      localStorage.setItem("designVersion", "new");
+      // Default to "old" (V1 is the production design)
+      localStorage.setItem("designVersion", "old");
     }
     setIsMounted(true);
   }, []);
