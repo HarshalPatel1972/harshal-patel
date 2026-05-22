@@ -30,6 +30,7 @@ const LanguageSelector = dynamic(() => import("@/components/LanguageSelector").t
 const NewNavbar = dynamic(() => import("@/components/new/Navbar").then(mod => mod.Navbar), { ssr: false });
 const NewSystemBanner = dynamic(() => import("@/components/new/SystemBanner").then(mod => mod.SystemBanner), { ssr: false });
 const NewHero = dynamic(() => import("@/components/new/Hero").then(mod => mod.Hero), { ssr: false });
+const NewManifesto = dynamic(() => import("@/components/new/Manifesto").then(mod => mod.Manifesto), { ssr: false });
 const NewProjects = dynamic(() => import("@/components/new/Projects").then(mod => mod.Projects), { ssr: false });
 const NewAbout = dynamic(() => import("@/components/new/About").then(mod => mod.About), { ssr: false });
 const NewContact = dynamic(() => import("@/components/new/Contact").then(mod => mod.Contact), { ssr: false });
@@ -111,15 +112,31 @@ function HomeContent() {
         <>
           <div className={`${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
             <NewNavbar />
+            <ScrollLine isVisible={showContent} theme="new" />
+            
+            {/* Zero-Lag Utility Container - Full height track */}
+            <div 
+              className="absolute left-4 bottom-0 z-[100] flex flex-col items-start pointer-events-none"
+              style={{ top: containerTop }}
+            >
+              <div className="pointer-events-auto">
+                <VisitorCounter />
+              </div>
+              <div className="h-[10px]" />
+              <div 
+                className="sticky transition-all duration-700 pointer-events-auto"
+                style={{ top: stickyTarget }}
+              >
+                <LanguageSelector />
+              </div>
+            </div>
           </div>
 
-          <LanguageTransitionWrapper className={`transition-opacity duration-700 w-full overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
             <NewSystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
             
-            {/* Structural top-gap padding to accommodate top floating glassy Navbar */}
-            <div className="pt-20" />
-            
             <NewHero />
+            <NewManifesto />
             <NewProjects />
             <NewAbout />
             <NewContact />

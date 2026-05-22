@@ -62,13 +62,13 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
   return (
     <>
       {/* Top Glass Ticker Strip */}
-      <div className="fixed top-0 left-0 right-0 z-[1000] bg-neutral-950/80 border-b border-white/[0.06] backdrop-blur-md flex items-center h-9 px-4 md:px-8">
+      <div className="fixed top-0 left-0 right-12 md:right-16 z-[95] bg-[var(--aged-paper)] border-b border-[var(--sumi-ink)]/15 flex items-center h-9 px-4">
         <div className="flex items-center gap-3 flex-1 overflow-hidden h-full">
           
           {/* Tag / Badge */}
           <div 
             onClick={() => setIsExpanded(true)}
-            className="bg-cyan-500 hover:bg-cyan-400 text-black text-[9px] font-mono tracking-wider font-extrabold px-2 py-0.5 rounded cursor-pointer transition-colors duration-300"
+            className="bg-[var(--forge-orange)] text-[var(--sumi-ink)] text-[9px] font-mono tracking-widest font-black px-2.5 py-0.5 rounded-sm cursor-pointer transition-transform duration-300 hover:scale-105 animate-pulse shadow-sm shadow-[var(--forge-orange)]/10"
           >
             {label}
           </div>
@@ -79,10 +79,10 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
             className="relative flex-1 overflow-hidden h-full flex items-center cursor-pointer group"
           >
             <div className="animate-marquee flex items-center gap-12 group-hover:[animation-play-state:paused]">
-              <span className="font-mono text-[10px] text-neutral-400 font-medium tracking-wide uppercase whitespace-nowrap">
+              <span className="font-mono text-[10px] text-[var(--sumi-ink)]/90 font-semibold tracking-wider uppercase whitespace-nowrap">
                 {notice}
               </span>
-              <span className="font-mono text-[10px] text-neutral-400 font-medium tracking-wide uppercase whitespace-nowrap">
+              <span className="font-mono text-[10px] text-[var(--sumi-ink)]/90 font-semibold tracking-wider uppercase whitespace-nowrap">
                 {notice}
               </span>
             </div>
@@ -93,7 +93,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
         <div className="flex items-center pl-4">
           <button 
             onClick={onDismiss} 
-            className="text-neutral-500 hover:text-white transition-colors font-mono text-xs px-2 shrink-0 font-bold"
+            className="text-[var(--sumi-ink)]/50 hover:text-[var(--forge-orange)] transition-colors font-mono text-xs px-2 shrink-0 font-bold"
             aria-label="Dismiss system notice"
           >
             ✕
@@ -111,7 +111,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsExpanded(false)}
-              className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              className="absolute inset-0 bg-black/85 backdrop-blur-sm"
             />
 
             {/* Glowing info panel */}
@@ -119,26 +119,26 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-2xl bg-neutral-900 border border-white/[0.08] p-8 rounded-3xl flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden"
+              className="relative w-full max-w-2xl bg-[var(--aged-paper)] border-[6px] border-[var(--sumi-ink)] shadow-[8px_8px_0px_0px_rgba(26,23,20,1)] p-8 md:p-12 manga-cut-tr flex flex-col gap-6 text-[var(--sumi-ink)] overflow-hidden"
             >
-              {/* Pulsing visual core decor */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+              {/* Decorative Halftone Overlay */}
+              <div className="absolute inset-0 halftone-bg opacity-5 pointer-events-none" />
 
-              <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-                <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-                <span className="text-[10px] font-mono tracking-widest text-cyan-400 uppercase">
+              <div className="flex items-center gap-3 border-b border-[var(--sumi-ink)]/15 pb-4">
+                <span className="h-2.5 w-2.5 rounded-full bg-[var(--forge-orange)] animate-pulse" />
+                <span className="text-xs font-mono font-bold tracking-widest text-[var(--forge-orange)] uppercase">
                   {label}
                 </span>
               </div>
 
-              <p className="text-lg md:text-xl text-neutral-200 font-sans font-light leading-relaxed">
+              <h3 className="text-2xl md:text-3xl font-black font-display text-[var(--sumi-ink)] uppercase tracking-tight leading-snug">
                 {notice}
-              </p>
+              </h3>
 
-              <div className="flex justify-end pt-4 border-t border-white/5">
+              <div className="flex justify-end pt-4 border-t border-[var(--sumi-ink)]/15">
                 <button 
                   onClick={() => setIsExpanded(false)}
-                  className="px-6 py-2.5 bg-neutral-850 hover:bg-neutral-800 border border-white/10 rounded-xl text-neutral-300 hover:text-white font-mono text-xs tracking-wider uppercase transition-colors"
+                  className="px-8 py-3 bg-[var(--sumi-ink)] hover:bg-[var(--forge-orange)] text-[var(--chalk)] hover:text-[var(--dark-walnut)] font-black font-display text-lg uppercase tracking-wider transition-all duration-300 border-2 border-[var(--sumi-ink)] manga-cut-bl shadow-[4px_4px_0px_0px_var(--sumi-ink)] hover:shadow-none hover:translate-x-1 hover:translate-y-1"
                 >
                   {getCloseText()}
                 </button>

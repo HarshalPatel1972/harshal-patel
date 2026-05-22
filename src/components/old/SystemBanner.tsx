@@ -71,7 +71,7 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-12 md:right-16 z-[200] bg-[var(--accent-blood)] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_12px_rgba(var(--accent-blood-rgb),0.3)] overflow-hidden">
+      <div className="fixed top-0 left-0 right-12 md:right-16 z-[95] bg-[var(--accent-blood)] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_12px_rgba(var(--accent-blood-rgb),0.3)] overflow-hidden">
         <div className="flex items-center gap-3 md:gap-4 flex-1 overflow-hidden h-full">
            {/* Brutalist Warning Label */}
            <div 

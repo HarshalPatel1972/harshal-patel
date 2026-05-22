@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useDesignVersion } from '@/components/shared/DesignVersionContext';
 
 const TRANSLATIONS = {
   en: { visitors: 'Visitors', views: 'Views' },
@@ -12,6 +13,8 @@ const TRANSLATIONS = {
 
 export function VisitorCounter() {
   const { language } = useLanguage();
+  const { designVersion } = useDesignVersion();
+  const isV2 = designVersion === 'new';
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
@@ -57,18 +60,24 @@ export function VisitorCounter() {
       <div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="flex items-center bg-black border-2 border-white h-9 transition-all duration-500 hover:border-[var(--accent-blood)] overflow-hidden"
+        className={`flex items-center h-9 transition-all duration-500 overflow-hidden ${
+          isV2 
+            ? "bg-[var(--aged-paper)] border border-[var(--sumi-ink)]/15 hover:border-[var(--forge-orange)]"
+            : "bg-black border-2 border-white hover:border-[var(--accent-blood)]"
+        }`}
       >
         {/* ICON & VISITORS (ALWAYS VISIBLE) */}
-        <div className="flex items-center px-4 h-full gap-3 border-r border-white/5 whitespace-nowrap">
-           <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[var(--accent-blood)]" xmlns="http://www.w3.org/2000/svg">
+        <div className={`flex items-center px-4 h-full gap-3 whitespace-nowrap ${
+          isV2 ? "border-r border-[var(--sumi-ink)]/15" : "border-r border-white/5"
+        }`}>
+           <svg viewBox="0 0 24 24" className={`w-4 h-4 ${isV2 ? "fill-[var(--forge-orange)]" : "fill-[var(--accent-blood)]"}`} xmlns="http://www.w3.org/2000/svg">
              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
            </svg>
            <div className="flex flex-col justify-center">
-             <span className="text-[10px] font-black font-mono text-white leading-none">
+             <span className={`text-[10px] font-black font-mono leading-none ${isV2 ? "text-[var(--sumi-ink)]" : "text-white"}`}>
                {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
              </span>
-             <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mt-0.5">
+             <span className={`text-[8px] font-black uppercase tracking-widest leading-none mt-0.5 ${isV2 ? "text-[var(--muted-label)]" : "text-white/30"}`}>
                {t.visitors}
              </span>
            </div>
@@ -76,13 +85,17 @@ export function VisitorCounter() {
 
         {/* REVEAL VIEWS ON HOVER */}
         <div 
-           className={`flex items-center h-full bg-white/5 overflow-hidden whitespace-nowrap transition-all duration-300 ${isHovered ? "w-auto px-5 opacity-100" : "w-0 opacity-0"}`}
+           className={`flex items-center h-full overflow-hidden whitespace-nowrap transition-all duration-300 ${
+             isV2 ? "bg-[var(--forge-orange)]/5" : "bg-white/5"
+           } ${isHovered ? "w-auto px-5 opacity-100" : "w-0 opacity-0"}`}
         >
            <div className="flex flex-col justify-center">
-             <span className="text-[10px] font-black font-mono text-[var(--accent-blood)] leading-none">
+             <span className={`text-[10px] font-black font-mono leading-none ${
+               isV2 ? "text-[var(--forge-orange)]" : "text-[var(--accent-blood)]"
+             }`}>
                 {data?.totalHits?.toLocaleString() || '---'}
              </span>
-             <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mt-0.5">
+             <span className={`text-[8px] font-black uppercase tracking-widest leading-none mt-0.5 ${isV2 ? "text-[var(--muted-label)]" : "text-white/30"}`}>
                 {t.views}
              </span>
            </div>

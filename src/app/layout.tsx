@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
@@ -84,6 +85,8 @@ const luna = localFont({
   variable: "--font-luna",
   display: 'swap',
 });
+
+
 
 export const metadata: Metadata = {
   title: {
