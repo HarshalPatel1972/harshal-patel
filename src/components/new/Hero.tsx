@@ -118,14 +118,14 @@ export function Hero() {
           
           {/* Amber Folder Tag Shape */}
           <div
-            className="inline-block px-5 py-2 text-white font-bold select-none relative animate-pulse shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+            className="inline-block pl-5 pr-10 py-2 text-white font-bold select-none relative animate-pulse shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
             style={{
               background: "var(--forge-orange)",
               fontFamily: "var(--font-jetbrains-mono), monospace",
               fontSize: "10px",
               letterSpacing: "0.15em",
               textTransform: "uppercase",
-              clipPath: "polygon(0 0, 88% 0, 100% 100%, 0 100%)",
+              clipPath: "polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%)",
             }}
           >
             {availableText}
