@@ -289,9 +289,7 @@ export function ScrollLine({
   const isNew = theme === "new";
 
   return (
-    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none flex flex-col items-end leading-none select-none transition-opacity duration-300 ${
-      isNew ? "" : "mix-blend-difference text-white"
-    } ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none flex flex-col items-end leading-none select-none transition-opacity duration-300 mix-blend-difference text-white ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
        <div className="relative flex flex-col items-end">
           <Image 
             src="/Lying Down.png" 
@@ -307,7 +305,7 @@ export function ScrollLine({
                  isNew ? "text-transparent" : ""
                }`}
                style={{ 
-                 WebkitTextStroke: isNew ? '2.5px var(--sumi-ink)' : '2.5px currentColor', 
+                 WebkitTextStroke: '2.5px currentColor', 
                  fontWeight: 900 
                }}
           >
