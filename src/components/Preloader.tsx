@@ -455,22 +455,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         float vignette = smoothstep(0.8, 0.38, length(distFromCenter));
         dimPortrait *= vignette;
 
-        // Custom metallic coloring in the mouse contact wave
-        vec3 yellowGold = vec3(0.92, 0.72, 0.32);
-        vec3 roseGold = vec3(0.925, 0.282, 0.596);
-        vec3 baseGold = mix(yellowGold, roseGold, dM * 0.5);
-
-        vec3 lightDir = normalize(vec3(u_mouse - 0.5, 1.3));
-        vec3 viewDir = vec3(0.0, 0.0, 1.0);
-        float spec = pow(max(dot(reflect(-lightDir, normal), viewDir), 0.0), 24.0);
-        vec3 activeGold = baseGold + vec3(spec * 0.4);
-
-        // Blend dim vignetted portrait with active glowing ripples
-        vec3 finalRGB = mix(dimPortrait, activeGold, dM * 0.85);
-
-        // Edge highlights
-        float generalSpec = pow(max(dot(reflect(-lightDir, normal), viewDir), 0.0), 8.0);
-        finalRGB += vec3(generalSpec * 0.12 * dM);
+        // Blend dim vignetted portrait without coloring trails
+        vec3 finalRGB = dimPortrait;
 
         gl_FragColor = vec4(finalRGB, 1.0);
       }
