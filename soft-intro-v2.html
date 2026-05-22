@@ -4,682 +4,750 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Intro</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Playfair+Display:ital,wght@1,400;1,700&family=Outfit:wght@100;200;300&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Outfit:wght@100;200;300;400&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
   :root {
-    /* Foundations */
-    --bg-abyss:      #08080E;
-    --bg-void:       #111118;
-    --bg-obsidian:   #1A1A27;
-    --bg-graphite:   #242436;
-    --bg-storm:      #2E2E45;
-
-    /* Typography & Neutrals */
-    --text-stellar:  #F2F2FA;
-    --text-silver:   #C4C4D8;
-    --text-twilight: #7A7A96;
-
-    /* Signature Accents */
-    --accent-iris:   #8B5CF6;
-    --accent-rose:   #F472B6; /* Petal Flame */
-    --accent-cyan:   #06B6D4; /* Arctic Pulse */
-    --accent-orange: #F97316; /* Ember Glow */
-    --accent-green:  #10B981; /* Surge */
-    --accent-red:    #EF4444; /* Crimson Core */
+    --bg-abyss:      #030305;
+    --text-stellar:  #F8F9FA;
+    --text-silver:   #C5C6D0;
+    --text-twilight: #5A5B6C;
+    --accent-rose:   #EC4899;
   }
 
-  html, body { width:100%; height:100%; overflow:hidden; background:var(--bg-abyss); }
-
-  /* ── IMAGE — washed bleed, not a portrait ─────────────── */
-  .img-bleed {
-    position:fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    overflow: hidden;
-  }
-  .img-bleed img {
-    width:100%; height:100%;
-    object-fit:cover;
-    object-position:center;
-    filter: grayscale(100%);
-    opacity: 1;
-    animation: kenBurns 28s ease-in-out infinite;
-  }
-  /* Overlay to soften the contrast/brightness of the image */
-  .img-bleed::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: rgba(8, 8, 14, 0.70); /* Dark Abyss wash overlay */
-    display: block;
-  }
-  .img-bleed::after {
-    display: none;
-  }
-
-  /* ── DECORATIVE BIG " ─────────────────────────────────── */
-  .big-quote {
-    position:fixed;
-    top: -20px; left: 32px;
+  html, body { 
+    width:100%; 
+    height:100%; 
+    overflow:hidden; 
+    background:var(--bg-abyss); 
     font-family: 'Fraunces', serif;
-    font-size: clamp(220px, 28vw, 320px);
-    font-style: normal;
-    line-height:1;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(139, 92, 246, 0.15);
-    z-index: 1;
-    pointer-events:none;
-    user-select:none;
-    opacity:0;
-    animation: fadeOnly 1.4s ease 0.5s forwards;
-  }
-
-  /* ── STAGE ────────────────────────────────────────────── */
-  .stage {
-    position:fixed; inset:0; z-index:2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  /* ── QUOTE HALO BACKLIGHT ────────────────────────────── */
-  .quote-halo {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    height: 250px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, rgba(244, 114, 182, 0.03) 45%, transparent 70%);
-    filter: blur(40px);
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0;
-    animation: haloReveal 1.6s ease 1s forwards, haloBreathe 8s ease-in-out infinite 2.6s;
-  }
-
-  @keyframes haloReveal {
-    to { opacity: 1; }
-  }
-
-  @keyframes haloBreathe {
-    0%, 100% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: translate(-50%, -50%) scale(1.12);
-      opacity: 0.75;
-    }
-  }
-
-  /* ── QUOTE BLOCK — deconstructed ─────────────────────── */
-  .quote-field {
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    gap: 12px;
-    z-index:5;
-  }
-
-  #quote-canvas {
-    display: block;
-    width: 900px;
-    max-width: 90vw;
-    height: 160px;
-    z-index: 6;
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeOnly 1.2s ease 0.6s forwards;
-  }
-
-  /* each line is centered + arrives from alternate directions */
-  .ql {
-    font-family: 'Fraunces', serif;
-    font-style: normal;
-    font-weight: 400;
     color: var(--text-stellar);
-    line-height: 1.15;
-    opacity:0;
-    white-space: nowrap;
-    text-align: center;
-  }
-  
-  /* ── CHROMATIC LIQUID CHROME EFFECTS ── */
-  .chrome-text {
-    position: relative;
-    display: inline-block;
-    filter: url(#chrome-filter);
   }
 
-  .chrome-text::before,
-  .chrome-text::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    top: 0;
+  /* WebGL Viewport */
+  #webgl-canvas {
+    position: fixed;
+    inset: 0;
     width: 100%;
     height: 100%;
+    z-index: 1;
+    display: block;
+  }
+
+  /* ── FALLBACK UI (Only active if WebGL fails/offline) ── */
+  #fallback-ui {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8vw;
+    background: var(--bg-abyss);
+  }
+
+  .fallback-img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.2);
+    opacity: 0.85;
+  }
+
+  .quote-container {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+    line-height: 1.35;
+    font-size: clamp(24px, 4.2vw, 44px);
+    font-weight: 200;
+  }
+
+  .word {
+    display: inline-block;
+    white-space: nowrap;
+    margin: 0 0.18em;
+  }
+
+  .char {
+    display: inline-block;
+    font-weight: 200;
+    transition: font-weight 0.25s ease, transform 0.25s ease, text-shadow 0.25s ease;
+  }
+
+  .word-accent .char.accent-trigger {
+    color: var(--accent-rose);
+  }
+
+  /* ── HUD / OVERLAYS ───────────────────────────────────── */
+  .hud-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
     pointer-events: none;
-    font-family: inherit;
-    font-size: inherit;
-    font-style: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    -webkit-text-fill-color: initial;
-    z-index: -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px;
   }
 
-  .chrome-text::before {
-    color: var(--accent-cyan);
-    transform: translate(1px, 1px);
-    filter: blur(2px);
-    opacity: 0.35;
-    animation: aberration 0.5s infinite;
+  .big-quote {
+    font-family: 'Fraunces', serif;
+    font-size: 160px;
+    font-weight: 100;
+    color: rgba(255, 255, 255, 0.012);
+    line-height: 1;
   }
 
-  .chrome-text::after {
-    color: var(--accent-rose);
-    transform: translate(-1px, -1px);
-    filter: blur(2px);
-    opacity: 0.25;
-    animation: aberration 0.5s infinite reverse;
+  .bottom-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
   }
 
-  @keyframes shineSweep {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 0% 100%; }
-    100% { background-position: 0% 0%; }
-  }
-
-  @keyframes aberration {
-    0% { transform: translate(1px, 1px); }
-    25% { transform: translate(-1px, 1.2px); }
-    50% { transform: translate(1.2px, -1px); }
-    75% { transform: translate(-1.2px, -1.2px); }
-    100% { transform: translate(1px, 1px); }
-  }
-
-  .ql-1 {
-    font-size: clamp(20px, 3.2vw, 34px);
-    transform: translateX(-30px) rotate(-0.5deg);
-    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 0.7s forwards;
-  }
-  .ql-2 {
-    font-size: clamp(20px, 3.2vw, 34px);
-    transform: translateX(30px) rotate(0.3deg);
-    animation: lineIn 1s cubic-bezier(0.22,1,0.36,1) 1.0s forwards;
-  }
-
-  /* highlight accent on key word */
-  .ql em {
-    font-style: normal;
-    color: var(--accent-rose);
-    position:relative;
-  }
-  .ql em::after {
-    content:'';
-    position:absolute;
-    bottom:2px; left:0; right:0;
-    height:1.5px;
-    background: var(--accent-rose);
-    transform:scaleX(0);
-    transform-origin:left;
-    animation: underlineIn 0.6s ease 2s forwards;
-  }
-
-  /* ── THIN RULE + INLINE NAME ──────────────────────────── */
   .attribution {
-    margin-top: 36px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display: flex;
+    align-items: center;
     gap: 16px;
-    opacity:0;
-    transform: translateY(10px);
-    animation: riseIn 0.8s ease 1.9s forwards;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeInHUD 1.2s cubic-bezier(0.16, 1, 0.3, 1) 2s forwards;
   }
+
   .attr-line {
-    width: 36px; height: 1px;
-    background: var(--accent-iris);
-    opacity:0.5;
-    flex-shrink:0;
+    width: 24px;
+    height: 1px;
+    background: var(--text-twilight);
+    opacity: 0.3;
   }
+
   .attr-name {
     font-family: 'Outfit', sans-serif;
-    font-weight: 200;
-    font-size: 12px;
-    letter-spacing: 0.3em;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.35em;
     text-transform: uppercase;
     color: var(--text-silver);
   }
 
-  /* ── BOTTOM PROGRESS LINE ─────────────────────────────── */
-  .progress {
-    position:fixed;
-    bottom:0; left:0;
-    height:2px;
-    background: linear-gradient(90deg, var(--accent-iris), var(--accent-rose));
-    width:0%;
-    z-index:20;
-    animation: prog 2.8s cubic-bezier(0.4,0,0.6,1) 0.1s forwards;
+  .skip-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-twilight);
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    opacity: 0;
+    pointer-events: auto;
+    animation: fadeInHUD 1.2s ease 2.5s forwards;
+    transition: color 0.3s;
   }
 
-  /* ── SKIP ─────────────────────────────────────────────── */
-  .skip {
-    position:fixed; bottom:20px; right:28px; z-index:30;
-    font-family:'Outfit',sans-serif; font-size:9px;
-    letter-spacing:0.28em; text-transform:uppercase;
-    color: var(--text-twilight); opacity:0.55; cursor:pointer;
-    animation:fadeOnly 1s ease 2.5s forwards;
-    transition:color 0.3s, opacity 0.3s;
-  }
-  .skip:hover { color:var(--accent-rose); opacity: 1; }
-
-  /* ── FLOATING SOFT CIRCLES (atmosphere) ──────────────── */
-  .orb {
-    position:fixed; border-radius:50%;
-    pointer-events:none; z-index:1;
-    animation:orbFloat 8s ease-in-out infinite;
-  }
-  .orb-1 {
-    width:380px;height:380px; top:-80px; left:30%; animation-delay:0s; opacity:0.5;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
-  }
-  .orb-2 {
-    width:260px;height:260px; bottom:-60px;left:14%; animation-delay:-3s; opacity:0.4;
-    background: radial-gradient(circle, rgba(244, 114, 182, 0.08) 0%, transparent 70%);
-  }
-  .orb-3 {
-    width:180px;height:180px; top:55%; right:30%; animation-delay:-5s; opacity:0.3;
-    background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+  .skip-btn:hover {
+    color: var(--text-stellar);
   }
 
-  /* ── KEYFRAMES ────────────────────────────────────────── */
-  @keyframes imgReveal {
-    to { opacity:0.45; transform:scale(1); }
-  }
-  @keyframes fadeOnly {
-    to { opacity:1; }
-  }
-  @keyframes lineIn {
-    to { opacity:1; transform:translateX(0) rotate(var(--r,0deg)); }
-  }
-  @keyframes riseIn {
-    to { opacity:1; transform:translateY(0); }
-  }
-  @keyframes underlineIn {
-    to { transform:scaleX(1); }
-  }
-  @keyframes prog {
-    0%   { width:0%; }   60%  { width:70%; }  100% { width:100%; }
-  }
-  @keyframes orbFloat {
-    0%,100% { transform:translateY(0); }
-    50%     { transform:translateY(-18px); }
+  /* Progress Line */
+  .progress-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.01);
+    z-index: 12;
   }
 
-  @keyframes kenBurns {
-    0%, 100% { transform: scale(1) translate(0, 0); }
-    50% { transform: scale(1.08) translate(-1%, -0.5%); }
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--text-twilight), var(--text-silver));
+    animation: progressFill 5.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
-  /* ambient dust particles floating animation */
-  @keyframes sparkleFloat-1 {
-    0%, 100% { transform: translateY(0) translateX(0) scale(1); }
-    50% { transform: translateY(-80px) translateX(30px) scale(1.15); }
-  }
-  @keyframes sparkleFloat-2 {
-    0%, 100% { transform: translateY(0) translateX(0) scale(1.15); }
-    50% { transform: translateY(-60px) translateX(-30px) scale(0.85); }
-  }
-
-  /* ── SMOOTH PARALLAX SUPPORT ── */
-  .stage, .img-bleed {
-    transition: transform 0.45s cubic-bezier(0.1, 0.8, 0.3, 1);
-    will-change: transform;
-  }
-
-  /* ── EXIT (Temporarily disabled animation) ─────────────── */
-  .out { display: none !important; }
-  /* @keyframes exitFade {
-    to { opacity:0; transform:translateY(-18px); }
-  } */
-
+  /* Grain Overlay */
   .grain-overlay {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 99;
+    z-index: 9;
     pointer-events: none;
-    opacity: 0.022;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    animation: grainMove 0.8s steps(10) infinite;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
-  @keyframes grainMove {
-    0%, 100% { background-position: 0 0; }
-    10% { background-position: -5% -10%; }
-    20% { background-position: -15% 5%; }
-    30% { background-position: 7% -25%; }
-    40% { background-position: -5% 25%; }
-    50% { background-position: -15% 10%; }
-    60% { background-position: 15% -5%; }
-    70% { background-position: 0% 15%; }
-    80% { background-position: 3% 35%; }
-    90% { background-position: -10% 10%; }
+  @keyframes fadeInHUD {
+    to { opacity: 0.7; transform: translateY(0); }
+  }
+
+  @keyframes progressFill {
+    to { width: 100%; }
+  }
+
+  /* ── EXIT ── */
+  .preloader-out {
+    opacity: 0 !important;
+    transform: translateY(-5px) !important;
+    filter: blur(15px) !important;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                filter 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: none !important;
   }
 </style>
 </head>
-<body>
+<body id="preloader-body">
 
 <div class="grain-overlay"></div>
 
-<!-- invisible SVG filter for liquid/chrome displacement -->
-<svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
-  <filter id="chrome-filter">
-    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="5">
-      <animate attributeName="baseFrequency" dur="8s" values="0.04;0.05;0.04" repeatCount="indefinite" />
-    </feTurbulence>
-    <feDisplacementMap in="SourceGraphic" scale="8" />
-  </filter>
-</svg>
+<!-- Image element loaded directly in DOM to bypass file:// local CORS triggers -->
+<img src="TOJI FUSHIGURO.png" id="portrait-img" style="display: none;" />
 
-<!-- atmospheric orbs -->
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
+<!-- WebGL Layer -->
+<canvas id="webgl-canvas"></canvas>
 
-<!-- washed image bleed from right -->
-<div class="img-bleed" id="bleed">
-  <img src="TOJI FUSHIGURO.png" alt="Toji Fushiguro"/>
-</div>
-
-<!-- decorative oversized quote mark -->
-<div class="big-quote">"</div>
-
-
-
-<!-- main stage -->
-<div class="stage" id="stage">
-  <div class="quote-field">
-    <div class="quote-halo"></div>
-    <canvas id="quote-canvas" width="900" height="160"></canvas>
-    <div class="quote-text-hidden" style="position: absolute; opacity: 0; pointer-events: none; height: 0; overflow: hidden;">
-      <span class="ql ql-1 chrome-text" data-text="Talent is just the starting point.">Talent is just the starting <em>point.</em></span>
-      <span class="ql ql-2 chrome-text" data-text="Will is what finishes it.">Will is what finishes it.</span>
-    </div>
-
-    <div class="attribution">
+<!-- HUD Controls -->
+<div class="hud-layer">
+  <div class="big-quote">“</div>
+  <div class="bottom-hud">
+    <div class="attribution" id="hud-attribution">
       <div class="attr-line"></div>
       <span class="attr-name">Toji Fushiguro</span>
     </div>
+    <button class="skip-btn" id="skip-btn">skip ↗</button>
   </div>
 </div>
 
-<div class="progress"></div>
-<div class="skip" id="skip">skip ↗</div>
+<div class="progress-container">
+  <div class="progress-fill"></div>
+</div>
+
+<!-- Fallback Container (Used on WebGL errors or offline) -->
+<div id="fallback-ui">
+  <img src="TOJI FUSHIGURO.png" class="fallback-img" alt="Toji Fushiguro"/>
+  <div class="quote-container" id="fallback-quote">
+    Talent is just the starting point. Will is what finishes it.
+  </div>
+</div>
+
+<!-- Load Three.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
-  // Dismiss/Skip handler
-  const dismiss = () => {
-    ['stage','bleed'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.classList.add('out');
-    });
-  };
-  // const t = setTimeout(dismiss, 5500); // Disabled auto-dismiss to inspect design
+  /* ── Web Audio Synth (Cinematic Hum & Paint Brushes) ── */
+  let audioCtx = null;
   
-  const stageEl = document.getElementById('stage');
-  const skipEl = document.getElementById('skip');
-  
-  if (stageEl) {
-    stageEl.addEventListener('click', () => { dismiss(); });
-  }
-  if (skipEl) {
-    skipEl.addEventListener('click',  () => { dismiss(); });
+  function initAudio() {
+    if (audioCtx) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Deep Drone Hum
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gainNode = audioCtx.createGain();
+      
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(55, audioCtx.currentTime); // Low A
+      
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(55.4, audioCtx.currentTime); // Detuned drone
+      
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.07, audioCtx.currentTime + 3.0);
+      
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc1.start();
+      osc2.start();
+      
+      // Periodic brush sweep noises
+      setInterval(() => {
+        if (audioCtx && audioCtx.state !== 'suspended') {
+          playBrushNoise();
+        }
+      }, 7000);
+    } catch(e) {
+      console.warn("Audio Context failed to initialize:", e);
+    }
   }
 
-  // Interactive 3D Parallax Movement
-  document.addEventListener('mousemove', (e) => {
-    const x = (window.innerWidth / 2 - e.clientX) / 45;
-    const y = (window.innerHeight / 2 - e.clientY) / 45;
-    
-    const bleed = document.getElementById('bleed');
-    const stage = document.getElementById('stage');
-    
-    if (bleed) {
-      bleed.style.transform = `translate3d(${-x * 0.5}px, ${-y * 0.5}px, 0) scale(1.02)`;
+  function playBrushNoise() {
+    if (!audioCtx) return;
+    const bufferSize = audioCtx.sampleRate * 2.5; // 2.5s duration
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
     }
-    if (stage) {
-      stage.style.transform = `translate3d(${x * 0.8}px, ${y * 0.8}px, 0)`;
+    
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(180, audioCtx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(650, audioCtx.currentTime + 1.2);
+    filter.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 2.5);
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.015, audioCtx.currentTime + 1.0);
+    gainNode.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 2.5);
+    
+    source.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    source.start();
+  }
+
+  /* ── 2D Displacement Text Engine (Writes to WebGL Map) ── */
+  const dispCanvas = document.createElement('canvas');
+  dispCanvas.width = 1024;
+  dispCanvas.height = 1024;
+  const dispCtx = dispCanvas.getContext('2d');
+
+  class Drip {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.length = Math.random() * 70 + 20;
+      this.currentY = y;
+      this.speed = Math.random() * 1.2 + 0.4;
+      this.opacity = 1.0;
+    }
+    update() {
+      this.currentY += this.speed;
+      this.opacity -= 0.008;
+    }
+    draw(ctx) {
+      ctx.strokeStyle = `rgba(255, 0, 0, ${this.opacity * 0.65})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.x, this.currentY);
+      ctx.stroke();
+    }
+  }
+
+  let drips = [];
+  let line1_progress = 0.0;
+  let line2_progress = 0.0;
+  let sig_progress = 0.0;
+  let timeVal = 0.0;
+  let lastCharIndex = -1;
+
+  function updateDripsAndCanvas(mouseX, mouseY) {
+    timeVal += 0.016;
+
+    // Clear with solid black (zero height values)
+    dispCtx.fillStyle = 'black';
+    dispCtx.fillRect(0, 0, dispCanvas.width, dispCanvas.height);
+
+    // Draw active dripping streams (Red Channel)
+    drips.forEach(d => {
+      d.update();
+      d.draw(dispCtx);
+    });
+    drips = drips.filter(d => d.opacity > 0);
+
+    // Draw mouse smear (Green Channel)
+    dispCtx.fillStyle = 'rgba(0, 255, 0, 0.12)';
+    dispCtx.beginPath();
+    dispCtx.arc(mouseX * 1024, (1.0 - mouseY) * 1024, 50, 0, Math.PI * 2);
+    dispCtx.fill();
+
+    // Trigger Writing Sequence (Red Channel)
+    dispCtx.fillStyle = 'rgba(255, 0, 0, 1)';
+    dispCtx.shadowColor = 'rgba(255, 0, 0, 1)';
+    dispCtx.shadowBlur = 12;
+    dispCtx.font = '300 40px "Fraunces"';
+    dispCtx.textAlign = 'left';
+
+    const text1 = "Talent is just the starting point.";
+    const text2 = "Will is what finishes it.";
+
+    let activeFingerX = 512;
+    let activeFingerY = 512;
+    let currentlyWriting = false;
+
+    // Line 1 Timeline
+    if (timeVal > 1.8) {
+      if (line1_progress < 1.0) {
+        line1_progress += 0.0042;
+        if (line1_progress > 1.0) line1_progress = 1.0;
+      }
+      const count1 = Math.floor(text1.length * line1_progress);
+      const textToDraw = text1.substring(0, count1);
+      const w1 = dispCtx.measureText(text1).width;
+      const startX1 = 512 - w1 / 2;
+      dispCtx.fillText(textToDraw, startX1, 460);
+
+      activeFingerX = startX1 + dispCtx.measureText(textToDraw).width;
+      activeFingerY = 460;
+      currentlyWriting = line1_progress < 1.0;
+
+      // Spawn drip on character reveal
+      if (count1 > lastCharIndex && count1 < text1.length) {
+        drips.push(new Drip(activeFingerX, activeFingerY));
+        lastCharIndex = count1;
+      }
+    }
+
+    // Line 2 Timeline
+    if (line1_progress >= 1.0) {
+      if (line2_progress < 1.0) {
+        line2_progress += 0.005;
+        if (line2_progress > 1.0) line2_progress = 1.0;
+      }
+      const count2 = Math.floor(text2.length * line2_progress);
+      const textToDraw2 = text2.substring(0, count2);
+      const w2 = dispCtx.measureText(text2).width;
+      const startX2 = 512 - w2 / 2;
+      dispCtx.fillText(textToDraw2, startX2, 530);
+
+      activeFingerX = startX2 + dispCtx.measureText(textToDraw2).width;
+      activeFingerY = 530;
+      currentlyWriting = line2_progress < 1.0;
+
+      const offsetIdx = count2 + text1.length;
+      if (offsetIdx > lastCharIndex && count2 < text2.length) {
+        drips.push(new Drip(activeFingerX, activeFingerY));
+        lastCharIndex = offsetIdx;
+      }
+    }
+
+    // Drawing tip glowing contact dot
+    if (currentlyWriting) {
+      dispCtx.shadowBlur = 24;
+      dispCtx.fillStyle = 'rgba(255, 0, 0, 0.9)';
+      dispCtx.beginPath();
+      dispCtx.arc(activeFingerX, activeFingerY, 14, 0, Math.PI * 2);
+      dispCtx.fill();
+    }
+  }
+
+  /* ── WebGL Three.js Scene Setup ── */
+  let renderer, scene, camera, material, textureMesh;
+  let dispTexture;
+  let rawMouseX = 0.5, rawMouseY = 0.5;
+  let smoothMouseX = 0.5, smoothMouseY = 0.5;
+  let blinkVal = 0.0, blinkCounter = 0;
+
+  const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    uniform sampler2D u_portrait;
+    uniform sampler2D u_displacement;
+    uniform float u_time;
+    uniform vec2 u_mouse;
+    uniform vec2 u_uv_scale;
+    uniform float u_blink;
+    varying vec2 vUv;
+
+    // Simple procedural wave noise for wet oil paint currents
+    float waveNoise(vec2 p) {
+      float t = u_time * 0.02;
+      float n = sin(p.x * 6.0 + t) * cos(p.y * 6.0 + t);
+      n += sin(p.x * 12.0 - t) * cos(p.y * 10.0 + t) * 0.5;
+      n += sin(p.x * 24.0 + t * 1.5) * cos(p.y * 18.0 - t * 1.5) * 0.25;
+      return n / 1.75;
+    }
+
+    void main() {
+      // Cover mapping for screen dimensions
+      vec2 uv = (vUv - 0.5) * u_uv_scale + 0.5;
+
+      // Micro undulations inside the canvas
+      float n = waveNoise(uv);
+      vec2 noiseOffset = vec2(n, waveNoise(uv + vec2(13.0, 37.0))) * 0.003;
+
+      // Sample displacement map values
+      vec2 texel = vec2(1.0 / 1024.0);
+      float dC = texture2D(u_displacement, vUv).r; // Text + Drips
+      float dM = texture2D(u_displacement, vUv).g; // Mouse smear
+
+      // Height gradient for normal ridging maps
+      float hL = texture2D(u_displacement, vUv - vec2(texel.x, 0.0)).r + texture2D(u_displacement, vUv - vec2(texel.x, 0.0)).g * 0.45;
+      float hR = texture2D(u_displacement, vUv + vec2(texel.x, 0.0)).r + texture2D(u_displacement, vUv + vec2(texel.x, 0.0)).g * 0.45;
+      float hD = texture2D(u_displacement, vUv - vec2(0.0, texel.y)).r + texture2D(u_displacement, vUv - vec2(0.0, texel.y)).g * 0.45;
+      float hU = texture2D(u_displacement, vUv + vec2(0.0, texel.y)).r + texture2D(u_displacement, vUv + vec2(0.0, texel.y)).g * 0.45;
+      
+      // Calculate normal representation vector
+      vec3 normal = normalize(vec3(hL - hR, hD - hU, 0.075));
+
+      // Push paint outward around ridges
+      vec2 pushDir = vec2(hR - hL, hU - hD) * 0.015;
+
+      // Face gaze tracking shift (broad radius around eye line y:0.62)
+      vec2 faceCenter = vec2(0.5, 0.62);
+      float distToFace = distance(uv, faceCenter);
+      vec2 gazeOffset = vec2(0.0);
+      if (distToFace < 0.28) {
+        float fWeight = smoothstep(0.28, 0.0, distToFace);
+        gazeOffset = (u_mouse - 0.5) * 0.011 * fWeight;
+      }
+
+      // Eyelid blinking vertical pinch centered around y: 0.635
+      vec2 finalUV = uv + noiseOffset - pushDir + gazeOffset;
+      if (u_blink > 0.0) {
+        float eyeBand = smoothstep(0.035, 0.0, abs(uv.y - 0.635)) * smoothstep(0.18, 0.0, abs(uv.x - 0.5));
+        finalUV.y = mix(finalUV.y, 0.635, u_blink * eyeBand * 0.9);
+      }
+
+      vec4 portraitColor = texture2D(u_portrait, finalUV);
+
+      // Gold under-painting reflections
+      vec3 goldBase = vec3(0.92, 0.72, 0.32);
+      vec3 lightDir = normalize(vec3(u_mouse - 0.5, 1.3));
+      vec3 viewDir = vec3(0.0, 0.0, 1.0);
+      float spec = pow(max(dot(reflect(-lightDir, normal), viewDir), 0.0), 32.0);
+      vec3 goldColor = goldBase + vec3(spec * 0.5);
+
+      // Blend paint and gold
+      vec4 finalColor = mix(portraitColor, vec4(goldColor, 1.0), dC * 0.95);
+
+      // Ridges specular gloss
+      float paintSpec = pow(max(dot(reflect(-lightDir, normal), viewDir), 0.0), 10.0);
+      finalColor.rgb += vec3(paintSpec * 0.16 * (dC + dM));
+
+      gl_FragColor = finalColor;
+    }
+  `;
+
+  // Compute cover dimensions for custom uniforms
+  function calculateUVScale() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const aspectWindow = w / h;
+    const aspectImg = 1200 / 1600; // Expected Toji image ratio
+
+    let scaleX = 1;
+    let scaleY = 1;
+    if (aspectWindow > aspectImg) {
+      scaleY = aspectWindow / aspectImg;
+    } else {
+      scaleX = aspectImg / aspectWindow;
+    }
+    return [scaleX, scaleY];
+  }
+
+  function initWebGL() {
+    const canvas = document.getElementById('webgl-canvas');
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    scene = new THREE.Scene();
+    camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    const img = document.getElementById('portrait-img');
+    const portraitTexture = new THREE.Texture(img);
+    portraitTexture.minFilter = THREE.LinearFilter;
+    portraitTexture.magFilter = THREE.LinearFilter;
+
+    if (img.complete) {
+      portraitTexture.needsUpdate = true;
+    } else {
+      img.onload = () => { portraitTexture.needsUpdate = true; };
+    }
+
+    dispTexture = new THREE.CanvasTexture(dispCanvas);
+    dispTexture.minFilter = THREE.LinearFilter;
+    dispTexture.magFilter = THREE.LinearFilter;
+
+    const scales = calculateUVScale();
+
+    material = new THREE.ShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      uniforms: {
+        u_portrait: { value: portraitTexture },
+        u_displacement: { value: dispTexture },
+        u_time: { value: 0 },
+        u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+        u_uv_scale: { value: new THREE.Vector2(scales[0], scales[1]) },
+        u_blink: { value: 0 }
+      }
+    });
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    textureMesh = new THREE.Mesh(geometry, material);
+    scene.add(textureMesh);
+  }
+
+  function animateWebGL() {
+    requestAnimationFrame(animateWebGL);
+
+    // Smooth mouse coordinates tracking
+    smoothMouseX += (rawMouseX - smoothMouseX) * 0.08;
+    smoothMouseY += (rawMouseY - smoothMouseY) * 0.08;
+
+    // Blink controller (eye pinch)
+    blinkCounter++;
+    if (blinkCounter > 260) {
+      if (blinkCounter < 272) {
+        blinkVal = Math.sin((blinkCounter - 260) * Math.PI / 12);
+      } else {
+        blinkVal = 0.0;
+        blinkCounter = 0;
+      }
+    }
+
+    // Sync textures & values
+    updateDripsAndCanvas(smoothMouseX, smoothMouseY);
+    dispTexture.needsUpdate = true;
+
+    if (material) {
+      material.uniforms.u_time.value = performance.now() * 0.001;
+      material.uniforms.u_mouse.value.set(smoothMouseX, smoothMouseY);
+      material.uniforms.u_blink.value = blinkVal;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  // Handle Resize
+  window.addEventListener('resize', () => {
+    if (renderer && material) {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      const scales = calculateUVScale();
+      material.uniforms.u_uv_scale.value.set(scales[0], scales[1]);
     }
   });
 
-  // Ambient floating ink/sparkle motes
-  const createSparkles = () => {
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.inset = '0';
-    container.style.pointerEvents = 'none';
-    container.style.zIndex = '1';
-    document.body.appendChild(container);
-
-    const colors = ['#8B5CF6', '#F472B6', '#06B6D4']; // Iris, Petal Flame, Arctic Pulse
-    for (let i = 0; i < 24; i++) {
-      const sparkle = document.createElement('div');
-      const size = Math.random() * 4 + 1.5;
-      sparkle.style.width = `${size}px`;
-      sparkle.style.height = `${size}px`;
-      sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
-      sparkle.style.borderRadius = '50%';
-      sparkle.style.position = 'absolute';
-      sparkle.style.top = `${Math.random() * 100}%`;
-      sparkle.style.left = `${Math.random() * 100}%`;
-      sparkle.style.opacity = Math.random() * 0.22 + 0.05;
-      sparkle.style.filter = 'blur(0.5px)';
-      const animName = Math.random() > 0.5 ? 'sparkleFloat-1' : 'sparkleFloat-2';
-      sparkle.style.animation = `${animName} ${Math.random() * 10 + 8}s ease-in-out infinite`;
-      sparkle.style.animationDelay = `${Math.random() * -10}s`;
-      container.appendChild(sparkle);
-    }
-  };
-
-  createSparkles();
-
-  // Interactive Physics Particle Canvas for Quote Text
-  const initCanvasParticles = () => {
-    const canvas = document.getElementById('quote-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+  // Track cursor
+  document.addEventListener('mousemove', (e) => {
+    rawMouseX = e.clientX / window.innerWidth;
+    rawMouseY = 1.0 - (e.clientY / window.innerHeight);
     
-    const offscreen = document.createElement('canvas');
-    const offCtx = offscreen.getContext('2d');
-    offscreen.width = 900;
-    offscreen.height = 160;
-    
-    // Draw text to offscreen canvas
-    offCtx.fillStyle = '#ffffff';
-    offCtx.textAlign = 'left';
-    offCtx.textBaseline = 'middle';
-    
-    // We want "Fraunces" normal weight
-    offCtx.font = 'normal 400 34px "Fraunces", serif';
-    
-    const text1 = "Talent is just the starting ";
-    const text2 = "point.";
-    const w1 = offCtx.measureText(text1).width;
-    const w2 = offCtx.measureText(text2).width;
-    const totalW = w1 + w2;
-    
-    const startX = 450 - totalW / 2;
-    offCtx.fillText(text1, startX, 48);
-    
-    // Accent text
-    offCtx.fillStyle = '#feffff';
-    offCtx.fillText(text2, startX + w1, 48);
-    
-    // Accent underline
-    offCtx.fillRect(startX + w1, 70, w2, 2);
-    
-    // Line 2
-    offCtx.fillStyle = '#ffffff';
-    offCtx.textAlign = 'center';
-    offCtx.fillText("Will is what finishes it.", 450, 108);
-    
-    // Scan pixels
-    const imgData = offCtx.getImageData(0, 0, 900, 160);
-    const data = imgData.data;
-    const particles = [];
-    const step = 3;
-    
-    for (let y = 0; y < 160; y += step) {
-      for (let x = 0; x < 900; x += step) {
-        const idx = (y * 900 + x) * 4;
-        const r = data[idx];
-        const g = data[idx+1];
-        const b = data[idx+2];
-        const a = data[idx+3];
-        
-        if (a > 120) {
-          const isAccent = (r === 254 && g === 255 && b === 255);
-          particles.push({
-            x: Math.random() * 900,
-            y: Math.random() * 160,
-            originX: x,
-            originY: y,
-            vx: (Math.random() - 0.5) * 4,
-            vy: (Math.random() - 0.5) * 4,
-            isAccent: isAccent,
-            size: Math.random() * 1.2 + 1.0,
-            density: Math.random() * 18 + 8
-          });
-        }
+    // Play sound on contact
+    if (audioCtx) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      if (Math.random() < 0.04) {
+        playBrushNoise();
       }
     }
+  });
+
+  /* ── Fallback Setup (Used only if WebGL breaks) ── */
+  function initFallbackCSS() {
+    const fallQuote = document.getElementById('fallback-quote');
+    if (!fallQuote) return;
     
-    let mouse = { x: -1000, y: -1000, active: false };
+    const text = fallQuote.innerText.trim();
+    fallQuote.innerHTML = '';
+    const words = text.split(' ');
     
-    window.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-      mouse.y = ((e.clientY - rect.top) / rect.height) * canvas.height;
-      mouse.active = true;
-    });
-    
-    window.addEventListener('mouseleave', () => {
-      mouse.active = false;
-    });
-    
-    // Support touch devices
-    window.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = ((e.touches[0].clientX - rect.left) / rect.width) * canvas.width;
-        mouse.y = ((e.touches[0].clientY - rect.top) / rect.height) * canvas.height;
-        mouse.active = true;
+    words.forEach(wText => {
+      const wSpan = document.createElement('span');
+      wSpan.className = 'word';
+      if (wText.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toUpperCase() === 'POINT') {
+        wSpan.classList.add('word-accent');
       }
-    }, { passive: true });
-    window.addEventListener('touchend', () => {
-      mouse.active = false;
-    });
-    
-    const stiffness = 0.09;
-    const damping = 0.84;
-    const repulsionRadius = 75;
-    const repulsionForce = 60;
-    
-    let active = true;
-    
-    const animate = () => {
-      if (!active) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        
-        // Return to origin spring force
-        let dx = p.originX - p.x;
-        let dy = p.originY - p.y;
-        p.vx += dx * stiffness;
-        p.vy += dy * stiffness;
-        
-        // Mouse interaction
-        if (mouse.active) {
-          let mdx = p.x - mouse.x;
-          let mdy = p.y - mouse.y;
-          let distSq = mdx * mdx + mdy * mdy;
-          let dist = Math.sqrt(distSq);
-          
-          if (dist < repulsionRadius) {
-            let force = (repulsionRadius - dist) / repulsionRadius;
-            let angle = Math.atan2(mdy, mdx);
-            
-            p.vx += Math.cos(angle) * force * repulsionForce * (1 / p.density) * 10;
-            p.vy += Math.sin(angle) * force * repulsionForce * (1 / p.density) * 10;
-          }
+      for (let i = 0; i < wText.length; i++) {
+        const cSpan = document.createElement('span');
+        cSpan.className = 'char';
+        cSpan.innerText = wText[i];
+        if (wSpan.classList.contains('word-accent')) {
+          cSpan.classList.add('accent-trigger');
         }
-        
-        // Brownian noise (shimmer)
-        p.vx += (Math.random() - 0.5) * 0.15;
-        p.vy += (Math.random() - 0.5) * 0.15;
-        
-        p.vx *= damping;
-        p.vy *= damping;
-        
-        p.x += p.vx;
-        p.y += p.vy;
-        
-        // Draw particle
-        if (p.isAccent) {
-          ctx.fillStyle = '#F472B6'; // Petal Flame
+        wSpan.appendChild(cSpan);
+      }
+      fallQuote.appendChild(wSpan);
+    });
+
+    // Simple fallback cursor hover behavior
+    document.addEventListener('mousemove', (e) => {
+      const chars = document.querySelectorAll('.char');
+      chars.forEach(char => {
+        const rect = char.getBoundingClientRect();
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 150) {
+          const factor = 1 - (dist / 150);
+          char.style.fontWeight = 200 + Math.round(700 * factor);
+          char.style.transform = `scale(${1 + 0.15*factor})`;
         } else {
-          // Iris to Arctic Pulse color scheme based on origin x position
-          const ratio = p.originX / canvas.width;
-          if (ratio < 0.42) {
-            ctx.fillStyle = '#8B5CF6'; // Iris
-          } else if (ratio < 0.72) {
-            ctx.fillStyle = '#F2F2FA'; // Stellar White
-          } else {
-            ctx.fillStyle = '#06B6D4'; // Arctic Pulse
-          }
+          char.style.fontWeight = '200';
+          char.style.transform = 'scale(1)';
         }
-        
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      
-      requestAnimationFrame(animate);
-    };
-    
-    // Start animation loop
-    animate();
-    
-    // Allow clean dynamic scale or resize
-    window.addEventListener('resize', () => {
-      mouse.active = false;
-    });
-  };
-
-  // Run when fonts are fully loaded to ensure precise layout measurements
-  if (document.fonts) {
-    document.fonts.ready.then(() => {
-      setTimeout(initCanvasParticles, 100);
-    });
-  } else {
-    window.addEventListener('load', () => {
-      setTimeout(initCanvasParticles, 100);
+      });
     });
   }
+
+  // Dismiss flow
+  const dismiss = () => {
+    // Synth fadeout
+    if (audioCtx) {
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+    }
+
+    ['webgl-canvas', 'fallback-ui', 'skip-btn', 'hud-attribution', '.progress-container', '.big-quote'].forEach(selector => {
+      let el = document.getElementById(selector);
+      if (!el) el = document.querySelector(selector);
+      if (el) el.classList.add('preloader-out');
+    });
+  };
+
+  document.getElementById('skip-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    dismiss();
+  });
+  document.body.addEventListener('click', () => {
+    initAudio(); // Audio context must rise on user interaction bounds
+    dismiss();
+  });
+
+  // Entry Check
+  window.onload = () => {
+    try {
+      if (typeof THREE === 'undefined') {
+        throw new Error('Three.js failed to fetch');
+      }
+      initWebGL();
+      animateWebGL();
+    } catch(e) {
+      console.warn("WebGL initialization failed, falling back:", e);
+      const canvasEl = document.getElementById('webgl-canvas');
+      if (canvasEl) canvasEl.style.display = 'none';
+      const fallbackEl = document.getElementById('fallback-ui');
+      if (fallbackEl) fallbackEl.style.display = 'flex';
+      initFallbackCSS();
+    }
+  };
 </script>
 
 </body>
