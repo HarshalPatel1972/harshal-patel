@@ -30,6 +30,7 @@ const LanguageSelector = dynamic(() => import("@/components/LanguageSelector").t
 const NewNavbar = dynamic(() => import("@/components/new/Navbar").then(mod => mod.Navbar), { ssr: false });
 const NewSystemBanner = dynamic(() => import("@/components/new/SystemBanner").then(mod => mod.SystemBanner), { ssr: false });
 const NewHero = dynamic(() => import("@/components/new/Hero").then(mod => mod.Hero), { ssr: false });
+const NewManifesto = dynamic(() => import("@/components/new/Manifesto").then(mod => mod.Manifesto), { ssr: false });
 const NewProjects = dynamic(() => import("@/components/new/Projects").then(mod => mod.Projects), { ssr: false });
 const NewAbout = dynamic(() => import("@/components/new/About").then(mod => mod.About), { ssr: false });
 const NewContact = dynamic(() => import("@/components/new/Contact").then(mod => mod.Contact), { ssr: false });
@@ -120,6 +121,7 @@ function HomeContent() {
             <div className="pt-20" />
             
             <NewHero />
+            <NewManifesto />
             <NewProjects />
             <NewAbout />
             <NewContact />
