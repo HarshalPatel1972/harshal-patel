@@ -57,7 +57,7 @@ export function Footer() {
             <img
               src="/TOJI FUSHIGURO.png"
               alt="Toji Fushiguro in the studio"
-              className="h-[200px] w-auto object-contain filter saturate-[0.4] brightness-[0.8] transform translate-y-[24px]"
+              className="h-[200px] w-auto object-contain filter brightness-[0.85] transform translate-y-[24px]"
             />
           </div>
         </div>

@@ -442,13 +442,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
         vec4 portraitColor = texture2D(u_portrait, finalUV);
 
-        // Apply Grayscale
-        float gray = dot(portraitColor.rgb, vec3(0.299, 0.587, 0.114));
+        // Keep in color (dimmed slightly)
+        vec3 color = portraitColor.rgb;
 
         // Dim & Tint (Overlay effect matching var(--bg-abyss))
-        vec3 targetBg = vec3(gray) * u_opacity;
+        vec3 targetBg = color * u_opacity;
         vec3 tintColor = vec3(0.012, 0.012, 0.02);
-        vec3 dimPortrait = mix(tintColor, targetBg, 0.7);
+        vec3 dimPortrait = mix(tintColor, targetBg, 0.82);
 
         // Vignette
         vec2 distFromCenter = uv - 0.5;
