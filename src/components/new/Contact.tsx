@@ -264,8 +264,9 @@ export function Contact() {
               <div className="flex flex-col w-full border-b border-[#8A7F72]/20">
                 {links.map((link, idx) => {
                   const isFeedback = link.id === "feedback";
-                  const displayLabel = link.label.split(" · ")[0];
-                  const labelSuffix = link.label.split(" · ")[1];
+                  const separator = link.label.includes(" · ") ? " · " : " — ";
+                  const displayLabel = link.label.split(separator)[0];
+                  const labelSuffix = link.label.split(separator)[1];
 
                   const cellContent = (
                     <div
@@ -275,61 +276,64 @@ export function Contact() {
                       onMouseLeave={() => {
                         if (isFeedback) setIsPaused(false);
                       }}
-                      className="relative py-7 flex flex-col sm:flex-row sm:items-center justify-between group cursor-pointer border-t border-[#8A7F72]/20 transition-all select-none text-left w-full gap-4"
+                      className="relative py-7 flex flex-row items-center justify-between group cursor-pointer border-t border-[#8A7F72]/20 transition-all select-none text-left w-full gap-4"
                     >
-                      {/* Index & Label */}
-                      <div className="flex items-center gap-2 shrink-0 sm:w-44">
-                        <span 
-                          className="text-[11px] font-bold font-mono uppercase tracking-wider"
-                          style={{ color: "var(--blueprint-blue)", fontFamily: "var(--font-jetbrains-mono), monospace" }}
-                        >
-                          {displayLabel}
-                        </span>
-                        <span className="text-[#8A7F72]/40 font-mono text-[11px] font-bold">·</span>
-                        <span 
-                          className="text-[11px] font-bold font-mono uppercase tracking-wider text-[var(--muted-label)]"
-                          style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
-                        >
-                          {labelSuffix}
-                        </span>
+                      {/* Left: Text Content Area */}
+                      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                        {/* Index & Label */}
+                        <div className="flex items-center gap-2 shrink-0 sm:w-44">
+                          <span 
+                            className="text-[11px] font-bold font-mono uppercase tracking-wider"
+                            style={{ color: "var(--blueprint-blue)", fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                          >
+                            {displayLabel}
+                          </span>
+                          <span className="text-[#8A7F72]/40 font-mono text-[11px] font-bold">·</span>
+                          <span 
+                            className="text-[11px] font-bold font-mono uppercase tracking-wider text-[var(--muted-label)]"
+                            style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                          >
+                            {labelSuffix}
+                          </span>
+                        </div>
+
+                        {/* Main Address / Value */}
+                        <div className="flex-1 min-w-0">
+                          <h4 
+                            className={`text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors break-all ${
+                              isFeedback && isGlitching ? "opacity-55" : ""
+                            }`}
+                            style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
+                          >
+                            {isFeedback && link.values ? (
+                              <span className="relative block whitespace-nowrap">
+                                {isGlitching ? (
+                                  <>
+                                    <span className="absolute left-0 top-0 opacity-0">{link.values[prevIdx]}</span>
+                                    <span>{link.values[(prevIdx + 1) % 3]}</span>
+                                  </>
+                                ) : (
+                                  <span>{link.values[loopIdx]}</span>
+                                )}
+                              </span>
+                            ) : (
+                              <span>{link.value}</span>
+                            )}
+                          </h4>
+                        </div>
+
+                        {/* Description */}
+                        <div className="sm:px-4 shrink-0">
+                          <span 
+                            className="text-[13px] font-medium transition-colors text-[var(--muted-label)] group-hover:text-[var(--sumi-ink)]"
+                            style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+                          >
+                            {link.desc}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Main Address / Value */}
-                      <div className="flex-1 min-w-0">
-                        <h4 
-                          className={`text-2xl sm:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors ${
-                            isFeedback && isGlitching ? "opacity-55" : ""
-                          }`}
-                          style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
-                        >
-                          {isFeedback && link.values ? (
-                            <span className="relative block whitespace-nowrap">
-                              {isGlitching ? (
-                                <>
-                                  <span className="absolute left-0 top-0 opacity-0">{link.values[prevIdx]}</span>
-                                  <span>{link.values[(prevIdx + 1) % 3]}</span>
-                                </>
-                              ) : (
-                                <span>{link.values[loopIdx]}</span>
-                              )}
-                            </span>
-                          ) : (
-                            <span>{link.value}</span>
-                          )}
-                        </h4>
-                      </div>
-
-                      {/* Description */}
-                      <div className="sm:px-4 shrink-0">
-                        <span 
-                          className="text-[13px] font-medium transition-colors text-[var(--muted-label)] group-hover:text-[var(--sumi-ink)]"
-                          style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-                        >
-                          {link.desc}
-                        </span>
-                      </div>
-
-                      {/* Square Arrow Button */}
+                      {/* Right: Square Arrow Button */}
                       <div className="shrink-0 flex items-center justify-center">
                         <div
                           className="w-10 h-10 bg-[var(--forge-orange)] text-white flex items-center justify-center transition-transform duration-300 group-hover:-rotate-45"
