@@ -8,8 +8,6 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
   const { language } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!isVisible) return null;
-
   const getNoticeText = () => {
     switch(language) {
       case 'ja': return "このポートフォリオは現在再設計中です。一部の機能が利用できない場合があります。ご不便をおかけしますが、ご了承ください。";
@@ -68,6 +66,8 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
     }
     return () => document.documentElement.classList.remove('is-overlay-active');
   }, [isExpanded]);
+
+  if (!isVisible) return null;
 
   return (
     <>
