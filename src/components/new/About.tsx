@@ -254,10 +254,13 @@ export function About() {
   const [showPressureVideo, setShowPressureVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const gaugesRef = useRef<HTMLDivElement>(null);
-  const mountedRef = useRef(false);
+  const [mounted, setMounted] = useState(false);
   const { triggerSignal } = useSignals();
 
-  if (typeof window !== "undefined") mountedRef.current = true;
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const el = gaugesRef.current;
@@ -361,7 +364,7 @@ export function About() {
       </div>
 
       {/* Pressure video portal */}
-      {mountedRef.current && createPortal(
+      {mounted && createPortal(
         <div className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-700 ${showPressureVideo ? "bg-black/95 opacity-100 backdrop-blur-2xl pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
           <div className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white shadow-[0_0_100px_var(--forge-orange)] transition-transform duration-700 ${showPressureVideo ? "scale-100 translate-y-0" : "scale-50 translate-y-20"}`}>
             <video

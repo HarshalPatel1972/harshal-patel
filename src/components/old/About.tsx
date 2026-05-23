@@ -184,7 +184,10 @@ export function About() {
   const skillsRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(t);
+  }, []);
 
   // Intersection Observer for preloading
   useEffect(() => {
@@ -344,7 +347,7 @@ export function About() {
                   </p>
                   <div className="mt-8 pt-6 border-t-2 border-black/10 flex flex-col md:flex-row gap-6">
                      <div className="flex-1">
-                       <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">// EDUCATION_HISTORY</div>
+                       <div className="text-[10px] font-mono font-bold text-[var(--accent-blood)] uppercase tracking-[0.3em] mb-2">{"// EDUCATION_HISTORY"}</div>
                        <div className="font-black font-display text-xl md:text-2xl uppercase italic">
                          {currentProfile.education.school}
                        </div>

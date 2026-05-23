@@ -12,8 +12,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
-    setMounted(true);
-    setIsMobile(window.innerWidth < 768);
+    const t = setTimeout(() => {
+      setMounted(true);
+      setIsMobile(window.innerWidth < 768);
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
   
   const containerRef = useRef<HTMLDivElement>(null);
@@ -94,13 +97,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     };
   }, [language, activeQuote]);
 
-  // Handle case where quoteData is null (safety)
-  if (!quoteData) return null;
-
-  const { text: quote, author: source, image: bgImage, overrideOpacity } = quoteData;
+  const { text: quote, author: source, image: bgImage, overrideOpacity } = quoteData || { text: "", author: "", image: "", overrideOpacity: undefined };
   const author = source; 
 
-  const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
+  const wordCount = quote ? quote.split(/\s+/).filter(w => w.length > 0).length : 0;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
 
   const targetBgOpacity = overrideOpacity ?? Math.min(0.15, wordCount * 0.02);
@@ -184,11 +184,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       });
       return elements;
     }
-  }, [quote, language]);
+  }, [quote, language, isMobile]);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (complete || !mounted) return;
@@ -312,7 +309,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     };
   }, [complete, onComplete, quote, readTime, language, mounted]);
 
-  if (complete) return null;
+  if (!quoteData || complete) return null;
 
   return (
     <div 

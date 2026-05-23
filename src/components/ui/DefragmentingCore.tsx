@@ -1,20 +1,36 @@
 import React, { useMemo } from 'react';
 
+const getSeededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
 const DefragmentingCore: React.FC = () => {
   // Generate 150 chaotic shards for more density
   const shards = useMemo(() => {
     return Array.from({ length: 150 }).map((_, i) => {
-      const angle = Math.random() * Math.PI * 2;
-      // Increased distance to cover much larger area of the viewport
-      const distance = 150 + Math.random() * 850;
-      const size = 6 + Math.random() * 24;
-      const duration = 4 + Math.random() * 6;
-      const delay = Math.random() * -12;
+      const r1 = getSeededRandom(i * 7 + 1);
+      const r2 = getSeededRandom(i * 13 + 2);
+      const r3 = getSeededRandom(i * 19 + 3);
+      const r4 = getSeededRandom(i * 23 + 4);
+      const r5 = getSeededRandom(i * 29 + 5);
+      const r6 = getSeededRandom(i * 31 + 6);
+      const r7 = getSeededRandom(i * 37 + 7);
+      const r8 = getSeededRandom(i * 41 + 8);
+      const r9 = getSeededRandom(i * 43 + 9);
+      const r10 = getSeededRandom(i * 47 + 10);
+      const r11 = getSeededRandom(i * 53 + 11);
+
+      const angle = r1 * Math.PI * 2;
+      const distance = 150 + r2 * 850;
+      const size = 6 + r3 * 24;
+      const duration = 4 + r4 * 6;
+      const delay = r5 * -12;
       
       // Random jagged triangle points
-      const p1 = `${Math.random() * 100},${Math.random() * 100}`;
-      const p2 = `${Math.random() * 100},${Math.random() * 100}`;
-      const p3 = `${Math.random() * 100},${Math.random() * 100}`;
+      const p1 = `${r6 * 100},${r7 * 100}`;
+      const p2 = `${r8 * 100},${r9 * 100}`;
+      const p3 = `${r10 * 100},${r11 * 100}`;
       
       return { angle, distance, size, duration, delay, points: `${p1} ${p2} ${p3}`, id: i };
     });

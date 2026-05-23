@@ -69,7 +69,9 @@ const ExorcistsScroll: React.FC = () => {
   const [showShutters, setShowShutters] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setTimeout(() => {
+      setMounted(true);
+    }, 0);
   }, []);
 
   // GLOBAL SLEEP MODE SIGNALING 💤
@@ -121,16 +123,9 @@ const ExorcistsScroll: React.FC = () => {
         : ["0xINIT", "0xMEM", "0xSYS", "0xEXEC", "0xVOID", "0xCORE"][i % 6],
       delay: i * -1.25 
     }));
-  }, []);
+  }, [language]);
 
-  const SystemNodes = () => (
-    <>
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
-    </>
-  );
+
 
   const [isInView, setIsInView] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -211,7 +206,10 @@ const ExorcistsScroll: React.FC = () => {
                 <div className="absolute inset-0 blood-grid opacity-10" />
                 <div className="absolute inset-0 red-halftone opacity-5" />
                 
-                <SystemNodes />
+                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
+                <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
+                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[var(--accent-blood)] z-30 opacity-80" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[var(--accent-blood)] z-30 opacity-80" />
                 
                 {activeCard.isAssembled && <CharacterInscription text={activeCard.fact} language={language} />}
              </div>

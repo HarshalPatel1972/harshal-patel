@@ -18,13 +18,15 @@ export function DesignVersionProvider({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     const saved = localStorage.getItem("designVersion") as DesignVersion;
-    if (saved === "old" || saved === "new") {
-      setDesignVersionState(saved);
-    } else {
-      // Default to "old" (V1 is the production design)
-      localStorage.setItem("designVersion", "old");
-    }
-    setIsMounted(true);
+    setTimeout(() => {
+      if (saved === "old" || saved === "new") {
+        setDesignVersionState(saved);
+      } else {
+        // Default to "old" (V1 is the production design)
+        localStorage.setItem("designVersion", "old");
+      }
+      setIsMounted(true);
+    }, 0);
   }, []);
 
   const setDesignVersion = (version: DesignVersion) => {

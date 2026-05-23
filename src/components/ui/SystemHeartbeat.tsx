@@ -19,15 +19,19 @@ const SystemHeartbeat: React.FC = () => {
   }, []);
 
   // Generate background "Nerve Network" lines
-  const nerves = useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => ({
-      x1: Math.random() * 1000,
-      y1: Math.random() * 1000,
-      x2: Math.random() * 1000,
-      y2: Math.random() * 1000,
-      duration: 5 + Math.random() * 5,
-      delay: Math.random() * -5
-    }));
+  const [nerves, setNerves] = useState<Array<{x1: number, y1: number, x2: number, y2: number, duration: number, delay: number}>>([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setNerves(Array.from({ length: 15 }).map(() => ({
+        x1: Math.random() * 1000,
+        y1: Math.random() * 1000,
+        x2: Math.random() * 1000,
+        y2: Math.random() * 1000,
+        duration: 5 + Math.random() * 5,
+        delay: Math.random() * -5
+      })));
+    }, 0);
   }, []);
 
   return (

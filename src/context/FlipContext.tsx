@@ -61,7 +61,7 @@ export function FlipProvider({ children }: { children: React.ReactNode }) {
 
   // Listen for back-navigation
   React.useEffect(() => {
-    const handlePageShow = (event: any) => {
+    const handlePageShow = (event: PageTransitionEvent) => {
       if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
         resetTransition();
       }

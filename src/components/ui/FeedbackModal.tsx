@@ -36,16 +36,17 @@ export function FeedbackModal({ isOpen, onClose, initialType = "SUBMIT REVIEW" }
   // Load User Data & History
   useEffect(() => {
     const savedName = localStorage.getItem("mappa-username");
-    if (savedName) setUserName(savedName);
-
     const savedHistory = localStorage.getItem("mappa-signals");
-    if (savedHistory) {
-      try {
-        setHistory(JSON.parse(savedHistory));
-      } catch (e) {
-        console.error("Failed to load history");
+    setTimeout(() => {
+      if (savedName) setUserName(savedName);
+      if (savedHistory) {
+        try {
+          setHistory(JSON.parse(savedHistory));
+        } catch (e) {
+          console.error("Failed to load history");
+        }
       }
-    }
+    }, 0);
   }, []);
 
   // 2. ANIMATIONS
@@ -202,7 +203,7 @@ export function FeedbackModal({ isOpen, onClose, initialType = "SUBMIT REVIEW" }
                 {history.map((sig: Signal) => (
                   <div key={sig.id} className="p-4 border-2 border-black bg-black/[0.03] font-mono text-[11px] text-black">
                     <div className="flex justify-between mb-2 font-bold opacity-60">
-                      <span>{sig.userName} // {sig.type}</span>
+                      <span>{sig.userName} {"//"} {sig.type}</span>
                       <span>{new Date(sig.timestamp).toLocaleDateString()}</span>
                     </div>
                     <div className="opacity-90 leading-relaxed">{sig.message}</div>

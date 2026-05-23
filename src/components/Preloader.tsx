@@ -646,7 +646,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       window.removeEventListener("touchmove", handleUserInteraction);
       if (cleanupWebGL) cleanupWebGL();
     };
-  }, [mounted, bgImage]);
+  }, [mounted, bgImage, overrideOpacity]);
 
   if (complete || !quoteData) return null;
 
@@ -678,7 +678,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
                 className="w-full h-full bg-gradient-to-tr from-[#050505] via-[#12100e] to-[#1e130f] flex flex-col items-center justify-center relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(232,112,58,0.2)_0%,transparent_80%)] animate-[pulse_3s_infinite_ease-in-out]" />
-                <span className="text-[#8A7F72]/50 font-mono text-[9px] uppercase tracking-widest z-10 select-none">// DATA_OFFLINE</span>
+                <span className="text-[#8A7F72]/50 font-mono text-[9px] uppercase tracking-widest z-10 select-none">{"// DATA_OFFLINE"}</span>
               </div>
             ) : (
               <canvas 

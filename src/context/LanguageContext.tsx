@@ -20,7 +20,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem("mappa-lang") as Language;
     // Eridian is NEVER restored from localStorage — it's a secret, transient runtime mode only.
     if (saved === "ja" || saved === "en" || saved === "ko" || saved === "zh-tw" || saved === "hi" || saved === "fr" || saved === "id" || saved === "de" || saved === "it" || saved === "pt-br" || saved === "es-419" || saved === "es") {
-      setLanguageState(saved);
+      setTimeout(() => {
+        setLanguageState(saved);
+      }, 0);
     }
   }, []);
 

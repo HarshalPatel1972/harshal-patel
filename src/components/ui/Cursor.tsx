@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useState, useRef, forwardRef, useImperativeHandle, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
@@ -7,6 +7,12 @@ import { useDesignVersion } from "@/components/shared/DesignVersionContext";
 export interface CursorHandle {
   getSpherePositions: () => { x: number; y: number }[];
 }
+
+const PSIZE = 2.2;
+const GAP = PSIZE * 2 + 1.2;
+const tipX = 4 * GAP;
+const tipY = -4 * GAP;
+const ERIDIAN_PALETTE = ["#FFB300", "#0055ff", "#FFB300", "#0055ff"]; // Rocky Yellow and Eridian Blue
 
 const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const { language } = useLanguage();
@@ -31,17 +37,11 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const tickingMouseRef = useRef(false);
 
   // Color Cycling State
-  const PALETTE = designVersion === "new"
+  const PALETTE = useMemo(() => designVersion === "new"
     ? ["#EDE4D3", "#D91111", "#E8703A", "#ffffff"]
-    : ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
-  const ERIDIAN_PALETTE = ["#FFB300", "#0055ff", "#FFB300", "#0055ff"]; // Rocky Yellow and Eridian Blue
+    : ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"], [designVersion]);
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
-
-  const PSIZE = 2.2;
-  const GAP = PSIZE * 2 + 1.2;
-  const tipX = 4 * GAP;
-  const tipY = -4 * GAP;
 
   const arrowSlots = useRef<{ x: number; y: number }[]>([]);
   const playSlots = useRef<{ x: number; y: number }[]>([]);
@@ -60,11 +60,11 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   }, [pathname, searchParams]);
 
   useEffect(() => {
-    // Improved touch detection: only disable if it's primarily a touch device
-    // and hasn't seen mouse movement, or if we want to allow mouse on touch-enabled desktops.
     const touchDevice = ("ontouchstart" in window || navigator.maxTouchPoints > 0) && 
                        (window.matchMedia("(pointer: coarse)").matches && !window.matchMedia("(pointer: fine)").matches);
-    setIsTouch(touchDevice);
+    setTimeout(() => {
+      setIsTouch(touchDevice);
+    }, 0);
     if (touchDevice) return;
 
     // Arrow slots (↗)
@@ -120,13 +120,27 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18;
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
+
+      // Prevent text selection when dragging the custom cursor
+      document.body.style.userSelect = "none";
+      document.body.style.webkitUserSelect = "none";
     };
-    const onMouseUp = () => { holdStartTimeRef.current = null; };
+    const onMouseUp = () => { 
+      holdStartTimeRef.current = null; 
+      // Restore text selection
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
+    };
 
     const handleScroll = () => {
       if (!isScrolling.current) isScrolling.current = true;
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
       scrollTimeout.current = setTimeout(() => { isScrolling.current = false; }, 150);
+    };
+
+    const onDragStart = (e: DragEvent) => {
+      // Globally prevent native drag preview/ghosting to ensure high-frequency mousemove events
+      e.preventDefault();
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -135,6 +149,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     document.addEventListener("mouseout", onMouseOut);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("dragstart", onDragStart);
 
     let rafId: number;
     const loop = () => {
@@ -199,9 +214,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
           const ddx = tx - px.current[i], ddy = ty - py.current[i];
           const dd = Math.sqrt(ddx * ddx + ddy * ddy);
-          const ls = dd > 40 ? 0.08 : dd > 15 ? 0.14 : 0.22;
+          // Tighten cursor trail follow speeds: snap quicker when moving, reduce trailing lag
+          const ls = dd > 40 ? 0.16 : dd > 15 ? 0.24 : 0.32;
           vx.current[i] += ddx * ls; vy.current[i] += ddy * ls;
-          vx.current[i] *= 0.6; vy.current[i] *= 0.6;
+          vx.current[i] *= 0.68; vy.current[i] *= 0.68;
           px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
         }
       }
@@ -267,8 +283,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       document.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("dragstart", onDragStart);
+      // Clean up body selection styles if unmounted during dragging
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
     };
-  }, [language, designVersion]); // Removed isTouch to prevent engine restarts during interaction
+  }, [language, designVersion, PALETTE, isTouch]);
 
   if (isTouch) return null;
   return createPortal(
@@ -279,5 +299,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     document.body
   );
 });
+
+Cursor.displayName = "Cursor";
 
 export default Cursor;

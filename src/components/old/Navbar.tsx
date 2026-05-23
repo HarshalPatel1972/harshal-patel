@@ -106,6 +106,7 @@ export function Navbar() {
   const [dotMode, setDotMode] = useState<DotMode>('LOCKED');
   const [dotPos, setDotPos] = useState({ x: 0, y: 0 });
   const [dotScale, setDotScale] = useState(1);
+  const [dotSquish, setDotSquish] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
@@ -124,6 +125,7 @@ export function Navbar() {
   const returnToNav = useCallback(() => {
     setDotMode('LOCKED');
     setDotScale(1);
+    setDotSquish(1);
     setIsDragging(false);
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
@@ -203,6 +205,8 @@ export function Navbar() {
     return () => { resizer.disconnect(); clearTimeout(timer); };
   }, [showEasterEggs]);
 
+  const runPhysicsRef = useRef<() => void>(() => {});
+
   const runPhysics = useCallback(() => {
     if (dotMode !== 'RELEASED' || isDragging) return;
     const currentScale = physicsRef.current.scale;
@@ -222,13 +226,18 @@ export function Navbar() {
     if (hit) squish = 0.8 + (Math.random() * 0.1); else squish += (1 - squish) * 0.12; 
     physicsRef.current = { ...physicsRef.current, x, y, vx, vy, squish };
     setDotPos({ x, y });
-    rafRef.current = requestAnimationFrame(runPhysics);
+    setDotSquish(squish);
+    rafRef.current = requestAnimationFrame(runPhysicsRef.current);
   }, [dotMode, isDragging, docHeight]);
 
   useEffect(() => {
-    if (dotMode === 'RELEASED' && !isDragging) rafRef.current = requestAnimationFrame(runPhysics);
+    runPhysicsRef.current = runPhysics;
+  }, [runPhysics]);
+
+  useEffect(() => {
+    if (dotMode === 'RELEASED' && !isDragging) rafRef.current = requestAnimationFrame(runPhysicsRef.current);
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [dotMode, isDragging, runPhysics]);
+  }, [dotMode, isDragging]);
 
   const handleLogoTouchStart = () => {
     chargingLogoRef.current = true;
@@ -249,6 +258,7 @@ export function Navbar() {
           const cy = rect ? (rect.top + window.scrollY - 120) : (window.scrollY + window.innerHeight / 2 - 155);
           physicsRef.current = { ...physicsRef.current, x: cx, y: cy, vx: 0, vy: 0, scale: 3, squish: 1 };
           setDotPos({ x: cx, y: cy });
+          setDotSquish(1);
           setDotMode('RELEASED');
           setSplashPos({ x: cx, y: cy });
           setShowSplash(true);
@@ -350,7 +360,7 @@ export function Navbar() {
         {dotMode === 'RELEASED' && (
            <div 
             className="absolute cursor-grab active:cursor-grabbing pointer-events-auto" 
-            style={{ top: dotPos.y, left: dotPos.x, width: `${10 * dotScale}px`, height: `${10 * dotScale}px`, touchAction: 'none', transform: `translate(-50%, -50%) scale(${physicsRef.current.squish})` }}
+            style={{ top: dotPos.y, left: dotPos.x, width: `${10 * dotScale}px`, height: `${10 * dotScale}px`, touchAction: 'none', transform: `translate(-50%, -50%) scale(${dotSquish})` }}
             onMouseDown={handleDotMouseDown}
             onTouchStart={handleDotTouchStart}
             onTouchMove={handleDotTouchMove}

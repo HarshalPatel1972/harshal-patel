@@ -51,6 +51,11 @@ interface FeedbackEntry {
   pos?: { top: string, left: string };
 }
 
+const getSeededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
 function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: FeedbackEntry, idx: number, mousePos: { x: number, y: number }, isAdmin: boolean, onDelete: (id: string) => void }) {
   const { designVersion, isMounted } = useDesignVersion();
   const isV2 = isMounted && designVersion === "new";
@@ -79,17 +84,29 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
   const repelY = useSpring(0, { stiffness: 100, damping: 20 });
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const seeds = useMemo(() => ({
-    xOffset: Math.random() * 1000,
-    yOffset: Math.random() * 1000,
-    rotateOffset: Math.random() * 1000,
-    xSpeed: 0.0005 + Math.random() * 0.0005,
-    ySpeed: 0.0005 + Math.random() * 0.0005,
-    rotateSpeed: 0.0002 + Math.random() * 0.0003,
-    amplitudeX: 15 + Math.random() * 20,
-    amplitudeY: 15 + Math.random() * 20,
-    zDepth: 0.7 + Math.random() * 0.5,
-  }), []);
+  const seeds = useMemo(() => {
+    const r1 = getSeededRandom(idx * 7 + 1);
+    const r2 = getSeededRandom(idx * 13 + 2);
+    const r3 = getSeededRandom(idx * 19 + 3);
+    const r4 = getSeededRandom(idx * 23 + 4);
+    const r5 = getSeededRandom(idx * 29 + 5);
+    const r6 = getSeededRandom(idx * 31 + 6);
+    const r7 = getSeededRandom(idx * 37 + 7);
+    const r8 = getSeededRandom(idx * 41 + 8);
+    const r9 = getSeededRandom(idx * 43 + 9);
+
+    return {
+      xOffset: r1 * 1000,
+      yOffset: r2 * 1000,
+      rotateOffset: r3 * 1000,
+      xSpeed: 0.0005 + r4 * 0.0005,
+      ySpeed: 0.0005 + r5 * 0.0005,
+      rotateSpeed: 0.0002 + r6 * 0.0003,
+      amplitudeX: 15 + r7 * 20,
+      amplitudeY: 15 + r8 * 20,
+      zDepth: 0.7 + r9 * 0.5,
+    };
+  }, [idx]);
 
   useAnimationFrame((time) => {
     x.set(Math.sin(time * seeds.xSpeed + seeds.xOffset) * seeds.amplitudeX);
