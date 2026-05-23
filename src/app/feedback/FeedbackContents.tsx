@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense, useRef, useMemo } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue, useAnimationFrame } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useDesignVersion } from "@/components/shared/DesignVersionContext";
 
 /* ─── EXACT TALKY.IO STYLE NAME GENERATOR constants ─── */
 const PREPOSITIONS = ["against", "along", "across", "beside", "within", "beyond", "under", "above", "through", "around", "behind", "below"];
@@ -25,11 +26,19 @@ const RANDOM_ID = () => {
   return `${prep}-${article}-${adj}-${noun}`;
 };
 
-/* ─── PREMIUM DESIGNER PALETTE ─── */
+/* ─── PREMIUM DESIGNER PALETTES ─── */
 const PALETTE = [
   "#1A1A1A", "#0984E3", "#D63031", "#00B894", "#6C5CE7", "#E17055", "#B33771", "#1B1464"
 ];
 
+const PALETTE_V2 = [
+  "#E8703A", // forge-orange
+  "#4A7FA5", // blueprint-blue
+  "#C4843A", // copper
+  "#8A7F72", // muted-label
+  "#E8703A",
+  "#4A7FA5",
+];
 
 interface FeedbackEntry {
   id: string;
@@ -39,12 +48,30 @@ interface FeedbackEntry {
   userName: string;
   color?: string;
   status?: string;
-  // Position hints for the cloud layout
   pos?: { top: string, left: string };
 }
 
 function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: FeedbackEntry, idx: number, mousePos: { x: number, y: number }, isAdmin: boolean, onDelete: (id: string) => void }) {
-  const cardColor = entry.color || PALETTE[idx % PALETTE.length];
+  const { designVersion, isMounted } = useDesignVersion();
+  const isV2 = isMounted && designVersion === "new";
+  const activePalette = isV2 ? PALETTE_V2 : PALETTE;
+  
+  const getMappedColor = (color: string) => {
+    if (!isV2) return color;
+    switch (color) {
+      case "#1A1A1A": return "#8A7F72";
+      case "#0984E3": return "#4A7FA5";
+      case "#D63031": return "#E8703A";
+      case "#00B894": return "#C4843A";
+      case "#6C5CE7": return "#4A7FA5";
+      case "#E17055": return "#E8703A";
+      case "#B33771": return "#C4843A";
+      case "#1B1464": return "#8A7F72";
+      default: return color;
+    }
+  };
+
+  const cardColor = getMappedColor(entry.color || activePalette[idx % activePalette.length]);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotate = useMotionValue(0);
@@ -137,6 +164,9 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
 
 function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean, isAdmin: boolean, onDelete: (id: string) => void }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const { designVersion, isMounted } = useDesignVersion();
+  const isV2 = isMounted && designVersion === "new";
+
   useEffect(() => {
     const handleMove = (e: MouseEvent) => setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
     window.addEventListener("mousemove", handleMove);
@@ -144,13 +174,13 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
   }, []);
 
   return (
-    <div className="relative w-full min-h-screen bg-white overflow-y-auto overflow-x-hidden p-4 md:p-8 cursor-default custom-scrollbar">
+    <div className={`relative w-full min-h-screen overflow-y-auto overflow-x-hidden p-4 md:p-8 cursor-default custom-scrollbar transition-colors duration-500 ${isV2 ? "theme-v2 bg-[var(--bg-ink)]" : "bg-white"}`}>
       <div className="fixed inset-0 halftone-bg opacity-[0.05] pointer-events-none" />
-      <div className="fixed top-6 left-8 z-[100] flex gap-8 items-center"><Link href="/#contact" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity text-black">← Back</Link></div>
-      <div className="fixed top-6 right-8 z-[100]"><button onClick={onAddMore} className="bg-black text-white px-6 py-3 font-black text-xs uppercase tracking-[0.2em] shadow-[6px_6px_0px_#D63031] hover:shadow-[2px_2px_0px_#D63031] hover:translate-x-[4px] hover:translate-y-[4px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none">Add More</button></div>
+      <div className="fixed top-6 left-8 z-[100] flex gap-8 items-center"><Link href="/#contact" className={`font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity ${isV2 ? "text-[var(--text-bone)]" : "text-black"}`}>← Back</Link></div>
+      <div className="fixed top-6 right-8 z-[100]"><button onClick={onAddMore} className="bg-black text-white px-6 py-3 font-black text-xs uppercase tracking-[0.2em] hover:shadow-[2px_2px_0px_var(--accent-blood)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none" style={{ boxShadow: "6px 6px 0px var(--accent-blood)" }}>Add More</button></div>
       
       <div className="relative z-10 w-full min-h-screen pt-4">
-        <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.85] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-black">Feedback<br/>Gallery</h1>
+        <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.85] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-[var(--text-bone)]">Feedback<br/>Gallery</h1>
         
         {isLoading ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-50">
@@ -162,7 +192,7 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
             <div className="w-full flex justify-center mb-6 pointer-events-none">
                <div className="flex items-center gap-4">
                 <div className="h-[2px] w-12 bg-black opacity-10" />
-                <h2 className="text-[12px] font-black uppercase tracking-[0.5em] whitespace-nowrap text-black">Feedback Collective</h2>
+                <h2 className="text-[12px] font-black uppercase tracking-[0.5em] whitespace-nowrap text-[var(--text-bone)]">Feedback Collective</h2>
                 <div className="h-[2px] w-12 bg-black opacity-10" />
               </div>
             </div>
@@ -191,21 +221,23 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
   const [type, setType] = useState(initialType);
   const [message, setMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const { designVersion, isMounted } = useDesignVersion();
+  const isV2 = isMounted && designVersion === "new";
   
   const handleSubmit = () => { if (!message.trim()) return; setIsSending(true); setTimeout(() => { onSend(userName, message, type); setIsSending(false); }, 1200); };
   
   return (
-    <div className="min-h-screen h-[100dvh] bg-white text-black font-display p-4 md:p-10 flex items-center justify-center relative overflow-hidden">
+    <div className={`min-h-screen h-[100dvh] font-display p-4 md:p-10 flex items-center justify-center relative overflow-hidden transition-colors duration-500 ${isV2 ? "theme-v2 bg-[var(--bg-ink)]" : "bg-white text-black"}`}>
       <div className="fixed inset-0 halftone-bg opacity-[0.03] pointer-events-none" />
       
       {/* Massive Background Typography - Matching Contact.tsx Style */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-center pointer-events-none overflow-hidden z-0 opacity-5 select-none rotate-[-5deg]">
-         <h2 className="text-[5rem] md:text-[22rem] font-black whitespace-nowrap leading-none tracking-tighter text-black uppercase">
+         <h2 className="text-[5rem] md:text-[22rem] font-black whitespace-nowrap leading-none tracking-tighter uppercase text-[var(--text-bone)]">
             FEEDBACK
          </h2>
       </div>
 
-      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center"><Link href="/#contact" className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity">← Cancel</Link><div className="w-[1px] h-4 bg-black/20" /><button onClick={onViewGallery} className="font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity whitespace-nowrap">Enter Gallery →</button></div>
+      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center"><Link href="/#contact" className={`font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity ${isV2 ? "text-[var(--text-bone)]" : ""}`}>← Cancel</Link><div className="w-[1px] h-4 bg-black/20" /><button onClick={onViewGallery} className={`font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity whitespace-nowrap ${isV2 ? "text-[var(--text-bone)]" : ""}`}>Enter Gallery →</button></div>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-2xl relative z-10 px-2">
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-black uppercase leading-[0.85] tracking-tighter mb-6 md:mb-10 text-center">Write Your<br /><span className="bg-black text-white px-3 md:px-4 inline-block mt-2 text-3xl sm:text-5xl">Message</span></h1>
         <div className="space-y-4 md:space-y-8">
@@ -229,7 +261,7 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
               <button onClick={() => setUserName(RANDOM_ID())} className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 px-3 md:px-4 py-1.5 md:py-2 bg-black text-white font-black text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-[#D63031] transition-colors">RANDOMIZE</button>
             </div>
           </div>
-          <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Category:</label><div className="flex flex-wrap gap-2 md:gap-3">{["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"].map((o) => (<button key={o} onClick={() => setType(o)} className={`px-3 md:px-5 py-2 md:py-3 text-[8px] md:text-[10px] font-black border-2 border-black transition-all ${type === o ? "bg-black text-white shadow-[4px_4px_0px_#34C759]" : "bg-transparent hover:bg-black/5"}`}>{o}</button>))}</div></div>
+          <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Category:</label><div className="flex flex-wrap gap-2 md:gap-3">{["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"].map((o) => (<button key={o} onClick={() => setType(o)} className={`px-3 md:px-5 py-2 md:py-3 text-[8px] md:text-[10px] font-black border-2 border-black transition-all ${type === o ? "bg-black text-white" : "bg-transparent hover:bg-black/5"}`} style={{ boxShadow: type === o ? "4px 4px 0px var(--accent-cursed)" : "none" }}>{o}</button>))}</div></div>
           <div><label className="block text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] mb-2 md:mb-3 opacity-40">Words:</label><textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Type here..." className="w-full h-32 md:h-48 p-5 md:p-7 border-2 border-black font-mono text-xs md:text-sm focus:outline-none focus:ring-0 resize-none bg-white transition-all focus:shadow-[8px_8px_0px_#000]" /></div>
           <button onClick={handleSubmit} disabled={isSending || !message.trim()} className={`w-full py-5 md:py-7 font-black tracking-[0.3em] md:tracking-[0.4em] text-md md:text-lg transition-all border-2 border-black relative ${isSending || !message.trim() ? "bg-black/10 text-black/30 opacity-50" : "bg-black text-white hover:bg-white hover:text-black hover:shadow-[10px_10px_0px_#000]"}`}>{isSending ? "SENDING..." : "SEND MESSAGE"}</button>
         </div>
