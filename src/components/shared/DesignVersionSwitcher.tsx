@@ -18,7 +18,7 @@ export function DesignVersionSwitcher() {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-[99999] pointer-events-auto flex flex-col items-start gap-2.5 select-none">
+    <div className="fixed bottom-[80px] md:bottom-[235px] right-[64px] md:right-[97px] z-[99999] pointer-events-auto flex flex-col items-end gap-2.5 select-none">
 
       {/* V2 "In Development" notice — only shown when V2 is active */}
       {isV2 && (
@@ -97,7 +97,7 @@ export function DesignVersionSwitcher() {
       {/* Tooltip on hover when on V1 */}
       {!isV2 && showTooltip && (
         <div
-          className="absolute bottom-full left-0 mb-3 px-3 py-2 text-[9px] font-mono leading-relaxed border pointer-events-none whitespace-nowrap"
+          className="absolute bottom-full right-0 mb-3 px-3 py-2 text-[9px] font-mono leading-relaxed border pointer-events-none whitespace-nowrap"
           style={{
             background: "var(--bg-darker)",
             borderColor: "var(--text-bone)",
