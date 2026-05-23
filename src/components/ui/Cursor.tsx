@@ -195,16 +195,18 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
           const slot = slots[i - 1];
           const tx = px.current[0] + slot.x, ty = py.current[0] + slot.y;
-          if (locked.current[i]) { px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; }
-          else {
+          if (locked.current[i]) { 
+            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; 
+          } else {
             const ddx = tx - px.current[i], ddy = ty - py.current[i];
             const dist = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001;
-            if (dist < 2.5) { px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; }
-            else {
-              const grav = Math.min(100000 / (dist + 1), 600);
-              vx.current[i] += (ddx / dist) * grav * 0.016; vy.current[i] += (ddy / dist) * grav * 0.016;
-              let drag = 0.72; if (dist < 8) drag = 0.35; else if (dist < 20) drag = 0.52; else if (dist < 50) drag = 0.62;
-              vx.current[i] *= drag; vy.current[i] *= drag;
+            if (dist < 2.5) { 
+              px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; 
+            } else {
+              // Rapid, smooth snap to slot using Lerp
+              px.current[i] += ddx * 0.28;
+              py.current[i] += ddy * 0.28;
+              vx.current[i] *= 0.55; vy.current[i] *= 0.55;
               px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
             }
           }
@@ -213,11 +215,14 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
           const ddx = tx - px.current[i], ddy = ty - py.current[i];
-          const dd = Math.sqrt(ddx * ddx + ddy * ddy);
-          // Tighten cursor trail follow speeds: snap quicker when moving, reduce trailing lag
-          const ls = dd > 40 ? 0.16 : dd > 15 ? 0.24 : 0.32;
-          vx.current[i] += ddx * ls; vy.current[i] += ddy * ls;
-          vx.current[i] *= 0.68; vy.current[i] *= 0.68;
+          
+          // Tapered smooth lerp for instant, lag-free trailing that tracks the pointer perfectly
+          const ease = 0.35 - (i / 20) * 0.15;
+          px.current[i] += ddx * ease;
+          py.current[i] += ddy * ease;
+          
+          // Decaying velocity ensures click-burst physics still blast outwards beautifully
+          vx.current[i] *= 0.55; vy.current[i] *= 0.55;
           px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
         }
       }
