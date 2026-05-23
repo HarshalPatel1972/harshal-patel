@@ -181,41 +181,54 @@ export function Hero() {
             <a
               ref={cta1Ref}
               href="#projects"
-              className="group relative flex items-center justify-center min-w-[180px] md:min-w-[200px] select-none transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_16px_rgba(0,0,0,0.06)]"
-              style={{
-                background: "var(--forge-orange)",
-                border: "1px solid var(--forge-orange)",
-              }}
+              className="group relative block min-w-[180px] md:min-w-[200px] select-none cursor-pointer"
             >
-              <div className="relative z-10 px-5 py-3.5 md:px-7 md:py-4.5">
-                <span
-                  className="text-white font-bold text-xs uppercase tracking-[0.2em]"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
-                >
-                  {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
-                </span>
+              {/* Outer shadow layer / backdrop */}
+              <div className="absolute inset-0 bg-[var(--sumi-ink)] translate-x-[4px] translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[6px] group-hover:translate-y-[6px] group-active:translate-x-[2px] group-active:translate-y-[2px]" />
+              
+              {/* Top interactive layer */}
+              <div
+                className="relative z-10 flex items-center justify-center border-2 border-[var(--sumi-ink)] bg-[var(--forge-orange)] transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:bg-[var(--sumi-ink)] group-active:translate-x-[2px] group-active:translate-y-[2px]"
+                style={{
+                  minHeight: "56px",
+                }}
+              >
+                <div className="px-5 py-3.5 md:px-7 md:py-4">
+                  <span
+                    className="text-white font-bold text-xs uppercase tracking-[0.2em] transition-colors duration-200 group-hover:text-[var(--forge-orange)]"
+                    style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
+                  >
+                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
+                  </span>
+                </div>
               </div>
             </a>
             
             <a
               ref={cta2Ref}
               href="#contact"
-              className="group relative flex items-center justify-center min-w-[180px] md:min-w-[200px] select-none transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-              style={{
-                border: "1px dashed var(--sumi-ink)",
-                background: "transparent",
-              }}
+              className="group relative block min-w-[180px] md:min-w-[200px] select-none cursor-pointer"
             >
-              <div className="relative z-10 px-5 py-3.5 md:px-7 md:py-4.5">
-                <span
-                  className="font-bold text-xs uppercase tracking-[0.2em] transition-colors group-hover:text-[var(--forge-orange)]"
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono), monospace",
-                    color: "var(--sumi-ink)",
-                  }}
-                >
-                  {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
-                </span>
+              {/* Outer shadow layer / backdrop */}
+              <div className="absolute inset-0 bg-[var(--sumi-ink)] translate-x-[4px] translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[6px] group-hover:translate-y-[6px] group-active:translate-x-[2px] group-active:translate-y-[2px]" />
+              
+              {/* Top interactive layer */}
+              <div
+                className="relative z-10 flex items-center justify-center border-2 border-[var(--sumi-ink)] bg-[var(--aged-paper)] transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:bg-[var(--sumi-ink)] group-active:translate-x-[2px] group-active:translate-y-[2px]"
+                style={{
+                  minHeight: "56px",
+                }}
+              >
+                <div className="px-5 py-3.5 md:px-7 md:py-4">
+                  <span
+                    className="font-bold text-xs uppercase tracking-[0.2em] transition-colors duration-200 text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)]"
+                    style={{
+                      fontFamily: "var(--font-jetbrains-mono), monospace",
+                    }}
+                  >
+                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
+                  </span>
+                </div>
               </div>
             </a>
           </div>

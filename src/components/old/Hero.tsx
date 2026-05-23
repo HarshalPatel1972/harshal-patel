@@ -200,20 +200,47 @@ export function Hero() {
             </p>
 
             <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
-              <a ref={cta1Ref} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : language === 'de' ? "Arbeit ansehen" : language === 'it' ? "Vedi Lavori" : language === 'pt-br' ? "Ver Trabalhos" : (language === 'es-419' || language === 'es') ? "Ver Trabajos" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
-                  </span>
+              <a
+                ref={cta1Ref}
+                href="#projects"
+                className="group relative block min-w-[200px] md:min-w-[240px] select-none cursor-pointer"
+              >
+                {/* Backdrop Layer */}
+                <div className="absolute inset-0 bg-[var(--accent-blood)] translate-x-[4px] translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[6px] group-hover:translate-y-[6px] group-active:translate-x-[2px] group-active:translate-y-[2px]" />
+                
+                {/* Main Button Body */}
+                <div className="relative z-10 flex items-center justify-center bg-black border border-[var(--text-bone)]/40 group-hover:border-[var(--accent-blood)] transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-active:translate-x-[2px] group-active:translate-y-[2px] overflow-hidden"
+                     style={{ minHeight: "64px" }}>
+                  {/* Sliding background */}
+                  <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
+                  
+                  <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
+                    <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] group-hover:tracking-[0.3em] uppercase transition-all duration-500 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                      {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : language === 'de' ? "Arbeit ansehen" : language === 'it' ? "Vedi Lavori" : language === 'pt-br' ? "Ver Trabalhos" : (language === 'es-419' || language === 'es') ? "Ver Trabajos" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
+                    </span>
+                  </div>
                 </div>
               </a>
-              <a ref={cta2Ref} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Hubungi" : language === 'de' ? "Kontakt" : language === 'it' ? "Contatto" : language === 'pt-br' ? "Contato" : (language === 'es-419' || language === 'es') ? "Contacto" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
-                  </span>
+
+              <a
+                ref={cta2Ref}
+                href="#contact"
+                className="group relative block min-w-[200px] md:min-w-[240px] select-none cursor-pointer"
+              >
+                {/* Backdrop Layer */}
+                <div className="absolute inset-0 bg-[var(--text-bone)] translate-x-[4px] translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[6px] group-hover:translate-y-[6px] group-active:translate-x-[2px] group-active:translate-y-[2px]" />
+                
+                {/* Main Button Body */}
+                <div className="relative z-10 flex items-center justify-center bg-black border border-[var(--text-bone)]/40 group-hover:border-white transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-active:translate-x-[2px] group-active:translate-y-[2px] overflow-hidden"
+                     style={{ minHeight: "64px" }}>
+                  {/* Sliding background */}
+                  <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
+                  
+                  <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
+                    <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] group-hover:tracking-[0.3em] uppercase transition-all duration-500 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                      {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Hubungi" : language === 'de' ? "Kontakt" : language === 'it' ? "Contatto" : language === 'pt-br' ? "Contato" : (language === 'es-419' || language === 'es') ? "Contacto" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
+                    </span>
+                  </div>
                 </div>
               </a>
             </div>
