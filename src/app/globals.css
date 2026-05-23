@@ -547,3 +547,105 @@ img, svg, picture, .ink-slash, .manga-panel {
   transform: none !important;
   -webkit-font-smoothing: antialiased !important;
 }
+
+/* ═══════════════════════════════════════════
+   🎨 V2 WARM STUDIO COLOR OVERRIDES (THEME V2)
+   ═══════════════════════════════════════════ */
+.theme-v2 {
+  --bg-ink: var(--studio-warm);         /* #F5EDE0 */
+  --bg-darker: var(--aged-paper);       /* #EDE4D3 */
+  --text-bone: var(--sumi-ink);         /* #1A1714 */
+  --text-muted: var(--muted-label);     /* #8A7F72 */
+  --accent-blood: var(--forge-orange);  /* #E8703A */
+  --accent-cursed: var(--blueprint-blue); /* #4A7FA5 */
+  --accent-blood-rgb: 232, 112, 58;
+  --accent-blood-alpha: rgba(232, 112, 58, 0.04);
+  --panel-border: rgba(26, 23, 20, 0.12);
+}
+
+/* Base background/text colors for theme-v2 containers */
+.theme-v2,
+.theme-v2 main,
+.theme-v2 section {
+  background-color: var(--bg-ink) !important;
+  color: var(--text-bone) !important;
+}
+
+/* Remap hardcoded utility colors for clean design-agency light-mode aesthetic */
+.theme-v2 .bg-white {
+  background-color: var(--studio-warm) !important;
+}
+
+.theme-v2 .bg-black {
+  background-color: var(--sumi-ink) !important;
+}
+
+.theme-v2 .text-white {
+  color: var(--bg-ink) !important;
+}
+
+.theme-v2 .text-black {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-black {
+  border-color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-white {
+  border-color: var(--bg-ink) !important;
+}
+
+/* Dynamic custom styling overrides for custom class definitions in V1 components */
+.theme-v2 [class*="text-[var(--bg-ink)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="text-[var(--text-bone)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-ink)]"] {
+  background-color: var(--bg-ink) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-darker)]"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 [class*="border-[var(--text-bone)]"] {
+  border-color: var(--text-bone) !important;
+}
+
+/* Exclude the version switcher buttons from being overridden */
+.theme-v2 button,
+.theme-v2 button * {
+  color: initial !important;
+  background-color: initial !important;
+  border-color: initial !important;
+}
+
+/* Feedback Card and Input overrides inside theme-v2 */
+.theme-v2 .group.bg-white,
+.theme-v2 div[class*="bg-white"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 input,
+.theme-v2 textarea {
+  background-color: var(--bg-darker) !important;
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 input::placeholder,
+.theme-v2 textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.5;
+}
+
+/* Make sure randomize/CTA buttons inside feedback page preserve text color */
+.theme-v2 .bg-black.text-white {
+  background-color: var(--sumi-ink) !important;
+  color: var(--bg-ink) !important;
+}
+
