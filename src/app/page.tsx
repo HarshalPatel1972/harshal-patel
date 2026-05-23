@@ -77,7 +77,6 @@ function HomeContent() {
       )}
       
       {showContent && <Cursor />}
-      {showContent && <DesignVersionSwitcher />}
 
       {/* RENDER PRESENTATION LAYER */}
       {isOldDesign ? (
@@ -97,10 +96,11 @@ function HomeContent() {
               </div>
               <div className="h-[10px]" />
               <div 
-                className="sticky transition-all duration-700 pointer-events-auto"
+                className="sticky transition-all duration-700 pointer-events-auto flex items-center gap-2"
                 style={{ top: stickyTarget }}
               >
                 <LanguageSelector />
+                <DesignVersionSwitcher />
               </div>
             </div>
           </div>
@@ -131,10 +131,11 @@ function HomeContent() {
               </div>
               <div className="h-[10px]" />
               <div 
-                className="sticky transition-all duration-700 pointer-events-auto"
+                className="sticky transition-all duration-700 pointer-events-auto flex items-center gap-2"
                 style={{ top: stickyTarget }}
               >
                 <LanguageSelector />
+                <DesignVersionSwitcher />
               </div>
             </div>
           </div>
