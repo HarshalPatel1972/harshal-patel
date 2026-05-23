@@ -7,7 +7,8 @@ import { DesignVersionSwitcher } from "@/components/shared/DesignVersionSwitcher
 import { LanguageTransitionWrapper } from "@/context/LanguageContext";
 
 // SHARED DECOR & TRANSITIONS
-const Preloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
+const OldPreloader = dynamic(() => import("@/components/old/Preloader"), { ssr: false });
+const NewPreloader = dynamic(() => import("@/components/Preloader"), { ssr: false });
 const ScrollLine = dynamic(() => import("@/components/AnimationKit").then(mod => mod.ScrollLine), { ssr: false });
 const Cursor = dynamic(() => import("@/components/ui/Cursor"), { ssr: false });
 const FlipTransition = dynamic(() => import("@/components/ui/FlipTransition").then(mod => mod.FlipTransition), { ssr: false });
@@ -67,7 +68,13 @@ function HomeContent() {
   return (
     <main className="relative bg-neutral-950 min-h-screen">
       {type === 'FLIP' ? <FlipTransition /> : <SpaceWarpTransition />}
-      {!showContent && <Preloader onComplete={() => setShowContent(true)} />}
+      {!showContent && isMounted && (
+        designVersion === "old" ? (
+          <OldPreloader onComplete={() => setShowContent(true)} />
+        ) : (
+          <NewPreloader onComplete={() => setShowContent(true)} />
+        )
+      )}
       
       {showContent && <Cursor />}
       {showContent && <DesignVersionSwitcher />}
