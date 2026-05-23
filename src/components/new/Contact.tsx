@@ -81,14 +81,6 @@ export function Contact() {
       watermark: "संपर्क"
     },
     eridian: {
-      sub: "PART-THREE-THING · MAKE NOISE TO HARSHAL NOW",
-      desc: "MAKE WAVES. DO NOT SILENCE.",
-      watermark: "SEND-SIGNAL"
-    }��ं",
-      desc: "सिस्टम आर्किटेक्चर, Go/TypeScript अनुकूलन, या सहयोग के अवसरों पर चर्चा करने के लिए संपर्क करें।",
-      watermark: "संपर्क"
-    },
-    eridian: {
       sub: "PART-THREE-THING — MAKE NOISE TO HARSHAL NOW",
       desc: "MAKE WAVES. DO NOT SILENCE.",
       watermark: "SEND-SIGNAL"
