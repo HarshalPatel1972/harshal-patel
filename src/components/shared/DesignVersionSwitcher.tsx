@@ -30,21 +30,20 @@ export function DesignVersionSwitcher() {
   return (
     <div className="relative flex flex-col items-start select-none pointer-events-auto">
 
-      {/* V2 "In Development" notice — only shown when V2 is active and at the top */}
-      {isV2 && isAtTop && (
-        <div
-          className="absolute bottom-full left-0 mb-2 flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border border-[var(--sumi-ink)]/20 border-l-[3.5px] border-l-[var(--forge-orange)] bg-[var(--aged-paper)] text-[var(--sumi-ink)] animate-pulse whitespace-nowrap z-20"
-        >
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--forge-orange)] opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--forge-orange)]" />
-          </span>
-          {language === "hi" ? "V2 — विकास में है" : "V2 — In Development"}
-        </div>
-      )}
-
       {/* Toggle button container */}
       <div className="relative group inline-block">
+        {/* V2 "In Development" notice — only shown when V2 is active and at the top */}
+        {isV2 && isAtTop && (
+          <div
+            className="absolute left-0 z-20 flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border border-[var(--sumi-ink)]/20 border-l-[3.5px] border-l-[var(--forge-orange)] bg-[var(--aged-paper)] text-[var(--sumi-ink)] animate-pulse whitespace-nowrap transition-all duration-300 top-full mt-2 opacity-100 pointer-events-auto md:top-auto md:mt-0 md:bottom-full md:mb-2 md:opacity-0 md:pointer-events-none md:group-hover:opacity-100"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--forge-orange)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--forge-orange)]" />
+            </span>
+            {language === "hi" ? "V2 — विकास में है" : "V2 — In Development"}
+          </div>
+        )}
         {/* Backdrop Shadow Layer */}
         <div
           className="absolute inset-0 transition-all duration-300 translate-x-[3px] translate-y-[3px] group-hover:translate-x-[4.5px] group-hover:translate-y-[4.5px] group-active:translate-x-[1px] group-active:translate-y-[1px]"
