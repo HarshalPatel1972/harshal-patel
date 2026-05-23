@@ -214,16 +214,13 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           pt.current[i] += 0.02;
           const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
-          const ddx = tx - px.current[i], ddy = ty - py.current[i];
           
-          // Tapered smooth lerp for instant, lag-free trailing that tracks the pointer perfectly
-          const ease = 0.35 - (i / 20) * 0.15;
-          px.current[i] += ddx * ease;
-          py.current[i] += ddy * ease;
+          // Smoothly decay click-burst velocities
+          vx.current[i] *= 0.82; vy.current[i] *= 0.82;
           
-          // Decaying velocity ensures click-burst physics still blast outwards beautifully
-          vx.current[i] *= 0.55; vy.current[i] *= 0.55;
-          px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
+          // Lock positions to perfect circle orbit with zero lag + click-burst offset
+          px.current[i] = tx + vx.current[i];
+          py.current[i] = ty + vy.current[i];
         }
       }
 
