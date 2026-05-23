@@ -116,19 +116,21 @@ export function Hero() {
         {/* Left Side: Name and Tagline */}
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6 md:space-y-8">
           
-          {/* Amber Folder Tag Shape */}
-          <div
-            className="inline-block pl-5 pr-10 py-2 text-white font-bold select-none relative animate-pulse shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
-            style={{
-              background: "var(--forge-orange)",
-              fontFamily: "var(--font-jetbrains-mono), monospace",
-              fontSize: "10px",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              clipPath: "polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%)",
-            }}
-          >
-            {availableText}
+          {/* Design-oriented Premium Tag */}
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-[var(--forge-orange)]/30 bg-[var(--aged-paper)]/40 backdrop-blur-md shadow-[0_4px_12px_rgba(232,112,58,0.05)] select-none">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--forge-orange)] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--forge-orange)]"></span>
+            </span>
+            <span
+              className="font-medium tracking-[0.2em] text-[9.5px] uppercase"
+              style={{
+                fontFamily: "var(--font-jetbrains-mono), monospace",
+                color: "var(--sumi-ink)",
+              }}
+            >
+              {availableText}
+            </span>
           </div>
 
           {/* Title - Split Typography */}
@@ -158,17 +160,7 @@ export function Hero() {
             </h1>
           </div>
 
-          {/* Studio open since annotation */}
-          <div
-            className="text-[10px] uppercase tracking-[0.25em]"
-            style={{
-              fontFamily: "var(--font-jetbrains-mono), monospace",
-              color: "var(--blueprint-blue)",
-              fontWeight: 700,
-            }}
-          >
-            Studio open since 2022
-          </div>
+
 
           {/* Tagline */}
           <p
