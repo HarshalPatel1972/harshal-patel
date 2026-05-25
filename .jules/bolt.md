@@ -1,0 +1,7 @@
+## 2024-05-25 - [Optimize visitor-count Endpoint]
+**Learning:** Redis pipelining (`redis.pipeline()`) can reduce multiple sequential network requests to a single round-trip, significantly lowering API latency. Also, using a precompiled `RegExp` with the `i` flag (`/pattern/i`) for string matching is much faster than running `Array.prototype.some` and `.toLowerCase()` on the user agent string. When fetching pipelined results, different Redis clients may return tuples `[error, result]` or just `result`, so a helper `const extractVal = (res: any) => Array.isArray(res) ? res[1] : res` is useful.
+**Action:** Always prefer precompiled `RegExp` for static keyword matching over array iteration. Batch Redis queries using pipelines for endpoints requiring multiple database operations. Use extract helper for safety.
+
+## 2024-05-25 - [Redis ioredis tuples]
+**Learning:** When using pipelining with `ioredis`, the library *always* returns an array of tuples formatted as `[error, result][]`, regardless of the data type returned. An overly generic helper like `Array.isArray(res) ? res[1] : res` is dangerous because it assumes the result array itself is the tuple, but if the command successfully returns an actual Array structure (like `SMEMBERS`), the helper will incorrectly drop the whole payload.
+**Action:** When extracting results from `ioredis` pipelines, use strongly typed tuple destructurings or specifically typed helpers like `const extractVal = (res: [Error | null, any]) => res[1];` rather than relying on weak `Array.isArray` conditionals.
