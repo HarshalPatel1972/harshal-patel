@@ -33,7 +33,8 @@ export async function POST(request: Request) {
     const entry = await request.json();
     
     // Map camelCase to snake_case for DB
-    const { error } = await supabase
+    // Use .select().single() to return the inserted data in one database round-trip
+    const { data: insertedData, error } = await supabase
       .from('feedbacks')
       .insert([{
         id: entry.id,
@@ -43,20 +44,14 @@ export async function POST(request: Request) {
         user_name: entry.userName,
         color: entry.color,
         status: entry.status
-      }]);
+      }])
+      .select('*')
+      .single();
 
     if (error) {
       console.error("Supabase Insert Error:", error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    
-    // Return the actual inserted data (including the ID Supabase used)
-    const { data: insertedData } = await supabase
-      .from('feedbacks')
-      .select('*')
-      .eq('timestamp', entry.timestamp)
-      .limit(1)
-      .single();
 
     return NextResponse.json({ success: true, data: insertedData });
   } catch (error: any) {
