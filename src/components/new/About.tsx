@@ -232,17 +232,13 @@ function TimelineNode({
           {job.role}
         </div>
         
-        <ul className="space-y-2 mt-2">
+        <div className="space-y-3 mt-3">
           {items.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-sm leading-relaxed" style={{ color: "var(--sumi-ink)", opacity: 0.85 }}>
-              <span className="relative flex items-center justify-center w-2.5 h-2.5 mt-[6px] shrink-0 select-none">
-                <span className="absolute w-[7px] h-[7px] border border-[var(--forge-orange)]/80 rotate-45" />
-                <span className="w-[3px] h-[3px] bg-[var(--forge-orange)] rotate-45" />
-              </span>
-              <span className="font-sans font-light">{item}</span>
-            </li>
+            <div key={idx} className="border-l-2 border-[var(--forge-orange)]/40 pl-4 py-0.5 select-none">
+              <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/90">{item}</span>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );
