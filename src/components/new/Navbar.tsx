@@ -416,7 +416,7 @@ export function Navbar() {
               onTouchStart={handleLogoTouchStart} 
               onTouchEnd={handleLogoTouchEnd} 
               onClick={handleLogoClick}
-              className="relative w-9 h-9 md:w-11 md:h-11 bg-[var(--sumi-ink)] flex items-center justify-center shrink-0 cursor-pointer border border-white/10 overflow-hidden touch-manipulation shadow-[4px_4px_0px_var(--forge-orange)] transition-all duration-300 group-hover:animate-spin"
+              className="relative w-9 h-9 md:w-11 md:h-11 bg-[var(--sumi-ink)] flex items-center justify-center shrink-0 cursor-pointer border border-white/10 overflow-hidden touch-manipulation shadow-[4px_4px_0px_var(--forge-orange)] transition-all duration-300"
             >
               <Image 
                 src="/icon.png" 
