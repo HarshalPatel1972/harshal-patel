@@ -72,6 +72,8 @@ export function Hero() {
     }
   })();
 
+  const [isNameHovered, setIsNameHovered] = React.useState(false);
+
   return (
     <section
       ref={trackRef}
@@ -139,26 +141,31 @@ export function Hero() {
           </div>
 
           {/* Title - Split Typography */}
-          <div className="space-y-1">
+          <div 
+            className="space-y-1 group cursor-default select-none"
+            onMouseEnter={() => setIsNameHovered(true)}
+            onMouseLeave={() => setIsNameHovered(false)}
+          >
             <h1
-              className="uppercase leading-[0.85] font-black"
+              className="uppercase leading-[0.85] font-black transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
               style={{
                 fontSize: "clamp(3.5rem, 11vw, 7.8rem)",
                 fontFamily: "var(--font-big-shoulders), sans-serif",
                 letterSpacing: "-0.04em",
-                color: "var(--sumi-ink)",
+                color: isNameHovered ? "transparent" : "var(--sumi-ink)",
+                WebkitTextStroke: isNameHovered ? "2px var(--forge-orange)" : "none",
               }}
             >
               {firstWord}
             </h1>
             <h1
-              className="uppercase leading-[0.85] font-black"
+              className="uppercase leading-[0.85] font-black transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
               style={{
                 fontSize: "clamp(3.5rem, 11vw, 7.8rem)",
                 fontFamily: "var(--font-big-shoulders), sans-serif",
                 letterSpacing: "-0.04em",
-                color: "transparent",
-                WebkitTextStroke: "2px var(--forge-orange)",
+                color: isNameHovered ? "var(--sumi-ink)" : "transparent",
+                WebkitTextStroke: isNameHovered ? "none" : "2px var(--forge-orange)",
               }}
             >
               {remainingWords}
