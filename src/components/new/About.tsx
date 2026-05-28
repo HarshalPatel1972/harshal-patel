@@ -160,44 +160,13 @@ function GaugeDial({
 // ─── Experience timeline node ─────────────────────────────────────────────────
 function TimelineNode({
   job,
-  isLast,
-  isFirst,
 }: {
   job: { company: string; role: string; period: string; description: string };
-  isLast: boolean;
-  isFirst: boolean;
 }) {
   const items = job.description.split(";").map(item => item.trim()).filter(Boolean);
 
   return (
-    <div className="relative pl-10">
-      {/* Circuit trace vertical line */}
-      {!isLast && (
-        <div
-          className="absolute left-[13px] top-6 w-[2px]"
-          style={{
-            bottom: "-20px",
-            background: "linear-gradient(to bottom, var(--forge-orange) 0%, var(--muted-label) 100%)",
-            opacity: 0.35,
-          }}
-        />
-      )}
-      {/* Node circle */}
-      <div
-        className={`absolute left-[4px] top-1.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${isFirst ? "animate-pulse" : ""}`}
-        style={{
-          borderColor: "var(--forge-orange)",
-          background: isFirst ? "var(--forge-orange)" : "var(--aged-paper)",
-          boxShadow: isFirst ? "0 0 12px rgba(232,112,58,0.4)" : "none",
-        }}
-      >
-        <div
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: isFirst ? "white" : "var(--forge-orange)" }}
-        />
-      </div>
-
-      <div className="pb-8">
+    <div className="pb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
           <h4
             className="uppercase leading-none"
@@ -542,8 +511,6 @@ export function About() {
                   <TimelineNode
                     key={job.company}
                     job={job}
-                    isFirst={i === 0}
-                    isLast={i === currentProfile.experience.length - 1}
                   />
                 ))}
               </div>
