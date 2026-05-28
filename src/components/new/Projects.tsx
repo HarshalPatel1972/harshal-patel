@@ -354,12 +354,14 @@ export function Projects() {
           {/* Expand / collapse toggle */}
           <button
             onClick={() => setIsStacked((v) => !v)}
-            className="flex items-center gap-2 px-4 py-2 text-[10px] uppercase tracking-[0.25em] transition-all duration-300 border"
+            className="flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-bold transition-all duration-200 border-2 bg-[var(--aged-paper)] hover:bg-[var(--forge-orange)]/5 active:translate-x-[1px] active:translate-y-[1px] cursor-pointer select-none"
             style={{
               fontFamily: "var(--font-jetbrains-mono), monospace",
-              borderColor: isStacked ? "var(--forge-orange)" : "var(--muted-label)",
-              color: isStacked ? "var(--forge-orange)" : "var(--muted-label)",
-              background: "transparent",
+              borderColor: isStacked ? "var(--forge-orange)" : "var(--sumi-ink)",
+              color: isStacked ? "var(--forge-orange)" : "var(--sumi-ink)",
+              boxShadow: isStacked 
+                ? "3px 3px 0px rgba(232, 112, 58, 0.2)" 
+                : "3px 3px 0px rgba(26, 23, 20, 0.15)",
             }}
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
