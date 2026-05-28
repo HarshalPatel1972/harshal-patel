@@ -2,22 +2,32 @@
 
 import { useDesignVersion } from "./DesignVersionContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function DesignVersionSwitcher() {
   const { designVersion, setDesignVersion, isMounted } = useDesignVersion();
   const { language } = useLanguage();
-  const [showTooltip, setShowTooltip] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
+  const [noticeVisible, setNoticeVisible] = useState(true);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsAtTop(window.scrollY < 10);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // init
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Show notice on mount, then auto-hide after 3s
+  useEffect(() => {
+    setNoticeVisible(true);
+    hideTimer.current = setTimeout(() => {
+      setNoticeVisible(false);
+    }, 3000);
+    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
+  }, [designVersion]);
 
   if (!isMounted) return null;
 
@@ -27,23 +37,15 @@ export function DesignVersionSwitcher() {
     setDesignVersion(isV2 ? "old" : "new");
   };
 
+  const noticeText = isV2
+    ? (language === "hi" ? "V2 — विकास में है" : "V2 — In Development")
+    : (language === "hi" ? "V1 — क्लासिक संस्करण" : "V1 — Classic");
+
   return (
     <div className="relative flex flex-col items-start select-none pointer-events-auto">
 
       {/* Toggle button container */}
-      <div className="relative group inline-block">
-        {/* V2 "In Development" notice — only shown when V2 is active and at the top */}
-        {isV2 && isAtTop && (
-          <div
-            className="absolute left-0 z-20 flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border border-[var(--sumi-ink)]/20 border-l-[3.5px] border-l-[var(--forge-orange)] bg-[var(--aged-paper)] text-[var(--sumi-ink)] animate-pulse whitespace-nowrap transition-all duration-300 top-full mt-2 opacity-100 pointer-events-auto md:top-auto md:mt-0 md:bottom-full md:mb-2 md:opacity-0 md:pointer-events-none md:group-hover:opacity-100"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--forge-orange)] opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--forge-orange)]" />
-            </span>
-            {language === "hi" ? "V2 — विकास में है" : "V2 — In Development"}
-          </div>
-        )}
+      <div className="relative group inline-flex items-center gap-0">
         {/* Backdrop Shadow Layer */}
         <div
           className="absolute inset-0 transition-all duration-300 translate-x-[3px] translate-y-[3px] group-hover:translate-x-[4.5px] group-hover:translate-y-[4.5px] group-active:translate-x-[1px] group-active:translate-y-[1px]"
@@ -55,8 +57,6 @@ export function DesignVersionSwitcher() {
         {/* Toggle button */}
         <button
           onClick={handleToggle}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
           className={`relative z-10 flex items-center justify-center border text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer overflow-hidden h-9 group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-active:translate-x-[1px] group-active:translate-y-[1px] ${
             isAtTop ? "w-[240px] px-4" : "w-9 px-0"
           }`}
@@ -75,10 +75,6 @@ export function DesignVersionSwitcher() {
           >
             {/* Status dot */}
             <span className="relative flex h-1.5 w-1.5 shrink-0">
-              <span
-                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                style={{ background: isV2 ? "var(--forge-orange)" : "var(--accent-blood)" }}
-              />
               <span
                 className="relative inline-flex rounded-full h-1.5 w-1.5"
                 style={{ background: isV2 ? "var(--forge-orange)" : "var(--accent-blood)" }}
@@ -120,17 +116,29 @@ export function DesignVersionSwitcher() {
           </div>
         </button>
 
-        {/* Tooltip on hover when on V1 */}
-        {!isV2 && showTooltip && (
+        {/* Version notice — shows on load for 3s, then reappears on hover */}
+        {isAtTop && (
           <div
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-2 text-[9px] font-mono leading-relaxed border pointer-events-none whitespace-nowrap z-20"
+            className={`absolute left-full ml-2.5 z-20 flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border whitespace-nowrap transition-all duration-500 pointer-events-none ${
+              noticeVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+            }`}
             style={{
-              background: "var(--bg-darker)",
-              borderColor: "var(--text-bone)",
-              color: "var(--text-bone)",
+              background: isV2 ? "var(--aged-paper)" : "var(--bg-ink)",
+              borderColor: isV2 ? "var(--sumi-ink)" : "var(--text-bone)",
+              color: isV2 ? "var(--sumi-ink)" : "var(--text-bone)",
+              borderLeftWidth: "3.5px",
+              borderLeftColor: isV2 ? "var(--forge-orange)" : "var(--accent-blood)",
             }}
           >
-            V2 is a work-in-progress preview
+            <span className="relative flex h-1.5 w-1.5">
+              <span
+                className="relative inline-flex rounded-full h-1.5 w-1.5"
+                style={{ background: isV2 ? "var(--forge-orange)" : "var(--accent-blood)" }}
+              />
+            </span>
+            {noticeText}
           </div>
         )}
       </div>
