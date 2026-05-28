@@ -416,8 +416,10 @@ export function Navbar() {
               onTouchStart={handleLogoTouchStart} 
               onTouchEnd={handleLogoTouchEnd} 
               onClick={handleLogoClick}
-              className="w-9 h-9 md:w-11 md:h-11 bg-[var(--sumi-ink)] flex items-center justify-center shrink-0 cursor-pointer border border-[var(--sumi-ink)]/15 group overflow-hidden touch-manipulation shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:border-[var(--forge-orange)] transition-colors duration-300"
+              className="relative w-9 h-9 md:w-11 md:h-11 bg-[var(--sumi-ink)] flex items-center justify-center shrink-0 cursor-pointer border border-[var(--sumi-ink)]/15 group overflow-hidden touch-manipulation shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:border-[var(--forge-orange)] transition-colors duration-300"
             >
+              {/* Hover BG Overlay */}
+              <div className="absolute inset-0 bg-[var(--forge-orange)] opacity-0 group-hover:opacity-15 transition-opacity duration-300" />
               <Image 
                 src="/icon.png" 
                 alt="HP Logo" 
@@ -425,7 +427,7 @@ export function Navbar() {
                 height={44} 
                 priority={true} 
                 sizes="44px" 
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" 
+                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 relative z-10" 
               />
             </button>
           </div>
