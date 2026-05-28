@@ -206,10 +206,8 @@ function TimelineNode({
             <div key={idx} className="border-l-2 border-[var(--forge-orange)]/40 pl-4 py-0.5 select-none">
               <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/90">{item}</span>
             </div>
-          ))}
         </div>
       </div>
-    </div>
   );
 }
 
