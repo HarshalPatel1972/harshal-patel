@@ -116,21 +116,26 @@ export function Hero() {
         {/* Left Side: Name and Tagline */}
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6 md:space-y-8">
           
-          {/* Design-oriented Premium Tag */}
-          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-[var(--forge-orange)]/30 bg-[var(--aged-paper)]/40 backdrop-blur-md shadow-[0_4px_12px_rgba(232,112,58,0.05)] select-none">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--forge-orange)] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--forge-orange)]"></span>
-            </span>
-            <span
-              className="font-medium tracking-[0.2em] text-[9.5px] uppercase"
-              style={{
-                fontFamily: "var(--font-jetbrains-mono), monospace",
-                color: "var(--sumi-ink)",
-              }}
-            >
-              {availableText}
-            </span>
+          {/* Manila Folder Label Tag */}
+          <div className="relative flex flex-col items-start select-none">
+            {/* Folder Tab */}
+            <div className="h-[5px] w-[32px] bg-[#E5A93B]/15 border-t border-x border-[var(--forge-orange)] rounded-t-[2px] ml-[10px] mb-[-1px] z-10 relative" />
+            {/* Folder Body */}
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E5A93B]/10 border border-[var(--forge-orange)] shadow-[2px_2px_0px_rgba(232,112,58,0.1)] rounded-tr-[3px] rounded-b-[3px]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--forge-orange)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--forge-orange)]"></span>
+              </span>
+              <span
+                className="font-semibold tracking-[0.15em] text-[10px] uppercase"
+                style={{
+                  fontFamily: "var(--font-jetbrains-mono), monospace",
+                  color: "var(--sumi-ink)",
+                }}
+              >
+                {availableText}
+              </span>
+            </div>
           </div>
 
           {/* Title - Split Typography */}
