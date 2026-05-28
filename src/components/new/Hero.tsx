@@ -183,7 +183,58 @@ export function Hero() {
               opacity: 0.9,
             }}
           >
-            {currentProfile.tagline}
+            {(() => {
+              const tagline = currentProfile.tagline;
+              const parts = tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi);
+              return parts.map((part, index) => {
+                const lower = part.toLowerCase();
+                if (lower === "go") {
+                  return (
+                    <span 
+                      key={index} 
+                      className="font-extrabold italic text-[#00ADD8] tracking-tight hover:scale-105 inline-block transition-transform duration-200" 
+                      style={{ 
+                        fontFamily: 'var(--font-big-shoulders), sans-serif',
+                        fontSize: '1.1em'
+                      }}
+                    >
+                      Go
+                    </span>
+                  );
+                }
+                if (lower === "typescript" || lower === "typescipt") {
+                  return (
+                    <span 
+                      key={index} 
+                      className="font-bold text-[#3178C6] tracking-tight bg-[#3178C6]/10 px-1 py-0.5 rounded-sm hover:bg-[#3178C6]/20 transition-colors duration-200 inline-block align-baseline mx-0.5" 
+                      style={{ 
+                        fontFamily: 'var(--font-dm-sans), sans-serif',
+                        fontSize: '0.9em',
+                        lineHeight: '1'
+                      }}
+                    >
+                      TypeScript
+                    </span>
+                  );
+                }
+                if (lower === "webassembly") {
+                  return (
+                    <span 
+                      key={index} 
+                      className="font-semibold text-[#654FF0] tracking-wide bg-[#654FF0]/10 px-1.5 py-0.5 rounded-sm hover:bg-[#654FF0]/20 transition-colors duration-200 inline-block align-baseline mx-0.5"
+                      style={{
+                        fontFamily: 'var(--font-jetbrains-mono), monospace',
+                        fontSize: '0.85em',
+                        lineHeight: '1'
+                      }}
+                    >
+                      WebAssembly
+                    </span>
+                  );
+                }
+                return part;
+              });
+            })()}
           </p>
 
 
