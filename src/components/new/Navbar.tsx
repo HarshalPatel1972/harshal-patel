@@ -103,7 +103,7 @@ export function Navbar() {
   
   const [activeSection, setActiveSection] = useState("hero");
   
-  const [indicatorTop, setIndicatorTop] = useState(0);
+
   const itemRefs = useRef<(HTMLDivElement | HTMLAnchorElement | null)[]>([]);
 
   // V1 Draggable Dot State
@@ -172,17 +172,7 @@ export function Navbar() {
     return () => observer.disconnect();
   }, [currentNavItems]);
 
-  // Handle active indicator triangle alignment
-  useEffect(() => {
-    const activeIndex = currentNavItems.findIndex(item => item.id === activeSection);
-    if (activeIndex !== -1 && itemRefs.current[activeIndex]) {
-      const activeEl = itemRefs.current[activeIndex];
-      if (activeEl) {
-        const topPos = activeEl.offsetTop + activeEl.offsetHeight / 2;
-        setIndicatorTop(topPos);
-      }
-    }
-  }, [activeSection, currentNavItems]);
+
 
   // SMOOTH DOT PHYSICS LOOP (V1 style)
   useEffect(() => {
@@ -455,16 +445,7 @@ export function Navbar() {
              ))}
           </div>
 
-          {/* Active section triangle indicator */}
-          <div
-            className="absolute left-[6px] md:left-[10px] text-[var(--forge-orange)] text-[7px] leading-none transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] select-none pointer-events-none"
-            style={{
-              top: `${indicatorTop}px`,
-              transform: 'translateY(-50%)'
-            }}
-          >
-            ◄
-          </div>
+
 
           {/* Scroll progress dot (physics state) */}
           {dotMode !== 'RELEASED' && (
