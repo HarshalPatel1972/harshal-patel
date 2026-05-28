@@ -441,23 +441,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }
 
         vec4 portraitColor = texture2D(u_portrait, finalUV);
-
-        // Keep in color (dimmed slightly)
-        vec3 color = portraitColor.rgb;
-
-        // Dim & Tint (Overlay effect matching var(--bg-abyss))
-        vec3 targetBg = color * u_opacity;
-        vec3 tintColor = vec3(0.012, 0.012, 0.02);
-        vec3 dimPortrait = mix(tintColor, targetBg, 0.82);
-
-        // Vignette
-        vec2 distFromCenter = uv - 0.5;
-        float vignette = smoothstep(0.8, 0.38, length(distFromCenter));
-        dimPortrait *= vignette;
-
-        // Blend dim vignetted portrait without coloring trails
-        vec3 finalRGB = dimPortrait;
-
+        vec3 finalRGB = portraitColor.rgb * u_opacity;
         gl_FragColor = vec4(finalRGB, 1.0);
       }
     `;
