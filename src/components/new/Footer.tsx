@@ -2,16 +2,10 @@
 
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
-import { useDesignVersion } from "../shared/DesignVersionContext";
 
 export function Footer() {
   const { language } = useLanguage();
   const currentProfile = profile[language as keyof typeof profile] || profile.en;
-  const { designVersion, setDesignVersion, isMounted } = useDesignVersion();
-
-  const handleVersionToggle = () => {
-    setDesignVersion(designVersion === "old" ? "new" : "old");
-  };
 
   const enjoyText = (() => {
     switch (language) {
@@ -23,8 +17,6 @@ export function Footer() {
       default: return "ENJOY MY DESIGNS?";
     }
   })();
-
-  if (!isMounted) return null;
 
   return (
     <footer className="relative bg-[#0F0D0A] text-[#F0EDE8] px-6 py-12 md:px-16 lg:px-24 overflow-hidden z-10">
@@ -81,43 +73,9 @@ export function Footer() {
             </span>
           </div>
 
-          {/* Right Column: Version switcher toggle & coffee pill */}
+          {/* Right Column: Coffee pill */}
           <div className="flex flex-col gap-6 items-start md:items-end justify-start">
             
-            {/* Version switcher */}
-            <div className="flex flex-col items-start md:items-end gap-1.5">
-              <span 
-                className="text-[#8A7F72]/60 text-[8px] font-mono tracking-widest select-none"
-              >
-                Version
-              </span>
-              <button
-                onClick={handleVersionToggle}
-                className="flex flex-col items-start gap-1 cursor-pointer group"
-              >
-                <div className="flex items-center gap-1.5">
-                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${designVersion === "old" ? "bg-[#E8703A] scale-110" : "bg-transparent"}`} />
-                  <span 
-                    className={`text-[11px] font-mono leading-none transition-colors ${
-                      designVersion === "old" ? "text-[#E8703A] font-bold" : "text-[#8A7F72] group-hover:text-white"
-                    }`}
-                  >
-                    V1
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${designVersion === "new" ? "bg-[#E8703A] scale-110" : "bg-transparent"}`} />
-                  <span 
-                    className={`text-[11px] font-mono leading-none transition-colors ${
-                      designVersion === "new" ? "text-[#E8703A] font-bold" : "text-[#8A7F72] group-hover:text-white"
-                    }`}
-                  >
-                    V2
-                  </span>
-                </div>
-              </button>
-            </div>
-
             {/* Coffee Pill Button */}
             <a 
               href="https://www.chai4.me/harshalpatel" 
@@ -137,4 +95,3 @@ export function Footer() {
     </footer>
   );
 }
-
