@@ -427,7 +427,7 @@ export function Navbar() {
                 height={44} 
                 priority={true} 
                 sizes="44px" 
-                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 relative z-10" 
+                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 group-hover:animate-spin relative z-10" 
               />
             </button>
           </div>
