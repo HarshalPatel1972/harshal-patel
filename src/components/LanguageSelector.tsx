@@ -145,7 +145,7 @@ export function LanguageSelector() {
             : `${isEridian ? 'border-[#FFB300]/40' : 'border-white/20'} bg-black/95 ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none transition-all duration-700'}`
         }`}
         style={{ 
-          width: '220px', 
+          width: '280px', 
           zIndex: 100,
           transitionDelay: isOpen ? '0ms' : '150ms'
         }}
