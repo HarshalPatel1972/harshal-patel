@@ -178,7 +178,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${cirka.variable} ${season.variable} ${victor.variable} ${luna.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${cirka.variable} ${season.variable} ${victor.variable} ${luna.variable} font-sans antialiased bg-background text-foreground select-none`}
       >
         <Providers>
           <ImageGuard />

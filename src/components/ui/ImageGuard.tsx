@@ -37,12 +37,31 @@ export default function ImageGuard() {
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent Ctrl+A or Cmd+A selection
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "a") {
+        e.preventDefault();
+      }
+    };
+
+    const handleClipboard = (e: ClipboardEvent) => {
+      e.preventDefault();
+    };
+
     window.addEventListener("contextmenu", handleContextMenu);
     window.addEventListener("dragstart", handleDragStart);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("copy", handleClipboard);
+    window.addEventListener("cut", handleClipboard);
+    window.addEventListener("paste", handleClipboard);
 
     return () => {
       window.removeEventListener("contextmenu", handleContextMenu);
       window.removeEventListener("dragstart", handleDragStart);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("copy", handleClipboard);
+      window.removeEventListener("cut", handleClipboard);
+      window.removeEventListener("paste", handleClipboard);
     };
   }, []);
 
