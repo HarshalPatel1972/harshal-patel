@@ -229,7 +229,7 @@ export function Contact() {
         <div className="text-left max-w-3xl mb-16 space-y-4">
           <ScrollReveal duration={800}>
             <div
-              className="inline-block bg-[var(--sumi-ink)] text-[var(--studio-warm)] font-bold text-xs tracking-widest px-3 py-1 font-mono uppercase"
+              className="inline-block mb-4 bg-[var(--sumi-ink)] text-[var(--studio-warm)] font-bold text-xs tracking-widest px-3 py-1 font-mono uppercase"
             >
               {t.sub}
             </div>
