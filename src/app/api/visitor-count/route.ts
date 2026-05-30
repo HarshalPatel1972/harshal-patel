@@ -1,29 +1,38 @@
-import { kv } from '@/lib/kv';
+import { kv, redis } from '@/lib/kv';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
 /**
  * SOUL REGISTRY V4: Robust Human-Only Counting
  * Blocks bots, crawlers, and system checks to ensure realistic counts.
+ * Optimized with pre-compiled RegExp and Redis pipelining for lower latency.
  */
 
-const BOT_KEYWORDS = [
-  'bot', 'spider', 'crawl', 'headless', 'lighthouse', 'inspect', 
-  'axios', 'node-fetch', 'python', 'curl', 'wget', 'postman', 
-  'vercel', 'ping', 'health', 'checker', 'uptimerobot'
-];
+const BOT_REGEX = /bot|spider|crawl|headless|lighthouse|inspect|axios|node-fetch|python|curl|wget|postman|vercel|ping|health|checker|uptimerobot/i;
+
+// Helper to extract values from Redis pipeline results
+const extractResult = (res: [Error | null, any]) => res[1];
 
 export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
         if (req.nextUrl.searchParams.get('reset') === '1') {
-            await kv.del('portfolio_v3_unique_sessions');
-            await kv.del('portfolio_v3_total_hits');
+            const pipeline = redis.pipeline();
+            pipeline.del('portfolio_v3_unique_sessions');
+            pipeline.del('portfolio_v3_total_hits');
+            await pipeline.exec();
             return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
         }
 
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const pipeline = redis.pipeline();
+        pipeline.scard('portfolio_v3_unique_sessions');
+        pipeline.get('portfolio_v3_total_hits');
+
+        const results = await pipeline.exec();
+        if (!results) throw new Error("Pipeline execution failed");
+
+        const uniqueCount = extractResult(results[0]) || 0;
+        const totalHits = extractResult(results[1]) || 0;
 
         return NextResponse.json({ 
             success: true, 
@@ -38,16 +47,16 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
-        // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
-        if (isBot) {
+        // 1. FILTER BOTS: Pre-compiled RegExp avoids array iteration and string manipulation
+        if (BOT_REGEX.test(userAgent)) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
 
         const { cid } = await req.json();
-        const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'Anonymous';
+        // Use req.ip to prevent X-Forwarded-For spoofing as per memory guidelines
+        const ip = req.ip || 'Anonymous';
         
         // 2. PRIVACY HASHING
         const identitySource = cid || ip;
@@ -56,12 +65,18 @@ export async function POST(req: NextRequest) {
             .update(identitySource + (process.env.APP_SECRET || 'v1_resonance'))
             .digest('hex');
 
-        // 3. ATOMIC RITUAL: Increment only for humans
-        await kv.sadd('portfolio_v3_unique_sessions', hash);
-        await kv.incr('portfolio_v3_total_hits');
+        // 3. ATOMIC RITUAL: Increment only for humans using Redis Pipeline
+        const pipeline = redis.pipeline();
+        pipeline.sadd('portfolio_v3_unique_sessions', hash);
+        pipeline.incr('portfolio_v3_total_hits');
+        pipeline.scard('portfolio_v3_unique_sessions');
+        pipeline.get('portfolio_v3_total_hits');
         
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const results = await pipeline.exec();
+        if (!results) throw new Error("Pipeline execution failed");
+
+        const uniqueCount = extractResult(results[2]) || 0;
+        const totalHits = extractResult(results[3]) || 0;
 
         return NextResponse.json({ 
             success: true, 
