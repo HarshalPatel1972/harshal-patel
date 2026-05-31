@@ -75,14 +75,28 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    const updateDimensions = () => {
+      if (!trackRef.current) return;
+      sectionOffset = trackRef.current.offsetTop;
+      trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+    };
+
     const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
+      if (!trackRef.current || !heroContentRef.current) {
+        ticking = false;
+        return;
+      }
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
-      if (st > sectionOffset + trackHeight + 500) return;
+      if (st > sectionOffset + trackHeight + 500) {
+        ticking = false;
+        return;
+      }
 
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
@@ -92,15 +106,32 @@ export function Hero() {
       const opacity = Math.max(0, 1 - progress * 3.5);
       const blur = progress * 20;
       
+      // ⚡ Bolt: Removed synchronous layout reads from scroll loop and cached dimensions
       heroContentRef.current.style.transform = `translate3d(0, ${translate}px, 0) scale(${scale})`;
       heroContentRef.current.style.opacity = opacity.toString();
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+      ticking = false;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true }); 
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScrollThrottled = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("resize", updateDimensions);
+    updateDimensions();
+
+    window.addEventListener("scroll", handleScrollThrottled, { passive: true });
+    handleScrollThrottled();
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScrollThrottled);
+    };
   }, []);
 
   return (

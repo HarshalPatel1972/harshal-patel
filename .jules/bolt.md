@@ -1,0 +1,3 @@
+## 2024-03-24 - Layout Thrashing in High-Frequency Scroll Listeners
+**Learning:** Reading layout properties like `offsetTop` and `offsetHeight` inside a `scroll` event handler can cause layout thrashing because it forces the browser to recalculate layout synchronously if the DOM or styles have been modified elsewhere in the frame. Even if wrapped in `requestAnimationFrame`, the read happens repeatedly on every frame during a scroll.
+**Action:** When tracking elements for scroll animations, dynamically cache `offsetTop` and `offsetHeight` (or `getBoundingClientRect`) during component initialization and `window.addEventListener('resize')` events, rather than re-evaluating them synchronously inside the scroll loop.
