@@ -75,16 +75,26 @@ export function Hero() {
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    const updateDimensions = () => {
+      if (trackRef.current) {
+        sectionOffset = trackRef.current.offsetTop;
+        trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+      }
+    };
+
     const handleScroll = () => {
+      ticking = false;
       if (!trackRef.current || !heroContentRef.current) return;
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
       if (st > sectionOffset + trackHeight + 500) return;
 
-      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+      const progress = Math.max(0, Math.min(1, (st - sectionOffset) / (trackHeight || 1)));
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
       
       const scale = 1 - progress * 0.5;
@@ -98,9 +108,21 @@ export function Hero() {
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true }); 
+    const handleScrollThrottled = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("resize", updateDimensions);
+    window.addEventListener("scroll", handleScrollThrottled, { passive: true });
+    updateDimensions();
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScrollThrottled);
+    };
   }, []);
 
   return (

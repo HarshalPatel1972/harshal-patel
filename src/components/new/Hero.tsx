@@ -22,16 +22,24 @@ export function Hero() {
   // SCROLL ENGINE
   useEffect(() => {
     let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    const updateDimensions = () => {
+      if (trackRef.current) {
+        sectionOffset = trackRef.current.offsetTop;
+        trackHeight = window.innerHeight; // Track over 1 full screen scroll
+      }
+    };
 
     const handleScroll = () => {
+      ticking = false;
       // Perform parallax/scale/opacity/blur updates on the Hero section content
       if (trackRef.current && heroContentRef.current) {
         const st = window.scrollY;
-        const sectionOffset = trackRef.current.offsetTop;
-        const trackHeight = window.innerHeight; // Track over 1 full screen scroll
 
         if (st <= sectionOffset + trackHeight + 500) {
-          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
+          const progress = Math.max(0, Math.min(1, (st - sectionOffset) / (trackHeight || 1)));
           trackRef.current.style.setProperty("--scroll-progress", progress.toString());
 
           const scale = 1 - progress * 0.3;
@@ -45,8 +53,6 @@ export function Hero() {
           heroContentRef.current.style.pointerEvents = progress > 0.6 ? "none" : "auto";
         }
       }
-
-      ticking = false;
     };
 
     const handleScrollThrottled = () => {
@@ -56,9 +62,14 @@ export function Hero() {
       }
     };
 
+    window.addEventListener("resize", updateDimensions);
     window.addEventListener("scroll", handleScrollThrottled, { passive: true });
+    updateDimensions();
     handleScroll(); // initial call
-    return () => window.removeEventListener("scroll", handleScrollThrottled);
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScrollThrottled);
+    };
   }, []);
 
   const availableText = (() => {
