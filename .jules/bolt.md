@@ -1,0 +1,3 @@
+## 2024-06-03 - Prevent Unnecessary Re-renders in Scroll Animations
+**Learning:** Using `useState` to track a "run-once" flag (like `hasAnimated`) inside an `IntersectionObserver` callback triggers unnecessary component re-renders when elements enter the viewport. This is especially problematic for components that wrap significant amounts of content, like `ScrollReveal`.
+**Action:** Use `useRef` instead of `useState` for tracking boolean flags that don't need to trigger a visual re-render of the React tree, particularly within high-frequency events or observer callbacks. This avoids cascading renders while correctly preserving state.

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { animate as anime } from "animejs";
 
 interface ScrollRevealProps {
@@ -25,7 +25,8 @@ export function ScrollReveal({
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  // ⚡ Bolt: Use useRef instead of useState for hasAnimated to prevent unnecessary re-renders when elements enter the viewport
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -46,8 +47,8 @@ export function ScrollReveal({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && (!once || !hasAnimated)) {
-          setHasAnimated(true);
+        if (entry.isIntersecting && (!once || !hasAnimated.current)) {
+          hasAnimated.current = true;
 
           const animateProps: Record<string, any> = {
             opacity: [0, 1],
@@ -72,7 +73,7 @@ export function ScrollReveal({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [delay, direction, distance, duration, hasAnimated, once, threshold]);
+  }, [delay, direction, distance, duration, once, threshold]);
 
   return (
     <div ref={ref} className={className}>
