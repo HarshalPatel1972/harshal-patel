@@ -28,7 +28,7 @@ const CARD_ACCENTS = [
 const STATUS_LABELS = ["SHIPPED", "IN PROGRESS", "SHIPPED", "SHIPPED", "IN PROGRESS", "ARCHIVED"];
 
 // ─── Resonance canvas overlay ─────────────────────────────────────────────────
-function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: number; mouseY: number }) {
+function ResonanceCanvas({ active, mouseRef }: { active: boolean; mouseRef: React.RefObject<{ x: number; y: number } | null> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
   const ringsRef = useRef<{ r: number; alpha: number }[]>([]);
@@ -57,12 +57,14 @@ function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: 
       ringsRef.current.forEach((ring) => {
         ctx.strokeStyle = `rgba(74,127,165,${ring.alpha})`;
         ctx.lineWidth = 1;
-        ctx.strokeRect(
-          mouseX - ring.r,
-          mouseY - ring.r,
-          ring.r * 2,
-          ring.r * 2
-        );
+        if (mouseRef.current) {
+          ctx.strokeRect(
+            mouseRef.current.x - ring.r,
+            mouseRef.current.y - ring.r,
+            ring.r * 2,
+            ring.r * 2
+          );
+        }
       });
       rafRef.current = requestAnimationFrame(draw);
     };
@@ -71,7 +73,7 @@ function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseRef]);
 
   return (
     <canvas
@@ -100,14 +102,14 @@ function DossierCard({
   onNavigate: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
-  const [mouse, setMouse] = useState({ x: 300, y: 285 });
+  const mouseRef = useRef({ x: 300, y: 285 });
   const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
   const statusLabel = STATUS_LABELS[index % STATUS_LABELS.length];
   const statusRotation = index % 2 === 0 ? "-rotate-[4deg]" : "rotate-[3deg]";
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }, []);
 
   const viewLabel =
@@ -141,7 +143,7 @@ function DossierCard({
           onClick={onNavigate}
         >
           {/* Resonance canvas */}
-          <ResonanceCanvas active={hovered} mouseX={mouse.x} mouseY={mouse.y} />
+          <ResonanceCanvas active={hovered} mouseRef={mouseRef} />
 
           {/* Accent colour top-strip */}
           <div className="h-2 w-full" style={{ background: accent }} />
