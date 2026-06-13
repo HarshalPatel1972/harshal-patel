@@ -22,11 +22,11 @@ export function DesignVersionSwitcher() {
 
   // Show notice on mount, then auto-hide after 3s
   useEffect(() => {
-    setNoticeVisible(true);
+    const timer1 = setTimeout(() => setNoticeVisible(true), 0);
     hideTimer.current = setTimeout(() => {
       setNoticeVisible(false);
     }, 3000);
-    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
+    return () => { clearTimeout(timer1); if (hideTimer.current) clearTimeout(hideTimer.current); };
   }, [designVersion]);
 
   if (!isMounted) return null;
