@@ -25,7 +25,9 @@ export function ScrollReveal({
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  // Using useRef instead of useState for hasAnimated prevents unnecessary component re-renders
+  // when the element enters the viewport, as this state does not affect the rendered JSX.
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -46,8 +48,8 @@ export function ScrollReveal({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && (!once || !hasAnimated)) {
-          setHasAnimated(true);
+        if (entry.isIntersecting && (!once || !hasAnimatedRef.current)) {
+          hasAnimatedRef.current = true;
 
           const animateProps: Record<string, any> = {
             opacity: [0, 1],
@@ -72,7 +74,7 @@ export function ScrollReveal({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [delay, direction, distance, duration, hasAnimated, once, threshold]);
+  }, [delay, direction, distance, duration, once, threshold]);
 
   return (
     <div ref={ref} className={className}>
