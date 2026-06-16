@@ -66,7 +66,7 @@ function HomeContent() {
   const isOldDesign = isMounted && designVersion === "old";
 
   return (
-    <main className="relative bg-neutral-950 min-h-screen">
+    <main className="relative bg-neutral-950 min-h-screen overflow-x-hidden">
       {type === 'FLIP' ? <FlipTransition /> : <SpaceWarpTransition />}
       {!showContent && isMounted && (
         designVersion === "old" ? (
@@ -105,7 +105,7 @@ function HomeContent() {
             </div>
           </div>
 
-          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-hidden ${showContent ? "opacity-100" : "opacity-0"}`}>
             <OldSystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
             <OldHero />
             <OldProjects />
@@ -140,7 +140,7 @@ function HomeContent() {
             </div>
           </div>
 
-          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-hidden ${showContent ? "opacity-100" : "opacity-0"}`}>
             <NewSystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
             
             <NewHero />

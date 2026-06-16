@@ -79,6 +79,7 @@ html {
   scrollbar-width: none;     /* Firefox */
   min-height: 100%;
   overscroll-behavior-y: none;
+  overflow-x: hidden;
 }
 
 section {
