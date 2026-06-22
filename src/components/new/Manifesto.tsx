@@ -147,7 +147,7 @@ export function Manifesto() {
     <section
       id="manifesto"
       ref={trackRef}
-      className="h-[200vh] relative z-10 isolate transform-gpu overflow-visible select-none"
+      className="h-[200vh] relative z-10 isolate overflow-visible select-none"
       style={{
         background: "#161D1A", // deep chalkboard forest green
         backgroundImage: `
@@ -323,7 +323,7 @@ export function Manifesto() {
       {/* Local style block for scroll reveal animations */}
       <style>{`
         .reveal-word {
-          --progress: clamp(0, calc((var(--scroll-progress) - var(--start)) / (var(--end) - var(--start))), 1);
+          --progress: clamp(0, calc((var(--scroll-progress) - var(--start)) / 0.2), 1);
           opacity: var(--progress);
           transform: translateY(calc((1 - var(--progress)) * 25px));
           filter: blur(calc((1 - var(--progress)) * 12px));
@@ -331,11 +331,11 @@ export function Manifesto() {
         }
         .underline-path {
           stroke-dasharray: 200;
-          stroke-dashoffset: calc(200 * (1 - clamp(0, calc((var(--scroll-progress) - var(--svg-start)) / (var(--svg-end) - var(--svg-start))), 1)));
+          stroke-dashoffset: calc(200 * (1 - clamp(0, calc((var(--scroll-progress) - var(--svg-start)) / 0.25), 1)));
         }
         .circle-path {
           stroke-dasharray: 500;
-          stroke-dashoffset: calc(500 * (1 - clamp(0, calc((var(--scroll-progress) - var(--svg-start)) / (var(--svg-end) - var(--svg-start))), 1)));
+          stroke-dashoffset: calc(500 * (1 - clamp(0, calc((var(--scroll-progress) - var(--svg-start)) / 0.3), 1)));
         }
       `}</style>
     </section>

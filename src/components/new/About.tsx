@@ -45,9 +45,19 @@ function GaugeDial({
   index: number;
 }) {
   const [displayed, setDisplayed] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const size = 90;
-  const r = 36;
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const size = isMobile ? 70 : 90;
+  const r = isMobile ? 28 : 36;
   const cx = size / 2;
   const cy = size / 2;
 
@@ -102,8 +112,8 @@ function GaugeDial({
 
   return (
     <div
-      className="flex flex-col items-center justify-between"
-      style={{ width: "110px", height: "130px" }}
+      className="flex flex-col items-center justify-between w-[80px] sm:w-[110px]"
+      style={{ height: "130px" }}
     >
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="overflow-visible">
@@ -548,7 +558,7 @@ export function About() {
                 >
                   Core Expertise
                 </div>
-                <div className="grid grid-cols-3 gap-6 justify-items-center">
+                <div className="grid grid-cols-3 gap-2 sm:gap-6 justify-items-center">
                   {currentProfile.skills.map((skill, i) => (
                     <GaugeDial
                       key={skill.name}

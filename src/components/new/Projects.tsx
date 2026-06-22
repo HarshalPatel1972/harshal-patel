@@ -123,9 +123,9 @@ function DossierCard({
   return (
     <div
       className={`transition-[opacity,transform] duration-700 ease-out w-full ${
-        isStacked ? "relative top-0" : "sticky top-[calc(10vh+60px)] md:top-[10vh]"
+        isStacked ? "sticky top-[calc(10vh+60px)] md:top-[10vh]" : "relative top-0"
       }`}
-      style={{ zIndex: isStacked ? 1 : index }}
+      style={{ zIndex: isStacked ? index : 1 }}
     >
       <div className="flex items-stretch gap-0">
         {/* ── MAIN CARD ── */}
@@ -275,7 +275,7 @@ function DossierCard({
         </div>
 
         {/* Spacer for nav room (stacked mode only) */}
-        {!isStacked && <div className="w-8 md:w-10 shrink-0" />}
+        {isStacked && <div className="w-8 md:w-10 shrink-0" />}
       </div>
     </div>
   );
@@ -286,7 +286,7 @@ export function Projects() {
   const { language } = useLanguage();
   const { triggerTransition, isPreloading, loadingSlug, setPreloading } = useFlipTransition();
   const currentProjects = projects[language as keyof typeof projects] || projects.en;
-  const [isStacked, setIsStacked] = useState(false);
+  const [isStacked, setIsStacked] = useState(true);
 
   const chapterLabel =
     language === "en" ? "CHAPTER 01" :
@@ -309,7 +309,7 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="relative pt-8 md:pt-12 pb-24 px-6 md:px-8 flex flex-col items-center z-10 isolate transform-gpu blueprint-grid-warm"
+      className="relative pt-8 md:pt-12 pb-24 px-6 md:px-8 flex flex-col items-center z-10 isolate blueprint-grid-warm"
       style={{ background: "var(--studio-warm)" }}
     >
       {/* Section Header */}
@@ -365,11 +365,11 @@ export function Projects() {
             }}
           >
             <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
-              {isStacked
+              {!isStacked
                 ? <path d="M0 4h10v2H0z" />
                 : <path d="M4 0h2v10H4zM0 4h10v2H0z" />}
             </svg>
-            {isStacked ? "STACK VIEW" : "GRID VIEW"}
+            {isStacked ? "GRID VIEW" : "STACK VIEW"}
           </button>
         </div>
       </div>
@@ -378,8 +378,8 @@ export function Projects() {
       <div
         className={`relative w-full transition-all duration-700 ${
           isStacked
-            ? "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-7xl"
-            : "flex flex-col gap-[20vh] max-w-5xl"
+            ? "flex flex-col gap-[20vh] max-w-5xl mx-auto w-full"
+            : "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-7xl"
         }`}
       >
         {currentProjects.map((project: Project, i: number) => (
