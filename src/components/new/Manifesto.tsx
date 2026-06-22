@@ -110,14 +110,19 @@ export function Manifesto() {
 
   useEffect(() => {
     let ticking = false;
+    let totalScrollRange = 0;
+
+    const updateDimensions = () => {
+      if (!trackRef.current) return;
+      const sectionOffset = trackRef.current.offsetTop;
+      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+      totalScrollRange = sectionOffset + trackHeight;
+    };
 
     const handleScroll = () => {
-      if (trackRef.current) {
+      if (trackRef.current && totalScrollRange > 0) {
         const st = window.scrollY;
-        const sectionOffset = trackRef.current.offsetTop;
-        const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
-        const totalScrollRange = sectionOffset + trackHeight;
-
+        // ⚡ Bolt: Removed synchronous layout reads from scroll loop and cached dimensions
         // Calculate progress starting from st = 0 up to totalScrollRange
         const progress = Math.max(0, Math.min(1, st / totalScrollRange));
         trackRef.current.style.setProperty("--scroll-progress", progress.toString());
@@ -132,9 +137,16 @@ export function Manifesto() {
       }
     };
 
+    window.addEventListener("resize", updateDimensions);
+    updateDimensions();
+
     window.addEventListener("scroll", handleScrollThrottled, { passive: true });
-    handleScroll(); // Initial call
-    return () => window.removeEventListener("scroll", handleScrollThrottled);
+    handleScrollThrottled(); // Initial call
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScrollThrottled);
+    };
   }, []);
 
   const prefixWords = parts.prefix.split(" ").filter(w => w !== "");
