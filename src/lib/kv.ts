@@ -20,4 +20,5 @@ export const kv = {
   get: (key: string) => redis.get(key),
   del: (key: string) => redis.del(key),
   set: (key: string, value: string) => redis.set(key, value),
+  pipeline: () => redis.pipeline(),
 };
