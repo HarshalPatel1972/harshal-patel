@@ -1,0 +1,3 @@
+## 2024-05-24 - Pre-compiled RegExp for API route performance
+**Learning:** In Next.js App Router API routes, using iterative array checks (`Array.prototype.some`) and `.toLowerCase()` inside `POST` handlers that run on every page view can lead to unnecessary CPU overhead. Compiling a `RegExp` regex outside the handler removes this iterative load, resulting in a tiny, yet measurable latency win for high-traffic endpoints.
+**Action:** When filtering standard requests against static keyword lists, use pre-compiled regex objects with the `/i` flag instead of looping arrays with `.includes()` and `.toLowerCase()`.
