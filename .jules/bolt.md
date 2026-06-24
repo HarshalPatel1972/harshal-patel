@@ -1,0 +1,3 @@
+## 2024-03-24 - Memoizing Complex String Splits in Render Loops
+**Learning:** For React components performing complex string manipulations (e.g., splitting a name into parts and character arrays for animations), un-memoized `split()` operations inside the render loop cause redundant object and array allocations on every render cycle. This is especially problematic in components like Hero that might be updated by high-frequency events or simply re-render frequently.
+**Action:** Utilize `useMemo` to pre-calculate these values. This eliminates the redundant allocations and computations, improving performance without sacrificing readability.
