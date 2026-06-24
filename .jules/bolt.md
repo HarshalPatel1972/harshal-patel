@@ -1,0 +1,3 @@
+## 2024-06-24 - Pre-compiled RegExp for API Header Matching
+**Learning:** For high-frequency API endpoints that perform static keyword matching against request headers (e.g., User-Agent string bot filtering in `visitor-count` route), dynamically calling `.toLowerCase()` and using `Array.some()` on every incoming request introduces unnecessary O(N) array iteration and intermediate string allocation overhead.
+**Action:** When implementing static text matching logic on hot paths like analytics API routes, hoist a single, globally pre-compiled `RegExp` with the `i` (case-insensitive) flag outside the handler. This changes the matching algorithm into an O(1) compiled native execution, significantly improving request handling latency.
