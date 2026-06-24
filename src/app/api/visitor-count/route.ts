@@ -7,11 +7,8 @@ import crypto from 'crypto';
  * Blocks bots, crawlers, and system checks to ensure realistic counts.
  */
 
-const BOT_KEYWORDS = [
-  'bot', 'spider', 'crawl', 'headless', 'lighthouse', 'inspect', 
-  'axios', 'node-fetch', 'python', 'curl', 'wget', 'postman', 
-  'vercel', 'ping', 'health', 'checker', 'uptimerobot'
-];
+// ⚡ Bolt: Compiled RegExp outside request handler is more performant than Array.some() + .includes()
+const BOT_REGEX = /bot|spider|crawl|headless|lighthouse|inspect|axios|node-fetch|python|curl|wget|postman|vercel|ping|health|checker|uptimerobot/i;
 
 export async function GET(req: NextRequest) {
     try {
@@ -38,10 +35,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        const isBot = BOT_REGEX.test(userAgent);
         if (isBot) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
@@ -57,11 +54,18 @@ export async function POST(req: NextRequest) {
             .digest('hex');
 
         // 3. ATOMIC RITUAL: Increment only for humans
-        await kv.sadd('portfolio_v3_unique_sessions', hash);
-        await kv.incr('portfolio_v3_total_hits');
+        // ⚡ Bolt: Batched sequential Redis operations into a single pipeline to minimize API latency
+        const pipeline = kv.pipeline();
+        pipeline.sadd('portfolio_v3_unique_sessions', hash);
+        pipeline.incr('portfolio_v3_total_hits');
+        pipeline.scard('portfolio_v3_unique_sessions');
+        pipeline.get('portfolio_v3_total_hits');
+
+        const results = await pipeline.exec();
         
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const getResult = (res: any) => Array.isArray(res) ? res[1] : res;
+        const uniqueCount = getResult(results?.[2]) as number;
+        const totalHits = getResult(results?.[3]) || 0;
 
         return NextResponse.json({ 
             success: true, 
