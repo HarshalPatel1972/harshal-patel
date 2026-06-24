@@ -1,0 +1,3 @@
+## 2026-06-19 - [Bot Detection Regex Optimization]
+**Learning:** For high-frequency API endpoints performing static keyword matching against headers (e.g., bot detection in visitor-count), compiling a single `RegExp` outside the request handler is more performant than using `Array.some` and `.toLowerCase()` inside the handler, because it avoids allocating new arrays, lowercasing the entire string per request, and executing loop iterations.
+**Action:** Use pre-compiled `RegExp` for static string matching against headers or common patterns in frequently accessed serverless functions to minimize execution time and memory allocations.
