@@ -13,6 +13,9 @@ const BOT_KEYWORDS = [
   'vercel', 'ping', 'health', 'checker', 'uptimerobot'
 ];
 
+// Pre-compiled RegExp for highly efficient bot detection, replacing O(n) Array.some string inclusion checks
+const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
+
 export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
@@ -38,10 +41,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        const isBot = BOT_REGEX.test(userAgent);
         if (isBot) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
