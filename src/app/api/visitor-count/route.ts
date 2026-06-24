@@ -1,4 +1,4 @@
-import { kv } from '@/lib/kv';
+import { kv, redis } from '@/lib/kv';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
@@ -17,13 +17,23 @@ export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
         if (req.nextUrl.searchParams.get('reset') === '1') {
-            await kv.del('portfolio_v3_unique_sessions');
-            await kv.del('portfolio_v3_total_hits');
+            const pipeline = redis.pipeline();
+            pipeline.del('portfolio_v3_unique_sessions');
+            pipeline.del('portfolio_v3_total_hits');
+            await pipeline.exec();
             return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
         }
 
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        // ⚡ Bolt: Batching Redis reads into a single network pipeline to eliminate sequential latency overhead
+        const pipeline = redis.pipeline();
+        pipeline.scard('portfolio_v3_unique_sessions');
+        pipeline.get('portfolio_v3_total_hits');
+
+        const results = await pipeline.exec();
+        const extract = (res: [Error | null, any]) => res[1];
+
+        const uniqueCount = results ? extract(results[0]) : 0;
+        const totalHits = results ? (extract(results[1]) || 0) : 0;
 
         return NextResponse.json({ 
             success: true, 
@@ -57,11 +67,18 @@ export async function POST(req: NextRequest) {
             .digest('hex');
 
         // 3. ATOMIC RITUAL: Increment only for humans
-        await kv.sadd('portfolio_v3_unique_sessions', hash);
-        await kv.incr('portfolio_v3_total_hits');
+        // ⚡ Bolt: Batching all updates and subsequent reads into a single network round-trip using pipeline
+        const pipeline = redis.pipeline();
+        pipeline.sadd('portfolio_v3_unique_sessions', hash);
+        pipeline.incr('portfolio_v3_total_hits');
+        pipeline.scard('portfolio_v3_unique_sessions');
+        pipeline.get('portfolio_v3_total_hits');
+
+        const results = await pipeline.exec();
+        const extract = (res: [Error | null, any]) => res[1];
         
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const uniqueCount = results ? extract(results[2]) : 0;
+        const totalHits = results ? (extract(results[3]) || 0) : 0;
 
         return NextResponse.json({ 
             success: true, 
