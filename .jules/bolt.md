@@ -1,0 +1,4 @@
+
+## 2024-05-30 - Optimize Bot Detection and Reduce Network Round-trips
+**Learning:** High-frequency APIs like the visitor counter were using `.some()` and `.toLowerCase()` on the user-agent string for every request, creating unnecessary CPU overhead. Furthermore, sequential Redis calls (like `sadd`, `incr`, `scard`, `get`) were made individually via the standard `kv` wrapper, meaning the server had to wait for multiple full network round-trips to the Redis database before responding.
+**Action:** Replace iterative array-based string matching with a pre-compiled `/regex/i` outside the handler. When performing multiple Redis operations in a single route, bypass the basic `kv` wrapper and use `redis.pipeline()` to batch all commands into a single round-trip, significantly reducing API latency.
