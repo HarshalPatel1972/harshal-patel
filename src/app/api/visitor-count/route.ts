@@ -12,6 +12,7 @@ const BOT_KEYWORDS = [
   'axios', 'node-fetch', 'python', 'curl', 'wget', 'postman', 
   'vercel', 'ping', 'health', 'checker', 'uptimerobot'
 ];
+const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
 
 export async function GET(req: NextRequest) {
     try {
@@ -38,10 +39,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        // ⚡ Bolt: Using a pre-compiled Regex is significantly faster than array iteration and .toLowerCase() on every request
+        const isBot = BOT_REGEX.test(userAgent);
         if (isBot) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
