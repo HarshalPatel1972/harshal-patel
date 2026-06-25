@@ -1,0 +1,3 @@
+## 2024-03-24 - IntersectionObserver state updates causing re-renders
+**Learning:** In scroll-revealing components, using `useState` to track whether an animation has completed triggers unnecessary re-renders when elements scroll into view. The component re-renders, recalculating standard hooks and DOM diffs, despite the `IntersectionObserver` simply triggering an external DOM animation via anime.js.
+**Action:** When tracking one-time visibility state (like `hasAnimated`) inside an `IntersectionObserver` callback for scroll animations, use `useRef` instead of `useState` to prevent unnecessary component re-renders when elements enter the viewport.
