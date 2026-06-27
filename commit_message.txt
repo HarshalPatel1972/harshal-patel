@@ -1,0 +1,7 @@
+💡 What: Replaced `useState` with `useRef` for tracking the `hasAnimated` flag in the `ScrollReveal` component (and its duplicate in `src/components/old/ScrollReveal.tsx`).
+
+🎯 Why: The `ScrollReveal` component uses an `IntersectionObserver` to animate elements into view. Previously, when the intersection was triggered, it called `setHasAnimated(true)`. This state update forced an unnecessary synchronous React re-render, which could cause layout thrashing and drop frames during rapid scrolling. Since the `hasAnimated` value is solely used internally by the effect logic and is never rendered in the JSX, it should be tracked without triggering a render loop.
+
+📊 Impact: Eliminates an unnecessary component re-render every time a scroll-revealed element enters the viewport. For pages with many revealed elements, this significantly smooths scrolling performance.
+
+🔬 Measurement: Profile the page using React DevTools Profiler while scrolling. The `ScrollReveal` components will no longer show a re-render phase when intersecting the viewport.
