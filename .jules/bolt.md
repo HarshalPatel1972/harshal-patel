@@ -1,0 +1,3 @@
+## 2025-02-26 - Optimize Bot Detection
+**Learning:** For high-frequency API endpoints performing static keyword matching against headers (e.g., bot detection in `visitor-count`), string allocations (like `userAgent.toLowerCase()`) and iterative checks (`Array.some`) can create unnecessary overhead.
+**Action:** Replaced the array of keywords with a pre-compiled, module-scoped RegExp. This eliminates string allocations and leverages native C++ engine optimizations for faster evaluation.
