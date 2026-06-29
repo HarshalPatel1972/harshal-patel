@@ -7,11 +7,7 @@ import crypto from 'crypto';
  * Blocks bots, crawlers, and system checks to ensure realistic counts.
  */
 
-const BOT_KEYWORDS = [
-  'bot', 'spider', 'crawl', 'headless', 'lighthouse', 'inspect', 
-  'axios', 'node-fetch', 'python', 'curl', 'wget', 'postman', 
-  'vercel', 'ping', 'health', 'checker', 'uptimerobot'
-];
+const BOT_REGEX = /bot|spider|crawl|headless|lighthouse|inspect|axios|node-fetch|python|curl|wget|postman|vercel|ping|health|checker|uptimerobot/i;
 
 export async function GET(req: NextRequest) {
     try {
@@ -38,10 +34,12 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        // Optimization: Use pre-compiled RegExp instead of Array.some + toLowerCase() to prevent
+        // string allocations and improve throughput for this high-frequency route.
+        const isBot = BOT_REGEX.test(userAgent);
         if (isBot) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
