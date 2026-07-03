@@ -13,6 +13,11 @@ const BOT_KEYWORDS = [
   'vercel', 'ping', 'health', 'checker', 'uptimerobot'
 ];
 
+// ⚡ Bolt Optimization: Pre-compile a single RegExp for bot keywords outside the request handler
+// This avoids allocating a new string via .toLowerCase() and traversing the BOT_KEYWORDS array
+// on every single incoming request to this high-frequency endpoint.
+const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
+
 export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
@@ -38,10 +43,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        const isBot = BOT_REGEX.test(userAgent);
         if (isBot) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
