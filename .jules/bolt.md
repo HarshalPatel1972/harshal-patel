@@ -1,0 +1,3 @@
+## 2024-11-20 - [ScrollReveal unnecessary renders]
+**Learning:** React state (`useState`) was being used to track one-time visibility (`hasAnimated`) inside an `IntersectionObserver` callback. Because the actual animations were handled by an external library (anime.js) via direct DOM mutation rather than React state, the state update only served to trigger unnecessary cascading re-renders of all wrapped child components every time an element entered the viewport.
+**Action:** When tracking one-time visibility state (like `hasAnimated`) inside an `IntersectionObserver` callback for scroll animations, use `useRef` instead of `useState` to prevent unnecessary component re-renders when elements enter the viewport.
