@@ -175,21 +175,29 @@ function TimelineNode({
   const items = job.description.split(";").map(item => item.trim()).filter(Boolean);
 
   return (
-    <div className="pb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
+    <div className="relative pl-8 md:pl-10 pb-10 group last:pb-0">
+      {/* Vertical connection line fragment */}
+      <div className="absolute left-0 top-2 bottom-0 w-[1px] bg-[var(--sumi-ink)]/15 group-last:hidden" />
+      
+      {/* Node Dot / Crosshair */}
+      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-[var(--forge-orange)] bg-[var(--studio-warm)] transition-transform duration-300 group-hover:scale-125 z-10" />
+
+      {/* Card Wrapper */}
+      <div className="bg-white/35 backdrop-blur-sm border border-[var(--sumi-ink)]/10 hover:border-[var(--forge-orange)]/35 p-5 md:p-6 transition-all duration-300 shadow-[2px_4px_16px_rgba(22,29,26,0.02)] hover:shadow-[4px_8px_24px_rgba(22,29,26,0.05)] rounded-sm">
+        {/* Header (Company & Period) */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
           <h4
-            className="uppercase leading-none"
+            className="uppercase leading-tight font-black tracking-tight text-left"
             style={{
-              fontSize: "clamp(1.1rem, 2.2vw, 1.4rem)",
+              fontSize: "clamp(1.1rem, 2vw, 1.35rem)",
               fontFamily: "var(--font-big-shoulders), sans-serif",
-              fontWeight: 900,
               color: "var(--sumi-ink)",
             }}
           >
             {job.company}
           </h4>
           <span
-            className="px-2.5 py-0.5 text-[9px] uppercase tracking-[0.2em] font-mono border border-[var(--muted-label)]/25 rounded-sm"
+            className="px-2.5 py-0.5 text-[9px] uppercase tracking-[0.2em] font-mono border border-[var(--sumi-ink)]/15 bg-white/40 rounded-sm w-fit shrink-0"
             style={{
               fontFamily: "var(--font-jetbrains-mono), monospace",
               color: "var(--sumi-ink)",
@@ -199,10 +207,12 @@ function TimelineNode({
             {job.period}
           </span>
         </div>
+
+        {/* Role */}
         <div
-          className="mb-3 text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5"
+          className="mb-4 text-xs uppercase tracking-widest font-black flex items-center gap-2"
           style={{
-            fontFamily: "var(--font-dm-sans), sans-serif",
+            fontFamily: "var(--font-jetbrains-mono), monospace",
             color: "var(--forge-orange)",
           }}
         >
@@ -210,14 +220,17 @@ function TimelineNode({
           {job.role}
         </div>
         
-        <div className="space-y-3 mt-3">
+        {/* Description List */}
+        <ul className="space-y-2.5">
           {items.map((item, idx) => (
-            <div key={idx} className="border-l-2 border-[var(--forge-orange)]/40 pl-4 py-0.5 select-none">
-              <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/90">{item}</span>
-            </div>
+            <li key={idx} className="flex items-start gap-2.5 select-none text-left">
+              <span className="text-[var(--forge-orange)] text-[10px] mt-1.5 shrink-0">▪</span>
+              <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/80">{item}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
+    </div>
   );
 }
 
@@ -514,7 +527,7 @@ export function About() {
               >
                 {language === "ja" ? "記録された経験" : language === "ko" ? "기록된 경험" : language === "hi" ? "दर्ज अनुभव" : "Recorded Experience"}
               </div>
-              <div>
+              <div className="relative pl-2 ml-1 mt-2">
                 {currentProfile.experience.map((job, i) => (
                   <TimelineNode
                     key={job.company}
