@@ -17,12 +17,12 @@ interface Project {
 
 // Per-card accent colours cycling through brand palette
 const CARD_ACCENTS = [
-  "#E8703A", // forge-orange
-  "#4A7FA5", // blueprint-blue
-  "#C4843A", // copper
-  "#E8703A",
-  "#4A7FA5",
-  "#C4843A",
+  "#C44D1C", // forge-orange
+  "#2C5270", // blueprint-blue
+  "#905B20", // copper
+  "#C44D1C",
+  "#2C5270",
+  "#905B20",
 ];
 
 const STATUS_LABELS = ["SHIPPED", "IN PROGRESS", "SHIPPED", "SHIPPED", "IN PROGRESS", "ARCHIVED"];

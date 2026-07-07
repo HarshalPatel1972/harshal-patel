@@ -100,14 +100,14 @@ function GaugeDial({
   const strokeDashoffset = isVisible ? arcLength * (1 - skill.level / 100) : arcLength;
 
   const skillColors = [
-    "#E8703A", // C++ / Systems
-    "#4A7FA5", // Go (Golang)
-    "#C4843A", // TypeScript / React
-    "#5B8A6E", // Rust / WASM
-    "#9B6BB5", // Python / AI
-    "#4A9B8E", // SQL / Bash
+    "#C44D1C", // C++ / Systems
+    "#2C5270", // Go (Golang)
+    "#905B20", // TypeScript / React
+    "#385C46", // Rust / WASM
+    "#6D3C8A", // Python / AI
+    "#2B6B61", // SQL / Bash
   ];
-  const accent = skillColors[index] || "#E8703A";
+  const accent = skillColors[index] || "#C44D1C";
   const pathD = describeArc(100);
 
   return (
