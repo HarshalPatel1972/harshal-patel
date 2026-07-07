@@ -83,7 +83,7 @@ export function Projects() {
 
       <div 
         key={isOverridden ? 'expanded' : 'collapsed'}
-        className={`transition-[gap,max-width,opacity] duration-1000 relative w-full ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl' : 'flex flex-col gap-[20vh] max-w-5xl md:mr-0 pl-0 md:pl-0'}`}
+        className={`transition-[gap,max-width,opacity] duration-1000 relative w-full ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl' : 'flex flex-col gap-[20vh] max-w-5xl md:mr-0 pl-0 md:pl-0 pb-[30vh]'}`}
       >
         {!isOverridden && (
           <div className="absolute right-0 top-0 h-full w-10 md:w-12 pointer-events-none z-30">

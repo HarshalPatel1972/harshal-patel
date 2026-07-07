@@ -378,7 +378,7 @@ export function Projects() {
       <div
         className={`relative w-full transition-all duration-700 ${
           isStacked
-            ? "flex flex-col gap-[20vh] max-w-5xl mx-auto w-full"
+            ? "flex flex-col gap-[20vh] max-w-5xl mx-auto w-full pb-[30vh]"
             : "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-7xl"
         }`}
       >
