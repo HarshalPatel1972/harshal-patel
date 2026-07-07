@@ -192,7 +192,7 @@ export function Contact() {
         </ScrollReveal>
 
         {/* Links Container */}
-        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full">
+        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full pr-14 md:pr-20">
           {currentLinks.map((link: LinkItem, i: number) => (
             <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
                <ContactLinkItem 

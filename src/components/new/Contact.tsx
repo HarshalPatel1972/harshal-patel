@@ -261,7 +261,7 @@ export function Contact() {
           {/* Left: Contact rows */}
           <div className="w-full z-10">
             <ScrollReveal duration={1000} direction="left">
-              <div className="flex flex-col w-full border-b border-[#8A7F72]/20">
+              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-14 md:pr-20">
                 {links.map((link, idx) => {
                   const isFeedback = link.id === "feedback";
                   const separator = link.label.includes(" · ") ? " · " : " — ";
