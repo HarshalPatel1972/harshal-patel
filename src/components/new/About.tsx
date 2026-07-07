@@ -568,21 +568,7 @@ export function About() {
                     />
                   ))}
                 </div>
-                {/* Pressure easter egg label */}
-                <button
-                  onClick={triggerPressure}
-                  className="mt-6 w-full text-center text-[9px] uppercase tracking-[0.3em] hover:opacity-100 transition-opacity"
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono), monospace",
-                    color: "var(--sumi-ink)",
-                    opacity: 0.6,
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Scroll to calibrate
-                </button>
+
               </div>
             </div>
           </ScrollReveal>
