@@ -117,7 +117,7 @@ export function LanguageSelector() {
           style={isEridian ? { borderColor: '#FFB300' } : {}}
           className={`w-9 h-9 flex items-center justify-center transition-all duration-500 ${
             isV2 
-              ? `bg-[var(--aged-paper)] border ${isOpen ? 'rotate-90 border-[var(--forge-orange)]' : 'border-[var(--sumi-ink)]/15 hover:border-[var(--forge-orange)]'}`
+              ? `bg-[var(--aged-paper)] border ${isOpen ? 'rotate-90 border-[var(--forge-orange)]' : 'border-black hover:border-[var(--forge-orange)]'}`
               : `bg-black border-2 ${isOpen ? 'rotate-90 border-[var(--accent-blood)]' : 'border-white hover:border-[var(--accent-blood)]'}`
           }`}
           aria-label="Select Language"
