@@ -112,8 +112,7 @@ function GaugeDial({
 
   return (
     <div
-      className="flex flex-col items-center justify-between w-[80px] sm:w-[110px]"
-      style={{ height: "130px" }}
+      className="flex flex-col items-center justify-between w-[80px] sm:w-[110px] h-[90px] sm:h-[110px]"
     >
       <div className="relative" style={{ width: size, height: size }}>
         <svg width={size} height={size} className="overflow-visible">
