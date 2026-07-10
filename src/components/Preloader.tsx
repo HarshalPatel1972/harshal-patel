@@ -24,7 +24,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [exiting, setExiting] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
@@ -101,15 +100,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const { text: quote = "", author: source = "", image: bgImage = "" } = quoteData || {};
 
-  // Image load detector to dynamically swap text background
-  useEffect(() => {
-    if (!bgImage) return;
-    const img = new window.Image();
-    img.onload = () => setImgLoaded(true);
-    img.onerror = () => setImgLoaded(false);
-    img.src = bgImage;
-  }, [bgImage]);
-
   // Timing Mapping: Match V1 dynamic readTime logic exactly
   const wordCount = useMemo(() => {
     return quote ? quote.split(/\s+/).filter(w => w.length > 0).length : 0;
@@ -147,6 +137,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     return lines;
   }, [quote, language]);
 
+  // Dynamic Font Size Class to prevent leaving the viewport on big strings
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
@@ -168,20 +159,14 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }
   }, [quote, language]);
 
-  // Wrap chars for V1-style stagger animation with direct image mask styling
+  // Wrap chars for V1-style stagger animation (independent of image load state)
   const wrappedLines = useMemo(() => {
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
 
     const charStyle = {
-      backgroundImage: imgLoaded ? `url(${bgImage})` : 'none',
-      WebkitBackgroundClip: imgLoaded ? 'text' : 'unset',
-      backgroundClip: imgLoaded ? 'text' : 'unset',
-      color: imgLoaded ? 'transparent' : '#EDE4D3',
-      WebkitTextFillColor: imgLoaded ? 'transparent' : '#EDE4D3',
-      backgroundAttachment: 'fixed',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      color: 'inherit',
+      WebkitTextFillColor: 'inherit',
     };
 
     return quoteLines.map((line, lineIdx) => {
@@ -228,7 +213,24 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         </span>
       );
     });
-  }, [quoteLines, language, imgLoaded, bgImage]);
+  }, [quoteLines, language]);
+
+  // Image load detector to dynamically swap text background directly in the DOM
+  useEffect(() => {
+    if (!bgImage || !mounted) return;
+    const img = new window.Image();
+    img.onload = () => {
+      const quoteEl = document.getElementById("quote-wrapper");
+      if (quoteEl) {
+        quoteEl.style.backgroundImage = `url(${bgImage})`;
+        quoteEl.style.webkitBackgroundClip = 'text';
+        quoteEl.style.backgroundClip = 'text';
+        quoteEl.style.color = 'transparent';
+        (quoteEl.style as any).webkitTextFillColor = 'transparent';
+      }
+    };
+    img.src = bgImage;
+  }, [bgImage, mounted]);
 
   const initAudio = () => {
     if (audioCtxRef.current) return;
@@ -394,8 +396,17 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       {/* Central Typographic Block */}
       <div className="relative z-20 w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
         
-        {/* Quote lines with background-clip: text (1.4x dynamic font scale) */}
-        <div className={`font-serif italic font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}>
+        {/* Quote lines with background-clip: text (1.4x dynamic font scale, non-italic) */}
+        <div 
+          id="quote-wrapper"
+          className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
+          style={{
+            color: '#EDE4D3',
+            WebkitTextFillColor: '#EDE4D3',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
           {wrappedLines}
         </div>
 
