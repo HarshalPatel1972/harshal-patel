@@ -169,66 +169,107 @@ function GaugeDial({
 // ─── Experience timeline node ─────────────────────────────────────────────────
 function TimelineNode({
   job,
+  index,
 }: {
   job: { company: string; role: string; period: string; description: string };
+  index: number;
 }) {
   const items = job.description.split(";").map(item => item.trim()).filter(Boolean);
+  const isEven = index % 2 === 0;
+  const accent = isEven ? "var(--forge-orange)" : "var(--blueprint-blue)";
 
   return (
-    <div className="relative pl-8 md:pl-10 pb-10 group last:pb-0">
-      {/* Vertical connection line fragment */}
-      <div className="absolute left-0 top-2 bottom-0 w-[1px] bg-[var(--sumi-ink)]/15 group-last:hidden" />
-      
-      {/* Node Dot / Crosshair */}
-      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-[var(--forge-orange)] bg-[var(--studio-warm)] transition-transform duration-300 group-hover:scale-125 z-10" />
+    <div className="relative pl-10 md:pl-14 pb-12 group last:pb-0 select-none">
+      {/* ── Vertical Workbench Ruler Track ── */}
+      <div className="absolute left-4 top-2 bottom-0 w-[1px] bg-[var(--sumi-ink)]/15 group-last:hidden" />
+      <div className="absolute left-4 top-2 h-full flex flex-col justify-between pointer-events-none opacity-20 group-last:hidden">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={i} className="w-4 h-[1px] bg-[var(--sumi-ink)] -translate-x-[6px]" />
+        ))}
+      </div>
 
-      {/* Card Wrapper */}
-      <div className="bg-white/35 backdrop-blur-sm border border-[var(--sumi-ink)]/10 hover:border-[var(--forge-orange)]/35 p-5 md:p-6 transition-all duration-300 shadow-[2px_4px_16px_rgba(22,29,26,0.02)] hover:shadow-[4px_8px_24px_rgba(22,29,26,0.05)] rounded-sm">
-        {/* Header (Company & Period) */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-          <h4
-            className="uppercase leading-tight font-black tracking-tight text-left"
-            style={{
-              fontSize: "clamp(1.1rem, 2vw, 1.35rem)",
-              fontFamily: "var(--font-big-shoulders), sans-serif",
-              color: "var(--sumi-ink)",
-            }}
-          >
-            {job.company}
-          </h4>
-          <span
-            className="px-2.5 py-0.5 text-[9px] uppercase tracking-[0.2em] font-mono border border-[var(--sumi-ink)]/15 bg-white/40 rounded-sm w-fit shrink-0"
-            style={{
-              fontFamily: "var(--font-jetbrains-mono), monospace",
-              color: "var(--sumi-ink)",
-              opacity: 0.8,
-            }}
-          >
-            {job.period}
-          </span>
-        </div>
+      {/* ── Technical Calibration Node ── */}
+      <div 
+        className="absolute left-[9px] top-1.5 w-[15px] h-[15px] flex items-center justify-center bg-[var(--studio-warm)] transition-transform duration-300 group-hover:rotate-90 z-10"
+      >
+        {/* Crosshair indicator */}
+        <div className="absolute w-full h-[1px] bg-[var(--sumi-ink)]/30" />
+        <div className="absolute h-full w-[1px] bg-[var(--sumi-ink)]/30" />
+        <div 
+          className="w-2 h-2 rounded-full z-20" 
+          style={{ background: accent }}
+        />
+      </div>
 
-        {/* Role */}
-        <div
-          className="mb-4 text-xs uppercase tracking-widest font-black flex items-center gap-2"
-          style={{
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            color: "var(--forge-orange)",
-          }}
+      {/* ── Blueprint Folder Dossier ── */}
+      <div className="relative flex flex-col items-start w-full">
+        {/* Folder tab */}
+        <div 
+          className="px-4 py-1 text-[10px] font-mono tracking-widest uppercase font-bold text-[#F0EDE8] translate-y-[1px] z-10 shadow-[2px_-2px_6px_rgba(0,0,0,0.05)] rounded-t-sm"
+          style={{ background: accent }}
         >
-          <span className="w-1.5 h-1.5 bg-[var(--forge-orange)] rotate-45 shrink-0" />
-          {job.role}
+          dossier // {String(index + 1).padStart(2, "0")}
         </div>
-        
-        {/* Description List */}
-        <ul className="space-y-2.5">
-          {items.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 select-none text-left">
-              <span className="text-[var(--forge-orange)] text-[10px] mt-1.5 shrink-0">▪</span>
-              <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/80">{item}</span>
-            </li>
-          ))}
-        </ul>
+
+        {/* Folder Card Body */}
+        <div 
+          className="w-full bg-white/40 backdrop-blur-sm border-2 border-dashed border-[var(--sumi-ink)]/15 p-6 md:p-8 hover:bg-white/70 hover:border-[var(--sumi-ink)]/30 transition-all duration-500 shadow-[3px_6px_20px_rgba(26,23,20,0.03)] hover:shadow-[6px_12px_28px_rgba(26,23,20,0.08)] rounded-tr-md rounded-b-md relative overflow-hidden text-left"
+        >
+          {/* Blueprint background grid */}
+          <div 
+            className="absolute inset-0 pointer-events-none z-0 opacity-15"
+            style={{
+              backgroundImage: `radial-gradient(circle, var(--sumi-ink) 1px, transparent 1px)`,
+              backgroundSize: "16px 16px"
+            }}
+          />
+
+          <div className="relative z-10 flex flex-col gap-4">
+            
+            {/* Header: Role & Period */}
+            <div className="flex flex-col gap-1">
+              <h4 
+                className="text-2xl sm:text-3xl font-black font-display tracking-tight leading-tight uppercase text-[var(--sumi-ink)]"
+                style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
+              >
+                {job.role}
+              </h4>
+              
+              <div className="flex flex-wrap gap-2 items-center text-[10px] font-mono tracking-widest text-[var(--muted-label)] mt-1.5">
+                <span className="font-bold text-[var(--sumi-ink)]">{job.company.toUpperCase()}</span>
+                <span>•</span>
+                <span className="border border-[var(--sumi-ink)]/10 px-2 py-0.5 rounded-sm bg-white/30">{job.period}</span>
+              </div>
+            </div>
+
+            {/* Schematic separator line */}
+            <div className="h-[2px] w-full flex items-center gap-1 opacity-25">
+              <div className="h-full w-4" style={{ background: accent }} />
+              <div className="h-full flex-1 bg-[var(--sumi-ink)] border-b border-dashed" />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+            </div>
+
+            {/* Achievements details */}
+            <div className="flex flex-col gap-3.5 mt-2">
+              {items.map((item, idx) => (
+                <div key={idx} className="flex items-start gap-4 select-none">
+                  {/* Hex Diagnostic bullet */}
+                  <span 
+                    className="text-[10px] font-mono font-bold px-1.5 py-0.5 border bg-white/60 shrink-0 select-none text-center min-w-8"
+                    style={{ borderColor: "rgba(26,23,20,0.15)", color: accent }}
+                  >
+                    [{String(idx + 1).padStart(2, "0")}]
+                  </span>
+                  
+                  <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/85 flex-1">
+                    {item}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -532,6 +573,7 @@ export function About() {
                   <TimelineNode
                     key={job.company}
                     job={job}
+                    index={i}
                   />
                 ))}
               </div>
