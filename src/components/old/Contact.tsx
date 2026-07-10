@@ -305,9 +305,8 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
           </div>
         </div>
 
-        {/* ARROW TRIGGER ZONE */}
         <div 
-          className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow transition-all duration-300 origin-center self-end mb-0 md:mb-4 pointer-events-auto cursor-pointer"
+          className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow transition-all duration-300 origin-center self-end mb-0 md:mb-4 pointer-events-auto cursor-pointer translate-x-[15px] md:translate-x-0"
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
           style={{ 

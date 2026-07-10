@@ -334,7 +334,7 @@ export function Contact() {
                       </div>
 
                       {/* Right: Square Arrow Button */}
-                      <div className="shrink-0 flex items-center justify-center">
+                      <div className="shrink-0 flex items-center justify-center translate-x-[15px] md:translate-x-0">
                         <div
                           className="w-10 h-10 bg-[var(--forge-orange)] text-white flex items-center justify-center transition-transform duration-300 group-hover:-rotate-45"
                           style={{ borderRadius: "0px" }}
