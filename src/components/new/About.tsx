@@ -73,10 +73,10 @@ function WaveSkillBar({
     return () => clearTimeout(timer);
   }, [isVisible, skill.level, index]);
 
-  const waveSvg = (color: string, strokeWidth: string, opacity: string) => {
+  const waveSvg = (color: string, opacity: string) => {
     return `data:image/svg+xml,${encodeURIComponent(`
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'>
-        <path d='M0,10 Q10,0 20,10 T40,10' fill='none' stroke='${color}' stroke-width='${strokeWidth}' stroke-linecap='round' stroke-linejoin='round' opacity='${opacity}'/>
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24' preserveAspectRatio='none'>
+        <path d='M0,12 Q10,6 20,12 T40,12 L40,24 L0,24 Z' fill='${color}' opacity='${opacity}'/>
       </svg>
     `)}`;
   };
@@ -107,19 +107,9 @@ function WaveSkillBar({
       </div>
       
       {/* Track & Fill Container */}
-      <div className="relative h-[16px] sm:h-[20px] w-full mt-1">
+      <div className="relative h-[20px] sm:h-[24px] w-full mt-1 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(22, 29, 26, 0.05)" }}>
         
-        {/* Track (Faint, moving wave) */}
-        <div 
-          className="absolute inset-0 w-full h-full wave-travel"
-          style={{
-            backgroundImage: `url("${waveSvg('rgba(22, 29, 26, 0.4)', '1', '1')}")`,
-            backgroundRepeat: 'repeat-x',
-            backgroundPosition: '0 center',
-          }}
-        />
-
-        {/* Fill (Thick, colored, moving wave) */}
+        {/* Fill (Colored moving liquid wave) */}
         <div 
           className="absolute top-0 bottom-0 left-0 h-full overflow-hidden"
           style={{
@@ -131,9 +121,10 @@ function WaveSkillBar({
           <div 
             className="absolute top-0 left-0 h-full w-[200vw] wave-travel"
             style={{
-              backgroundImage: `url("${waveSvg(accent, '4', '1')}")`,
+              backgroundImage: `url("${waveSvg(accent, '1')}")`,
               backgroundRepeat: 'repeat-x',
               backgroundPosition: '0 center',
+              backgroundSize: '40px 100%',
             }}
           />
         </div>
@@ -557,8 +548,8 @@ export function About() {
           </ScrollReveal>
 
           {/* Analog gauge dials instrument panel */}
-          <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
-            <div>
+          <ScrollReveal duration={1200} delay={300} direction="up" className="w-full h-full">
+            <div className="h-full flex flex-col">
               <div
                 className="font-black uppercase tracking-widest mb-6 text-xl md:text-2xl"
                 style={{
@@ -574,7 +565,7 @@ export function About() {
 
               {/* Instrument panel */}
               <div
-                className="p-[28px] relative"
+                className="p-[28px] relative flex-1 flex flex-col"
                 ref={gaugesRef}
                 style={{
                   background: "rgba(22, 29, 26, 0.015)",
@@ -588,7 +579,7 @@ export function About() {
                 >
                   Core Expertise
                 </div>
-                <div className="flex flex-col gap-6 w-full">
+                <div className="flex flex-col justify-between flex-1 w-full gap-4 pt-2">
                   {currentProfile.skills.map((skill, i) => (
                     <WaveSkillBar
                       key={skill.name}
