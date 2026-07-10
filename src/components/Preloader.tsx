@@ -247,24 +247,19 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       <div className="relative z-20 w-full max-w-4xl flex flex-col items-center justify-center text-center gap-8">
         
         {/* Quote lines with background-clip: text */}
-        <div 
-          className="flex flex-col gap-3 text-center items-center justify-center bg-cover bg-center select-none w-full"
-          style={{
-            backgroundImage: `url(${bgImage})`,
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
+        <div className="flex flex-col gap-3 text-center items-center justify-center select-none w-full">
           {quoteLines.map((line, idx) => (
             <h2 
               key={idx}
-              className="font-serif italic text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold leading-normal tracking-wide reveal-wipe select-none"
+              className="font-serif italic text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold leading-normal tracking-wide reveal-wipe select-none bg-cover bg-center"
               style={{ 
-                animationDelay: `${idx * 200 + 400}ms`,
+                backgroundImage: `url(${bgImage})`,
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
                 color: 'transparent',
                 WebkitTextFillColor: 'transparent',
+                animationDelay: `${idx * 200 + 400}ms`,
+                backgroundAttachment: 'fixed',
               }}
             >
               {line}
