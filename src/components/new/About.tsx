@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
 import { useSignals } from "@/context/SignalContext";
 import { useCounter } from "../AnimationKit";
+import { KnowledgeGraph } from "./KnowledgeGraph";
 
 // ─── Animated stat counter ────────────────────────────────────────────────────
 function StudioStat({ value, label }: { value: number; label: string }) {
@@ -632,15 +633,8 @@ export function About() {
                 >
                   Core Expertise
                 </div>
-                <div className="flex flex-col justify-between flex-1 w-full gap-4 pt-2">
-                  {currentProfile.skills.map((skill, i) => (
-                    <WaveSkillBar
-                      key={skill.name}
-                      skill={skill}
-                      isVisible={skillsVisible}
-                      index={i}
-                    />
-                  ))}
+                <div className="flex-1 w-full pt-2 h-full">
+                  {skillsVisible && <KnowledgeGraph skills={currentProfile.skills} />}
                 </div>
 
               </div>
