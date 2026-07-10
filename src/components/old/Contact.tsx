@@ -279,7 +279,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
         
         {/* TEXT TRIGGER ZONE */}
         <div 
-          className="pointer-events-auto"
+          className="pointer-events-auto -translate-x-[20px]"
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
         >
