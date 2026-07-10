@@ -82,18 +82,36 @@ function WaveSkillBar({
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full group">
       <style>{`
-        @keyframes waveTravel {
+        @keyframes waveTravel1 {
+          to { background-position-x: -50px; }
+        }
+        @keyframes waveTravel2 {
           to { background-position-x: -40px; }
         }
-        .wave-travel {
-          animation: waveTravel 1.5s linear infinite;
+        @keyframes bubbleRise {
+          0% { transform: translateY(10px) scale(0.5); opacity: 0; }
+          30% { opacity: 0.6; }
+          70% { opacity: 0.6; }
+          100% { transform: translateY(-10px) scale(1.2); opacity: 0; }
+        }
+        .wave-travel-1 {
+          animation: waveTravel1 3s linear infinite;
+        }
+        .wave-travel-2 {
+          animation: waveTravel2 2s linear infinite;
+        }
+        .liquid-bubble {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.5);
+          border-radius: 50%;
+          animation: bubbleRise 2s ease-in infinite;
         }
       `}</style>
       <div className="flex justify-between items-end w-full">
         <span 
-          className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em]" 
+          className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] transition-opacity duration-300 group-hover:opacity-100" 
           style={{ color: "var(--sumi-ink)", opacity: 0.8 }}
         >
           {skill.name}
@@ -107,26 +125,61 @@ function WaveSkillBar({
       </div>
       
       {/* Track & Fill Container */}
-      <div className="relative h-[20px] sm:h-[24px] w-full mt-1 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(22, 29, 26, 0.05)" }}>
+      <div 
+        className="relative h-[24px] sm:h-[28px] w-full mt-1 rounded-full overflow-hidden shadow-inner" 
+        style={{ 
+          backgroundColor: "rgba(22, 29, 26, 0.05)",
+          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)" 
+        }}
+      >
         
-        {/* Fill (Colored moving liquid wave) */}
+        {/* Growing Liquid Container */}
         <div 
-          className="absolute top-0 bottom-0 left-0 h-full overflow-hidden"
+          className="absolute top-0 bottom-0 left-0 h-full overflow-hidden rounded-full"
           style={{
             width: isVisible ? `${skill.level}%` : '0%',
-            transition: 'width 1.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            transition: 'width 2s cubic-bezier(0.2, 0.8, 0.2, 1)',
             transitionDelay: `${index * 120}ms`,
           }}
         >
+          {/* Back Wave (Slower, Wider, Semi-transparent) */}
           <div 
-            className="absolute top-0 left-0 h-full w-[200vw] wave-travel"
+            className="absolute top-0 left-0 h-full w-[200vw] wave-travel-1"
             style={{
-              backgroundImage: `url("${waveSvg(accent, '1')}")`,
+              backgroundImage: `url("${waveSvg(accent, '0.4')}")`,
+              backgroundRepeat: 'repeat-x',
+              backgroundPosition: '0 center',
+              backgroundSize: '50px 100%',
+            }}
+          />
+
+          {/* Front Wave (Faster, Narrower, Opaque) */}
+          <div 
+            className="absolute top-0 left-0 h-full w-[200vw] wave-travel-2"
+            style={{
+              backgroundImage: `url("${waveSvg(accent, '0.9')}")`,
               backgroundRepeat: 'repeat-x',
               backgroundPosition: '0 center',
               backgroundSize: '40px 100%',
             }}
           />
+
+          {/* Bubbles (Attached to viewport width so they don't slide horizontally as the bar grows) */}
+          <div className="absolute top-0 left-0 w-[100vw] h-full pointer-events-none mix-blend-overlay">
+            {Array.from({ length: 15 }).map((_, i) => (
+              <div 
+                key={i}
+                className="liquid-bubble" 
+                style={{ 
+                  left: `${i * 30 + 15}px`, 
+                  width: `${(i % 3) + 3}px`, 
+                  height: `${(i % 3) + 3}px`,
+                  animationDuration: `${1.5 + (i % 4) * 0.4}s`, 
+                  animationDelay: `${(i % 5) * 0.3}s` 
+                }} 
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
