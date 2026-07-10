@@ -34,8 +34,8 @@ function StudioStat({ value, label }: { value: number; label: string }) {
   );
 }
 
-// ─── Analog Gauge Dial (SVG arc) ──────────────────────────────────────────────
-function GaugeDial({
+// ─── Wave Progress Meter ──────────────────────────────────────────────────────
+function WaveSkillBar({
   skill,
   isVisible,
   index,
@@ -45,59 +45,6 @@ function GaugeDial({
   index: number;
 }) {
   const [displayed, setDisplayed] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const size = isMobile ? 70 : 90;
-  const r = isMobile ? 28 : 36;
-  const cx = size / 2;
-  const cy = size / 2;
-
-  const polar = (angle: number) => {
-    const rad = (angle * Math.PI) / 180;
-    return {
-      x: cx + r * Math.cos(rad),
-      y: cy + r * Math.sin(rad),
-    };
-  };
-
-  const describeArc = (pct: number) => {
-    const startAngle = 135;
-    const totalArc = 270;
-    const endAngle = startAngle + (totalArc * pct) / 100;
-    const s = polar(startAngle);
-    const e = polar(endAngle);
-    const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-    return `M ${s.x} ${s.y} A ${r} ${r} 0 ${largeArc} 1 ${e.x} ${e.y}`;
-  };
-
-  useEffect(() => {
-    if (!isVisible) return;
-    const delay = index * 120;
-    const proxy = { val: 0 };
-    const timer = setTimeout(() => {
-      anime(proxy, {
-        val: skill.level,
-        duration: 1000,
-        easing: "easeOutQuad",
-        onUpdate: () => {
-          setDisplayed(Math.round(proxy.val));
-        },
-      });
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [isVisible, skill.level, index]);
-
-  const arcLength = 2 * Math.PI * r * 0.75;
-  const strokeDashoffset = isVisible ? arcLength * (1 - skill.level / 100) : arcLength;
 
   const skillColors = [
     "#C44D1C", // C++ / Systems
@@ -107,60 +54,89 @@ function GaugeDial({
     "#6D3C8A", // Python / AI
     "#2B6B61", // SQL / Bash
   ];
-  const accent = skillColors[index] || "#C44D1C";
-  const pathD = describeArc(100);
+  const accent = skillColors[index % skillColors.length];
+
+  useEffect(() => {
+    if (!isVisible) return;
+    const delay = index * 120;
+    const proxy = { val: 0 };
+    const timer = setTimeout(() => {
+      anime(proxy, {
+        val: skill.level,
+        duration: 1500,
+        easing: "easeOutCubic",
+        onUpdate: () => {
+          setDisplayed(Math.round(proxy.val));
+        },
+      });
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [isVisible, skill.level, index]);
+
+  const waveSvg = (color: string, strokeWidth: string, opacity: string) => {
+    return `data:image/svg+xml,${encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'>
+        <path d='M0,10 Q10,0 20,10 T40,10' fill='none' stroke='${color}' stroke-width='${strokeWidth}' stroke-linecap='round' stroke-linejoin='round' opacity='${opacity}'/>
+      </svg>
+    `)}`;
+  };
 
   return (
-    <div
-      className="flex flex-col items-center justify-between w-[80px] sm:w-[110px] h-[90px] sm:h-[110px]"
-    >
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="overflow-visible">
-          {/* Track arc */}
-          <path
-            d={pathD}
-            fill="none"
-            stroke="rgba(22, 29, 26, 0.1)"
-            strokeWidth="6"
-            strokeLinecap="round"
-          />
-          {/* Fill arc */}
-          <path
-            d={pathD}
-            fill="none"
-            stroke={accent}
-            strokeWidth="6"
-            strokeLinecap="round"
+    <div className="flex flex-col gap-2 w-full">
+      <style>{`
+        @keyframes waveTravel {
+          to { background-position-x: -40px; }
+        }
+        .wave-travel {
+          animation: waveTravel 1.5s linear infinite;
+        }
+      `}</style>
+      <div className="flex justify-between items-end w-full">
+        <span 
+          className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em]" 
+          style={{ color: "var(--sumi-ink)", opacity: 0.8 }}
+        >
+          {skill.name}
+        </span>
+        <span 
+          className="font-bold text-lg leading-none" 
+          style={{ color: accent, fontFamily: "var(--font-big-shoulders), sans-serif" }}
+        >
+          {displayed}%
+        </span>
+      </div>
+      
+      {/* Track & Fill Container */}
+      <div className="relative h-[16px] sm:h-[20px] w-full mt-1">
+        
+        {/* Track (Faint, moving wave) */}
+        <div 
+          className="absolute inset-0 w-full h-full wave-travel"
+          style={{
+            backgroundImage: `url("${waveSvg('rgba(22, 29, 26, 0.4)', '1', '1')}")`,
+            backgroundRepeat: 'repeat-x',
+            backgroundPosition: '0 center',
+          }}
+        />
+
+        {/* Fill (Thick, colored, moving wave) */}
+        <div 
+          className="absolute top-0 bottom-0 left-0 h-full overflow-hidden"
+          style={{
+            width: isVisible ? `${skill.level}%` : '0%',
+            transition: 'width 1.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            transitionDelay: `${index * 120}ms`,
+          }}
+        >
+          <div 
+            className="absolute top-0 left-0 h-full w-[200vw] wave-travel"
             style={{
-              strokeDasharray: arcLength,
-              strokeDashoffset: strokeDashoffset,
-              transition: "stroke-dashoffset 1000ms ease-out",
-              transitionDelay: `${index * 120}ms`,
+              backgroundImage: `url("${waveSvg(accent, '4', '1')}")`,
+              backgroundRepeat: 'repeat-x',
+              backgroundPosition: '0 center',
             }}
           />
-          {/* Percentage text */}
-          <text
-            x={cx}
-            y={cy + 4}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="16"
-            fontWeight="700"
-            fill="var(--sumi-ink)"
-            fontFamily="var(--font-big-shoulders), sans-serif"
-          >
-            {displayed}%
-          </text>
-        </svg>
-      </div>
-      <div
-        className="text-center text-[10px] uppercase tracking-[0.15em] leading-tight"
-        style={{
-          fontFamily: "var(--font-jetbrains-mono), monospace",
-          color: "var(--muted-label)",
-        }}
-      >
-        {skill.name}
+        </div>
       </div>
     </div>
   );
@@ -612,9 +588,9 @@ export function About() {
                 >
                   Core Expertise
                 </div>
-                <div className="grid grid-cols-3 gap-2 sm:gap-6 justify-items-center">
+                <div className="flex flex-col gap-6 w-full">
                   {currentProfile.skills.map((skill, i) => (
-                    <GaugeDial
+                    <WaveSkillBar
                       key={skill.name}
                       skill={skill}
                       isVisible={skillsVisible}
