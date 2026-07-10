@@ -224,11 +224,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       const overlay = document.getElementById("image-overlay");
       const bgOverlay = document.getElementById("bg-image-overlay");
       if (overlay) {
-        overlay.style.backgroundImage = `url(${bgImage})`;
+        overlay.style.backgroundImage = `url("${bgImage}")`;
         overlay.style.opacity = '1';
       }
       if (bgOverlay) {
-        bgOverlay.style.backgroundImage = `url(${bgImage})`;
+        bgOverlay.style.backgroundImage = `url("${bgImage}")`;
         bgOverlay.style.opacity = '0.15';
       }
     };
