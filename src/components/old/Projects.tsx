@@ -43,7 +43,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-8 md:pt-12 pb-12 md:pb-24 px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate"
+      className="relative pt-8 md:pt-12 pb-5 md:pb-10 px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
 
@@ -83,10 +83,10 @@ export function Projects() {
 
       <div 
         key={isOverridden ? 'expanded' : 'collapsed'}
-        className={`transition-[gap,max-width,opacity] duration-1000 relative w-full ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl' : 'flex flex-col gap-[20vh] max-w-5xl md:mr-0 pl-0 md:pl-0 pb-[30vh]'}`}
+        className={`transition-[gap,max-width,opacity] duration-1000 relative w-full ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl' : 'flex flex-col gap-[20vh] max-w-5xl md:mr-0 pl-0 md:pl-0 pb-[12vh]'}`}
       >
         {!isOverridden && (
-          <div className="absolute right-0 top-0 bottom-[30vh] w-10 md:w-12 pointer-events-none z-30">
+          <div className="absolute right-0 top-0 bottom-[12vh] w-10 md:w-12 pointer-events-none z-30">
             <div className="sticky top-[calc(10vh+60px)] md:top-[12vh] pointer-events-auto flex justify-start pl-1">
               <button 
                 onClick={(e) => {

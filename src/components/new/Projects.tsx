@@ -309,7 +309,7 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="relative pt-8 md:pt-12 pb-24 px-6 md:px-8 flex flex-col items-center z-10 isolate blueprint-grid-warm"
+      className="relative pt-8 md:pt-12 pb-10 px-6 md:px-8 flex flex-col items-center z-10 isolate blueprint-grid-warm"
       style={{ background: "var(--studio-warm)" }}
     >
       {/* Section Header */}
@@ -378,7 +378,7 @@ export function Projects() {
       <div
         className={`relative w-full transition-all duration-700 ${
           isStacked
-            ? "flex flex-col gap-[20vh] max-w-5xl mx-auto w-full pb-[30vh]"
+            ? "flex flex-col gap-[20vh] max-w-5xl mx-auto w-full pb-[12vh]"
             : "grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-7xl"
         }`}
       >
