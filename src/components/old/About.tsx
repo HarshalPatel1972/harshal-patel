@@ -432,7 +432,7 @@ export function About() {
                        default: return "Algorithms";
                      }
                    })()} prefix="" />
-                   <MangaStat value={12} label={(() => {
+                   <MangaStat value={20} label={(() => {
                      switch(language) {
                        case 'ja': return "構築済システム";
                        case 'ko': return "구축된 시스템";

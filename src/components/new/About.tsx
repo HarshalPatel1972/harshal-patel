@@ -503,7 +503,7 @@ export function About() {
               {/* Stats column */}
               <div className="flex flex-row lg:flex-col justify-start gap-8 pt-2">
                 <StudioStat value={300} label={language === "ja" ? "アルゴリズム" : language === "ko" ? "알고리즘" : language === "hi" ? "एल्गोरिदम" : "Algorithms"} />
-                <StudioStat value={12} label={language === "ja" ? "構築済システム" : language === "ko" ? "구축된 시스템" : language === "hi" ? "सिस्टम बनाए" : "Systems Built"} />
+                <StudioStat value={20} label={language === "ja" ? "構築済システム" : language === "ko" ? "구축된 시스템" : language === "hi" ? "सिस्टम बनाए" : "Systems Built"} />
               </div>
             </div>
           </div>
