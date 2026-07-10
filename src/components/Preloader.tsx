@@ -216,15 +216,20 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     });
   }, [quoteLines, language]);
 
-  // Image load detector to fade in the multiply overlay
+  // Image load detector to fade in the multiply overlay and faint background
   useEffect(() => {
     if (!bgImage || !mounted) return;
     const img = new window.Image();
     img.onload = () => {
       const overlay = document.getElementById("image-overlay");
+      const bgOverlay = document.getElementById("bg-image-overlay");
       if (overlay) {
         overlay.style.backgroundImage = `url(${bgImage})`;
         overlay.style.opacity = '1';
+      }
+      if (bgOverlay) {
+        bgOverlay.style.backgroundImage = `url(${bgImage})`;
+        bgOverlay.style.opacity = '0.15';
       }
     };
     img.src = bgImage;
@@ -331,6 +336,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }, 0);
   }, [exiting, onComplete]);
 
+  const dismissRef = useRef(dismiss);
+  useEffect(() => {
+    dismissRef.current = dismiss;
+  }, [dismiss]);
+
   useEffect(() => {
     if (complete || !mounted) return;
     document.body.style.overflow = "hidden";
@@ -373,7 +383,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       }, 1000);
     }
 
-    exitTimeoutRef.current = setTimeout(dismiss, readTime);
+    exitTimeoutRef.current = setTimeout(() => dismissRef.current(), readTime);
 
     return () => {
       window.removeEventListener("click", handleUserInteraction);
@@ -381,7 +391,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
       if (timelineRef.current) timelineRef.current.pause();
     };
-  }, [complete, mounted, readTime, dismiss]);
+  }, [complete, mounted, readTime]);
 
   if (complete || !quoteData) return null;
 
@@ -431,6 +441,18 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           style={{ animationDuration: `${readTime}ms` }}
         />
       </div>
+
+      {/* BACKGROUND IMAGE OVERLAY (Faint 15% opacity) */}
+      <div 
+        id="bg-image-overlay"
+        className="absolute inset-0 pointer-events-none z-[10]"
+        style={{
+          opacity: 0,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transition: 'opacity 1s ease-in-out'
+        }}
+      />
 
       {/* FULL SCREEN IMAGE OVERLAY WITH MULTIPLY */}
       <div 
