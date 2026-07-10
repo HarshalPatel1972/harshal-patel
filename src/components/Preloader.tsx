@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { createTimeline } from "animejs";
+import { createTimeline, stagger } from "animejs";
 import { mappaQuotesList, characterRegistry } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
 import { Fraunces, Outfit } from "next/font/google";
@@ -24,6 +24,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [exiting, setExiting] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
@@ -100,7 +101,23 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const { text: quote = "", author: source = "", image: bgImage = "" } = quoteData || {};
 
-  const readTime = 3800;
+  // Image load detector to dynamically swap text background
+  useEffect(() => {
+    if (!bgImage) return;
+    const img = new window.Image();
+    img.onload = () => setImgLoaded(true);
+    img.onerror = () => setImgLoaded(false);
+    img.src = bgImage;
+  }, [bgImage]);
+
+  // Timing Mapping: Match V1 dynamic readTime logic exactly
+  const wordCount = useMemo(() => {
+    return quote ? quote.split(/\s+/).filter(w => w.length > 0).length : 0;
+  }, [quote]);
+
+  const readTime = useMemo(() => {
+    return Math.max(5500, 4000 + wordCount * 320);
+  }, [wordCount]);
 
   const quoteLines = useMemo(() => {
     if (!quote) return [];
@@ -129,6 +146,71 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }
     return lines;
   }, [quote, language]);
+
+  // Wrap chars for V1-style stagger animation with direct image mask styling
+  const wrappedLines = useMemo(() => {
+    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
+    const isHindi = language === 'hi';
+
+    const charStyle = {
+      opacity: 0,
+      transform: 'translateY(40px)',
+      filter: 'blur(20px)',
+      backgroundImage: imgLoaded ? `url(${bgImage})` : 'none',
+      WebkitBackgroundClip: imgLoaded ? 'text' : 'unset',
+      backgroundClip: imgLoaded ? 'text' : 'unset',
+      color: imgLoaded ? 'transparent' : '#EDE4D3',
+      WebkitTextFillColor: imgLoaded ? 'transparent' : '#EDE4D3',
+      backgroundAttachment: 'fixed',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+
+    return quoteLines.map((line, lineIdx) => {
+      if (isHindi) {
+        return (
+          <span key={lineIdx} className="block leading-relaxed">
+            {line.split(" ").map((word, wi) => (
+              <span key={wi} className="p-char inline-block will-change-transform mr-[0.25em]" style={charStyle}>
+                {word}
+              </span>
+            ))}
+          </span>
+        );
+      }
+      
+      if (isCJK) {
+        return (
+          <span key={lineIdx} className="block leading-relaxed">
+            {line.split("").map((char, ci) => (
+              <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>
+                {char === ' ' || char === '　' ? '\u00A0' : char}
+              </span>
+            ))}
+          </span>
+        );
+      }
+
+      // Latin split
+      const wordList = line.split(" ");
+      return (
+        <span key={lineIdx} className="block leading-relaxed">
+          {wordList.map((word, wi) => {
+            const charElements = word.split("").map((char, ci) => (
+              <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>
+                {char}
+              </span>
+            ));
+            return (
+              <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
+                {charElements}
+              </span>
+            );
+          })}
+        </span>
+      );
+    });
+  }, [quoteLines, language, imgLoaded, bgImage]);
 
   const initAudio = () => {
     if (audioCtxRef.current) return;
@@ -205,7 +287,25 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       }
     });
 
-    exitTl.add('.reveal-wipe, .attribution, .skip-btn', {
+    const pChars = document.querySelectorAll('.p-char');
+    if (pChars.length > 0) {
+      exitTl.add('.p-char', {
+        opacity: 0,
+        translateY: -60,
+        filter: 'blur(30px)',
+        delay: stagger(10, { from: 'center' }),
+        duration: 1000
+      }, 0);
+    }
+
+    if (sourceRef.current) {
+      exitTl.add(sourceRef.current, {
+        opacity: 0,
+        duration: 800
+      }, 0);
+    }
+
+    exitTl.add('.skip-btn', {
       opacity: 0,
       translateY: -20,
       duration: 600,
@@ -226,12 +326,42 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     window.addEventListener("click", handleUserInteraction);
     window.addEventListener("touchmove", handleUserInteraction);
 
+    // Stagger character reveal animations like V1
+    const tl = createTimeline({
+      defaults: {
+        ease: 'easeOutQuint'
+      }
+    });
+    timelineRef.current = tl;
+
+    const pChars = document.querySelectorAll('.p-char');
+    if (pChars.length > 0) {
+      tl.add('.p-char', {
+        opacity: [0, 1],
+        translateY: [40, 0],
+        filter: ['blur(20px)', 'blur(0px)'],
+        duration: 800,
+        delay: stagger(15),
+        ease: 'easeOutQuart'
+      }, 400);
+    }
+
+    if (sourceRef.current) {
+      tl.add(sourceRef.current, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 1200,
+        ease: 'easeOutCubic'
+      }, 1000);
+    }
+
     exitTimeoutRef.current = setTimeout(dismiss, readTime);
 
     return () => {
       window.removeEventListener("click", handleUserInteraction);
       window.removeEventListener("touchmove", handleUserInteraction);
       if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
+      if (timelineRef.current) timelineRef.current.pause();
     };
   }, [complete, mounted, readTime, dismiss]);
 
@@ -244,34 +374,17 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       className={`fixed inset-0 z-[999999] bg-[#030305] flex flex-col items-center justify-center overflow-hidden px-8 md:px-24 cursor-pointer select-none ${fraunces.variable} ${outfit.variable}`}
     >
       {/* Central Typographic Block */}
-      <div className="relative z-20 w-full max-w-4xl flex flex-col items-center justify-center text-center gap-8">
+      <div className="relative z-20 w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
         
-        {/* Quote lines with background-clip: text */}
-        <div className="flex flex-col gap-3 text-center items-center justify-center select-none w-full">
-          {quoteLines.map((line, idx) => (
-            <h2 
-              key={idx}
-              className="font-serif italic text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold leading-normal tracking-wide reveal-wipe select-none bg-cover bg-center"
-              style={{ 
-                backgroundImage: `url(${bgImage})`,
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-                WebkitTextFillColor: 'transparent',
-                animationDelay: `${idx * 200 + 400}ms`,
-                backgroundAttachment: 'fixed',
-              }}
-            >
-              {line}
-            </h2>
-          ))}
+        {/* Quote lines with background-clip: text (1.4x font scale) */}
+        <div className="font-serif italic font-bold text-4xl sm:text-5xl md:text-[4.2rem] lg:text-[5.6rem] tracking-wide select-none w-full text-center">
+          {wrappedLines}
         </div>
 
         {/* Attribution & thin Forge-Orange separator line */}
         <div 
           ref={sourceRef}
-          className="attribution flex flex-col items-center gap-3"
-          style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards 1.2s', opacity: 0 }}
+          className="attribution flex flex-col items-center gap-3 opacity-0"
         >
           <div className="w-[60px] h-[2px] bg-[var(--forge-orange)]" />
           <div className="font-mono text-[11px] uppercase tracking-[0.4em] text-[var(--muted-label)]">
@@ -289,35 +402,18 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         skip ↗
       </button>
 
-      {/* Progress bar line at the very bottom */}
+      {/* Progress bar line at the very bottom mapped dynamically to readTime */}
       <div className="progress-container absolute bottom-0 left-0 w-full h-[2px] bg-white/5 z-20">
-        <div className="progress-fill h-full bg-[var(--forge-orange)]" />
+        <div 
+          className="progress-fill h-full bg-[var(--forge-orange)]" 
+          style={{ animationDuration: `${readTime}ms` }}
+        />
       </div>
 
       {/* Texture Overlays */}
       <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.08] grain-overlay mix-blend-overlay" />
 
       <style jsx global>{`
-        .reveal-wipe {
-          opacity: 0;
-          clip-path: inset(0 100% 0 0);
-          animation: revealWipe 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes revealWipe {
-          to {
-            opacity: 1;
-            clip-path: inset(0 0 0 0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
         .grain-overlay {
           position: fixed;
           inset: 0;
@@ -331,7 +427,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
         .progress-fill {
           width: 0%;
-          animation: progressFill 3.8s linear forwards;
+          animation: progressFill linear forwards;
         }
 
         @keyframes progressFill {
