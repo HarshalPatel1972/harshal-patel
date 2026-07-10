@@ -387,7 +387,7 @@ export function About() {
             {["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"].map((pos) => (
               <div
                 key={pos}
-                className={`absolute w-3 h-3 rounded-full ${pos}`}
+                className={`absolute w-3 h-3 rounded-full hidden md:block ${pos}`}
                 style={{ background: "var(--forge-orange)", boxShadow: "0 1px 4px rgba(0,0,0,0.3)" }}
               />
             ))}
