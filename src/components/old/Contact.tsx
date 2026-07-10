@@ -192,7 +192,7 @@ export function Contact() {
         </ScrollReveal>
 
         {/* Links Container */}
-        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full pr-12 md:pr-20">
+        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full pr-14 md:pr-20">
           {currentLinks.map((link: LinkItem, i: number) => (
             <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
                <ContactLinkItem 
@@ -279,7 +279,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
         
         {/* TEXT TRIGGER ZONE */}
         <div 
-          className="pointer-events-auto -translate-x-[20px]"
+          className="pointer-events-auto"
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
         >
@@ -305,6 +305,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
           </div>
         </div>
 
+        {/* ARROW TRIGGER ZONE */}
         <div 
           className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow transition-all duration-300 origin-center self-end mb-0 md:mb-4 pointer-events-auto cursor-pointer"
           onMouseEnter={() => handleHover(true)}
