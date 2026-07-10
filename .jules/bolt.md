@@ -1,0 +1,3 @@
+## 2024-07-10 - [Optimize bot detection in API route]
+**Learning:** For high-frequency API endpoints performing static keyword matching against headers (e.g., bot detection in `visitor-count`), compiling a single `RegExp` outside the request handler is more performant than using `Array.some` and `.toLowerCase()` inside the handler. This avoids overhead from string allocations and array iteration per request.
+**Action:** When validating headers against a static list of substrings in API routes, always prefer a pre-compiled `RegExp` for performance.
