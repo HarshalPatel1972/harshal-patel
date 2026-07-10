@@ -123,14 +123,14 @@ function DossierCard({
   return (
     <div
       className={`transition-[opacity,transform] duration-700 ease-out w-full ${
-        isStacked ? "sticky top-[calc(10vh+60px)] md:top-[10vh]" : "relative top-0"
+        isStacked ? "sticky top-[calc(10vh+60px)] md:top-[10vh] h-[480px] md:h-[540px]" : "relative top-0"
       }`}
       style={{ zIndex: isStacked ? index : 1 }}
     >
-      <div className="flex items-stretch gap-0">
+      <div className="flex items-stretch gap-0 h-full">
         {/* ── MAIN CARD ── */}
         <div
-          className={`relative flex-1 overflow-hidden transition-all duration-500 cursor-pointer
+          className={`relative flex-1 overflow-hidden transition-all duration-500 cursor-pointer h-full
             ${isLoading ? "opacity-60 animate-pulse" : ""}
             ${hovered ? "shadow-[0_8px_48px_rgba(0,0,0,0.25)]" : "shadow-[2px_4px_20px_rgba(15,13,10,0.15)]"}
           `}
