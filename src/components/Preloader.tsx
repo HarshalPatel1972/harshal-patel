@@ -147,15 +147,33 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     return lines;
   }, [quote, language]);
 
+  const quoteFontSizeClass = useMemo(() => {
+    const len = quote.length;
+    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
+    const isHindi = language === 'hi';
+    
+    if (isCJK || isHindi) {
+      if (len > 80) return "text-lg sm:text-xl md:text-2xl lg:text-[2.6rem]";
+      if (len > 60) return "text-xl sm:text-2xl md:text-3xl lg:text-[3.2rem]";
+      if (len > 40) return "text-2xl sm:text-3xl md:text-4xl lg:text-[3.8rem]";
+      if (len > 25) return "text-3xl sm:text-4xl md:text-5xl lg:text-[4.4rem]";
+      return "text-4xl sm:text-5xl md:text-[3.8rem] lg:text-[5rem]";
+    } else {
+      if (len > 120) return "text-lg sm:text-xl md:text-2xl lg:text-[2.6rem]";
+      if (len > 100) return "text-xl sm:text-2xl md:text-3xl lg:text-[3.2rem]";
+      if (len > 80) return "text-2xl sm:text-3xl md:text-4xl lg:text-[3.8rem]";
+      if (len > 65) return "text-3xl sm:text-4xl md:text-5xl lg:text-[4.5rem]";
+      if (len > 45) return "text-4xl sm:text-5xl md:text-[3.5rem] lg:text-[5.0rem]";
+      return "text-4xl sm:text-5xl md:text-[4.2rem] lg:text-[5.6rem]";
+    }
+  }, [quote, language]);
+
   // Wrap chars for V1-style stagger animation with direct image mask styling
   const wrappedLines = useMemo(() => {
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
 
     const charStyle = {
-      opacity: 0,
-      transform: 'translateY(40px)',
-      filter: 'blur(20px)',
       backgroundImage: imgLoaded ? `url(${bgImage})` : 'none',
       WebkitBackgroundClip: imgLoaded ? 'text' : 'unset',
       backgroundClip: imgLoaded ? 'text' : 'unset',
@@ -376,8 +394,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       {/* Central Typographic Block */}
       <div className="relative z-20 w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
         
-        {/* Quote lines with background-clip: text (1.4x font scale) */}
-        <div className="font-serif italic font-bold text-4xl sm:text-5xl md:text-[4.2rem] lg:text-[5.6rem] tracking-wide select-none w-full text-center">
+        {/* Quote lines with background-clip: text (1.4x dynamic font scale) */}
+        <div className={`font-serif italic font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}>
           {wrappedLines}
         </div>
 
@@ -423,6 +441,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           pointer-events: none;
           opacity: 0.015;
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        .p-char {
+          opacity: 0;
+          transform: translateY(40px);
+          filter: blur(20px);
+          will-change: transform, opacity, filter;
         }
 
         .progress-fill {
