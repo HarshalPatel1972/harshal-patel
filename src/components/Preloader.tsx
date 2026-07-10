@@ -165,8 +165,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     const isHindi = language === 'hi';
 
     const charStyle = {
-      color: 'inherit',
-      WebkitTextFillColor: 'inherit',
+      opacity: 0,
+      transform: 'translateY(40px)',
+      filter: 'blur(20px)',
     };
 
     return quoteLines.map((line, lineIdx) => {
@@ -215,18 +216,15 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     });
   }, [quoteLines, language]);
 
-  // Image load detector to dynamically swap text background directly in the DOM
+  // Image load detector to fade in the multiply overlay
   useEffect(() => {
     if (!bgImage || !mounted) return;
     const img = new window.Image();
     img.onload = () => {
-      const quoteEl = document.getElementById("quote-wrapper");
-      if (quoteEl) {
-        quoteEl.style.backgroundImage = `url(${bgImage})`;
-        quoteEl.style.webkitBackgroundClip = 'text';
-        quoteEl.style.backgroundClip = 'text';
-        quoteEl.style.color = 'transparent';
-        (quoteEl.style as any).webkitTextFillColor = 'transparent';
+      const overlay = document.getElementById("image-overlay");
+      if (overlay) {
+        overlay.style.backgroundImage = `url(${bgImage})`;
+        overlay.style.opacity = '1';
       }
     };
     img.src = bgImage;
@@ -399,13 +397,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         {/* Quote lines with background-clip: text (1.4x dynamic font scale, non-italic) */}
         <div 
           id="quote-wrapper"
-          className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
-          style={{
-            color: '#EDE4D3',
-            WebkitTextFillColor: '#EDE4D3',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+          className={`relative z-10 font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
+          style={{ color: '#EDE4D3' }}
         >
           {wrappedLines}
         </div>
@@ -439,6 +432,18 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         />
       </div>
 
+      {/* FULL SCREEN IMAGE OVERLAY WITH MULTIPLY */}
+      <div 
+        id="image-overlay"
+        className="absolute inset-0 pointer-events-none mix-blend-multiply z-[40]"
+        style={{
+          opacity: 0,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transition: 'opacity 1s ease-in-out'
+        }}
+      />
+
       {/* Texture Overlays */}
       <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.08] grain-overlay mix-blend-overlay" />
 
@@ -454,12 +459,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
 
-        .p-char {
-          opacity: 0;
-          transform: translateY(40px);
-          filter: blur(20px);
-          will-change: transform, opacity, filter;
-        }
+
 
         .progress-fill {
           width: 0%;
