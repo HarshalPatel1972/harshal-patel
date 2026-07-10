@@ -261,7 +261,7 @@ export function Contact() {
           {/* Left: Contact rows */}
           <div className="w-full z-10">
             <ScrollReveal duration={1000} direction="left">
-              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-14 md:pr-20">
+              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-6 md:pr-20">
                 {links.map((link, idx) => {
                   const isFeedback = link.id === "feedback";
                   const separator = link.label.includes(" · ") ? " · " : " — ";
@@ -300,7 +300,7 @@ export function Contact() {
                         {/* Main Address / Value */}
                         <div className="flex-1 min-w-0">
                           <h4 
-                            className={`text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors break-all ${
+                            className={`text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors whitespace-nowrap ${
                               isFeedback && isGlitching ? "opacity-55" : ""
                             }`}
                             style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
