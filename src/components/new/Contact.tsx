@@ -261,7 +261,7 @@ export function Contact() {
           {/* Left: Contact rows */}
           <div className="w-full z-10">
             <ScrollReveal duration={1000} direction="left">
-              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-6 md:pr-20">
+              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-12 md:pr-20">
                 {links.map((link, idx) => {
                   const isFeedback = link.id === "feedback";
                   const separator = link.label.includes(" · ") ? " · " : " — ";
@@ -334,7 +334,7 @@ export function Contact() {
                       </div>
 
                       {/* Right: Square Arrow Button */}
-                      <div className="shrink-0 flex items-center justify-center translate-x-[15px] md:translate-x-0">
+                      <div className="shrink-0 flex items-center justify-center">
                         <div
                           className="w-10 h-10 bg-[var(--forge-orange)] text-white flex items-center justify-center transition-transform duration-300 group-hover:-rotate-45"
                           style={{ borderRadius: "0px" }}
