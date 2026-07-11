@@ -500,14 +500,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       />
 
       {/* STROKE OVERLAY FOR READABILITY (z-[50]) */}
-      <div className="absolute inset-0 pointer-events-none z-[50] flex flex-col items-center justify-center px-8 md:px-24">
+      <div 
+        className="absolute inset-0 pointer-events-none z-[50] flex flex-col items-center justify-center px-8 md:px-24"
+        style={{ mixBlendMode: 'screen' }}
+      >
         <div className="relative w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
           
           <div 
             className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
             style={{ 
               color: '#000000',
-              mixBlendMode: 'screen',
               textShadow: '0 0 0.3px rgba(255, 255, 255, 0.8)'
             }}
           >
@@ -524,7 +526,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
               className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em]"
               style={{ 
                 color: '#000000',
-                mixBlendMode: 'screen',
                 textShadow: '0 0 0.3px rgba(255, 255, 255, 0.8)'
               }}
             >
