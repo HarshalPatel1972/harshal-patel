@@ -27,6 +27,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
+  const sourceOutlineRef = useRef<HTMLDivElement>(null);
 
   const timelineRef = useRef<any>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -159,8 +160,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }
   }, [quote, language]);
 
-  // Wrap chars for V1-style stagger animation (independent of image load state)
-  const wrappedLines = useMemo(() => {
+  const getWrappedLines = useCallback((charClass: string) => {
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
 
@@ -175,7 +175,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         return (
           <span key={lineIdx} className="block leading-relaxed">
             {line.split(" ").map((word, wi) => (
-              <span key={wi} className="p-char inline-block will-change-transform mr-[0.25em]" style={charStyle}>
+              <span key={wi} className={`${charClass} inline-block will-change-transform mr-[0.25em]`} style={charStyle}>
                 {word}
               </span>
             ))}
@@ -187,7 +187,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         return (
           <span key={lineIdx} className="block leading-relaxed">
             {line.split("").map((char, ci) => (
-              <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>
+              <span key={ci} className={`${charClass} inline-block will-change-transform`} style={charStyle}>
                 {char === ' ' || char === '　' ? '\u00A0' : char}
               </span>
             ))}
@@ -201,7 +201,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         <span key={lineIdx} className="block leading-relaxed">
           {wordList.map((word, wi) => {
             const charElements = word.split("").map((char, ci) => (
-              <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>
+              <span key={ci} className={`${charClass} inline-block will-change-transform`} style={charStyle}>
                 {char}
               </span>
             ));
@@ -215,6 +215,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       );
     });
   }, [quoteLines, language]);
+
+  const wrappedLinesBase = useMemo(() => getWrappedLines('p-char'), [getWrappedLines]);
+  const wrappedLinesOutline = useMemo(() => getWrappedLines('p-char-outline'), [getWrappedLines]);
 
   // Image load detector to fade in the multiply overlay and faint background
   useEffect(() => {
@@ -319,10 +322,23 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         delay: stagger(10, { from: 'center' }),
         duration: 1000
       }, 0);
+      exitTl.add('.p-char-outline', {
+        opacity: 0,
+        translateY: -60,
+        filter: 'blur(30px)',
+        delay: stagger(10, { from: 'center' }),
+        duration: 1000
+      }, 0);
     }
 
     if (sourceRef.current) {
       exitTl.add(sourceRef.current, {
+        opacity: 0,
+        duration: 800
+      }, 0);
+    }
+    if (sourceOutlineRef.current) {
+      exitTl.add(sourceOutlineRef.current, {
         opacity: 0,
         duration: 800
       }, 0);
@@ -372,10 +388,27 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         delay: stagger(15),
         ease: 'easeOutQuart'
       }, 400);
+
+      tl.add('.p-char-outline', {
+        opacity: [0, 1],
+        translateY: [40, 0],
+        filter: ['blur(20px)', 'blur(0px)'],
+        duration: 800,
+        delay: stagger(15),
+        ease: 'easeOutQuart'
+      }, 400);
     }
 
     if (sourceRef.current) {
       tl.add(sourceRef.current, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 1200,
+        ease: 'easeOutCubic'
+      }, 1000);
+    }
+    if (sourceOutlineRef.current) {
+      tl.add(sourceOutlineRef.current, {
         opacity: [0, 1],
         translateY: [20, 0],
         duration: 1200,
@@ -408,12 +441,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         <div 
           id="quote-wrapper"
           className={`relative z-10 font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
-          style={{ 
-            color: '#EDE4D3',
-            WebkitTextStroke: '1px rgba(237, 228, 211, 0.6)' 
-          }}
+          style={{ color: '#EDE4D3' }}
         >
-          {wrappedLines}
+          {wrappedLinesBase}
         </div>
 
         {/* Attribution & thin Forge-Orange separator line */}
@@ -422,10 +452,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           className="attribution flex flex-col items-center gap-3 opacity-0"
         >
           <div className="w-[60px] h-[2px] bg-[var(--forge-orange)]" />
-          <div 
-            className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em] text-[var(--muted-label)]"
-            style={{ WebkitTextStroke: '1px rgba(138, 127, 114, 0.6)' }}
-          >
+          <div className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em] text-[var(--muted-label)]">
             {source}
           </div>
         </div>
@@ -471,6 +498,42 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           transition: 'opacity 1s ease-in-out'
         }}
       />
+
+      {/* STROKE OVERLAY FOR READABILITY (z-[50]) */}
+      <div className="absolute inset-0 pointer-events-none z-[50] flex flex-col items-center justify-center px-8 md:px-24">
+        <div className="relative w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
+          
+          <div 
+            className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
+            style={{ 
+              color: 'transparent',
+              WebkitTextStroke: '1px rgba(255, 255, 255, 0.8)',
+              textShadow: '0 0 6px rgba(255, 255, 255, 0.5)'
+            }}
+          >
+            {wrappedLinesOutline}
+          </div>
+
+          <div 
+            ref={sourceOutlineRef}
+            className="attribution flex flex-col items-center gap-3 opacity-0"
+          >
+            {/* Transparent line to match layout gap */}
+            <div className="w-[60px] h-[2px] bg-transparent" />
+            <div 
+              className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em]"
+              style={{ 
+                color: 'transparent',
+                WebkitTextStroke: '1px rgba(255, 255, 255, 0.6)',
+                textShadow: '0 0 6px rgba(255, 255, 255, 0.5)'
+              }}
+            >
+              {source}
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       {/* Texture Overlays */}
       <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.08] grain-overlay mix-blend-overlay" />
