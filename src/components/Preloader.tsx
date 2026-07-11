@@ -112,29 +112,74 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   const quoteLines = useMemo(() => {
     if (!quote) return [];
+    
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const totalChars = quote.length;
+
+    // CJK handling (strictly character based)
     if (isCJK) {
+      let targetLines = 3;
+      if (isMobile) {
+        if (totalChars < 25) targetLines = 3;
+        else if (totalChars < 50) targetLines = 4;
+        else targetLines = 5;
+      } else {
+        if (totalChars < 40) targetLines = 2;
+        else targetLines = 3;
+      }
+      const charsPerLine = Math.ceil(totalChars / targetLines);
       const lines: string[] = [];
-      for (let i = 0; i < quote.length; i += 18) {
-        lines.push(quote.slice(i, i + 18));
+      for (let i = 0; i < totalChars; i += charsPerLine) {
+        lines.push(quote.slice(i, i + charsPerLine));
       }
       return lines;
     }
-    const words = quote.split(/\s+/);
+
+    // Latin / Hindi handling (word based)
+    const words = quote.split(/\s+/).filter(w => w.length > 0);
+    const wordCount = words.length;
+    
+    // Target 2-3 lines for PC, 3-5 lines for Mobile
+    let targetLines = 3;
+    if (isMobile) {
+      if (wordCount < 8) targetLines = 3;
+      else if (wordCount < 15) targetLines = 4;
+      else targetLines = 5;
+    } else {
+      if (wordCount < 10) targetLines = 2;
+      else targetLines = 3;
+    }
+
+    if (wordCount <= targetLines) {
+      return words;
+    }
+
     const lines: string[] = [];
     let currentLine = "";
-    
+    let remainingChars = totalChars;
+    let remainingLines = targetLines;
+
     words.forEach(word => {
-      if ((currentLine + " " + word).trim().length > 38) {
-        lines.push(currentLine.trim());
+      if (!currentLine) {
         currentLine = word;
       } else {
-        currentLine = (currentLine + " " + word).trim();
+        const targetCharsPerLine = Math.ceil(remainingChars / remainingLines);
+        if (currentLine.length >= targetCharsPerLine && lines.length < targetLines - 1) {
+          lines.push(currentLine);
+          remainingChars -= currentLine.length;
+          remainingLines--;
+          currentLine = word;
+        } else {
+          currentLine += " " + word;
+        }
       }
     });
+    
     if (currentLine) {
-      lines.push(currentLine.trim());
+      lines.push(currentLine);
     }
+    
     return lines;
   }, [quote, language]);
 
