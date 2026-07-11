@@ -408,7 +408,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         <div 
           id="quote-wrapper"
           className={`relative z-10 font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
-          style={{ color: '#EDE4D3' }}
+          style={{ 
+            color: '#EDE4D3',
+            WebkitTextStroke: '1px rgba(237, 228, 211, 0.6)' 
+          }}
         >
           {wrappedLines}
         </div>
@@ -419,7 +422,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           className="attribution flex flex-col items-center gap-3 opacity-0"
         >
           <div className="w-[60px] h-[2px] bg-[var(--forge-orange)]" />
-          <div className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em] text-[var(--muted-label)]">
+          <div 
+            className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em] text-[var(--muted-label)]"
+            style={{ WebkitTextStroke: '1px rgba(138, 127, 114, 0.6)' }}
+          >
             {source}
           </div>
         </div>
