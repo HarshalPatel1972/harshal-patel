@@ -507,7 +507,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
             style={{ 
               color: 'transparent',
-              WebkitTextStroke: '0.05px rgba(255, 255, 255, 0.7)'
+              WebkitTextStroke: '1px rgba(255, 255, 255, 0.12)'
             }}
           >
             {wrappedLinesOutline}
@@ -523,7 +523,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
               className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em]"
               style={{ 
                 color: 'transparent',
-                WebkitTextStroke: '0.05px rgba(255, 255, 255, 0.7)'
+                WebkitTextStroke: '1px rgba(255, 255, 255, 0.12)'
               }}
             >
               {source}
