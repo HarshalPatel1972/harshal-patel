@@ -441,7 +441,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         <div 
           id="quote-wrapper"
           className={`relative z-10 font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
-          style={{ color: '#EDE4D3' }}
+          style={{ color: '#FFFFFF' }}
         >
           {wrappedLinesBase}
         </div>
@@ -506,9 +506,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
           <div 
             className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
             style={{ 
-              color: 'transparent',
-              WebkitTextStroke: '0.2px rgba(255, 255, 255, 1)',
-              textShadow: '0 0 3px rgba(255, 255, 255, 0.9)'
+              color: '#000000',
+              mixBlendMode: 'screen',
+              textShadow: '0 0 0.3px rgba(255, 255, 255, 0.8)'
             }}
           >
             {wrappedLinesOutline}
@@ -523,9 +523,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             <div 
               className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em]"
               style={{ 
-                color: 'transparent',
-                WebkitTextStroke: '0.2px rgba(255, 255, 255, 1)',
-                textShadow: '0 0 3px rgba(255, 255, 255, 0.9)'
+                color: '#000000',
+                mixBlendMode: 'screen',
+                textShadow: '0 0 0.3px rgba(255, 255, 255, 0.8)'
               }}
             >
               {source}
