@@ -1,4 +1,4 @@
-import { kv } from '@/lib/kv';
+import { kv, redis } from '@/lib/kv';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
@@ -22,8 +22,14 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
         }
 
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const results = await redis.pipeline()
+            .scard('portfolio_v3_unique_sessions')
+            .get('portfolio_v3_total_hits')
+            .exec();
+
+        const extract = (res: [Error | null, any]) => res[1];
+        const uniqueCount = results ? extract(results[0]) : 0;
+        const totalHits = results ? (extract(results[1]) || 0) : 0;
 
         return NextResponse.json({ 
             success: true, 
@@ -57,11 +63,16 @@ export async function POST(req: NextRequest) {
             .digest('hex');
 
         // 3. ATOMIC RITUAL: Increment only for humans
-        await kv.sadd('portfolio_v3_unique_sessions', hash);
-        await kv.incr('portfolio_v3_total_hits');
-        
-        const uniqueCount = await kv.scard('portfolio_v3_unique_sessions');
-        const totalHits = await kv.get('portfolio_v3_total_hits') || 0;
+        const results = await redis.pipeline()
+            .sadd('portfolio_v3_unique_sessions', hash)
+            .incr('portfolio_v3_total_hits')
+            .scard('portfolio_v3_unique_sessions')
+            .get('portfolio_v3_total_hits')
+            .exec();
+
+        const extract = (res: [Error | null, any]) => res[1];
+        const uniqueCount = results ? extract(results[2]) : 0;
+        const totalHits = results ? (extract(results[3]) || 0) : 0;
 
         return NextResponse.json({ 
             success: true, 

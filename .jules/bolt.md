@@ -1,0 +1,3 @@
+## 2024-07-12 - Redis Pipelining for API Route Optimization
+**Learning:** Sequential Redis operations (like `sadd`, `incr`, `scard`, and `get`) can introduce significant network latency when performed individually due to multiple network round-trips. Using `redis.pipeline()` in ioredis batches these operations into a single round-trip, significantly reducing API latency. When extracting results from `exec()`, `ioredis` returns an array of tuples `[error, result][]`, which can be reliably accessed with a strictly typed helper like `(res: [Error | null, any]) => res[1]`.
+**Action:** Always look for sequential Redis operations that don't depend on intermediate results and batch them using pipelining.
