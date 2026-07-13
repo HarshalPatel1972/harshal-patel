@@ -436,7 +436,7 @@ export function About() {
 
       <div 
         className="w-full max-w-7xl relative flex flex-col gap-16"
-        style={{ marginTop: "calc(clamp(8rem,20vw,20rem) * 0.9 - 5rem)" }}
+        style={{ marginTop: "calc(clamp(8rem,20vw,20rem) * -0.2)" }}
       >
 
         {/* ── MAIN PAPER CARD (vision board) ── */}
