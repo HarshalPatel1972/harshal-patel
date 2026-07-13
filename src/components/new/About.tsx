@@ -8,7 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
 import { useSignals } from "@/context/SignalContext";
 import { useCounter } from "../AnimationKit";
-import { SkillImpacts } from "./SkillImpacts";
+import { SkillGlobe } from "./SkillGlobe";
 
 // ─── Animated stat counter ────────────────────────────────────────────────────
 function StudioStat({ value, label }: { value: number; label: string }) {
@@ -630,14 +630,8 @@ export function About() {
                   border: "1px dashed rgba(22, 29, 26, 0.2)",
                 }}
               >
-                <div
-                  className="text-[9px] uppercase tracking-[0.3em] mb-6 opacity-60"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--sumi-ink)" }}
-                >
-                  Skill Impacts
-                </div>
                 <div className="flex-1 w-full pt-2 h-full">
-                  {skillsVisible && <SkillImpacts skills={currentProfile.skills} />}
+                  {skillsVisible && <SkillGlobe skills={currentProfile.skills} />}
                 </div>
 
               </div>
