@@ -2,6 +2,16 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { skillPaths } from "./SkillIcons";
+
+const getSkillBrand = (name: string) => {
+  if (name.includes("C++")) return { slug: "cplusplus", color: 0x00599C, hex: "#00599C" };
+  if (name.includes("Go")) return { slug: "go", color: 0x00ADD8, hex: "#00ADD8" };
+  if (name.includes("TypeScript") || name.includes("React")) return { slug: "typescript", color: 0x3178C6, hex: "#3178C6" };
+  if (name.includes("Rust")) return { slug: "rust", color: 0xDEA584, hex: "#DEA584" }; 
+  if (name.includes("Python")) return { slug: "python", color: 0x3776AB, hex: "#3776AB" };
+  return { slug: "gnubash", color: 0x4EAA25, hex: "#4EAA25" };
+};
 
 export function SkillGlobe({ skills }: { skills: any[] }) {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -41,14 +51,6 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
     globe.rotation.z = (23.5 * Math.PI) / 180;
     scene.add(globe);
 
-    const getSkillBrand = (name: string) => {
-      if (name.includes("C++")) return { url: "https://cdn.simpleicons.org/cplusplus/00599C", color: 0x00599C, hex: "#00599C" };
-      if (name.includes("Go")) return { url: "https://cdn.simpleicons.org/go/00ADD8", color: 0x00ADD8, hex: "#00ADD8" };
-      if (name.includes("TypeScript") || name.includes("React")) return { url: "https://cdn.simpleicons.org/typescript/3178C6", color: 0x3178C6, hex: "#3178C6" };
-      if (name.includes("Rust")) return { url: "https://cdn.simpleicons.org/rust/DEA584", color: 0xDEA584, hex: "#DEA584" }; 
-      if (name.includes("Python")) return { url: "https://cdn.simpleicons.org/python/3776AB", color: 0x3776AB, hex: "#3776AB" };
-      return { url: "https://cdn.simpleicons.org/gnubash/4EAA25", color: 0x4EAA25, hex: "#4EAA25" };
-    };
 
     // Create dummy objects to track node positions precisely on the sphere surface
     const dummyNodes = skills.map((skill, i) => {
@@ -225,29 +227,18 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
                 className="w-7 h-7 rounded-full flex items-center justify-center p-1.5"
                 style={{ background: "rgba(255, 255, 255, 0.95)" }}
               >
-                <img 
-                  src={
-                    skill.name.includes("C++") ? "https://cdn.simpleicons.org/cplusplus/00599C" :
-                    skill.name.includes("Go") ? "https://cdn.simpleicons.org/go/00ADD8" :
-                    skill.name.includes("TypeScript") || skill.name.includes("React") ? "https://cdn.simpleicons.org/typescript/3178C6" :
-                    skill.name.includes("Rust") ? "https://cdn.simpleicons.org/rust/DEA584" :
-                    skill.name.includes("Python") ? "https://cdn.simpleicons.org/python/3776AB" :
-                    "https://cdn.simpleicons.org/gnubash/4EAA25"
-                  }
-                  alt={skill.name}
-                  className="w-full h-full object-contain drop-shadow-md"
-                />
+                <svg 
+                  viewBox="0 0 24 24" 
+                  className="w-full h-full drop-shadow-md" 
+                  style={{ fill: getSkillBrand(skill.name).hex }}
+                >
+                  <path d={skillPaths[getSkillBrand(skill.name).slug]} />
+                </svg>
               </div>
               <span 
                 className="text-xs font-bold tracking-[0.1em] uppercase whitespace-nowrap"
                 style={{ 
-                  color: 
-                    skill.name.includes("C++") ? "#00599C" :
-                    skill.name.includes("Go") ? "#00ADD8" :
-                    skill.name.includes("TypeScript") || skill.name.includes("React") ? "#3178C6" :
-                    skill.name.includes("Rust") ? "#DEA584" :
-                    skill.name.includes("Python") ? "#3776AB" :
-                    "#4EAA25",
+                  color: getSkillBrand(skill.name).hex,
                   fontFamily: "var(--font-jetbrains-mono), monospace",
                   textShadow: "0 0 10px rgba(0,0,0,0.5)"
                 }}
