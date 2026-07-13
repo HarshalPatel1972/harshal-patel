@@ -241,10 +241,9 @@ function DossierCard({
                   const cleanSpec = spec.replace(/^\/\/\s*/, '').replace(/_$/, '');
                   return (
                     <div key={spec} className="flex items-center gap-2">
-                      <div 
-                        className="w-[4px] h-[4px] rotate-45" 
-                        style={{ background: hovered ? accent : "var(--muted-label)", transition: "background 0.3s ease" }} 
-                      />
+                      <svg width="16" height="8" viewBox="0 0 16 8" fill="none" style={{ color: hovered ? accent : "var(--muted-label)", transition: "color 0.3s ease" }}>
+                        <path d="M0 4h14M11 1l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+                      </svg>
                       <span
                         className="text-[9px] md:text-[11px] tracking-[0.15em] uppercase font-bold transition-colors duration-300"
                         style={{
@@ -265,8 +264,8 @@ function DossierCard({
                   className="w-10 h-10 flex items-center justify-center transition-transform duration-300"
                   style={{ background: accent }}
                 >
-                  <svg width="24" height="16" viewBox="0 0 36 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square">
-                    <path d="M2 12h30M25 5l7 7-7 7" />
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </div>
                 <span

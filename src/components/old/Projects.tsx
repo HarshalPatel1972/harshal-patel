@@ -195,7 +195,9 @@ export function Projects() {
                         const cleanSpec = spec.replace(/^\/\/\s*/, '').replace(/_$/, '');
                         return (
                           <div key={spec} className="flex items-center gap-2">
-                            <div className={`w-[4px] h-[4px] rotate-45 transition-colors duration-300 ${isHovered ? 'bg-[var(--accent-blood)]' : 'bg-[var(--text-muted)]'}`} />
+                            <svg width="16" height="8" viewBox="0 0 16 8" fill="none" className={`transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-muted)]'}`}>
+                              <path d="M0 4h14M11 1l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+                            </svg>
                             <span className="font-mono text-[9px] md:text-[11px] text-[var(--text-bone)] tracking-[0.15em] font-bold uppercase">
                               {cleanSpec}
                             </span>
@@ -206,8 +208,8 @@ export function Projects() {
 
                     <div className="mt-6 flex items-center gap-4">
                        <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
-                         <svg width="30" height="20" viewBox="0 0 36 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
-                           <path d="M2 12h30M25 5l7 7-7 7"/>
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+                           <path d="M5 12h14M12 5l7 7-7 7"/>
                          </svg>
                        </div>
                        <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
