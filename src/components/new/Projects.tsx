@@ -232,22 +232,31 @@ function DossierCard({
 
             {/* Specs + CTA */}
             <div className="mt-8 flex flex-col gap-4">
-              {/* Specs block — JetBrains Mono style */}
+              {/* Specs block — Clean formatted list */}
               <div
-                className={`flex flex-col items-end gap-1 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-40"}`}
+                className={`flex flex-col items-end gap-2 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-60"}`}
               >
-                {project.specs.map((spec) => (
-                  <span
-                    key={spec}
-                    className="text-[10px] md:text-xs tracking-[0.2em]"
-                    style={{
-                      fontFamily: "var(--font-jetbrains-mono), monospace",
-                      color: "var(--sumi-ink)",
-                    }}
-                  >
-                    {spec}
-                  </span>
-                ))}
+                {project.specs.map((spec) => {
+                  // Clean up legacy V1 cyberpunk formatting
+                  const cleanSpec = spec.replace(/^\/\/\s*/, '').replace(/_$/, '');
+                  return (
+                    <div key={spec} className="flex items-center gap-2">
+                      <div 
+                        className="w-[4px] h-[4px] rotate-45" 
+                        style={{ background: hovered ? accent : "var(--muted-label)", transition: "background 0.3s ease" }} 
+                      />
+                      <span
+                        className="text-[9px] md:text-[11px] tracking-[0.15em] uppercase transition-colors duration-300"
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                          color: hovered ? "var(--sumi-ink)" : "var(--muted-label)",
+                        }}
+                      >
+                        {cleanSpec}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Arrow CTA */}
