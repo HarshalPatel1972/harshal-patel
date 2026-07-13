@@ -42,12 +42,12 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
     scene.add(globe);
 
     const getSkillBrand = (name: string) => {
-      if (name.includes("C++")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg", color: 0x00599C };
-      if (name.includes("Go")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg", color: 0x00ADD8 };
-      if (name.includes("TypeScript") || name.includes("React")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg", color: 0x3178C6 };
-      if (name.includes("Rust")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg", color: 0xDEA584 }; 
-      if (name.includes("Python")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg", color: 0x3776AB };
-      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg", color: 0x4EAA25 };
+      if (name.includes("C++")) return { url: "https://cdn.simpleicons.org/cplusplus/00599C", color: 0x00599C, hex: "#00599C" };
+      if (name.includes("Go")) return { url: "https://cdn.simpleicons.org/go/00ADD8", color: 0x00ADD8, hex: "#00ADD8" };
+      if (name.includes("TypeScript") || name.includes("React")) return { url: "https://cdn.simpleicons.org/typescript/3178C6", color: 0x3178C6, hex: "#3178C6" };
+      if (name.includes("Rust")) return { url: "https://cdn.simpleicons.org/rust/DEA584", color: 0xDEA584, hex: "#DEA584" }; 
+      if (name.includes("Python")) return { url: "https://cdn.simpleicons.org/python/3776AB", color: 0x3776AB, hex: "#3776AB" };
+      return { url: "https://cdn.simpleicons.org/gnubash/4EAA25", color: 0x4EAA25, hex: "#4EAA25" };
     };
 
     // Create dummy objects to track node positions precisely on the sphere surface
@@ -65,28 +65,29 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
       mesh.position.set(x, y, z);
       globe.add(mesh);
 
-      // Orbital colored line trailing the skill
+      // Orbital colored line trailing the skill - thick and glowing
       const trailPoints = [];
       const trailLength = 25;
       for (let j = 0; j < trailLength; j++) {
         // Trail backwards along longitude
-        const trailTheta = theta - (j * Math.PI / 180 * 2.5);
+        const trailTheta = theta - (j * Math.PI / 180 * 3.5);
         const tx = radius * Math.sin(phi) * Math.cos(trailTheta);
         const ty = radius * Math.cos(phi);
         const tz = radius * Math.sin(phi) * Math.sin(trailTheta);
         trailPoints.push(new THREE.Vector3(tx, ty, tz));
       }
       
-      const trailGeometry = new THREE.BufferGeometry().setFromPoints(trailPoints);
-      const trailMaterial = new THREE.LineBasicMaterial({ 
+      const curve = new THREE.CatmullRomCurve3(trailPoints);
+      const tubeGeometry = new THREE.TubeGeometry(curve, 20, 0.7, 8, false);
+      const tubeMaterial = new THREE.MeshBasicMaterial({ 
         color: brand.color,
         transparent: true,
-        opacity: 0.6
+        opacity: 0.95
       });
-      const trail = new THREE.Line(trailGeometry, trailMaterial);
+      const trail = new THREE.Mesh(tubeGeometry, tubeMaterial);
       globe.add(trail);
 
-      return { mesh, brand };
+      return { mesh, brand, name: skill.name };
     });
 
     // Interaction variables
@@ -221,27 +222,34 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
             >
               {/* Dynamic Skill Icon */}
               <div 
-                className="w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(255, 255, 255, 0.9)" }}
+                className="w-7 h-7 rounded-full flex items-center justify-center p-1.5"
+                style={{ background: "rgba(255, 255, 255, 0.95)" }}
               >
                 <img 
                   src={
-                    skill.name.includes("C++") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" :
-                    skill.name.includes("Go") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" :
-                    skill.name.includes("TypeScript") || skill.name.includes("React") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" :
-                    skill.name.includes("Rust") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" :
-                    skill.name.includes("Python") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" :
-                    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg"
+                    skill.name.includes("C++") ? "https://cdn.simpleicons.org/cplusplus/00599C" :
+                    skill.name.includes("Go") ? "https://cdn.simpleicons.org/go/00ADD8" :
+                    skill.name.includes("TypeScript") || skill.name.includes("React") ? "https://cdn.simpleicons.org/typescript/3178C6" :
+                    skill.name.includes("Rust") ? "https://cdn.simpleicons.org/rust/DEA584" :
+                    skill.name.includes("Python") ? "https://cdn.simpleicons.org/python/3776AB" :
+                    "https://cdn.simpleicons.org/gnubash/4EAA25"
                   }
                   alt={skill.name}
-                  className="w-4 h-4 object-contain"
+                  className="w-full h-full object-contain drop-shadow-md"
                 />
               </div>
               <span 
                 className="text-xs font-bold tracking-[0.1em] uppercase whitespace-nowrap"
                 style={{ 
-                  color: "rgba(255, 255, 255, 0.95)",
-                  fontFamily: "var(--font-jetbrains-mono), monospace"
+                  color: 
+                    skill.name.includes("C++") ? "#00599C" :
+                    skill.name.includes("Go") ? "#00ADD8" :
+                    skill.name.includes("TypeScript") || skill.name.includes("React") ? "#3178C6" :
+                    skill.name.includes("Rust") ? "#DEA584" :
+                    skill.name.includes("Python") ? "#3776AB" :
+                    "#4EAA25",
+                  fontFamily: "var(--font-jetbrains-mono), monospace",
+                  textShadow: "0 0 10px rgba(0,0,0,0.5)"
                 }}
               >
                 {skill.name}
