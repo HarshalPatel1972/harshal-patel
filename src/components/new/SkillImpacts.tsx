@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
 
 const skillColors = [
@@ -12,101 +12,159 @@ const skillColors = [
   "#2B6B61", // SQL / Bash
 ];
 
-// Composed SVG to look like an organic, aggressive paint splat
-const SplatterShape = ({ color, sizeLevel, index }: { color: string; sizeLevel: number, index: number }) => {
-  // Base scale + extra scale based on expertise level (0-100)
-  const scale = 0.6 + (sizeLevel / 100) * 1.4;
-  // Rotate each splat randomly based on index to look organic
-  const rotate = (index * 137.5) % 360;
-  
+// Helper to generate a highly realistic, chaotic paint splatter
+const ChaoticSplat = ({ color, rotate, scaleModifier }: { color: string, rotate: number, scaleModifier: number }) => {
+  // Use useMemo so the chaotic splat doesn't re-render its random paths on every cycle
+  const elements = useMemo(() => {
+    const blobs = [];
+    const streaks = [];
+    const droplets = [];
+
+    // Central chaotic blobs
+    for (let i = 0; i < 12; i++) {
+      const cx = 50 + (Math.random() - 0.5) * 30;
+      const cy = 50 + (Math.random() - 0.5) * 30;
+      const r = 10 + Math.random() * 25;
+      const rx = r * (0.8 + Math.random() * 0.4);
+      const ry = r * (0.8 + Math.random() * 0.4);
+      const rot = Math.random() * 360;
+      blobs.push(
+        <ellipse 
+          key={`blob-${i}`} 
+          cx={cx} cy={cy} rx={rx} ry={ry} 
+          fill={color} 
+          transform={`rotate(${rot} ${cx} ${cy})`} 
+        />
+      );
+    }
+
+    // High velocity streaks shooting out
+    const numStreaks = 15 + Math.floor(Math.random() * 10);
+    for (let i = 0; i < numStreaks; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const length = 40 + Math.random() * 60; // How far it shoots
+      const width = 2 + Math.random() * 6; // Width at base
+      
+      const startX = 50 + Math.cos(angle) * 10;
+      const startY = 50 + Math.sin(angle) * 10;
+      const endX = 50 + Math.cos(angle) * length;
+      const endY = 50 + Math.sin(angle) * length;
+      
+      const p1x = startX + Math.cos(angle + Math.PI/2) * width;
+      const p1y = startY + Math.sin(angle + Math.PI/2) * width;
+      const p2x = startX - Math.cos(angle + Math.PI/2) * width;
+      const p2y = startY - Math.sin(angle + Math.PI/2) * width;
+
+      streaks.push(
+        <polygon 
+          key={`streak-${i}`} 
+          points={`${p1x},${p1y} ${p2x},${p2y} ${endX},${endY}`} 
+          fill={color} 
+        />
+      );
+    }
+
+    // Chaotic droplets everywhere
+    const numDrops = 40 + Math.floor(Math.random() * 40);
+    for (let i = 0; i < numDrops; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      // Exponential distribution so more drops are near the center
+      const dist = 20 + Math.pow(Math.random(), 2) * 80;
+      const cx = 50 + Math.cos(angle) * dist;
+      const cy = 50 + Math.sin(angle) * dist;
+      const r = 0.5 + Math.random() * 3.5;
+      
+      droplets.push(
+        <circle key={`drop-${i}`} cx={cx} cy={cy} r={r} fill={color} />
+      );
+    }
+
+    return { blobs, streaks, droplets };
+  }, [color]);
+
   return (
-    <div 
-      className="w-full h-full relative flex items-center justify-center" 
-      style={{ transform: `scale(${scale}) rotate(${rotate}deg)` }}
+    <svg 
+      viewBox="-20 -20 140 140" 
+      className="w-full h-full absolute inset-0"
+      style={{ 
+        transform: `rotate(${rotate}deg) scale(${scaleModifier})`, 
+        overflow: 'visible',
+        mixBlendMode: 'hard-light', // Makes overlaps look like wet paint mixing
+        opacity: 0.95
+      }}
     >
-      <svg viewBox="0 0 200 200" width="100%" height="100%" className="absolute inset-0">
-        <g fill={color}>
-          {/* Core blobs */}
-          <circle cx="100" cy="100" r="45" />
-          <circle cx="80" cy="70" r="30" />
-          <circle cx="130" cy="90" r="35" />
-          <circle cx="110" cy="130" r="30" />
-          <circle cx="70" cy="110" r="25" />
-          <circle cx="95" cy="135" r="22" />
-          <circle cx="135" cy="115" r="28" />
-          
-          {/* Spikes / Splat rays */}
-          <path d="M100 55 Q 110 20 120 15 Q 115 30 115 65 Z" />
-          <path d="M140 90 Q 180 80 185 90 Q 160 105 140 100 Z" />
-          <path d="M110 140 Q 130 180 120 190 Q 100 160 95 140 Z" />
-          <path d="M65 110 Q 20 120 15 110 Q 30 90 60 95 Z" />
-          <path d="M70 70 Q 40 40 50 30 Q 60 50 85 65 Z" />
-          <path d="M130 65 Q 160 30 170 40 Q 150 60 125 80 Z" />
-          <path d="M90 140 Q 60 170 50 160 Q 70 130 80 125 Z" />
-          
-          {/* Droplets */}
-          <circle cx="130" cy="20" r="6" />
-          <circle cx="185" cy="70" r="4" />
-          <circle cx="170" cy="110" r="8" />
-          <circle cx="140" cy="170" r="5" />
-          <circle cx="90" cy="185" r="7" />
-          <circle cx="30" cy="130" r="4" />
-          <circle cx="20" cy="80" r="6" />
-          <circle cx="50" cy="30" r="5" />
-          <circle cx="150" cy="150" r="9" />
-          <circle cx="60" cy="160" r="4" />
-          <circle cx="35" cy="50" r="7" />
-          <circle cx="160" cy="35" r="5" />
-        </g>
-      </svg>
-    </div>
+      <g>
+        {elements.streaks}
+        {elements.blobs}
+        {elements.droplets}
+      </g>
+    </svg>
   );
 };
 
-const SkillItem = ({ skill, index }: { skill: any; index: number }) => {
-  const ref = useRef(null);
-  // once: true ensures it never reverses when scrolling back up
-  const isInView = useInView(ref, { once: true, margin: "-15% 0px" });
+// Distribute them safely within a shared container so they overlap nicely like a canvas
+const getPosition = (index: number) => {
+  const positions = [
+    { top: "20%", left: "25%" },
+    { top: "35%", left: "70%" },
+    { top: "55%", left: "30%" },
+    { top: "70%", left: "75%" },
+    { top: "85%", left: "40%" },
+    { top: "15%", left: "60%" },
+  ];
+  return positions[index % positions.length];
+};
+
+const SkillItem = ({ skill, index, inView }: { skill: any; index: number, inView: boolean }) => {
   const color = skillColors[index % skillColors.length];
+  const position = getPosition(index);
   
+  // Randomize exactly how each splat looks and rotates
+  const rotate = useMemo(() => Math.floor(Math.random() * 360), []);
+  // Random scale variance between 0.9 and 1.3 to make them organic
+  const scaleMod = useMemo(() => 0.9 + Math.random() * 0.4, []);
+
   return (
-    <div ref={ref} className="relative w-full h-[220px] flex items-center justify-center">
+    <div 
+      className="absolute flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2"
+      style={{ top: position.top, left: position.left, width: '220px', height: '220px' }}
+    >
       {/* The splat impact animation */}
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
-        animate={isInView ? { scale: 1, opacity: 0.9 } : { scale: 0, opacity: 0 }}
+        animate={inView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
         transition={{ 
           type: "spring", 
-          stiffness: 400, 
-          damping: 20, 
-          mass: 0.8 
+          stiffness: 500, // Very stiff for high velocity impact
+          damping: 15, 
+          mass: 0.5,
+          delay: index * 0.15 // Sequential splatting
         }}
-        className="absolute inset-0 flex items-center justify-center"
-        style={{ filter: "drop-shadow(0px 10px 20px rgba(0,0,0,0.15))" }}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
-        <div className="w-[180px] h-[180px]">
-          <SplatterShape color={color} sizeLevel={skill.level} index={index} />
-        </div>
+        <ChaoticSplat color={color} rotate={rotate} scaleModifier={scaleMod} />
       </motion.div>
       
       {/* The text reveal */}
       <motion.div
         initial={{ scale: 0.5, opacity: 0 }}
-        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
-        transition={{ delay: 0.15, duration: 0.4, ease: "easeOut" }}
+        animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.5, opacity: 0 }}
+        transition={{ 
+          delay: (index * 0.15) + 0.1, // Reveals almost immediately after splat
+          duration: 0.3, 
+          ease: "easeOut" 
+        }}
         className="relative z-10 flex flex-col items-center pointer-events-none"
       >
         <span 
-          className="text-white font-black tracking-widest text-2xl uppercase text-center px-4"
-          style={{ fontFamily: "var(--font-big-shoulders), sans-serif", textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}
+          className="text-white font-black tracking-widest uppercase text-center leading-none"
+          style={{ 
+            fontSize: "clamp(1.2rem, 2.5vw, 2rem)",
+            fontFamily: "var(--font-big-shoulders), sans-serif", 
+            textShadow: "0 2px 10px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.8)" 
+          }}
         >
           {skill.name}
-        </span>
-        <span 
-          className="text-white/90 font-bold text-xs tracking-widest mt-1"
-          style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
-        >
-          LVL {skill.level}
         </span>
       </motion.div>
     </div>
@@ -114,10 +172,22 @@ const SkillItem = ({ skill, index }: { skill: any; index: number }) => {
 };
 
 export function SkillImpacts({ skills }: { skills: any[] }) {
+  const containerRef = useRef(null);
+  // Trigger once when the container enters the viewport. No reverse on scroll back.
+  const isInView = useInView(containerRef, { once: true, margin: "-10% 0px" });
+
   return (
-    <div className="w-full flex flex-col gap-12 py-10 items-center overflow-x-hidden">
+    <div 
+      ref={containerRef}
+      className="w-full relative min-h-[500px] lg:min-h-[600px] overflow-visible my-4"
+    >
       {skills.map((s, i) => (
-        <SkillItem key={s.name} skill={s} index={i} />
+        <SkillItem 
+          key={s.name} 
+          skill={s} 
+          index={i} 
+          inView={isInView} 
+        />
       ))}
     </div>
   );
