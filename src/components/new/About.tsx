@@ -407,8 +407,8 @@ export function About() {
       {/* Background watermark */}
       <div className="absolute top-[-2rem] left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 select-none" style={{ opacity: 0.06 }}>
         <h2
-          className="font-black uppercase whitespace-nowrap tracking-tighter text-[var(--copper)]"
-          style={{ fontSize: "clamp(8rem,20vw,20rem)", lineHeight: 0.8, fontFamily: "var(--font-big-shoulders), sans-serif" }}
+          className="font-black uppercase whitespace-nowrap leading-none tracking-tighter text-[var(--copper)]"
+          style={{ fontSize: "clamp(8rem,20vw,20rem)", fontFamily: "var(--font-big-shoulders), sans-serif" }}
         >
           {originWatermark}
         </h2>
@@ -436,7 +436,7 @@ export function About() {
 
       <div 
         className="w-full max-w-7xl relative flex flex-col gap-16"
-        style={{ marginTop: "calc(clamp(8rem,20vw,20rem) * 0.55)" }}
+        style={{ marginTop: "calc(clamp(8rem,20vw,20rem) * 0.9 - 5rem)" }}
       >
 
         {/* ── MAIN PAPER CARD (vision board) ── */}
