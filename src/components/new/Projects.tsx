@@ -231,10 +231,10 @@ function DossierCard({
             </div>
 
             {/* Specs + CTA */}
-            <div className="mt-8 flex flex-col gap-4">
+            <div className="mt-4 flex flex-col gap-4">
               {/* Specs block — Clean formatted list */}
               <div
-                className={`flex flex-col items-end gap-2 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-60"}`}
+                className={`flex flex-col items-end gap-2 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-80"}`}
               >
                 {project.specs.map((spec) => {
                   // Clean up legacy V1 cyberpunk formatting
@@ -246,10 +246,10 @@ function DossierCard({
                         style={{ background: hovered ? accent : "var(--muted-label)", transition: "background 0.3s ease" }} 
                       />
                       <span
-                        className="text-[9px] md:text-[11px] tracking-[0.15em] uppercase transition-colors duration-300"
+                        className="text-[9px] md:text-[11px] tracking-[0.15em] uppercase font-bold transition-colors duration-300"
                         style={{
                           fontFamily: "var(--font-jetbrains-mono), monospace",
-                          color: hovered ? "var(--sumi-ink)" : "var(--muted-label)",
+                          color: "var(--sumi-ink)",
                         }}
                       >
                         {cleanSpec}

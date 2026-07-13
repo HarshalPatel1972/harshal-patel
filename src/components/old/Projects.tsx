@@ -190,15 +190,21 @@ export function Projects() {
                       </p>
                     </div>
 
-                    <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
-                      {project.specs.map((spec: string) => (
-                        <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
-                          {spec}
-                        </span>
-                      ))}
+                    <div className={`flex flex-col items-end gap-2 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-60'}`}>
+                      {project.specs.map((spec: string) => {
+                        const cleanSpec = spec.replace(/^\/\/\s*/, '').replace(/_$/, '');
+                        return (
+                          <div key={spec} className="flex items-center gap-2">
+                            <div className={`w-[4px] h-[4px] rotate-45 transition-colors duration-300 ${isHovered ? 'bg-[var(--accent-blood)]' : 'bg-[var(--text-muted)]'}`} />
+                            <span className="font-mono text-[9px] md:text-[11px] text-[var(--text-bone)] tracking-[0.15em] font-bold uppercase">
+                              {cleanSpec}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
 
-                    <div className="mt-12 flex items-center gap-4">
+                    <div className="mt-6 flex items-center gap-4">
                        <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
                            <path d="M5 12h14M12 5l7 7-7 7"/>
