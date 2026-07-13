@@ -231,7 +231,7 @@ function DossierCard({
             </div>
 
             {/* Specs + CTA */}
-            <div className="mt-4 flex flex-col gap-4">
+            <div className="mt-2 flex flex-col gap-4">
               {/* Specs block — Clean formatted list */}
               <div
                 className={`flex flex-col items-end gap-2 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-80"}`}
@@ -265,8 +265,8 @@ function DossierCard({
                   className="w-10 h-10 flex items-center justify-center transition-transform duration-300"
                   style={{ background: accent }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  <svg width="24" height="16" viewBox="0 0 36 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="square">
+                    <path d="M2 12h30M25 5l7 7-7 7" />
                   </svg>
                 </div>
                 <span

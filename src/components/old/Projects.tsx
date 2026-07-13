@@ -206,8 +206,8 @@ export function Projects() {
 
                     <div className="mt-6 flex items-center gap-4">
                        <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
-                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
-                           <path d="M5 12h14M12 5l7 7-7 7"/>
+                         <svg width="30" height="20" viewBox="0 0 36 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
+                           <path d="M2 12h30M25 5l7 7-7 7"/>
                          </svg>
                        </div>
                        <span className={`font-black font-display text-xl uppercase tracking-widest transition-all duration-300 ${isHovered ? 'opacity-100 translate-x-2 text-[var(--accent-blood)]' : 'opacity-0 -translate-x-4 text-[var(--text-bone)]'}`}>
