@@ -24,8 +24,8 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mountRef.current.appendChild(renderer.domElement);
 
-    // Create True 3D Wireframe Globe
-    const radius = 130;
+    // Make radius smaller on phones to prevent clipping
+    const radius = width < 768 ? 90 : 130;
     // 32 longitudinal segments, 24 latitudinal for dense, elegant wireframe
     const geometry = new THREE.SphereGeometry(radius, 32, 24);
     const material = new THREE.MeshBasicMaterial({ 
@@ -41,8 +41,19 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
     globe.rotation.z = (23.5 * Math.PI) / 180;
     scene.add(globe);
 
+    const getSkillBrand = (name: string) => {
+      if (name.includes("C++")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg", color: 0x00599C };
+      if (name.includes("Go")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg", color: 0x00ADD8 };
+      if (name.includes("TypeScript") || name.includes("React")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg", color: 0x3178C6 };
+      if (name.includes("Rust")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg", color: 0xDEA584 }; 
+      if (name.includes("Python")) return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg", color: 0x3776AB };
+      return { url: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg", color: 0x4EAA25 };
+    };
+
     // Create dummy objects to track node positions precisely on the sphere surface
-    const dummyNodes = skills.map((_, i) => {
+    const dummyNodes = skills.map((skill, i) => {
+      const brand = getSkillBrand(skill.name);
+      
       // Even distribution using Fibonacci sphere mapping
       const phi = Math.acos(1 - (2 * i + 1) / skills.length);
       const theta = i * Math.PI * (1 + Math.sqrt(5));
@@ -53,7 +64,29 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
       const mesh = new THREE.Mesh();
       mesh.position.set(x, y, z);
       globe.add(mesh);
-      return mesh;
+
+      // Orbital colored line trailing the skill
+      const trailPoints = [];
+      const trailLength = 25;
+      for (let j = 0; j < trailLength; j++) {
+        // Trail backwards along longitude
+        const trailTheta = theta - (j * Math.PI / 180 * 2.5);
+        const tx = radius * Math.sin(phi) * Math.cos(trailTheta);
+        const ty = radius * Math.cos(phi);
+        const tz = radius * Math.sin(phi) * Math.sin(trailTheta);
+        trailPoints.push(new THREE.Vector3(tx, ty, tz));
+      }
+      
+      const trailGeometry = new THREE.BufferGeometry().setFromPoints(trailPoints);
+      const trailMaterial = new THREE.LineBasicMaterial({ 
+        color: brand.color,
+        transparent: true,
+        opacity: 0.6
+      });
+      const trail = new THREE.Line(trailGeometry, trailMaterial);
+      globe.add(trail);
+
+      return { mesh, brand };
     });
 
     // Interaction variables
@@ -106,7 +139,7 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
       // Update globe matrix so child dummy nodes update their world positions
       globe.updateMatrixWorld();
       
-      dummyNodes.forEach((mesh, i) => {
+      dummyNodes.forEach(({ mesh }, i) => {
          const worldPos = new THREE.Vector3();
          mesh.getWorldPosition(worldPos);
          const isBack = worldPos.z < 0; // Negative Z means it's rotated to the back hemisphere
@@ -178,18 +211,36 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
           >
             {/* Sleek, high-performance card design matching reference */}
             <div 
-              className="px-4 py-2 rounded-lg flex items-center justify-center"
+              className="pl-2 pr-4 py-1.5 rounded-full flex items-center justify-center gap-2"
               style={{
-                background: "rgba(22, 29, 26, 0.4)",
+                background: "rgba(10, 15, 12, 0.75)",
                 backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255, 255, 255, 0.15)",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)"
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)"
               }}
             >
+              {/* Dynamic Skill Icon */}
+              <div 
+                className="w-6 h-6 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(255, 255, 255, 0.9)" }}
+              >
+                <img 
+                  src={
+                    skill.name.includes("C++") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" :
+                    skill.name.includes("Go") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" :
+                    skill.name.includes("TypeScript") || skill.name.includes("React") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" :
+                    skill.name.includes("Rust") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg" :
+                    skill.name.includes("Python") ? "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" :
+                    "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bash/bash-original.svg"
+                  }
+                  alt={skill.name}
+                  className="w-4 h-4 object-contain"
+                />
+              </div>
               <span 
-                className="text-xs md:text-sm font-bold tracking-[0.15em] uppercase whitespace-nowrap"
+                className="text-xs font-bold tracking-[0.1em] uppercase whitespace-nowrap"
                 style={{ 
-                  color: "var(--chalk)",
+                  color: "rgba(255, 255, 255, 0.95)",
                   fontFamily: "var(--font-jetbrains-mono), monospace"
                 }}
               >
