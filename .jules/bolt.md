@@ -1,0 +1,3 @@
+## 2024-07-15 - Pre-compile Regex for Bot Detection API
+**Learning:** For high-frequency API endpoints performing static keyword matching against headers (e.g., bot detection in `visitor-count`), using `Array.some` and `.toLowerCase()` inside the request handler is an anti-pattern. It forces per-request string allocation and array iteration, which can block the Node.js event loop under heavy load.
+**Action:** Compile a single `RegExp` outside the request handler. This gives O(1) matching performance and avoids per-request overhead.
