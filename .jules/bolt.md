@@ -1,3 +1,7 @@
+## 2025-02-13 - Preventing Layout Thrashing in Scroll Listeners
+**Learning:** Synchronously reading layout properties like `offsetTop` or `offsetHeight` within high-frequency event listeners (such as scroll) triggers forced synchronous layouts (layout thrashing). This blocks the main thread and hurts animation performance significantly. The specific anti-pattern observed here was dynamically recalculating `trackRef.current.offsetTop` inside the `handleScroll` event.
+**Action:** Extract these synchronous DOM reads out of the event listener's callback. Cache layout properties on component mount and update them via a `window.addEventListener('resize', ...)` callback. The high-frequency `scroll` listener can then calculate metrics using the cached static values and rely only on `window.scrollY` without forcing a reflow.
+
 ## 2024-03-24 - Memoizing Complex String Splits in Render Loops
 **Learning:** For React components performing complex string manipulations (e.g., splitting a name into parts and character arrays for animations), un-memoized `split()` operations inside the render loop cause redundant object and array allocations on every render cycle. This is especially problematic in components like Hero that might be updated by high-frequency events or simply re-render frequently.
 **Action:** Utilize `useMemo` to pre-calculate these values. This eliminates the redundant allocations and computations, improving performance without sacrificing readability.
