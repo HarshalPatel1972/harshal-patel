@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
 import { useSignals } from "@/context/SignalContext";
 import { useCounter } from "../AnimationKit";
+import { SkillGlobe } from "./SkillGlobe";
 
 // ─── Animated stat counter ────────────────────────────────────────────────────
 function StudioStat({ value, label }: { value: number; label: string }) {
@@ -34,8 +35,8 @@ function StudioStat({ value, label }: { value: number; label: string }) {
   );
 }
 
-// ─── Analog Gauge Dial (SVG arc) ──────────────────────────────────────────────
-function GaugeDial({
+// ─── Wave Progress Meter ──────────────────────────────────────────────────────
+function WaveSkillBar({
   skill,
   isVisible,
   index,
@@ -45,39 +46,16 @@ function GaugeDial({
   index: number;
 }) {
   const [displayed, setDisplayed] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const size = isMobile ? 70 : 90;
-  const r = isMobile ? 28 : 36;
-  const cx = size / 2;
-  const cy = size / 2;
-
-  const polar = (angle: number) => {
-    const rad = (angle * Math.PI) / 180;
-    return {
-      x: cx + r * Math.cos(rad),
-      y: cy + r * Math.sin(rad),
-    };
-  };
-
-  const describeArc = (pct: number) => {
-    const startAngle = 135;
-    const totalArc = 270;
-    const endAngle = startAngle + (totalArc * pct) / 100;
-    const s = polar(startAngle);
-    const e = polar(endAngle);
-    const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-    return `M ${s.x} ${s.y} A ${r} ${r} 0 ${largeArc} 1 ${e.x} ${e.y}`;
-  };
+  const skillColors = [
+    "#C44D1C", // C++ / Systems
+    "#2C5270", // Go (Golang)
+    "#905B20", // TypeScript / React
+    "#385C46", // Rust / WASM
+    "#6D3C8A", // Python / AI
+    "#2B6B61", // SQL / Bash
+  ];
+  const accent = skillColors[index % skillColors.length];
 
   useEffect(() => {
     if (!isVisible) return;
@@ -86,8 +64,8 @@ function GaugeDial({
     const timer = setTimeout(() => {
       anime(proxy, {
         val: skill.level,
-        duration: 1000,
-        easing: "easeOutQuad",
+        duration: 1500,
+        easing: "easeOutCubic",
         onUpdate: () => {
           setDisplayed(Math.round(proxy.val));
         },
@@ -96,72 +74,114 @@ function GaugeDial({
     return () => clearTimeout(timer);
   }, [isVisible, skill.level, index]);
 
-  const arcLength = 2 * Math.PI * r * 0.75;
-  const strokeDashoffset = isVisible ? arcLength * (1 - skill.level / 100) : arcLength;
-
-  const skillColors = [
-    "#E8703A", // C++ / Systems
-    "#4A7FA5", // Go (Golang)
-    "#C4843A", // TypeScript / React
-    "#5B8A6E", // Rust / WASM
-    "#9B6BB5", // Python / AI
-    "#4A9B8E", // SQL / Bash
-  ];
-  const accent = skillColors[index] || "#E8703A";
-  const pathD = describeArc(100);
+  const waveSvg = (color: string, opacity: string) => {
+    return `data:image/svg+xml,${encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 24' preserveAspectRatio='none'>
+        <path d='M0,12 Q10,6 20,12 T40,12 L40,24 L0,24 Z' fill='${color}' opacity='${opacity}'/>
+      </svg>
+    `)}`;
+  };
 
   return (
-    <div
-      className="flex flex-col items-center justify-between w-[80px] sm:w-[110px]"
-      style={{ height: "130px" }}
-    >
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="overflow-visible">
-          {/* Track arc */}
-          <path
-            d={pathD}
-            fill="none"
-            stroke="rgba(22, 29, 26, 0.1)"
-            strokeWidth="6"
-            strokeLinecap="round"
-          />
-          {/* Fill arc */}
-          <path
-            d={pathD}
-            fill="none"
-            stroke={accent}
-            strokeWidth="6"
-            strokeLinecap="round"
-            style={{
-              strokeDasharray: arcLength,
-              strokeDashoffset: strokeDashoffset,
-              transition: "stroke-dashoffset 1000ms ease-out",
-              transitionDelay: `${index * 120}ms`,
-            }}
-          />
-          {/* Percentage text */}
-          <text
-            x={cx}
-            y={cy + 4}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fontSize="16"
-            fontWeight="700"
-            fill="var(--sumi-ink)"
-            fontFamily="var(--font-big-shoulders), sans-serif"
-          >
-            {displayed}%
-          </text>
-        </svg>
+    <div className="flex flex-col gap-2 w-full group">
+      <style>{`
+        @keyframes waveTravel1 {
+          to { background-position-x: -50px; }
+        }
+        @keyframes waveTravel2 {
+          to { background-position-x: -40px; }
+        }
+        @keyframes bubbleRise {
+          0% { transform: translateY(10px) scale(0.5); opacity: 0; }
+          30% { opacity: 0.6; }
+          70% { opacity: 0.6; }
+          100% { transform: translateY(-10px) scale(1.2); opacity: 0; }
+        }
+        .wave-travel-1 {
+          animation: waveTravel1 3s linear infinite;
+        }
+        .wave-travel-2 {
+          animation: waveTravel2 2s linear infinite;
+        }
+        .liquid-bubble {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.5);
+          border-radius: 50%;
+          animation: bubbleRise 2s ease-in infinite;
+        }
+      `}</style>
+      <div className="flex justify-between items-end w-full">
+        <span 
+          className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] transition-opacity duration-300 group-hover:opacity-100" 
+          style={{ color: "var(--sumi-ink)", opacity: 0.8 }}
+        >
+          {skill.name}
+        </span>
+        <span 
+          className="font-bold text-lg leading-none" 
+          style={{ color: accent, fontFamily: "var(--font-big-shoulders), sans-serif" }}
+        >
+          {displayed}%
+        </span>
       </div>
-      <div
-        className="text-center text-[10px] uppercase tracking-[0.15em] leading-tight"
-        style={{
-          fontFamily: "var(--font-jetbrains-mono), monospace",
-          color: "var(--muted-label)",
+      
+      {/* Track & Fill Container */}
+      <div 
+        className="relative h-[24px] sm:h-[28px] w-full mt-1 rounded-full overflow-hidden shadow-inner" 
+        style={{ 
+          backgroundColor: "rgba(22, 29, 26, 0.05)",
+          boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)" 
         }}
       >
-        {skill.name}
+        
+        {/* Growing Liquid Container */}
+        <div 
+          className="absolute top-0 bottom-0 left-0 h-full overflow-hidden rounded-full"
+          style={{
+            width: isVisible ? `${skill.level}%` : '0%',
+            transition: 'width 2s cubic-bezier(0.2, 0.8, 0.2, 1)',
+            transitionDelay: `${index * 120}ms`,
+          }}
+        >
+          {/* Back Wave (Slower, Wider, Semi-transparent) */}
+          <div 
+            className="absolute top-0 left-0 h-full w-[200vw] wave-travel-1"
+            style={{
+              backgroundImage: `url("${waveSvg(accent, '0.4')}")`,
+              backgroundRepeat: 'repeat-x',
+              backgroundPosition: '0 center',
+              backgroundSize: '50px 100%',
+            }}
+          />
+
+          {/* Front Wave (Faster, Narrower, Opaque) */}
+          <div 
+            className="absolute top-0 left-0 h-full w-[200vw] wave-travel-2"
+            style={{
+              backgroundImage: `url("${waveSvg(accent, '0.9')}")`,
+              backgroundRepeat: 'repeat-x',
+              backgroundPosition: '0 center',
+              backgroundSize: '40px 100%',
+            }}
+          />
+
+          {/* Bubbles (Attached to viewport width so they don't slide horizontally as the bar grows) */}
+          <div className="absolute top-0 left-0 w-[100vw] h-full pointer-events-none mix-blend-overlay">
+            {Array.from({ length: 15 }).map((_, i) => (
+              <div 
+                key={i}
+                className="liquid-bubble" 
+                style={{ 
+                  left: `${i * 30 + 15}px`, 
+                  width: `${(i % 3) + 3}px`, 
+                  height: `${(i % 3) + 3}px`,
+                  animationDuration: `${1.5 + (i % 4) * 0.4}s`, 
+                  animationDelay: `${(i % 5) * 0.3}s` 
+                }} 
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -170,55 +190,109 @@ function GaugeDial({
 // ─── Experience timeline node ─────────────────────────────────────────────────
 function TimelineNode({
   job,
+  index,
 }: {
   job: { company: string; role: string; period: string; description: string };
+  index: number;
 }) {
   const items = job.description.split(";").map(item => item.trim()).filter(Boolean);
+  const isEven = index % 2 === 0;
+  const accent = isEven ? "var(--forge-orange)" : "var(--blueprint-blue)";
 
   return (
-    <div className="pb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
-          <h4
-            className="uppercase leading-none"
-            style={{
-              fontSize: "clamp(1.1rem, 2.2vw, 1.4rem)",
-              fontFamily: "var(--font-big-shoulders), sans-serif",
-              fontWeight: 900,
-              color: "var(--sumi-ink)",
-            }}
-          >
-            {job.company}
-          </h4>
-          <span
-            className="px-2.5 py-0.5 text-[9px] uppercase tracking-[0.2em] font-mono border border-[var(--muted-label)]/25 rounded-sm"
-            style={{
-              fontFamily: "var(--font-jetbrains-mono), monospace",
-              color: "var(--sumi-ink)",
-              opacity: 0.8,
-            }}
-          >
-            {job.period}
-          </span>
-        </div>
-        <div
-          className="mb-3 text-xs uppercase tracking-wider font-semibold flex items-center gap-1.5"
-          style={{
-            fontFamily: "var(--font-dm-sans), sans-serif",
-            color: "var(--forge-orange)",
-          }}
+    <div className="relative pl-10 md:pl-14 pb-12 group last:pb-0 select-none">
+      {/* ── Vertical Workbench Ruler Track ── */}
+      <div className="absolute left-4 top-2 bottom-0 w-[1px] bg-[var(--sumi-ink)]/15 group-last:hidden" />
+      <div className="absolute left-4 top-2 h-full flex flex-col justify-between pointer-events-none opacity-20 group-last:hidden">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <div key={i} className="w-4 h-[1px] bg-[var(--sumi-ink)] -translate-x-[6px]" />
+        ))}
+      </div>
+
+      {/* ── Technical Calibration Node ── */}
+      <div 
+        className="absolute left-[9px] top-1.5 w-[15px] h-[15px] flex items-center justify-center bg-[var(--studio-warm)] transition-transform duration-300 group-hover:rotate-90 z-10"
+      >
+        {/* Crosshair indicator */}
+        <div className="absolute w-full h-[1px] bg-[var(--sumi-ink)]/30" />
+        <div className="absolute h-full w-[1px] bg-[var(--sumi-ink)]/30" />
+        <div 
+          className="w-2 h-2 rounded-full z-20" 
+          style={{ background: accent }}
+        />
+      </div>
+
+      {/* ── Blueprint Folder Dossier ── */}
+      <div className="relative flex flex-col items-start w-full">
+        {/* Folder tab */}
+        <div 
+          className="px-4 py-1 text-[10px] font-mono tracking-widest uppercase font-bold text-[#F0EDE8] translate-y-[1px] z-10 shadow-[2px_-2px_6px_rgba(0,0,0,0.05)] rounded-t-sm"
+          style={{ background: accent }}
         >
-          <span className="w-1.5 h-1.5 bg-[var(--forge-orange)] rotate-45 shrink-0" />
-          {job.role}
+          dossier // {String(index + 1).padStart(2, "0")}
         </div>
-        
-        <div className="space-y-3 mt-3">
-          {items.map((item, idx) => (
-            <div key={idx} className="border-l-2 border-[var(--forge-orange)]/40 pl-4 py-0.5 select-none">
-              <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/90">{item}</span>
+
+        {/* Folder Card Body */}
+        <div 
+          className="w-full bg-white/40 backdrop-blur-sm border-2 border-dashed border-[var(--sumi-ink)]/15 p-6 md:p-8 hover:bg-white/70 hover:border-[var(--sumi-ink)]/30 transition-all duration-500 shadow-[3px_6px_20px_rgba(26,23,20,0.03)] hover:shadow-[6px_12px_28px_rgba(26,23,20,0.08)] rounded-tr-md rounded-b-md relative overflow-hidden text-left"
+        >
+          {/* Blueprint background grid */}
+          <div 
+            className="absolute inset-0 pointer-events-none z-0 opacity-15"
+            style={{
+              backgroundImage: `radial-gradient(circle, var(--sumi-ink) 1px, transparent 1px)`,
+              backgroundSize: "16px 16px"
+            }}
+          />
+
+          <div className="relative z-10 flex flex-col gap-4">
+            
+            {/* Header: Role & Period */}
+            <div className="flex flex-col gap-1">
+              <h4 
+                className="text-2xl sm:text-3xl font-black font-display tracking-tight leading-tight uppercase text-[var(--sumi-ink)]"
+                style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
+              >
+                {job.role}
+              </h4>
+              
+              <div className="flex flex-wrap gap-2 items-center text-[10px] font-mono tracking-widest text-[var(--muted-label)] mt-1.5">
+                <span className="font-bold text-[var(--sumi-ink)]">{job.company.toUpperCase()}</span>
+                <span>•</span>
+                <span className="border border-[var(--sumi-ink)]/10 px-2 py-0.5 rounded-sm bg-white/30">{job.period}</span>
+              </div>
             </div>
-          ))}
+
+            {/* Schematic separator line */}
+            <div className="h-[2px] w-full flex items-center gap-1 opacity-25">
+              <div className="h-full w-4" style={{ background: accent }} />
+              <div className="h-full flex-1 bg-[var(--sumi-ink)] border-b border-dashed" />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+            </div>
+
+            {/* Achievements details */}
+            <div className="flex flex-col gap-3.5 mt-2">
+              {items.map((item, idx) => (
+                <div key={idx} className="flex items-start gap-4 select-none">
+                  {/* Hex Diagnostic bullet */}
+                  <span 
+                    className="text-[10px] font-mono font-bold px-1.5 py-0.5 border bg-white/60 shrink-0 select-none text-center min-w-8"
+                    style={{ borderColor: "rgba(26,23,20,0.15)", color: accent }}
+                  >
+                    [{String(idx + 1).padStart(2, "0")}]
+                  </span>
+                  
+                  <span className="font-sans font-light text-sm leading-relaxed text-[var(--sumi-ink)]/85 flex-1">
+                    {item}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+          </div>
         </div>
       </div>
+    </div>
   );
 }
 
@@ -315,12 +389,12 @@ export function About() {
 
   const coreExpertiseLabel = (() => {
     switch (language) {
-      case "ja": return "主な専門分野"; case "ko": return "핵심 전문 분야";
-      case "zh-tw": return "核心專業領域"; case "fr": return "Expertise Fondamentale";
-      case "id": return "Keahlian Inti"; case "de": return "Kernkompetenz";
-      case "it": return "Competenza Core"; case "pt-br": return "Competência Principal";
-      case "es-419": case "es": return "Experiencia Principal"; case "hi": return "मुख्य विशेषज्ञता";
-      case "eridian": return "PRIMARY-SKILL"; default: return "Core Expertise";
+      case "ja": return "スキル・インパクト"; case "ko": return "스킬 임팩트";
+      case "zh-tw": return "技能影響"; case "fr": return "Impacts des Compétences";
+      case "id": return "Dampak Keahlian"; case "de": return "Skill Impacts";
+      case "it": return "Impatti delle Competenze"; case "pt-br": return "Impactos de Habilidades";
+      case "es-419": case "es": return "Impactos de Habilidades"; case "hi": return "कौशल प्रभाव";
+      case "eridian": return "SKILL-SPLAT"; default: return "Skill Impacts";
     }
   })();
 
@@ -360,7 +434,10 @@ export function About() {
         document.body
       )}
 
-      <div className="w-full max-w-7xl relative flex flex-col gap-16 mt-[50px]">
+      <div 
+        className="w-full max-w-7xl relative flex flex-col gap-16"
+        style={{ marginTop: "calc(clamp(8rem,20vw,20rem) * -0.2)" }}
+      >
 
         {/* ── MAIN PAPER CARD (vision board) ── */}
         <ScrollReveal duration={1200} className="w-full">
@@ -375,7 +452,7 @@ export function About() {
             {["top-3 left-3", "top-3 right-3", "bottom-3 left-3", "bottom-3 right-3"].map((pos) => (
               <div
                 key={pos}
-                className={`absolute w-3 h-3 rounded-full ${pos}`}
+                className={`absolute w-3 h-3 rounded-full hidden md:block ${pos}`}
                 style={{ background: "var(--forge-orange)", boxShadow: "0 1px 4px rgba(0,0,0,0.3)" }}
               />
             ))}
@@ -491,7 +568,7 @@ export function About() {
               {/* Stats column */}
               <div className="flex flex-row lg:flex-col justify-start gap-8 pt-2">
                 <StudioStat value={300} label={language === "ja" ? "アルゴリズム" : language === "ko" ? "알고리즘" : language === "hi" ? "एल्गोरिदम" : "Algorithms"} />
-                <StudioStat value={12} label={language === "ja" ? "構築済システム" : language === "ko" ? "구축된 시스템" : language === "hi" ? "सिस्टम बनाए" : "Systems Built"} />
+                <StudioStat value={20} label={language === "ja" ? "構築済システム" : language === "ko" ? "구축된 시스템" : language === "hi" ? "सिस्टम बनाए" : "Systems Built"} />
               </div>
             </div>
           </div>
@@ -515,11 +592,12 @@ export function About() {
               >
                 {language === "ja" ? "記録された経験" : language === "ko" ? "기록된 경험" : language === "hi" ? "दर्ज अनुभव" : "Recorded Experience"}
               </div>
-              <div>
+              <div className="relative pl-2 ml-1 mt-2">
                 {currentProfile.experience.map((job, i) => (
                   <TimelineNode
                     key={job.company}
                     job={job}
+                    index={i}
                   />
                 ))}
               </div>
@@ -527,8 +605,8 @@ export function About() {
           </ScrollReveal>
 
           {/* Analog gauge dials instrument panel */}
-          <ScrollReveal duration={1200} delay={300} direction="up" className="w-full">
-            <div>
+          <ScrollReveal duration={1200} delay={300} direction="up" className="w-full h-full">
+            <div className="h-full flex flex-col">
               <div
                 className="font-black uppercase tracking-widest mb-6 text-xl md:text-2xl"
                 style={{
@@ -544,7 +622,7 @@ export function About() {
 
               {/* Instrument panel */}
               <div
-                className="p-[28px] relative"
+                className="p-[28px] relative flex-1 flex flex-col"
                 ref={gaugesRef}
                 style={{
                   background: "rgba(22, 29, 26, 0.015)",
@@ -552,37 +630,10 @@ export function About() {
                   border: "1px dashed rgba(22, 29, 26, 0.2)",
                 }}
               >
-                <div
-                  className="text-[9px] uppercase tracking-[0.3em] mb-6 opacity-60"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--sumi-ink)" }}
-                >
-                  Core Expertise
+                <div className="flex-1 w-full pt-2 h-full">
+                  {skillsVisible && <SkillGlobe skills={currentProfile.skills} />}
                 </div>
-                <div className="grid grid-cols-3 gap-2 sm:gap-6 justify-items-center">
-                  {currentProfile.skills.map((skill, i) => (
-                    <GaugeDial
-                      key={skill.name}
-                      skill={skill}
-                      isVisible={skillsVisible}
-                      index={i}
-                    />
-                  ))}
-                </div>
-                {/* Pressure easter egg label */}
-                <button
-                  onClick={triggerPressure}
-                  className="mt-6 w-full text-center text-[9px] uppercase tracking-[0.3em] hover:opacity-100 transition-opacity"
-                  style={{
-                    fontFamily: "var(--font-jetbrains-mono), monospace",
-                    color: "var(--sumi-ink)",
-                    opacity: 0.6,
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Scroll to calibrate
-                </button>
+
               </div>
             </div>
           </ScrollReveal>

@@ -9,12 +9,12 @@ export function Footer() {
 
   const enjoyText = (() => {
     switch (language) {
-      case "ja": return "デザインは気に入りましたか？";
-      case "ko": return "디자인이 마음에 드시나요?";
-      case "zh-tw": return "喜歡我的設計嗎？";
-      case "hi": return "काम पसंद आया?";
-      case "eridian": return "ENJOYED STATIC NOISE?";
-      default: return "ENJOY MY DESIGNS?";
+      case "ja": return "コーヒーをおごる";
+      case "ko": return "커피 한 잔 사주기";
+      case "zh-tw": return "請我喝杯咖啡";
+      case "hi": return "कॉफी पिलाएँ";
+      case "eridian": return "PROVIDE CAFFEINE";
+      default: return "BUY ME A COFFEE";
     }
   })();
 

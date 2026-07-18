@@ -119,7 +119,7 @@ export function DesignVersionSwitcher() {
         {/* Version notice — shows on load for 3s, then reappears on hover */}
         {isAtTop && (
           <div
-            className={`absolute left-full ml-2.5 z-20 flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border whitespace-nowrap transition-all duration-500 pointer-events-none ${
+            className={`absolute left-full ml-2.5 z-20 hidden sm:flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border whitespace-nowrap transition-all duration-500 pointer-events-none ${
               noticeVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
