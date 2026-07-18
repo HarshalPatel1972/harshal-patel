@@ -1,3 +1,7 @@
+## 2024-05-18 - [Batching DOM reads and writes in high-frequency events]
+**Learning:** When batching high-frequency events (like `mousemove`) with `requestAnimationFrame`, you must store the latest event coordinates in a mutable outer variable (e.g., `useRef`) rather than closing over the event object directly. Otherwise, the asynchronous frame callback will capture stale data or the event object will be garbage-collected, leading to visual desyncs.
+**Action:** Always capture `e.clientX` / `e.clientY` in a `useRef` object synchronously in the event handler before queuing the `requestAnimationFrame` containing `getBoundingClientRect()` and style updates.
+
 ## 2024-06-25 - React Hooks Purity and Math.random()
 
 **Learning:** When generating configuration arrays or complex state structures inside functional components, using `Math.random()` triggers ESLint errors (`react-hooks/purity`) because it violates the rule that components and their hooks must be pure and idempotent. `Math.random()` produces unstable results that update unpredictably when the component re-renders.
