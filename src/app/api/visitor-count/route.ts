@@ -9,6 +9,11 @@ import crypto from 'crypto';
 
 const BOT_REGEX = /bot|spider|crawl|headless|lighthouse|inspect|axios|node-fetch|python|curl|wget|postman|vercel|ping|health|checker|uptimerobot/i;
 
+const extract = <T>(res: unknown): T | null => {
+    if (Array.isArray(res) && res.length === 2) return res[1] as T;
+    return null;
+};
+
 export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
@@ -25,11 +30,6 @@ export async function GET(req: NextRequest) {
             .scard('portfolio_v3_unique_sessions')
             .get('portfolio_v3_total_hits')
             .exec();
-
-        const extract = <T>(res: unknown): T | null => {
-            if (Array.isArray(res) && res.length === 2) return res[1] as T;
-            return null;
-        };
 
         const uniqueCount = extract<number>(results?.[0]) || 0;
         const totalHits = extract<string>(results?.[1]) || '0';
@@ -73,11 +73,6 @@ export async function POST(req: NextRequest) {
             .get('portfolio_v3_total_hits')
             .exec();
         
-        const extract = <T>(res: unknown): T | null => {
-            if (Array.isArray(res) && res.length === 2) return res[1] as T;
-            return null;
-        };
-
         const uniqueCount = extract<number>(results?.[2]) || 0;
         const totalHits = extract<string>(results?.[3]) || '0';
 
