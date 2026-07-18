@@ -1,89 +1,651 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
+
+/* ═══════════════════════════════════════════
+   🩸 MAPPA CINEMATIC BRUTALISM
+   ═══════════════════════════════════════════ */
+
 :root {
-  /* DEEP MATERIA PALETTE */
-  --bg-void: #050507; /* Deep Indigo-Carbon */
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-surface: rgba(255, 255, 255, 0.02);
-  --text-primary: #EDEDED; /* Soft White */
-  --text-secondary: #888888;
-  
-  --background: var(--bg-void);
-  --foreground: var(--text-primary);
+  --bg-ink: #050505;
+  --bg-darker: #020202;
+  --text-bone: #E8E8E6;
+  --text-muted: #8E8A85;
+  --accent-blood: #d91111;
+  --accent-blood-rgb: 217, 17, 17;
+  --accent-blood-alpha: rgba(217, 17, 17, 0.03);
+  --accent-cursed: #0ee0c3;
+  --accent-cursed-rgb: 14, 224, 195;
+  --panel-border: rgba(232, 232, 230, 0.15);
+  --radius: 0px; /* Brutalist sharp edges */
+
+  /* V2 Redesign — Studio Colors */
+  --studio-warm:     #F5EDE0;   /* warm wall / light sections */
+  --aged-paper:      #EDE4D3;   /* card / surface backgrounds */
+  --dark-walnut:     #0F0D0A;   /* deep bg, same depth as v1 */
+  --studio-mid:      #1C1814;   /* slightly lifted dark */
+  --forge-orange:    #C44D1C;   /* PRIMARY accent — replaces Blood Red */
+  --blueprint-blue:  #2C5270;   /* SECONDARY accent — cool balance */
+  --copper:          #905B20;   /* metallic warmth */
+  --chalk:           #F0EDE8;   /* annotation / overlay text */
+  --sumi-ink:        #1A1714;   /* body text on light sections */
+  --muted-label:     #8A7F72;   /* captions, subtext */
+  --critical-red:    #D91111;   /* ONLY for the marquee notice bar */
+
+  /* V2 Font Family CSS Variables */
+  --font-big-shoulders: 'Big Shoulders Display', sans-serif;
+  --font-dm-serif:      'DM Serif Display', serif;
+  --font-dm-sans:       'DM Sans', sans-serif;
+  --font-jetbrains-mono:'JetBrains Mono', monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-space: var(--font-space-grotesk);
-  --font-anton: var(--font-anton);
-  --font-playfair: var(--font-playfair);
+  --font-serif: var(--font-dm-serif);
+  --color-background: var(--bg-ink);
+  --color-foreground: var(--text-bone);
+  --font-sans: var(--font-dm-sans);
+  --font-cirka: var(--font-cirka);
+  --font-season: var(--font-season);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-big-shoulders);
+  --font-hindi: var(--font-season);
+  --font-luna: var(--font-luna);
+  --font-victor: var(--font-victor);
+
+  --font-big-shoulders: var(--font-big-shoulders);
+  --font-dm-serif: var(--font-dm-serif);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-jetbrains-mono: var(--font-jetbrains-mono);
+
+  --color-studio-warm: var(--studio-warm);
+  --color-aged-paper: var(--aged-paper);
+  --color-dark-walnut: var(--dark-walnut);
+  --color-studio-mid: var(--studio-mid);
+  --color-forge-orange: var(--forge-orange);
+  --color-blueprint-blue: var(--blueprint-blue);
+  --color-copper: var(--copper);
+  --color-chalk: var(--chalk);
+  --color-sumi-ink: var(--sumi-ink);
+  --color-muted-label: var(--muted-label);
+  --color-critical-red: var(--critical-red);
 }
 
+/* ─── BASE ─── */
 html {
-  overflow: hidden;
-  background-color: var(--bg-void);
+  /* Disabled smooth scroll to prevent desync during heavy section transition paints */
+  scroll-behavior: auto; 
+  background-color: var(--bg-ink);
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+  min-height: 100%;
+  overscroll-behavior-y: none;
+}
+
+section {
+  position: relative;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-word {
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}
+html::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
+}
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 
 body {
-  overflow: hidden;
-  background: 
-    radial-gradient(circle at 15% 50%, #1a1a2e 0%, transparent 25%),
-    radial-gradient(circle at 85% 30%, #16213e 0%, transparent 25%),
-    var(--bg-void);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  min-height: 100vh;
-  min-height: 100dvh;
-  position: relative;
+  background: var(--bg-ink);
+  color: var(--text-bone);
+  /* Season as the core universal base */
+  font-family: var(--font-season), system-ui, serif !important;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* 1. CINEMATIC NOISE (The Texture - Amplified) */
+::selection {
+  background: var(--accent-blood);
+  color: white;
+}
+
+/* ─── FILM GRAIN & HALFTONE ─── */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999; 
-  opacity: 0.07; /* Increased from 0.035 for visibility */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 9999;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
-/* 2. VIGNETTE (Focus) */
-body::after {
-  content: "";
+/* Halftone dots for manga shading */
+.halftone-bg {
+  background-image: radial-gradient(circle, var(--text-muted) 1px, transparent 1.5px);
+  background-size: 8px 8px;
+  opacity: 0.05;
+}
+
+/* Reactive flashlight dots */
+.halftone-glow {
   position: fixed;
   inset: 0;
-  z-index: 9998;
-  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  background-image: radial-gradient(circle, var(--text-bone) 1px, transparent 1.5px);
+  background-size: 8px 8px;
+  mask-image: radial-gradient(circle 180px at var(--mouse-x, -500px) var(--mouse-y, -500px), black, transparent);
+  -webkit-mask-image: radial-gradient(circle 180px at var(--mouse-x, -500px) var(--mouse-y, -500px), black, transparent);
+  opacity: 0.35;
   pointer-events: none;
+  z-index: 5;
+  will-change: mask-image;
+  transition: opacity 0.5s ease-out;
 }
 
-/* UTILITIES */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* PRELOADER LOCKS */
-body.preloader-active,
-html.preloader-active {
-  overflow: hidden !important;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
+/* ─── BLUEPRINT GRID TEXTURES ─── */
+.blueprint-grid-warm {
+  background-color: var(--studio-warm);
+  background-image: 
+    linear-gradient(rgba(138, 127, 114, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 127, 114, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-body.preloader-active::-webkit-scrollbar,
-html.preloader-active::-webkit-scrollbar {
+.blueprint-grid-dark {
+  background-color: var(--dark-walnut);
+  background-image: 
+    linear-gradient(rgba(74, 127, 165, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 127, 165, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* GLOBAL SLEEP MODE - Zero-Lag Purge 💤 */
+.is-overlay-active .halftone-glow {
   display: none !important;
-  width: 0 !important;
-  height: 0 !important;
+  pointer-events: none !important;
 }
+
+.is-overlay-active .animate-marquee,
+.is-overlay-active .animate-pulse,
+.is-overlay-active .animate-pulse-slow,
+.is-overlay-active [style*="animation: heartbeat"],
+.is-overlay-active [style*="animation: heartbeat-ripple"],
+.is-overlay-active [class*="animate-[spin_"] {
+  animation-play-state: paused !important;
+}
+
+.is-overlay-active [style*="filter: drop-shadow"],
+.is-overlay-active [class*="drop-shadow-"] {
+  filter: none !important;
+}
+
+/* ─── GRID UTILITIES ─── */
+.grid-cols-16 {
+  display: grid !important;
+  grid-template-columns: repeat(16, minmax(0, 1fr)) !important;
+}
+.grid-rows-9 {
+  display: grid !important;
+  grid-template-rows: repeat(9, minmax(0, 1fr)) !important;
+}
+
+/* ─── MANGA PANEL SYSTEM ─── */
+.manga-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Aggressive diagonal cut panels */
+.manga-cut-tr {
+  clip-path: polygon(0 0, 100% 20px, 100% 100%, 0 100%);
+}
+.manga-cut-br {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), 0 100%);
+}
+
+/* Thick brutalist shadows */
+.brutal-shadow {
+  box-shadow: 8px 8px 0px 0px var(--accent-blood);
+  transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+.brutal-shadow-sm {
+  box-shadow: 4px 4px 0px 0px var(--accent-blood);
+  transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+@media (hover: hover) {
+  .brutal-shadow:hover {
+    box-shadow: 2px 2px 0px 0px var(--accent-blood);
+    transform: translate(6px, 6px);
+  }
+  .brutal-shadow-sm:hover {
+    box-shadow: 2px 2px 0px 0px var(--accent-blood);
+    transform: translate(2px, 2px);
+  }
+}
+
+.brutal-shadow:active, .kinetic-active.brutal-shadow {
+  box-shadow: 0px 0px 0px 0px var(--accent-blood) !important;
+  transform: translate(8px, 8px) !important;
+}
+
+.brutal-shadow-sm:active, .kinetic-active.brutal-shadow-sm {
+  box-shadow: 0px 0px 0px 0px var(--accent-blood) !important;
+  transform: translate(4px, 4px) !important;
+}
+
+/* ─── STABILIZED HORIZONTAL SLIDE (FINAL) ─── */
+@keyframes slide-exit-left {
+  0% { transform: translateX(0); opacity: 1; filter: blur(0); }
+  100% { transform: translateX(-100%); opacity: 0; filter: blur(4px); }
+}
+
+@keyframes slide-enter-right {
+  0% { transform: translateX(100%); opacity: 0; filter: blur(4px); }
+  100% { transform: translateX(0); opacity: 1; filter: blur(0); }
+}
+
+.slide-out-left {
+  animation: slide-exit-left 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.slide-in-right {
+  animation: slide-enter-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Force hover animations for KineticLink during delay */
+.kinetic-active [class*="scale-x-0"] { transform: scaleX(1) !important; transition: none !important; }
+.kinetic-active [class*="group-hover:scale-x-100"] { transform: scaleX(1) !important; transition: none !important; }
+.kinetic-active .bg-\[var\(--accent-blood\)\] { transform: scaleX(1) !important; transition: none !important; }
+.kinetic-active [class*="group-hover:-rotate-45"] { transform: rotate(-45deg) !important; }
+.kinetic-active [class*="group-hover:text-"] { color: var(--text-bone) !important; }
+.kinetic-active .opacity-0 { opacity: 0.1 !important; } /* Specifically for the splatter SVG */
+
+/* ─── CHROMATIC ABERRATION TEXT ─── */
+.chromatic-aberration {
+  text-shadow: 2px 0px 0px rgba(var(--accent-blood-rgb), 0.8), -2px 0px 0px rgba(var(--accent-cursed-rgb), 0.8);
+  position: relative;
+}
+
+.chromatic-hover:hover {
+  text-shadow: 3px 0px 0px rgba(var(--accent-blood-rgb), 0.8), -3px 0px 0px rgba(var(--accent-cursed-rgb), 0.8);
+}
+
+
+@keyframes arrow-flow {
+  0% { transform: translateY(-30px); opacity: 0; }
+  20% { transform: translateY(-15px); opacity: 0.3; }
+  50% { transform: translateY(0); opacity: 1; }
+  80% { transform: translateY(15px); opacity: 0.3; }
+  100% { transform: translateY(30px); opacity: 0; }
+}
+
+.animate-arrow-flow {
+  animation: arrow-flow 2s linear infinite;
+}
+
+/* ─── TICKER / MARQUEE ─── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 36s linear infinite;
+  padding-left: 2rem;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-ink);
+  border-left: 1px solid var(--panel-border);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-bone);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-blood);
+}
+
+/* ─── TEXT STROKE ─── */
+.text-stroke-bone {
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: var(--text-bone);
+}
+
+/* ─── SECTION DIVIDER (Manga Tape) ─── */
+.section-fade {
+  position: relative;
+}
+.section-fade::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-image: repeating-linear-gradient(45deg, var(--text-bone) 0, var(--text-bone) 10px, transparent 10px, transparent 20px);
+  opacity: 0.2;
+}
+
+/* ─── MAGNETIC BUTTON OVERRIDE ─── */
+.magnetic-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s cubic-bezier(0, 0, 0.2, 1);
+  border: 2px solid var(--text-bone);
+  background: transparent;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.magnetic-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--text-bone);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
+  z-index: -1;
+}
+.magnetic-btn:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.magnetic-btn:hover {
+  color: var(--bg-ink);
+}
+
+/* ─── SKILL BAR (Brutalist) ─── */
+.skill-bar {
+  height: 4px;
+  background: rgba(232, 232, 230, 0.1);
+  border: 1px solid rgba(232, 232, 230, 0.2);
+}
+.skill-bar-fill {
+  height: 100%;
+  background: var(--accent-blood);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.6s cubic-bezier(0.86, 0, 0.07, 1);
+}
+.skill-bar-fill.animate {
+  transform: scaleX(1);
+}
+
+/* Redundant gradient removal classes since we ripped out glassmorphism */
+.gradient-blob {
+  display: none !important;
+}
+.glass-card {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s ease-in-out infinite;
+}
+
+/* ─── MOBILE RESPONSIVE OVERRIDES ─── */
+@media (max-width: 767px) {
+  .brutal-shadow {
+    box-shadow: 4px 4px 0px 0px var(--accent-blood);
+  }
+  .brutal-shadow:hover {
+    transform: none;
+    box-shadow: 4px 4px 0px 0px var(--accent-blood);
+  }
+}
+
+/* ─── ERIDIAN THEME (Project Hail Mary Easter Egg) ─── */
+:root.is-eridian {
+    --accent-blood: #FFB300 !important; /* Rocky Yellow */
+    --accent-blood-rgb: 255, 179, 0 !important;
+    --accent-blood-alpha: rgba(255, 179, 0, 0.05) !important;
+    --accent-cursed: #0055ff !important; /* Eridian Blue */
+    --accent-cursed-rgb: 0, 85, 255 !important;
+}
+
+/* Global Selection and Scrollbar for Eridian */
+.is-eridian ::selection {
+  background: var(--accent-blood) !important;
+  color: #050505 !important;
+}
+
+.is-eridian ::-webkit-scrollbar-thumb {
+  background: var(--accent-blood) !important;
+  box-shadow: 0 0 10px var(--accent-cursed) !important;
+}
+
+  /* Banner accents automatically follow variables, so specific overrides are minimized */
+
+/* System Banner specifically for Eridian mode */
+.is-eridian [class*="bg-[#9e1b1b]"] {
+  background-color: var(--accent-blood) !important;
+  color: #050505 !important;
+}
+.is-eridian [class*="text-[#9e1b1b]"],
+.is-eridian [class*="fill-[#9e1b1b]"] {
+  color: var(--accent-cursed) !important;
+  fill: var(--accent-cursed) !important;
+}
+/* Card Shadows and Highlights for Eridian - Targets remaining hardcoded red RGBA values */
+.is-eridian [class*="rgba(217, 17, 17"],
+.is-eridian [class*="rgba(217,17,17"] {
+  box-shadow: 0 0 40px rgba(255, 179, 0, 0.4) !important;
+}
+.is-eridian [class*="rgba(158, 27, 27"],
+.is-eridian [class*="rgba(158,27,27"] {
+  box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3) !important;
+}
+
+/* ─── CASCADING LANGUAGE TEXT SMOKE TRANSITION ─── */
+/* Target only textual content inside the wrapper */
+.language-transition-root h1,
+.language-transition-root h2,
+.language-transition-root h3,
+.language-transition-root h4,
+.language-transition-root h5,
+.language-transition-root h6,
+.language-transition-root p,
+.language-transition-root span.text-smoke,
+.language-transition-root a,
+.language-transition-root button {
+  /* The "fade in" / materialization effect when switching BACK to normal */
+  transition: color 1.5s cubic-bezier(0.25, 1, 0.5, 1),
+              text-shadow 1.5s cubic-bezier(0.25, 1, 0.5, 1),
+              -webkit-text-stroke-color 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.language-transition-root.is-smoking h1,
+.language-transition-root.is-smoking h2,
+.language-transition-root.is-smoking h3,
+.language-transition-root.is-smoking h4,
+.language-transition-root.is-smoking h5,
+.language-transition-root.is-smoking h6,
+.language-transition-root.is-smoking p,
+.language-transition-root.is-smoking span.text-smoke,
+.language-transition-root.is-smoking a,
+.language-transition-root.is-smoking button {
+  color: transparent !important;
+  -webkit-text-stroke-color: transparent !important;
+  /* A slightly denser, further-reaching smoke burst to completely hide the swap */
+  text-shadow: 0 0 24px rgba(232, 232, 230, 0.8);
+  
+  /* The "fade out" / dissolve into smoke effect */
+  transition: color 1.0s cubic-bezier(0.25, 0.1, 0.25, 1),
+              text-shadow 1.0s cubic-bezier(0.25, 0.1, 0.25, 1),
+              -webkit-text-stroke-color 1.0s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Pseudo-random staggering for an organic, individual smoke feeling */
+.language-transition-root.is-smoking h1 { transition-delay: 0.0s; }
+.language-transition-root.is-smoking h2, 
+.language-transition-root.is-smoking h3 { transition-delay: 0.08s; }
+.language-transition-root.is-smoking p { transition-delay: 0.14s; }
+.language-transition-root.is-smoking a,
+.language-transition-root.is-smoking button { transition-delay: 0.2s; }
+.language-transition-root.is-smoking span.text-smoke { transition-delay: 0.25s; }
+
+/* ─── IMAGE PROTECTION ─── */
+img, svg, picture, .ink-slash, .manga-panel {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+
+/* ─── LANGUAGE SPECIFIC FONTS ─── */
+/* Legacy fonts removed as per 'Only Cirka and Neue Montreal' requirement */
+.font-japanese, .font-korean, .font-chinese, .font-hindi {
+  font-family: inherit !important;
+}
+
+.force-clean {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  font-variant: normal !important;
+}
+
+/* NUCLEAR LOCKDOWN for Hero Intro Typography */
+#hero-intro-text, 
+#hero-intro-text *, 
+#hero-intro-text span, 
+#hero-intro-text div {
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-optical-sizing: auto !important;
+  font-kerning: normal !important;
+  transform: none !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* ═══════════════════════════════════════════
+   🎨 V2 WARM STUDIO COLOR OVERRIDES (THEME V2)
+   ═══════════════════════════════════════════ */
+.theme-v2 {
+  --bg-ink: var(--studio-warm);         /* #F5EDE0 */
+  --bg-darker: var(--aged-paper);       /* #EDE4D3 */
+  --text-bone: var(--sumi-ink);         /* #1A1714 */
+  --text-muted: var(--muted-label);     /* #8A7F72 */
+  --accent-blood: var(--forge-orange);  /* #E8703A */
+  --accent-cursed: var(--blueprint-blue); /* #4A7FA5 */
+  --accent-blood-rgb: 232, 112, 58;
+  --accent-blood-alpha: rgba(232, 112, 58, 0.04);
+  --panel-border: rgba(26, 23, 20, 0.12);
+}
+
+/* Base background/text colors for theme-v2 containers */
+.theme-v2,
+.theme-v2 main,
+.theme-v2 section {
+  background-color: var(--bg-ink) !important;
+  color: var(--text-bone) !important;
+}
+
+/* Remap hardcoded utility colors for clean design-agency light-mode aesthetic */
+.theme-v2 .bg-white {
+  background-color: var(--studio-warm) !important;
+}
+
+.theme-v2 .bg-black {
+  background-color: var(--sumi-ink) !important;
+}
+
+.theme-v2 .text-white {
+  color: var(--bg-ink) !important;
+}
+
+.theme-v2 .text-black {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-black {
+  border-color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-white {
+  border-color: var(--bg-ink) !important;
+}
+
+/* Dynamic custom styling overrides for custom class definitions in V1 components */
+.theme-v2 [class*="text-[var(--bg-ink)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="text-[var(--text-bone)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-ink)]"] {
+  background-color: var(--bg-ink) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-darker)]"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 [class*="border-[var(--text-bone)]"] {
+  border-color: var(--text-bone) !important;
+}
+
+/* Exclude the version switcher buttons from being overridden */
+.theme-v2 button,
+.theme-v2 button * {
+  color: initial !important;
+  background-color: initial !important;
+  border-color: initial !important;
+}
+
+/* Feedback Card and Input overrides inside theme-v2 */
+.theme-v2 .group.bg-white,
+.theme-v2 div[class*="bg-white"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 input,
+.theme-v2 textarea {
+  background-color: var(--bg-darker) !important;
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 input::placeholder,
+.theme-v2 textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.5;
+}
+
+/* Make sure randomize/CTA buttons inside feedback page preserve text color */
+.theme-v2 .bg-black.text-white {
+  background-color: var(--sumi-ink) !important;
+  color: var(--bg-ink) !important;
+}
+
