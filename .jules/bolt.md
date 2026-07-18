@@ -1,3 +1,7 @@
+## 2024-07-12 - Redis Pipelining for API Route Optimization
+**Learning:** Sequential Redis operations (like `sadd`, `incr`, `scard`, and `get`) can introduce significant network latency when performed individually due to multiple network round-trips. Using `redis.pipeline()` in ioredis batches these operations into a single round-trip, significantly reducing API latency. When extracting results from `exec()`, `ioredis` returns an array of tuples `[error, result][]`, which can be reliably accessed with a strictly typed helper like `(res: [Error | null, any]) => res[1]`.
+**Action:** Always look for sequential Redis operations that don't depend on intermediate results and batch them using pipelining.
+
 ## 2024-07-15 - Pre-compile Regex for Bot Detection API
 **Learning:** For high-frequency API endpoints performing static keyword matching against headers (e.g., bot detection in `visitor-count`), using `Array.some` and `.toLowerCase()` inside the request handler is an anti-pattern. It forces per-request string allocation and array iteration, which can block the Node.js event loop under heavy load.
 **Action:** Compile a single `RegExp` outside the request handler. This gives O(1) matching performance and avoids per-request overhead.
