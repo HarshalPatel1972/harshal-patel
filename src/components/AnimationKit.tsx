@@ -1,32 +1,47 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { animate as anime } from "animejs";
+import { useEffect, useState, useRef, useCallback } from "react";
+import Image from "next/image";
+import { animate as anime, utils, remove } from "animejs";
 
 /**
- * 🧲 Magnetic Cursor — Elements gently pull toward the mouse on hover
+ * 🧲 Magnetic Cursor — Optimized Throttled Hooks
  */
-export function useMagnetic(strength: number = 0.3) {
-  const ref = useRef<HTMLElement>(null);
+export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: number = 0.3) {
+  const ref = useRef<T>(null);
+  const rafId = useRef<number | null>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+      // ⚡ Bolt: Store latest coordinates in mutable outer ref to prevent stale closures
+      // and desync when batching with requestAnimationFrame.
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
 
-      anime(el, {
-        translateX: x * strength,
-        translateY: y * strength,
-        duration: 600,
-        easing: "outQuart",
+      if (rafId.current) return;
+      
+      rafId.current = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        const x = mousePos.current.x - rect.left - rect.width / 2;
+        const y = mousePos.current.y - rect.top - rect.height / 2;
+
+        anime(el, {
+          translateX: x * strength,
+          translateY: y * strength,
+          duration: 600,
+          easing: "outQuart",
+        });
+        rafId.current = null;
       });
     };
 
     const handleLeave = () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      rafId.current = null;
       anime(el, {
         translateX: 0,
         translateY: 0,
@@ -40,6 +55,8 @@ export function useMagnetic(strength: number = 0.3) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      remove(el);
     };
   }, [strength]);
 
@@ -61,18 +78,29 @@ export function useCounter(target: number, duration: number = 2000) {
       ([entry]) => {
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
-          const obj = { val: 0 };
-          anime(obj as any, {
-            val: target,
-            duration,
-            easing: "outQuart",
-            onUpdate: () => {
-              el.textContent = Math.round(obj.val).toString();
-            },
-          } as any);
+          
+          let startTime: number | null = null;
+          const startValue = 0;
+
+          const step = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            
+            // Native easing logic to keep it smooth
+            const easedProgress = 1 - Math.pow(1 - progress, 4); // OutQuart
+            const currentCount = Math.floor(easedProgress * (target - startValue) + startValue);
+            
+            if (el) el.textContent = currentCount.toString();
+            
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          };
+          
+          requestAnimationFrame(step);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.05 }
     );
 
     observer.observe(el);
@@ -83,7 +111,7 @@ export function useCounter(target: number, duration: number = 2000) {
 }
 
 /**
- * ✨ Staggered Text Reveal — Each character cascades in
+ * ✨ Staggered Text Reveal
  */
 export function TextReveal({
   text,
@@ -101,6 +129,7 @@ export function TextReveal({
   as?: "span" | "h1" | "h2" | "h3" | "p" | "div";
 }) {
   const containerRef = useRef<HTMLElement>(null);
+  const animated = useRef(false);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -108,24 +137,28 @@ export function TextReveal({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !animated.current) {
+          animated.current = true;
           const chars = el.querySelectorAll(".char");
           anime(chars as any, {
             opacity: [0, 1],
             translateY: [20, 0],
             rotateX: [40, 0],
             duration: 800,
-            delay: ((_el: any, i: number) => delay + i * stagger) as any,
+            delay: utils.stagger(stagger, { start: delay }),
             easing: "outQuart",
-          } as any);
+          });
           observer.unobserve(el);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      remove(el.querySelectorAll(".char"));
+    };
   }, [delay, stagger]);
 
   return (
@@ -152,29 +185,42 @@ export function TextReveal({
   );
 }
 
-
 /**
  * 🎴 3D Tilt Card — Perspective tilt on mouse hover
  */
 export function useTilt(intensity: number = 10) {
   const ref = useRef<HTMLElement>(null);
+  const rafId = useRef<number | null>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const handleMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const rotateX = (0.5 - y) * intensity;
-      const rotateY = (x - 0.5) * intensity;
+      // ⚡ Bolt: Store latest coordinates in mutable outer ref to prevent stale closures
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
 
-      el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      el.style.transition = "transform 0.1s ease-out";
+      if (rafId.current) return;
+
+      // ⚡ Bolt: Batch DOM reads (getBoundingClientRect) and writes inside requestAnimationFrame
+      rafId.current = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        const x = (mousePos.current.x - rect.left) / rect.width;
+        const y = (mousePos.current.y - rect.top) / rect.height;
+        const rotateX = (0.5 - y) * intensity;
+        const rotateY = (x - 0.5) * intensity;
+
+        el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        el.style.transition = "transform 0.1s ease-out";
+        rafId.current = null;
+      });
     };
 
     const handleLeave = () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      rafId.current = null;
       el.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)";
       el.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
     };
@@ -184,6 +230,7 @@ export function useTilt(intensity: number = 10) {
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, [intensity]);
 
@@ -191,25 +238,29 @@ export function useTilt(intensity: number = 10) {
 }
 
 /**
- * 📜 Parallax Scroll — Element moves at a different rate than scroll
+ * 📜 Parallax Scroll — Highly Optimized
  */
 export function useParallax(speed: number = 0.3) {
   const ref = useRef<HTMLElement>(null);
+  const ticking = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const handleScroll = () => {
-      const rect = el.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const viewCenter = window.innerHeight / 2;
-      const offset = (center - viewCenter) * speed;
-      el.style.transform = `translateY(${offset}px)`;
+      if (!ticking.current) {
+        requestAnimationFrame(() => {
+          if (!ref.current) return;
+          const scrollY = window.scrollY;
+          ref.current.style.transform = `translate3d(0, ${scrollY * speed}px, 0)`;
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [speed]);
 
@@ -219,7 +270,13 @@ export function useParallax(speed: number = 0.3) {
 /**
  * 🎞️ Manga Reading Progress — Massive fixed percentage reading with color inversion
  */
-export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
+export function ScrollLine({ 
+  isVisible = true,
+  theme = "old"
+}: { 
+  isVisible?: boolean;
+  theme?: "old" | "new";
+}) {
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -250,10 +307,30 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isNew = theme === "new";
+
   return (
-    <div className={`fixed bottom-4 right-[64px] md:bottom-8 md:right-[112px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-       <div ref={textRef} className="font-display font-black text-[3rem] md:text-[10rem] tracking-tighter leading-[0.8] flex items-end w-[4.5rem] md:w-[15rem] justify-end">
-         000
+    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none flex flex-col items-end leading-none select-none mix-blend-difference text-white ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+       <div className="relative flex flex-col items-end">
+          <Image 
+            src="/Lying Down.png" 
+            alt="Resting on the scroll" 
+            width={606}
+            height={404}
+            sizes="(max-width: 768px) 208px, 606px"
+            priority
+            className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
+          />
+          <div ref={textRef} 
+               className="relative z-10 font-victor font-black text-[3.4rem] md:text-[11.8rem] tracking-[-0.1em] leading-[0.8] flex items-end w-[4.5rem] md:w-[16rem] justify-end"
+               style={{ 
+                 WebkitTextStroke: '2.5px currentColor', 
+                 WebkitTextFillColor: isNew ? 'transparent' : 'inherit',
+                 fontWeight: 900 
+               }}
+          >
+            000
+          </div>
        </div>
     </div>
   );

@@ -58,10 +58,14 @@ const config: Config = {
         border: "#27272a",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
-        space: ["var(--font-space-grotesk)", "sans-serif"],
-        lausanne: ['"TWK Lausanne"', "sans-serif"],
+        sans: ["var(--font-season)", "system-ui", "serif"],
+        season: ["var(--font-season)", "serif"],
+        cirka: ["var(--font-cirka)", "serif"],
+        mono: ["var(--font-season)", "serif"],
+        serif: ["var(--font-cirka)", "serif"],
+        display: ["var(--font-cirka)", "serif"],
+        luna: ["var(--font-luna)", "sans-serif"],
+        victor: ["var(--font-victor)", "sans-serif"],
       },
       animation: {
         shimmer: "shimmer 2s linear infinite",

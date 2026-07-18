@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type Language = "en" | "ja";
+export type Language = "en" | "ja" | "ko" | "zh-tw" | "hi" | "fr" | "id" | "de" | "it" | "pt-br" | "es-419" | "es" | "eridian";
 
 interface LanguageContextType {
   language: Language;
@@ -18,8 +18,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const saved = localStorage.getItem("mappa-lang") as Language;
-    if (saved === "ja" || saved === "en") {
-      setLanguageState(saved);
+    // Eridian is NEVER restored from localStorage — it's a secret, transient runtime mode only.
+    if (saved === "ja" || saved === "en" || saved === "ko" || saved === "zh-tw" || saved === "hi" || saved === "fr" || saved === "id" || saved === "de" || saved === "it" || saved === "pt-br" || saved === "es-419" || saved === "es") {
+      setTimeout(() => {
+        setLanguageState(saved);
+      }, 0);
     }
   }, []);
 
@@ -33,6 +36,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     // Switch the text directly after the smoke has fully covered it
     setTimeout(() => {
       setLanguageState(lang);
+      
+      // Sync global theme class for Eridian mode
+      if (lang === 'eridian') {
+        document.documentElement.classList.add('is-eridian');
+      } else {
+        document.documentElement.classList.remove('is-eridian');
+      }
+
       // Remove transitioning class, starting the very slow, smooth fade back in
       setIsTransitioning(false);
     }, 1200); 
@@ -51,7 +62,7 @@ export function LanguageTransitionWrapper({ children, className = "" }: { childr
   const { isTransitioning, language } = useLanguage();
   return (
     <div 
-      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${className}`}
+      className={`language-transition-root ${isTransitioning ? 'is-smoking' : ''} ${language === 'ja' ? 'font-japanese' : ''} ${language === 'ko' ? 'font-korean' : ''} ${language === 'zh-tw' ? 'font-chinese' : ''} ${language === 'eridian' ? 'font-mono' : ''} ${className}`}
     >
       {children}
     </div>
