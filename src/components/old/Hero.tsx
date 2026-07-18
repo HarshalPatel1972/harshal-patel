@@ -126,7 +126,7 @@ export function Hero() {
   return (
     <section
       ref={trackRef}
-      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
+      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
       <div 
@@ -321,7 +321,7 @@ export function Hero() {
       </div>
       <style>{`
         .reveal-word {
-          --progress: clamp(0, (var(--scroll-progress) - var(--start)) / (var(--end) - var(--start)), 1);
+          --progress: clamp(0, calc((var(--scroll-progress) - var(--start)) / 0.2), 1);
           opacity: var(--progress);
           transform: translateY(calc((1 - var(--progress)) * 25px));
           filter: blur(calc((1 - var(--progress)) * 12px));

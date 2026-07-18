@@ -62,3 +62,12 @@ next-env.d.ts
 *.tar.gz
 *.rar
 *.7z
+
+# Specific Untracked Clutter
+/idea box.txt
+/implementation_plan.md.resolved
+/public/soft-intro-v2.html
+/soft-intro-v2.html
+/v2-fix-prompt.md
+/v2-redesign-prompt.md
+/TOJI FUSHIGURO.png

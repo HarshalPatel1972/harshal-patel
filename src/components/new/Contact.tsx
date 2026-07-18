@@ -261,7 +261,7 @@ export function Contact() {
           {/* Left: Contact rows */}
           <div className="w-full z-10">
             <ScrollReveal duration={1000} direction="left">
-              <div className="flex flex-col w-full border-b border-[#8A7F72]/20">
+              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-12 md:pr-20">
                 {links.map((link, idx) => {
                   const isFeedback = link.id === "feedback";
                   const separator = link.label.includes(" · ") ? " · " : " — ";
@@ -279,9 +279,9 @@ export function Contact() {
                       className="relative py-7 flex flex-row items-center justify-between group cursor-pointer border-t border-[#8A7F72]/20 transition-all select-none text-left w-full gap-4"
                     >
                       {/* Left: Text Content Area */}
-                      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                      <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-6 -translate-x-[20px]">
                         {/* Index & Label */}
-                        <div className="flex items-center gap-2 shrink-0 sm:w-44">
+                        <div className="flex items-center gap-2 shrink-0 md:w-44">
                           <span 
                             className="text-[11px] font-bold font-mono uppercase tracking-wider"
                             style={{ color: "var(--blueprint-blue)", fontFamily: "var(--font-jetbrains-mono), monospace" }}
@@ -300,7 +300,7 @@ export function Contact() {
                         {/* Main Address / Value */}
                         <div className="flex-1 min-w-0">
                           <h4 
-                            className={`text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors break-all ${
+                            className={`text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors whitespace-nowrap ${
                               isFeedback && isGlitching ? "opacity-55" : ""
                             }`}
                             style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
@@ -323,7 +323,7 @@ export function Contact() {
                         </div>
 
                         {/* Description */}
-                        <div className="sm:px-4 shrink-0">
+                        <div className="md:px-4 shrink-0">
                           <span 
                             className="text-[13px] font-medium transition-colors text-[var(--muted-label)] group-hover:text-[var(--sumi-ink)]"
                             style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
