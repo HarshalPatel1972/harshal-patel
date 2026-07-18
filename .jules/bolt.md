@@ -1,3 +1,7 @@
+## 2024-07-04 - Supabase Insert Select Round-Trips
+**Learning:** In PostgREST/Supabase, chaining `.select()` directly after `.insert()` returns the inserted row immediately. Separating them into two distinct calls (`.insert()` followed by `.select()`) pointlessly doubles network overhead and latency.
+**Action:** Always chain `.select()` on Supabase insert/update operations when the newly created database-generated values (like IDs or default timestamps) are needed by the client.
+
 ## 2024-07-12 - Redis Pipelining for API Route Optimization
 **Learning:** Sequential Redis operations (like `sadd`, `incr`, `scard`, and `get`) can introduce significant network latency when performed individually due to multiple network round-trips. Using `redis.pipeline()` in ioredis batches these operations into a single round-trip, significantly reducing API latency. When extracting results from `exec()`, `ioredis` returns an array of tuples `[error, result][]`, which can be reliably accessed with a strictly typed helper like `(res: [Error | null, any]) => res[1]`.
 **Action:** Always look for sequential Redis operations that don't depend on intermediate results and batch them using pipelining.
