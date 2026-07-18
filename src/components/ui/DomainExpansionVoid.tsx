@@ -1,8 +1,19 @@
 import React, { useMemo } from 'react';
 
+const getSeededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
 const DomainExpansionVoid: React.FC = () => {
   // Generate random shards for the "shattered reality" effect
-  const shards = useMemo(() => {
+  // ⚡ Bolt: Retained inside component using useMemo to preserve fresh random layouts
+  // upon remount, which is intended visual behavior. Hoisting to module scope would
+  // break this by freezing the randomness for the entire application lifecycle.
+  // ⚡ Bolt: Moved array generation to useState initializers to satisfy React Hook
+  // purity rules (avoiding Math.random inside render/useMemo) while maintaining
+  // fresh random layouts upon remount.
+  const [shards] = React.useState(() => {
     return Array.from({ length: 40 }).map((_, i) => {
       const angle = (i / 40) * Math.PI * 2;
       const x1 = 500 + Math.cos(angle) * 200;
@@ -12,22 +23,37 @@ const DomainExpansionVoid: React.FC = () => {
       const x3 = 500 + Math.cos(angle - 0.3) * 600;
       const y3 = 500 + Math.sin(angle - 0.3) * 600;
       
+      const r1 = getSeededRandom(i * 17 + 1);
+      const r2 = getSeededRandom(i * 23 + 2);
+      
       return { 
         points: `${x1},${y1} ${x2},${y2} ${x3},${y3}`,
-        delay: Math.random() * 5,
-        duration: 3 + Math.random() * 4
+        delay: r1 * 5,
+        duration: 3 + r2 * 4
       };
     });
-  }, []);
+  });
+
+  const [debtSpans] = React.useState(() => {
+    return Array.from({ length: 100 }).map((_, i) => ({
+      id: i,
+      delay: `${Math.random() * 2}s`,
+      text: ["0xDEBT", "FATAL_ERR", "NULL_PTR", "MEM_LEAK", "DEPRECATED"][i % 5]
+    }));
+  });
+
+  // ⚡ Bolt: Hoisted static blueprint grid to prevent recreation during renders
+  // This array contains NO random logic, making it safe to pull out of the component cycle.
+  const staticBlueprintGrid = useMemo(() => Array.from({ length: 20 }).map((_, i) => i), []);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none overflow-hidden">
       {/* ─── LAYER 1: THE CHAOTIC EXTERIOR (TECHNICAL DEBT) ─── */}
       <div className="absolute inset-0 bg-[#050505]">
         <div className="absolute inset-0 opacity-20 flex flex-wrap gap-4 p-8 overflow-hidden font-mono text-[10px] text-[var(--accent-blood)] select-none">
-          {Array.from({ length: 100 }).map((_, i) => (
-            <span key={i} className="animate-pulse" style={{ animationDelay: `${Math.random() * 2}s` }}>
-              {["0xDEBT", "FATAL_ERR", "NULL_PTR", "MEM_LEAK", "DEPRECATED"][i % 5]}
+          {debtSpans.map((span) => (
+            <span key={span.id} className="animate-pulse" style={{ animationDelay: span.delay }}>
+              {span.text}
             </span>
           ))}
         </div>
@@ -96,7 +122,7 @@ const DomainExpansionVoid: React.FC = () => {
           {/* Architectural Blueprint (Inside Domain) */}
           <g clipPath="url(#domainCircleClip)">
             <g className="opacity-20">
-              {Array.from({ length: 20 }).map((_, i) => (
+              {staticBlueprintGrid.map((i) => (
                 <React.Fragment key={i}>
                   <line x1={220 + i * 30} y1="0" x2={220 + i * 30} y2="1000" stroke="white" strokeWidth="0.5" />
                   <line x1="0" y1={220 + i * 30} x2="1000" y2={220 + i * 30} stroke="white" strokeWidth="0.5" />

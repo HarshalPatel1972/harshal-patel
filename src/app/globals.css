@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
+
 
 /* ═══════════════════════════════════════════
    🩸 MAPPA CINEMATIC BRUTALISM
@@ -10,23 +12,62 @@
   --text-bone: #E8E8E6;
   --text-muted: #8E8A85;
   --accent-blood: #d91111;
+  --accent-blood-rgb: 217, 17, 17;
+  --accent-blood-alpha: rgba(217, 17, 17, 0.03);
   --accent-cursed: #0ee0c3;
+  --accent-cursed-rgb: 14, 224, 195;
   --panel-border: rgba(232, 232, 230, 0.15);
   --radius: 0px; /* Brutalist sharp edges */
+
+  /* V2 Redesign — Studio Colors */
+  --studio-warm:     #F5EDE0;   /* warm wall / light sections */
+  --aged-paper:      #EDE4D3;   /* card / surface backgrounds */
+  --dark-walnut:     #0F0D0A;   /* deep bg, same depth as v1 */
+  --studio-mid:      #1C1814;   /* slightly lifted dark */
+  --forge-orange:    #C44D1C;   /* PRIMARY accent — replaces Blood Red */
+  --blueprint-blue:  #2C5270;   /* SECONDARY accent — cool balance */
+  --copper:          #905B20;   /* metallic warmth */
+  --chalk:           #F0EDE8;   /* annotation / overlay text */
+  --sumi-ink:        #1A1714;   /* body text on light sections */
+  --muted-label:     #8A7F72;   /* captions, subtext */
+  --critical-red:    #D91111;   /* ONLY for the marquee notice bar */
+
+  /* V2 Font Family CSS Variables */
+  --font-big-shoulders: 'Big Shoulders Display', sans-serif;
+  --font-dm-serif:      'DM Serif Display', serif;
+  --font-dm-sans:       'DM Sans', sans-serif;
+  --font-jetbrains-mono:'JetBrains Mono', monospace;
 }
 
 @theme inline {
-  --font-serif: var(--font-cirka);
+  --font-serif: var(--font-dm-serif);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
-  --font-sans: var(--font-season);
+  --font-sans: var(--font-dm-sans);
   --font-cirka: var(--font-cirka);
   --font-season: var(--font-season);
-  --font-mono: var(--font-season);
-  --font-display: var(--font-cirka);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-big-shoulders);
   --font-hindi: var(--font-season);
   --font-luna: var(--font-luna);
   --font-victor: var(--font-victor);
+
+  --font-big-shoulders: var(--font-big-shoulders);
+  --font-dm-serif: var(--font-dm-serif);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-jetbrains-mono: var(--font-jetbrains-mono);
+
+  --color-studio-warm: var(--studio-warm);
+  --color-aged-paper: var(--aged-paper);
+  --color-dark-walnut: var(--dark-walnut);
+  --color-studio-mid: var(--studio-mid);
+  --color-forge-orange: var(--forge-orange);
+  --color-blueprint-blue: var(--blueprint-blue);
+  --color-copper: var(--copper);
+  --color-chalk: var(--chalk);
+  --color-sumi-ink: var(--sumi-ink);
+  --color-muted-label: var(--muted-label);
+  --color-critical-red: var(--critical-red);
 }
 
 /* ─── BASE ─── */
@@ -36,6 +77,8 @@ html {
   background-color: var(--bg-ink);
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
+  min-height: 100%;
+  overscroll-behavior-y: none;
 }
 
 section {
@@ -98,6 +141,58 @@ body::before {
   opacity: 0.05;
 }
 
+/* Reactive flashlight dots */
+.halftone-glow {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--text-bone) 1px, transparent 1.5px);
+  background-size: 8px 8px;
+  mask-image: radial-gradient(circle 180px at var(--mouse-x, -500px) var(--mouse-y, -500px), black, transparent);
+  -webkit-mask-image: radial-gradient(circle 180px at var(--mouse-x, -500px) var(--mouse-y, -500px), black, transparent);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 5;
+  will-change: mask-image;
+  transition: opacity 0.5s ease-out;
+}
+
+/* ─── BLUEPRINT GRID TEXTURES ─── */
+.blueprint-grid-warm {
+  background-color: var(--studio-warm);
+  background-image: 
+    linear-gradient(rgba(138, 127, 114, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 127, 114, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.blueprint-grid-dark {
+  background-color: var(--dark-walnut);
+  background-image: 
+    linear-gradient(rgba(74, 127, 165, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 127, 165, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* GLOBAL SLEEP MODE - Zero-Lag Purge 💤 */
+.is-overlay-active .halftone-glow {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.is-overlay-active .animate-marquee,
+.is-overlay-active .animate-pulse,
+.is-overlay-active .animate-pulse-slow,
+.is-overlay-active [style*="animation: heartbeat"],
+.is-overlay-active [style*="animation: heartbeat-ripple"],
+.is-overlay-active [class*="animate-[spin_"] {
+  animation-play-state: paused !important;
+}
+
+.is-overlay-active [style*="filter: drop-shadow"],
+.is-overlay-active [class*="drop-shadow-"] {
+  filter: none !important;
+}
+
 /* ─── GRID UTILITIES ─── */
 .grid-cols-16 {
   display: grid !important;
@@ -152,6 +247,25 @@ body::before {
   transform: translate(4px, 4px) !important;
 }
 
+/* ─── STABILIZED HORIZONTAL SLIDE (FINAL) ─── */
+@keyframes slide-exit-left {
+  0% { transform: translateX(0); opacity: 1; filter: blur(0); }
+  100% { transform: translateX(-100%); opacity: 0; filter: blur(4px); }
+}
+
+@keyframes slide-enter-right {
+  0% { transform: translateX(100%); opacity: 0; filter: blur(4px); }
+  100% { transform: translateX(0); opacity: 1; filter: blur(0); }
+}
+
+.slide-out-left {
+  animation: slide-exit-left 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.slide-in-right {
+  animation: slide-enter-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Force hover animations for KineticLink during delay */
 .kinetic-active [class*="scale-x-0"] { transform: scaleX(1) !important; transition: none !important; }
 .kinetic-active [class*="group-hover:scale-x-100"] { transform: scaleX(1) !important; transition: none !important; }
@@ -162,21 +276,21 @@ body::before {
 
 /* ─── CHROMATIC ABERRATION TEXT ─── */
 .chromatic-aberration {
-  text-shadow: 2px 0px 0px rgba(217, 17, 17, 0.8), -2px 0px 0px rgba(14, 224, 195, 0.8);
+  text-shadow: 2px 0px 0px rgba(var(--accent-blood-rgb), 0.8), -2px 0px 0px rgba(var(--accent-cursed-rgb), 0.8);
   position: relative;
 }
 
 .chromatic-hover:hover {
-  text-shadow: 3px 0px 0px rgba(217, 17, 17, 0.8), -3px 0px 0px rgba(14, 224, 195, 0.8);
+  text-shadow: 3px 0px 0px rgba(var(--accent-blood-rgb), 0.8), -3px 0px 0px rgba(var(--accent-cursed-rgb), 0.8);
 }
 
 
 @keyframes arrow-flow {
-  0% { transform: translateY(-30px); opacity: 0; color: var(--text-muted); }
+  0% { transform: translateY(-30px); opacity: 0; }
   20% { transform: translateY(-15px); opacity: 0.3; }
-  50% { transform: translateY(0); opacity: 1; color: var(--accent-blood); }
+  50% { transform: translateY(0); opacity: 1; }
   80% { transform: translateY(15px); opacity: 0.3; }
-  100% { transform: translateY(30px); opacity: 0; color: var(--text-muted); }
+  100% { transform: translateY(30px); opacity: 0; }
 }
 
 .animate-arrow-flow {
@@ -192,7 +306,7 @@ body::before {
 .animate-marquee {
   display: inline-flex;
   white-space: nowrap;
-  animation: marquee 30s linear infinite;
+  animation: marquee 36s linear infinite;
   padding-left: 2rem;
 }
 
@@ -308,6 +422,48 @@ body::before {
   }
 }
 
+/* ─── ERIDIAN THEME (Project Hail Mary Easter Egg) ─── */
+:root.is-eridian {
+    --accent-blood: #FFB300 !important; /* Rocky Yellow */
+    --accent-blood-rgb: 255, 179, 0 !important;
+    --accent-blood-alpha: rgba(255, 179, 0, 0.05) !important;
+    --accent-cursed: #0055ff !important; /* Eridian Blue */
+    --accent-cursed-rgb: 0, 85, 255 !important;
+}
+
+/* Global Selection and Scrollbar for Eridian */
+.is-eridian ::selection {
+  background: var(--accent-blood) !important;
+  color: #050505 !important;
+}
+
+.is-eridian ::-webkit-scrollbar-thumb {
+  background: var(--accent-blood) !important;
+  box-shadow: 0 0 10px var(--accent-cursed) !important;
+}
+
+  /* Banner accents automatically follow variables, so specific overrides are minimized */
+
+/* System Banner specifically for Eridian mode */
+.is-eridian [class*="bg-[#9e1b1b]"] {
+  background-color: var(--accent-blood) !important;
+  color: #050505 !important;
+}
+.is-eridian [class*="text-[#9e1b1b]"],
+.is-eridian [class*="fill-[#9e1b1b]"] {
+  color: var(--accent-cursed) !important;
+  fill: var(--accent-cursed) !important;
+}
+/* Card Shadows and Highlights for Eridian - Targets remaining hardcoded red RGBA values */
+.is-eridian [class*="rgba(217, 17, 17"],
+.is-eridian [class*="rgba(217,17,17"] {
+  box-shadow: 0 0 40px rgba(255, 179, 0, 0.4) !important;
+}
+.is-eridian [class*="rgba(158, 27, 27"],
+.is-eridian [class*="rgba(158,27,27"] {
+  box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3) !important;
+}
+
 /* ─── CASCADING LANGUAGE TEXT SMOKE TRANSITION ─── */
 /* Target only textual content inside the wrapper */
 .language-transition-root h1,
@@ -391,3 +547,105 @@ img, svg, picture, .ink-slash, .manga-panel {
   transform: none !important;
   -webkit-font-smoothing: antialiased !important;
 }
+
+/* ═══════════════════════════════════════════
+   🎨 V2 WARM STUDIO COLOR OVERRIDES (THEME V2)
+   ═══════════════════════════════════════════ */
+.theme-v2 {
+  --bg-ink: var(--studio-warm);         /* #F5EDE0 */
+  --bg-darker: var(--aged-paper);       /* #EDE4D3 */
+  --text-bone: var(--sumi-ink);         /* #1A1714 */
+  --text-muted: var(--muted-label);     /* #8A7F72 */
+  --accent-blood: var(--forge-orange);  /* #E8703A */
+  --accent-cursed: var(--blueprint-blue); /* #4A7FA5 */
+  --accent-blood-rgb: 232, 112, 58;
+  --accent-blood-alpha: rgba(232, 112, 58, 0.04);
+  --panel-border: rgba(26, 23, 20, 0.12);
+}
+
+/* Base background/text colors for theme-v2 containers */
+.theme-v2,
+.theme-v2 main,
+.theme-v2 section {
+  background-color: var(--bg-ink) !important;
+  color: var(--text-bone) !important;
+}
+
+/* Remap hardcoded utility colors for clean design-agency light-mode aesthetic */
+.theme-v2 .bg-white {
+  background-color: var(--studio-warm) !important;
+}
+
+.theme-v2 .bg-black {
+  background-color: var(--sumi-ink) !important;
+}
+
+.theme-v2 .text-white {
+  color: var(--bg-ink) !important;
+}
+
+.theme-v2 .text-black {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-black {
+  border-color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-white {
+  border-color: var(--bg-ink) !important;
+}
+
+/* Dynamic custom styling overrides for custom class definitions in V1 components */
+.theme-v2 [class*="text-[var(--bg-ink)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="text-[var(--text-bone)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-ink)]"] {
+  background-color: var(--bg-ink) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-darker)]"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 [class*="border-[var(--text-bone)]"] {
+  border-color: var(--text-bone) !important;
+}
+
+/* Exclude the version switcher buttons from being overridden */
+.theme-v2 button,
+.theme-v2 button * {
+  color: initial !important;
+  background-color: initial !important;
+  border-color: initial !important;
+}
+
+/* Feedback Card and Input overrides inside theme-v2 */
+.theme-v2 .group.bg-white,
+.theme-v2 div[class*="bg-white"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 input,
+.theme-v2 textarea {
+  background-color: var(--bg-darker) !important;
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 input::placeholder,
+.theme-v2 textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.5;
+}
+
+/* Make sure randomize/CTA buttons inside feedback page preserve text color */
+.theme-v2 .bg-black.text-white {
+  background-color: var(--sumi-ink) !important;
+  color: var(--bg-ink) !important;
+}
+

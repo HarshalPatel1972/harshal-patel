@@ -2,9 +2,54 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useFlipTransition } from "@/context/FlipContext";
+import { useLanguage } from "@/context/LanguageContext";
+
+class Star {
+  x: number; y: number; z: number;
+  px: number; py: number; pz: number;
+  color: string;
+
+  constructor(w: number, h: number, palette: string[]) {
+    this.px = this.x = Math.random() * w - w / 2;
+    this.py = this.y = Math.random() * h - h / 2;
+    this.pz = this.z = Math.random() * w;
+    this.color = palette[Math.floor(Math.random() * palette.length)];
+  }
+
+  update(speed: number, w: number, h: number) {
+    this.px = this.x; this.py = this.y; this.pz = this.z;
+    this.z -= speed;
+
+    if (this.z < 1) {
+      this.z = w;
+      this.px = this.x = Math.random() * w - w / 2;
+      this.py = this.y = Math.random() * h - h / 2;
+      this.pz = this.z;
+    }
+  }
+
+  draw(progress: number, w: number, h: number, ctx: CanvasRenderingContext2D) {
+    const sx = (this.x / this.z) * w + w / 2;
+    const sy = (this.y / this.z) * h + h / 2;
+    const psx = (this.px / this.pz) * w + w / 2;
+    const psy = (this.py / this.pz) * h + h / 2;
+
+    const alpha = Math.min(1, 1 - this.z / w);
+    ctx.strokeStyle = this.color;
+    // Fade in alpha over initial progress
+    ctx.globalAlpha = alpha * Math.min(1, progress * 4);
+    ctx.lineWidth = 1;
+    
+    ctx.beginPath();
+    ctx.moveTo(psx, psy);
+    ctx.lineTo(sx, sy);
+    ctx.stroke();
+  }
+}
 
 export function SpaceWarpTransition() {
   const { isActive, redirectUrl } = useFlipTransition();
+  const { language } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
   // Timing state
@@ -27,52 +72,12 @@ export function SpaceWarpTransition() {
     const stars: Star[] = [];
     const numStars = 600;
     
-    const palette = ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
+    const isEridian = language === 'eridian';
+    const palette = isEridian 
+      ? ["#FFB300", "#0055ff", "#FAF9F6", "#ffffff"] 
+      : ["#D91111", "#11D9D9", "#FAF9F6", "#ffffff"];
 
-    class Star {
-      x: number; y: number; z: number;
-      px: number; py: number; pz: number;
-      color: string;
-
-      constructor() {
-        this.px = this.x = Math.random() * w - w / 2;
-        this.py = this.y = Math.random() * h - h / 2;
-        this.pz = this.z = Math.random() * w;
-        this.color = palette[Math.floor(Math.random() * palette.length)];
-      }
-
-      update(speed: number) {
-        this.px = this.x; this.py = this.y; this.pz = this.z;
-        this.z -= speed;
-
-        if (this.z < 1) {
-          this.z = w;
-          this.px = this.x = Math.random() * w - w / 2;
-          this.py = this.y = Math.random() * h - h / 2;
-          this.pz = this.z;
-        }
-      }
-
-      draw(progress: number) {
-        const sx = (this.x / this.z) * w + w / 2;
-        const sy = (this.y / this.z) * h + h / 2;
-        const psx = (this.px / this.pz) * w + w / 2;
-        const psy = (this.py / this.pz) * h + h / 2;
-
-        const alpha = Math.min(1, 1 - this.z / w);
-        ctx!.strokeStyle = this.color;
-        // Fade in alpha over initial progress
-        ctx!.globalAlpha = alpha * Math.min(1, progress * 4);
-        ctx!.lineWidth = 1;
-        
-        ctx!.beginPath();
-        ctx!.moveTo(psx, psy);
-        ctx!.lineTo(sx, sy);
-        ctx!.stroke();
-      }
-    }
-
-    for (let i = 0; i < numStars; i++) stars.push(new Star());
+    for (let i = 0; i < numStars; i++) stars.push(new Star(w, h, palette));
 
     const animate = (time: number) => {
       if (!startTimeRef.current) startTimeRef.current = time;
@@ -88,8 +93,8 @@ export function SpaceWarpTransition() {
       const speed = 2.0 + Math.pow(progress, 5) * 150;
 
       stars.forEach(star => {
-        star.update(speed);
-        star.draw(progress);
+        star.update(speed, w, h);
+        star.draw(progress, w, h, ctx);
       });
 
       if (progress < 1) {
@@ -113,7 +118,7 @@ export function SpaceWarpTransition() {
       window.removeEventListener("resize", handleResize);
       startTimeRef.current = null;
     };
-  }, [isActive, redirectUrl]);
+  }, [isActive, redirectUrl, language]);
 
   if (!isActive) return null;
 

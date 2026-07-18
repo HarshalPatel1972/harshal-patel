@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { animate as anime, utils } from "animejs";
+import { useEffect, useState, useRef, useCallback } from "react";
+import Image from "next/image";
+import { animate as anime, utils, remove } from "animejs";
 
 /**
  * 🧲 Magnetic Cursor — Optimized Throttled Hooks
@@ -28,7 +29,6 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
         const x = mousePos.current.x - rect.left - rect.width / 2;
         const y = mousePos.current.y - rect.top - rect.height / 2;
 
-        // Use 2-arg syntax for TypeScript compatibility
         anime(el, {
           translateX: x * strength,
           translateY: y * strength,
@@ -56,6 +56,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
       if (rafId.current) cancelAnimationFrame(rafId.current);
+      remove(el);
     };
   }, [strength]);
 
@@ -77,21 +78,29 @@ export function useCounter(target: number, duration: number = 2000) {
       ([entry]) => {
         if (entry.isIntersecting && !animated.current) {
           animated.current = true;
-          const obj = { val: 0 };
           
-          anime({
-            targets: obj,
-            val: target,
-            duration,
-            easing: "outQuart",
-            round: 1,
-            update: () => {
-              if (el) el.textContent = String(Math.round(obj.val));
-            },
-          } as any, {}); // Standard syntax for animejs, adding empty {} to satisfy strict TS definitions
+          let startTime: number | null = null;
+          const startValue = 0;
+
+          const step = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            
+            // Native easing logic to keep it smooth
+            const easedProgress = 1 - Math.pow(1 - progress, 4); // OutQuart
+            const currentCount = Math.floor(easedProgress * (target - startValue) + startValue);
+            
+            if (el) el.textContent = currentCount.toString();
+            
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          };
+          
+          requestAnimationFrame(step);
         }
       },
-      { threshold: 0 }
+      { threshold: 0.05 }
     );
 
     observer.observe(el);
@@ -146,7 +155,10 @@ export function TextReveal({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      remove(el.querySelectorAll(".char"));
+    };
   }, [delay, stagger]);
 
   return (
@@ -258,7 +270,13 @@ export function useParallax(speed: number = 0.3) {
 /**
  * 🎞️ Manga Reading Progress — Massive fixed percentage reading with color inversion
  */
-export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
+export function ScrollLine({ 
+  isVisible = true,
+  theme = "old"
+}: { 
+  isVisible?: boolean;
+  theme?: "old" | "new";
+}) {
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -289,17 +307,27 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isNew = theme === "new";
+
   return (
-    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none mix-blend-difference text-white flex flex-col items-end leading-none select-none transition-opacity duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`fixed bottom-[1px] right-[64px] md:bottom-[17px] md:right-[97px] z-[50] pointer-events-none flex flex-col items-end leading-none select-none mix-blend-difference text-white ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
        <div className="relative flex flex-col items-end">
-          <img 
+          <Image 
             src="/Lying Down.png" 
             alt="Resting on the scroll" 
+            width={606}
+            height={404}
+            sizes="(max-width: 768px) 208px, 606px"
+            priority
             className="w-[208px] md:w-[606px] -mb-[8px] md:-mb-[32px] mr-[5px] md:mr-[20px] translate-x-[32px] translate-y-[38px] md:translate-x-[87px] md:translate-y-[111px] z-20 pointer-events-none select-none"
           />
           <div ref={textRef} 
                className="relative z-10 font-victor font-black text-[3.4rem] md:text-[11.8rem] tracking-[-0.1em] leading-[0.8] flex items-end w-[4.5rem] md:w-[16rem] justify-end"
-               style={{ WebkitTextStroke: '2.5px currentColor', fontWeight: 900 }}
+               style={{ 
+                 WebkitTextStroke: '2.5px currentColor', 
+                 WebkitTextFillColor: isNew ? 'transparent' : 'inherit',
+                 fontWeight: 900 
+               }}
           >
             000
           </div>

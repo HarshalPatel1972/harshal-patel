@@ -1,12 +1,22 @@
-"use client";
-import { useEffect, useState, useRef, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useState, useRef, forwardRef, useImperativeHandle, useMemo } from "react";
 import { createPortal } from "react-dom";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
+import { useDesignVersion } from "@/components/shared/DesignVersionContext";
 
 export interface CursorHandle {
   getSpherePositions: () => { x: number; y: number }[];
 }
 
+const PSIZE = 2.2;
+const GAP = PSIZE * 2 + 1.2;
+const tipX = 4 * GAP;
+const tipY = -4 * GAP;
+const ERIDIAN_PALETTE = ["#FFB300", "#0055ff", "#FFB300", "#0055ff"]; // Rocky Yellow and Eridian Blue
+
 const Cursor = forwardRef<CursorHandle>((_, ref) => {
+  const { language } = useLanguage();
+  const { designVersion } = useDesignVersion();
   const [isTouch, setIsTouch] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -24,29 +34,37 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const burstFlash = useRef(0);
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tickingMouseRef = useRef(false);
 
   // Color Cycling State
-  const PALETTE = ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"];
+  const PALETTE = useMemo(() => designVersion === "new"
+    ? ["#EDE4D3", "#D91111", "#E8703A", "#ffffff"]
+    : ["#E8E8E6", "#d91111", "#0ee0c3", "#ffffff"], [designVersion]);
   const colorIndexRef = useRef(0);
   const holdStartTimeRef = useRef<number | null>(null);
-  const [holdProgress, setHoldProgress] = useState(0);
-
-  const PSIZE = 2.2;
-  const GAP = PSIZE * 2 + 1.2;
-  const tipX = 4 * GAP;
-  const tipY = -4 * GAP;
 
   const arrowSlots = useRef<{ x: number; y: number }[]>([]);
   const playSlots = useRef<{ x: number; y: number }[]>([]);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useImperativeHandle(ref, () => ({
     getSpherePositions: () =>
       Array.from({ length: 20 }, (_, i) => ({ x: px.current[i], y: py.current[i] })),
   }));
 
+  // ATOMIC RESET ON NAVIGATION 🛰️
   useEffect(() => {
-    const touchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    setIsTouch(touchDevice);
+    hoverType.current = "none";
+    locked.current.fill(0);
+  }, [pathname, searchParams]);
+
+  useEffect(() => {
+    const touchDevice = ("ontouchstart" in window || navigator.maxTouchPoints > 0) && 
+                       (window.matchMedia("(pointer: coarse)").matches && !window.matchMedia("(pointer: fine)").matches);
+    setTimeout(() => {
+      setIsTouch(touchDevice);
+    }, 0);
     if (touchDevice) return;
 
     // Arrow slots (↗)
@@ -80,7 +98,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    const onMouseMove = (e: MouseEvent) => { mouse.current = { x: e.clientX, y: e.clientY }; };
+    const onMouseMove = (e: MouseEvent) => { 
+      if (isTouch) setIsTouch(false);
+      mouse.current = { x: e.clientX, y: e.clientY }; 
+    };
     const onMouseOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
       const c = t.closest('a, button, [role="button"], [data-cursor]');
@@ -90,17 +111,25 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       const t = e.target as HTMLElement;
       if (t.closest('a, button, [role="button"], [data-cursor]')) { hoverType.current = "none"; locked.current.fill(0); }
     };
-
     const onMouseDown = () => {
+      // FORCE RESET ON CLICK: Kill stale link hover states immediately
+      hoverType.current = "none";
+      locked.current.fill(0);
+      
       holdStartTimeRef.current = Date.now();
-      totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18; locked.current.fill(0);
+      totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18;
       const force = 6 + totalClicks.current * 5;
       for (let i = 0; i < 20; i++) { const a = Math.random() * Math.PI * 2; vx.current[i] += Math.cos(a) * force; vy.current[i] += Math.sin(a) * force; }
-    };
 
-    const onMouseUp = () => {
-      holdStartTimeRef.current = null;
-      setHoldProgress(0);
+      // Prevent text selection when dragging the custom cursor
+      document.body.style.userSelect = "none";
+      document.body.style.webkitUserSelect = "none";
+    };
+    const onMouseUp = () => { 
+      holdStartTimeRef.current = null; 
+      // Restore text selection
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
     };
 
     const handleScroll = () => {
@@ -109,67 +138,75 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       scrollTimeout.current = setTimeout(() => { isScrolling.current = false; }, 150);
     };
 
+    const onDragStart = (e: DragEvent) => {
+      // Globally prevent native drag preview/ghosting to ensure high-frequency mousemove events
+      e.preventDefault();
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseover", onMouseOver);
     document.addEventListener("mouseout", onMouseOut);
     window.addEventListener("mousedown", onMouseDown);
     window.addEventListener("mouseup", onMouseUp);
+    window.addEventListener("dragstart", onDragStart);
 
     let rafId: number;
     const loop = () => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (!canvas || !ctx) return;
-
       if (isScrolling.current) { canvas.style.opacity = "0"; rafId = requestAnimationFrame(loop); return; }
       canvas.style.opacity = "1";
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // ── Hold Progression Logic ──────────────────────────────────────────
       if (holdStartTimeRef.current) {
         const elapsed = Date.now() - holdStartTimeRef.current;
         const progress = Math.min(1, elapsed / 3000);
-        setHoldProgress(progress);
-        
         if (progress >= 1) {
-          // Change Color and Reset Timer (Cycle)
           colorIndexRef.current = (colorIndexRef.current + 1) % PALETTE.length;
-          holdStartTimeRef.current = Date.now(); // Reset for next cycle if still held
-          burstFlash.current = 15; // Visual feedback for change
+          holdStartTimeRef.current = Date.now();
+          burstFlash.current = 15;
         }
       }
 
-      // Core follows mouse
-      vx.current[0] += (mouse.current.x - px.current[0]) * 0.2;
-      vy.current[0] += (mouse.current.y - py.current[0]) * 0.2;
-      vx.current[0] *= 0.68; vy.current[0] *= 0.68;
-      px.current[0] += vx.current[0]; py.current[0] += vy.current[0];
+      // Sync CSS properties for elements following the cursor
+      document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
 
+      // Snap lead particle directly to mouse — zero lag
+      px.current[0] = mouse.current.x;
+      py.current[0] = mouse.current.y;
+      vx.current[0] = 0; vy.current[0] = 0;
       if (burstFlash.current > 0) burstFlash.current--;
       clickIdleTimer.current++;
       if (clickIdleTimer.current > 240) totalClicks.current = 0;
 
-      // Current Particle Color
-      const baseColor = PALETTE[colorIndexRef.current];
-      const currentColor = burstFlash.current > 0 ? (colorIndexRef.current === 1 ? PALETTE[2] : PALETTE[1]) : hoverType.current !== "none" ? PALETTE[2] : baseColor;
+      const isEridian = language === 'eridian';
+      const activePalette = isEridian ? ERIDIAN_PALETTE : PALETTE;
+      
+      const baseColor = activePalette[colorIndexRef.current];
+      const currentColor = burstFlash.current > 0 
+        ? (colorIndexRef.current === 1 ? activePalette[2] : activePalette[1]) 
+        : hoverType.current !== "none" ? activePalette[2] : baseColor;
 
       for (let i = 1; i < 20; i++) {
         if (hoverType.current !== "none") {
           const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
           const slot = slots[i - 1];
           const tx = px.current[0] + slot.x, ty = py.current[0] + slot.y;
-          if (locked.current[i]) {
-            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0;
+          if (locked.current[i]) { 
+            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; 
           } else {
             const ddx = tx - px.current[i], ddy = ty - py.current[i];
             const dist = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001;
-            if (dist < 2.5) { px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; }
-            else {
-              const grav = Math.min(100000 / (dist + 1), 600);
-              vx.current[i] += (ddx / dist) * grav * 0.016; vy.current[i] += (ddy / dist) * grav * 0.016;
-              let drag = 0.72; if (dist < 8) drag = 0.35; else if (dist < 20) drag = 0.52; else if (dist < 50) drag = 0.62;
-              vx.current[i] *= drag; vy.current[i] *= drag;
+            if (dist < 2.5) { 
+              px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; 
+            } else {
+              // Rapid, smooth snap to slot using Lerp
+              px.current[i] += ddx * 0.28;
+              py.current[i] += ddy * 0.28;
+              vx.current[i] *= 0.55; vy.current[i] *= 0.55;
               px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
             }
           }
@@ -178,45 +215,65 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
           const ddx = tx - px.current[i], ddy = ty - py.current[i];
-          const dd = Math.sqrt(ddx * ddx + ddy * ddy);
-          const ls = dd > 40 ? 0.08 : dd > 15 ? 0.14 : 0.22;
-          vx.current[i] += ddx * ls; vy.current[i] += ddy * ls;
-          vx.current[i] *= 0.6; vy.current[i] *= 0.6;
+          
+          // Uniform smooth lerp to preserve the circle formation and create a natural, fluid flow
+          const ease = 0.28;
+          px.current[i] += ddx * ease;
+          py.current[i] += ddy * ease;
+          
+          // Smoothly decay click-burst velocities
+          vx.current[i] *= 0.82; vy.current[i] *= 0.82;
           px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
         }
       }
 
-      // Draw Hold Progress Ring
       if (holdStartTimeRef.current) {
         ctx.beginPath();
         ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 3000));
-        ctx.strokeStyle = PALETTE[(colorIndexRef.current + 1) % PALETTE.length];
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.strokeStyle = activePalette[(colorIndexRef.current + 1) % activePalette.length]; ctx.lineWidth = 2; ctx.stroke();
       }
-
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
-        ctx.strokeStyle = baseColor; ctx.globalAlpha = 0.04; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+        ctx.strokeStyle = baseColor; ctx.globalAlpha = isEridian ? (0.1 + Math.sin(Date.now() / 200) * 0.05) : 0.04; ctx.lineWidth = isEridian ? 2 : 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+        
+        // Eridian Sonar Pulse (Inspired by PHM)
+        if (isEridian) {
+          const sonarPulse = (Date.now() % 2000) / 2000;
+          ctx.beginPath();
+          ctx.arc(px.current[0], py.current[0], 20 + sonarPulse * 60, 0, Math.PI * 2);
+          ctx.strokeStyle = "#FFB300";
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = (1 - sonarPulse) * 0.4;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
       }
-
+      ctx.save();
       for (let i = 0; i < 20; i++) {
         if (i === 0 && hoverType.current === "play") continue;
         const x = px.current[i], y = py.current[i];
-
-        ctx.beginPath(); ctx.arc(x, y, PSIZE, 0, Math.PI * 2); ctx.fillStyle = currentColor; ctx.fill();
+        ctx.beginPath(); 
+        ctx.arc(x, y, PSIZE, 0, Math.PI * 2); 
+        ctx.fillStyle = currentColor; 
+        ctx.fill();
+        ctx.closePath();
 
         if (burstFlash.current === 0) {
-          ctx.shadowBlur = 0;
-          ctx.beginPath(); ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,255,255,0.70)"; ctx.fill();
-          ctx.beginPath(); ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
-          ctx.lineWidth = 0.6;
-          ctx.strokeStyle = hoverType.current !== "none" ? PALETTE[2] : `${baseColor}15`;
+          ctx.beginPath(); 
+          ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.70)"; 
+          ctx.fill();
+          ctx.closePath();
+
+          ctx.beginPath(); 
+          ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
+          ctx.lineWidth = 0.6; 
+          ctx.strokeStyle = hoverType.current !== "none" ? activePalette[2] : `${baseColor}15`; 
           ctx.stroke();
+          ctx.closePath();
         }
       }
-      ctx.shadowBlur = 0;
+      ctx.restore();
       rafId = requestAnimationFrame(loop);
     };
     rafId = requestAnimationFrame(loop);
@@ -231,18 +288,23 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       document.removeEventListener("mouseout", onMouseOut);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
+      window.removeEventListener("dragstart", onDragStart);
+      // Clean up body selection styles if unmounted during dragging
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
     };
-  }, [isTouch]);
+  }, [language, designVersion, PALETTE, isTouch]);
 
   if (isTouch) return null;
-
   return createPortal(
     <>
       <style>{`body,a,button,input,textarea,select,*{cursor:none!important}`}</style>
-      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999, pointerEvents: "none", mixBlendMode: "difference", willChange: "transform" }} />
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 999999, pointerEvents: "none", mixBlendMode: 'difference', willChange: "transform", transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }} />
     </>,
     document.body
   );
 });
+
 Cursor.displayName = "Cursor";
+
 export default Cursor;

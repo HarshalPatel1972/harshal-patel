@@ -20,8 +20,10 @@ export function FlipTransition() {
       // 1. Reset
       flippedRef.current = new Set();
       smokedRef.current = new Set();
-      setFlippedIndices(new Set());
-      setSmokedIndices(new Set());
+      setTimeout(() => {
+        setFlippedIndices(new Set());
+        setSmokedIndices(new Set());
+      }, 0);
       
       const totalSquares = cols * rows;
       const indices = Array.from({ length: totalSquares }, (_, i) => i);
@@ -42,7 +44,7 @@ export function FlipTransition() {
       const animationState = { flipProgress: 0, smokeProgress: 0 };
       
       // FLIP TRACK
-      anime(animationState, {
+      const flipAnim = anime(animationState, {
         flipProgress: totalSquares,
         duration: 2000,
         easing: 'linear',
@@ -61,7 +63,7 @@ export function FlipTransition() {
       });
 
       // SMOKE TRACK (Starts after flips are well underway)
-      anime(animationState, {
+      const smokeAnim = anime(animationState, {
         smokeProgress: totalSquares,
         duration: 1500,
         delay: 2400,
@@ -87,6 +89,8 @@ export function FlipTransition() {
       });
 
       return () => {
+        flipAnim.pause();
+        smokeAnim.pause();
         // Anime instances are automatically cleaned up if scope is lost, 
         // but we ensure the redirect doesn't fire if unmounted during transition
       };

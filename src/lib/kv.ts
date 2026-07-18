@@ -18,4 +18,6 @@ export const kv = {
   scard: (key: string) => redis.scard(key),
   incr: (key: string) => redis.incr(key),
   get: (key: string) => redis.get(key),
+  del: (key: string) => redis.del(key),
+  set: (key: string, value: string) => redis.set(key, value),
 };

@@ -1,8 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
+import { VelocityWarp } from "@/components/ui/VelocityWarp";
+
+import { Providers } from "@/components/Providers";
 
 const cirka = localFont({
   src: [
@@ -82,6 +86,8 @@ const luna = localFont({
   display: 'swap',
 });
 
+
+
 export const metadata: Metadata = {
   title: {
     default: "Harshal Patel | Software Engineer Portfolio",
@@ -147,7 +153,20 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.png",
     apple: "/favicon.png",
-  }
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Harshal Patel",
+  },
+  category: "technology",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#050505",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -158,42 +177,46 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${cirka.variable} ${season.variable} ${victor.variable} ${luna.variable} font-sans antialiased bg-background text-foreground`}
         suppressHydrationWarning
+        className={`${cirka.variable} ${season.variable} ${victor.variable} ${luna.variable} font-sans antialiased bg-background text-foreground select-none`}
       >
-        <ImageGuard />
-        {/* JSON-LD Structured Data for Google Search */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "name": "Harshal Patel",
-                "alternateName": ["Harshal Patel Portfolio", "Harshal Patel Engineer"],
-                "url": "https://harshal-patel-chi.vercel.app"
-              },
-              {
-                "@context": "https://schema.org",
-                "@type": "Person",
-                "name": "Harshal Patel",
-                "url": "https://harshal-patel-chi.vercel.app",
-                "jobTitle": "Software Engineer",
-                "alumniOf": {
-                  "@type": "CollegeOrUniversity",
-                  "name": "Chandigarh University"
+        <Providers>
+          <ImageGuard />
+          {/* JSON-LD Structured Data for Google Search */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify([
+                {
+                  "@context": "https://schema.org",
+                  "@type": "WebSite",
+                  "name": "Harshal Patel",
+                  "alternateName": ["Harshal Patel Portfolio", "Harshal Patel Engineer"],
+                  "url": "https://harshal-patel-chi.vercel.app"
                 },
-                "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
-                "sameAs": [
-                  "https://github.com/HarshalPatel1972",
-                  "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
-                ]
-              }
-            ])
-          }}
-        />
-        {children}
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Person",
+                  "name": "Harshal Patel",
+                  "url": "https://harshal-patel-chi.vercel.app",
+                  "jobTitle": "Software Engineer",
+                  "alumniOf": {
+                    "@type": "CollegeOrUniversity",
+                    "name": "Chandigarh University"
+                  },
+                  "description": "Software Engineer specializing in Go, TypeScript, and WebAssembly.",
+                  "sameAs": [
+                    "https://github.com/HarshalPatel1972",
+                    "https://www.linkedin.com/in/harshal-patel-59b9a5278/"
+                  ]
+                }
+              ])
+            }}
+          />
+          <div className="halftone-glow" />
+          <VelocityWarp />
+          {children}
+        </Providers>
       </body>
     </html>
   );
