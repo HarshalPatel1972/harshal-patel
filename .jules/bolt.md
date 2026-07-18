@@ -1,3 +1,7 @@
+## 2024-03-24 - Memoizing Complex String Splits in Render Loops
+**Learning:** For React components performing complex string manipulations (e.g., splitting a name into parts and character arrays for animations), un-memoized `split()` operations inside the render loop cause redundant object and array allocations on every render cycle. This is especially problematic in components like Hero that might be updated by high-frequency events or simply re-render frequently.
+**Action:** Utilize `useMemo` to pre-calculate these values. This eliminates the redundant allocations and computations, improving performance without sacrificing readability.
+
 ## 2024-07-04 - Supabase Insert Select Round-Trips
 **Learning:** In PostgREST/Supabase, chaining `.select()` directly after `.insert()` returns the inserted row immediately. Separating them into two distinct calls (`.insert()` followed by `.select()`) pointlessly doubles network overhead and latency.
 **Action:** Always chain `.select()` on Supabase insert/update operations when the newly created database-generated values (like IDs or default timestamps) are needed by the client.
