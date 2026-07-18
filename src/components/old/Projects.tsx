@@ -4,7 +4,7 @@ import { projects } from "@/data/projects";
 import { useState, useRef, useEffect } from "react";
 import { animate as anime, utils } from "animejs";
 import { useLanguage } from "@/context/LanguageContext";
-import { KineticLink } from "./ui/KineticLink";
+import { KineticLink } from "../ui/KineticLink";
 import { useFlipTransition } from "@/context/FlipContext";
 
 interface Project {
@@ -43,7 +43,7 @@ export function Projects() {
     <section 
       id="projects" 
       ref={containerRef}
-      className="relative pt-8 md:pt-12 pb-12 md:pb-24 px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate transform-gpu"
+      className="relative pt-8 md:pt-12 pb-5 md:pb-10 px-6 md:px-8 bg-white flex flex-col items-center z-10 isolate"
     >
       <div className="absolute inset-0 halftone-bg z-0 opacity-[0.03] pointer-events-none invert mix-blend-multiply" />
 
@@ -83,10 +83,10 @@ export function Projects() {
 
       <div 
         key={isOverridden ? 'expanded' : 'collapsed'}
-        className={`transition-[gap,max-width,opacity] duration-1000 relative w-full ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl' : 'flex flex-col gap-[20vh] max-w-5xl md:mr-0 pl-0 md:pl-0'}`}
+        className={`transition-[gap,max-width,opacity] duration-1000 relative w-full ${isOverridden ? 'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 opacity-100 max-w-7xl' : 'flex flex-col gap-[20vh] max-w-5xl md:mr-0 pl-0 md:pl-0 pb-[12vh]'}`}
       >
         {!isOverridden && (
-          <div className="absolute right-0 top-0 h-full w-10 md:w-12 pointer-events-none z-30">
+          <div className="absolute right-0 top-0 bottom-[12vh] w-10 md:w-12 pointer-events-none z-30">
             <div className="sticky top-[calc(10vh+60px)] md:top-[12vh] pointer-events-auto flex justify-start pl-1">
               <button 
                 onClick={(e) => {
@@ -153,7 +153,7 @@ export function Projects() {
                 <KineticLink 
                   href={project.link}
                   target="_blank"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setPreloading(true, project.slug);
@@ -190,15 +190,23 @@ export function Projects() {
                       </p>
                     </div>
 
-                    <div className={`flex flex-col items-end gap-1 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
-                      {project.specs.map((spec: string) => (
-                        <span key={spec} className="font-mono text-[10px] md:text-xs text-[var(--text-bone)] tracking-[0.2em] font-bold">
-                          {spec}
-                        </span>
-                      ))}
+                    <div className={`flex flex-col items-end gap-2 mt-8 mb-4 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-60'}`}>
+                      {project.specs.map((spec: string) => {
+                        const cleanSpec = spec.replace(/^\/\/\s*/, '').replace(/_$/, '');
+                        return (
+                          <div key={spec} className="flex items-center gap-2">
+                            <svg width="16" height="8" viewBox="0 0 16 8" fill="none" className={`transition-colors duration-300 ${isHovered ? 'text-[var(--accent-blood)]' : 'text-[var(--text-muted)]'}`}>
+                              <path d="M0 4h14M11 1l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+                            </svg>
+                            <span className="font-mono text-[9px] md:text-[11px] text-[var(--text-bone)] tracking-[0.15em] font-bold uppercase">
+                              {cleanSpec}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
 
-                    <div className="mt-12 flex items-center gap-4">
+                    <div className="mt-6 flex items-center gap-4">
                        <div className="w-12 h-12 bg-white text-[var(--bg-ink)] flex items-center justify-center brutal-shadow rotate-0 group-hover:-rotate-45 transition-transform duration-300">
                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
                            <path d="M5 12h14M12 5l7 7-7 7"/>

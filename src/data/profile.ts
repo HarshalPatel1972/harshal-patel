@@ -14,7 +14,7 @@ export const profile = {
       school: "Chandigarh University",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -56,7 +56,7 @@ export const profile = {
       school: "チャンディーガル大学",
       degree: "情報工学学士号 (AI/ML)",
       years: "2022年 – 2026年",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -98,7 +98,7 @@ export const profile = {
       school: "찬디가르 대학교",
       degree: "정보공학 학사 (AI/ML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -140,7 +140,7 @@ export const profile = {
       school: "昌迪加爾大學",
       degree: "工程學士（人工智慧與機器學習）",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -182,7 +182,7 @@ export const profile = {
       school: "चंडीगढ़ विश्वविद्यालय",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -224,7 +224,7 @@ export const profile = {
       school: "Université de Chandigarh",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -266,7 +266,7 @@ export const profile = {
       school: "Universitas Chandigarh",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -308,7 +308,7 @@ export const profile = {
       school: "Chandigarh University",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -350,7 +350,7 @@ export const profile = {
       school: "Chandigarh University",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -392,7 +392,7 @@ export const profile = {
       school: "Chandigarh University",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -434,7 +434,7 @@ export const profile = {
       school: "Chandigarh University",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -476,7 +476,7 @@ export const profile = {
       school: "Chandigarh University",
       degree: "B.E. CSE (AIML)",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [
@@ -519,7 +519,7 @@ export const profile = {
       school: "CHANDIGARH UNIVERSITY-THING",
       degree: "LEARN CSE + AI/ML",
       years: "2022 – 2026",
-      gpa: "8.87",
+      gpa: "8.89",
     },
 
     experience: [

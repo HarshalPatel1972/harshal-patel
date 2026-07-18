@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useDesignVersion } from '@/components/shared/DesignVersionContext';
 
 const TRANSLATIONS = {
   en: { visitors: 'Visitors', views: 'Views' },
@@ -13,8 +12,6 @@ const TRANSLATIONS = {
 
 export function VisitorCounter() {
   const { language } = useLanguage();
-  const { designVersion } = useDesignVersion();
-  const isV2 = designVersion === 'new';
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
@@ -60,24 +57,18 @@ export function VisitorCounter() {
       <div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`flex items-center h-9 transition-all duration-500 overflow-hidden ${
-          isV2 
-            ? "bg-[var(--aged-paper)] border border-[var(--sumi-ink)]/15 hover:border-[var(--forge-orange)]"
-            : "bg-black border-2 border-white hover:border-[var(--accent-blood)]"
-        }`}
+        className="flex items-center bg-black border-2 border-white h-9 transition-all duration-500 hover:border-[var(--accent-blood)] overflow-hidden"
       >
         {/* ICON & VISITORS (ALWAYS VISIBLE) */}
-        <div className={`flex items-center px-4 h-full gap-3 whitespace-nowrap ${
-          isV2 ? "border-r border-[var(--sumi-ink)]/15" : "border-r border-white/5"
-        }`}>
-           <svg viewBox="0 0 24 24" className={`w-4 h-4 ${isV2 ? "fill-[var(--forge-orange)]" : "fill-[var(--accent-blood)]"}`} xmlns="http://www.w3.org/2000/svg">
-             <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+        <div className="flex items-center px-4 h-full gap-3 border-r border-white/5 whitespace-nowrap">
+           <svg viewBox="0 0 24 24" className="w-4 h-4 fill-[var(--accent-blood)]" xmlns="http://www.w3.org/2000/svg">
+             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
            </svg>
            <div className="flex flex-col justify-center">
-             <span className={`text-[10px] font-black font-mono leading-none ${isV2 ? "text-[var(--sumi-ink)]" : "text-white"}`}>
+             <span className="text-[10px] font-black font-mono text-white leading-none">
                {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
              </span>
-             <span className={`text-[8px] font-black uppercase tracking-widest leading-none mt-0.5 ${isV2 ? "text-[var(--muted-label)]" : "text-white/30"}`}>
+             <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mt-0.5">
                {t.visitors}
              </span>
            </div>
@@ -85,17 +76,13 @@ export function VisitorCounter() {
 
         {/* REVEAL VIEWS ON HOVER */}
         <div 
-           className={`flex items-center h-full overflow-hidden whitespace-nowrap transition-all duration-300 ${
-             isV2 ? "bg-[var(--forge-orange)]/5" : "bg-white/5"
-           } ${isHovered ? "w-auto px-5 opacity-100" : "w-0 opacity-0"}`}
+           className={`flex items-center h-full bg-white/5 overflow-hidden whitespace-nowrap transition-all duration-300 ${isHovered ? "w-auto px-5 opacity-100" : "w-0 opacity-0"}`}
         >
            <div className="flex flex-col justify-center">
-             <span className={`text-[10px] font-black font-mono leading-none ${
-               isV2 ? "text-[var(--forge-orange)]" : "text-[var(--accent-blood)]"
-             }`}>
+             <span className="text-[10px] font-black font-mono text-[var(--accent-blood)] leading-none">
                 {data?.totalHits?.toLocaleString() || '---'}
              </span>
-             <span className={`text-[8px] font-black uppercase tracking-widest leading-none mt-0.5 ${isV2 ? "text-[var(--muted-label)]" : "text-white/30"}`}>
+             <span className="text-[8px] font-black text-white/30 uppercase tracking-widest leading-none mt-0.5">
                 {t.views}
              </span>
            </div>

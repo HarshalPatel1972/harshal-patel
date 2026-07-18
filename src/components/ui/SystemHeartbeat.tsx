@@ -23,9 +23,6 @@ const SystemHeartbeat: React.FC = () => {
   }, []);
 
   // Generate background "Nerve Network" lines
-  // ⚡ Bolt: Retained inside component using useMemo to preserve fresh random layouts
-  // upon remount, which is intended visual behavior. Hoisting to module scope would
-  // break this by freezing the randomness for the entire application lifecycle.
   // ⚡ Bolt: Moved array generation to useState initializers to satisfy React Hook
   // purity rules (avoiding Math.random inside render/useMemo) while maintaining
   // fresh random layouts upon remount.

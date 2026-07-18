@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { animate as anime, utils } from "animejs";
+import { animate, stagger, utils } from "animejs";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
@@ -40,21 +40,31 @@ export function LanguageSelector() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Instant reveal transition 🎞️
+  // Pure Top-to-Bottom Staggered Reveal 🎞️
   useEffect(() => {
     if (!menuRef.current) return;
     const menuItems = menuRef.current.querySelectorAll('.lang-item');
     
     if (isOpen) {
-      // Set instantly to visible
-      anime(menuItems as any, {
-        opacity: 1,
-        translateY: 0,
-        duration: 0
+      // 1. Items Stagger (Entrance)
+      const itemsAnim = animate(menuItems as any, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 450,
+        delay: stagger(40),
+        easing: 'easeOutCubic'
       });
+
+      return () => { itemsAnim.pause(); };
     } else {
-      // Instant clear on close
-      anime(menuItems as any, { opacity: 0, translateY: 20, duration: 0 });
+      // 2. Items Stagger (Symmetric Exit) 🎞️
+      animate(menuItems as any, {
+        opacity: [1, 0],
+        translateY: [0, 20],
+        duration: 350,
+        delay: stagger(30, { from: 'last' }), // Bottom-to-top exit
+        easing: 'easeInCubic'
+      });
     }
   }, [isOpen]);
 
@@ -63,7 +73,7 @@ export function LanguageSelector() {
     if (!globeRef.current) return;
     let pulse: any = null;
     if (language === 'eridian') {
-      pulse = anime(globeRef.current, {
+      pulse = animate(globeRef.current, {
         borderColor: ['#FFB300', '#FF8C00', '#FFB300'],
         duration: 1400,
         easing: 'easeInOutSine',
@@ -118,8 +128,12 @@ export function LanguageSelector() {
       {/* Expanded Container - Instant Pop-in without transitions 🎞️ */}
       <div
         ref={menuRef}
-        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-md border overflow-hidden ${isEridian ? 'border-[#FFB300]/40' : 'border-white/20'} ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none'}`}
-        style={{ width: '220px', zIndex: 100 }}
+        className={`absolute top-0 left-11 flex flex-col bg-black/95 backdrop-blur-sm border overflow-hidden ${isEridian ? 'border-[#FFB300]/40' : 'border-white/20'} ${isOpen ? 'opacity-100 pointer-events-auto shadow-[0_30px_60px_rgba(0,0,0,0.8)]' : 'opacity-0 pointer-events-none transition-all duration-700'}`}
+        style={{ 
+          width: '280px', 
+          zIndex: 100,
+          transitionDelay: isOpen ? '0ms' : '150ms'
+        }}
       >
         <div 
           className="flex flex-col w-full overflow-y-auto overflow-x-hidden max-h-[70vh]"

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo, memo } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
-import ExorcistsScroll from './ui/ExorcistsScroll';
+import ExorcistsScroll from '../ui/ExorcistsScroll';
 import { useLanguage } from "@/context/LanguageContext";
 
 /**
@@ -71,18 +71,54 @@ export function Hero() {
   };
 
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
+
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
+
+  // Performance Optimization: Memoize complex string splits and character array generation
+  // to prevent unnecessary object allocations on every render cycle.
+  const { firstName, firstNameChars, lastName, lastNameChars } = useMemo(() => {
+    const parts = currentProfile.name.split(" ");
+    const first = parts[0] || "";
+    const last = parts.slice(1).join(" ") || "";
+    return {
+      firstName: first,
+      firstNameChars: first.split(""),
+      lastName: last,
+      lastNameChars: last.split("")
+    };
+  }, [currentProfile.name]);
+
+  const taglineParts = useMemo(() => {
+    return currentProfile.tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi);
+  }, [currentProfile.tagline]);
+
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
+    let ticking = false;
+    let sectionOffset = 0;
+    let trackHeight = 0;
+
+    // Cache dimensions to avoid layout thrashing on scroll
+    const updateDimensions = () => {
+      if (trackRef.current) {
+        sectionOffset = trackRef.current.offsetTop;
+        trackHeight = trackRef.current.offsetHeight - window.innerHeight;
+      }
+    };
+
     const handleScroll = () => {
-      if (!trackRef.current || !heroContentRef.current) return;
+      if (!trackRef.current || !heroContentRef.current || trackHeight <= 0) {
+        ticking = false;
+        return;
+      }
       
       const st = window.scrollY;
-      const sectionOffset = trackRef.current.offsetTop;
-      const trackHeight = trackRef.current.offsetHeight - window.innerHeight;
       
-      if (st > sectionOffset + trackHeight + 500) return;
+      if (st > sectionOffset + trackHeight + 500) {
+        ticking = false;
+        return;
+      }
 
       const progress = Math.max(0, Math.min(1, (st - sectionOffset) / trackHeight));
       trackRef.current.style.setProperty('--scroll-progress', progress.toString());
@@ -96,17 +132,33 @@ export function Hero() {
       heroContentRef.current.style.opacity = opacity.toString();
       heroContentRef.current.style.filter = blur > 0.5 ? `blur(${blur}px)` : 'none';
       heroContentRef.current.style.pointerEvents = progress > 0.4 ? 'none' : 'auto';
+
+      ticking = false;
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true }); 
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScrollThrottled = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("resize", updateDimensions);
+    window.addEventListener("scroll", handleScrollThrottled, { passive: true });
+
+    updateDimensions(); // Initial call
+    handleScroll(); // Initial call
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScrollThrottled);
+    };
   }, []);
 
   return (
     <section
       ref={trackRef}
-      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
+      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
       <div 
@@ -170,10 +222,10 @@ export function Hero() {
               <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
-                    {currentProfile.name.split(" ")[0]}
+                    {firstName}
                   </span>
                 ) : (
-                  currentProfile.name.split(" ")[0].split("").map((char, i) => (
+                  firstNameChars.map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
@@ -183,10 +235,10 @@ export function Hero() {
               <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
-                    {currentProfile.name.split(" ").slice(1).join(" ")}
+                    {lastName}
                   </span>
                  ) : (
-                   currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
+                   lastNameChars.map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
@@ -196,24 +248,100 @@ export function Hero() {
             </div>
 
             <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
-              {currentProfile.tagline}
+              {(() => {
+                return taglineParts.map((part, index) => {
+                  const lower = part.toLowerCase();
+                  if (lower === "go") {
+                    return (
+                      <span 
+                        key={index} 
+                        className="font-extrabold italic text-[#00ADD8] tracking-tight hover:scale-105 inline-block transition-transform duration-200" 
+                        style={{ 
+                          fontFamily: 'var(--font-big-shoulders), sans-serif',
+                          fontSize: '1.1em'
+                        }}
+                      >
+                        Go
+                      </span>
+                    );
+                  }
+                  if (lower === "typescript" || lower === "typescipt") {
+                    return (
+                      <span 
+                        key={index} 
+                        className="font-bold text-[#5294e2] tracking-tight bg-[#3178C6]/20 px-1 py-0.5 rounded-sm hover:bg-[#3178C6]/30 transition-colors duration-200 inline-block align-baseline mx-0.5" 
+                        style={{ 
+                          fontFamily: 'var(--font-dm-sans), sans-serif',
+                          fontSize: '0.9em',
+                          lineHeight: '1'
+                        }}
+                      >
+                        TypeScript
+                      </span>
+                    );
+                  }
+                  if (lower === "webassembly") {
+                    return (
+                      <span 
+                        key={index} 
+                        className="font-semibold text-[#a394ff] tracking-wide bg-[#654FF0]/25 px-1.5 py-0.5 rounded-sm hover:bg-[#654FF0]/35 transition-colors duration-200 inline-block align-baseline mx-0.5"
+                        style={{
+                          fontFamily: 'var(--font-jetbrains-mono), monospace',
+                          fontSize: '0.85em',
+                          lineHeight: '1'
+                        }}
+                      >
+                        WebAssembly
+                      </span>
+                    );
+                  }
+                  return part;
+                });
+              })()}
             </p>
 
             <div className="cinematic-in flex flex-col sm:flex-row gap-6 md:gap-8 w-full sm:w-auto self-center md:self-start -mt-[35px] pointer-events-auto">
-              <a ref={cta1Ref} href="#projects" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--accent-blood)] transition-colors duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : language === 'de' ? "Arbeit ansehen" : language === 'it' ? "Vedi Lavori" : language === 'pt-br' ? "Ver Trabalhos" : (language === 'es-419' || language === 'es') ? "Ver Trabajos" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
-                  </span>
+              <a
+                ref={cta1Ref}
+                href="#projects"
+                className="group relative block min-w-[200px] md:min-w-[240px] select-none cursor-pointer"
+              >
+                {/* Backdrop Layer */}
+                <div className="absolute inset-0 bg-[var(--accent-blood)] translate-x-[4px] translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[6px] group-hover:translate-y-[6px] group-active:translate-x-[2px] group-active:translate-y-[2px]" />
+                
+                {/* Main Button Body */}
+                <div className="relative z-10 flex items-center justify-center bg-black border border-[var(--text-bone)]/40 group-hover:border-[var(--accent-blood)] transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-active:translate-x-[2px] group-active:translate-y-[2px] overflow-hidden"
+                     style={{ minHeight: "64px" }}>
+                  {/* Sliding background */}
+                  <div className="absolute inset-0 bg-[var(--accent-blood)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 z-0" />
+                  
+                  <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
+                    <span className={`text-white font-black text-base md:text-xl tracking-[0.2em] group-hover:tracking-[0.3em] uppercase transition-all duration-500 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                      {language === 'en' ? "View Work" : language === 'ja' ? "実績を見る" : language === 'ko' ? "실적 보기" : language === 'zh-tw' ? "查看作品" : language === 'fr' ? "Voir les Projets" : language === 'id' ? "Lihat Karya" : language === 'de' ? "Arbeit ansehen" : language === 'it' ? "Vedi Lavori" : language === 'pt-br' ? "Ver Trabalhos" : (language === 'es-419' || language === 'es') ? "Ver Trabajos" : language === 'eridian' ? "VIEW-WORKS" : "कार्य देखें"}
+                    </span>
+                  </div>
                 </div>
               </a>
-              <a ref={cta2Ref} href="#contact" className="group relative flex items-center justify-center min-w-[200px] md:min-w-[240px] bg-transparent border border-[var(--text-bone)]/30 hover:border-[var(--text-bone)] transition-colors duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
-                <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
-                   <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] uppercase transition-all duration-500 group-hover:tracking-[0.3em] ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
-                    {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Hubungi" : language === 'de' ? "Kontakt" : language === 'it' ? "Contatto" : language === 'pt-br' ? "Contato" : (language === 'es-419' || language === 'es') ? "Contacto" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
-                  </span>
+
+              <a
+                ref={cta2Ref}
+                href="#contact"
+                className="group relative block min-w-[200px] md:min-w-[240px] select-none cursor-pointer"
+              >
+                {/* Backdrop Layer */}
+                <div className="absolute inset-0 bg-[var(--text-bone)] translate-x-[4px] translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[6px] group-hover:translate-y-[6px] group-active:translate-x-[2px] group-active:translate-y-[2px]" />
+                
+                {/* Main Button Body */}
+                <div className="relative z-10 flex items-center justify-center bg-black border border-[var(--text-bone)]/40 group-hover:border-white transition-all duration-200 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-active:translate-x-[2px] group-active:translate-y-[2px] overflow-hidden"
+                     style={{ minHeight: "64px" }}>
+                  {/* Sliding background */}
+                  <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-0" />
+                  
+                  <div className="relative z-10 flex items-center px-5 py-3 md:px-7 md:py-5">
+                    <span className={`text-[var(--text-bone)] group-hover:text-[var(--bg-ink)] font-black text-base md:text-xl tracking-[0.2em] group-hover:tracking-[0.3em] uppercase transition-all duration-500 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
+                      {language === 'en' ? "Contact" : language === 'ja' ? "連絡する" : language === 'ko' ? "연락하기" : language === 'zh-tw' ? "聯繫方式" : language === 'fr' ? "Contact" : language === 'id' ? "Hubungi" : language === 'de' ? "Kontakt" : language === 'it' ? "Contatto" : language === 'pt-br' ? "Contato" : (language === 'es-419' || language === 'es') ? "Contacto" : language === 'eridian' ? "SEND-SIGNAL" : "संपर्क करें"}
+                    </span>
+                  </div>
                 </div>
               </a>
             </div>
@@ -225,7 +353,7 @@ export function Hero() {
       </div>
       <style>{`
         .reveal-word {
-          --progress: clamp(0, (var(--scroll-progress) - var(--start)) / (var(--end) - var(--start)), 1);
+          --progress: clamp(0, calc((var(--scroll-progress) - var(--start)) / 0.2), 1);
           opacity: var(--progress);
           transform: translateY(calc((1 - var(--progress)) * 25px));
           filter: blur(calc((1 - var(--progress)) * 12px));

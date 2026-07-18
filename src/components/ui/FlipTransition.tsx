@@ -20,8 +20,10 @@ export function FlipTransition() {
       // 1. Reset
       flippedRef.current = new Set();
       smokedRef.current = new Set();
-      setFlippedIndices(new Set());
-      setSmokedIndices(new Set());
+      setTimeout(() => {
+        setFlippedIndices(new Set());
+        setSmokedIndices(new Set());
+      }, 0);
       
       const totalSquares = cols * rows;
       const indices = Array.from({ length: totalSquares }, (_, i) => i);

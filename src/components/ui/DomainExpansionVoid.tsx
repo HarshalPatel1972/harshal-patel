@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react';
 
+const getSeededRandom = (seed: number) => {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+};
+
 const DomainExpansionVoid: React.FC = () => {
   // Generate random shards for the "shattered reality" effect
   // ⚡ Bolt: Retained inside component using useMemo to preserve fresh random layouts
@@ -18,10 +23,13 @@ const DomainExpansionVoid: React.FC = () => {
       const x3 = 500 + Math.cos(angle - 0.3) * 600;
       const y3 = 500 + Math.sin(angle - 0.3) * 600;
       
+      const r1 = getSeededRandom(i * 17 + 1);
+      const r2 = getSeededRandom(i * 23 + 2);
+      
       return { 
         points: `${x1},${y1} ${x2},${y2} ${x3},${y3}`,
-        delay: Math.random() * 5,
-        duration: 3 + Math.random() * 4
+        delay: r1 * 5,
+        duration: 3 + r2 * 4
       };
     });
   });

@@ -5,7 +5,7 @@ import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";
 import { useLanguage } from "@/context/LanguageContext";
-import { KineticLink } from "./ui/KineticLink";
+import { KineticLink } from "../ui/KineticLink";
 import { useRouter } from "next/navigation";
 
 const LINKS = {
@@ -192,7 +192,7 @@ export function Contact() {
         </ScrollReveal>
 
         {/* Links Container */}
-        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full">
+        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full pr-14 md:pr-20">
           {currentLinks.map((link: LinkItem, i: number) => (
             <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
                <ContactLinkItem 
@@ -266,7 +266,7 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
     <KineticLink
       href={link.href}
       target={link.id !== "email" ? "_blank" : undefined}
-      onClick={(e) => handleLinkClick(e, link.id)}
+      onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleLinkClick(e, link.id)}
       className="relative block w-full outline-none py-6 md:py-10 pointer-events-none group"
     >
       {/* Hover Slash Background - Only reacts to isHovered */}

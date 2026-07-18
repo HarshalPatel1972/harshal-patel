@@ -8,8 +8,6 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
   const { language } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!isVisible) return null;
-
   const getNoticeText = () => {
     switch(language) {
       case 'ja': return "このポートフォリオは現在再設計中です。一部の機能が利用できない場合があります。ご不便をおかけしますが、ご了承ください。";
@@ -69,9 +67,11 @@ export function SystemBanner({ isVisible, onDismiss }: { isVisible: boolean, onD
     return () => document.documentElement.classList.remove('is-overlay-active');
   }, [isExpanded]);
 
+  if (!isVisible) return null;
+
   return (
     <>
-      <div className="fixed top-0 left-0 right-12 md:right-16 z-[200] bg-[var(--accent-blood)] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_12px_rgba(var(--accent-blood-rgb),0.3)] overflow-hidden">
+      <div className="fixed top-0 left-0 right-12 md:right-16 z-[95] bg-[var(--accent-blood)] border-b border-black/20 flex items-center h-9 md:h-10 px-4 shadow-[0_4px_12px_rgba(var(--accent-blood-rgb),0.3)] overflow-hidden">
         <div className="flex items-center gap-3 md:gap-4 flex-1 overflow-hidden h-full">
            {/* Brutalist Warning Label */}
            <div 

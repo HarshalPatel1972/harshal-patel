@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
+
 
 /* ═══════════════════════════════════════════
    🩸 MAPPA CINEMATIC BRUTALISM
@@ -16,20 +18,56 @@
   --accent-cursed-rgb: 14, 224, 195;
   --panel-border: rgba(232, 232, 230, 0.15);
   --radius: 0px; /* Brutalist sharp edges */
+
+  /* V2 Redesign — Studio Colors */
+  --studio-warm:     #F5EDE0;   /* warm wall / light sections */
+  --aged-paper:      #EDE4D3;   /* card / surface backgrounds */
+  --dark-walnut:     #0F0D0A;   /* deep bg, same depth as v1 */
+  --studio-mid:      #1C1814;   /* slightly lifted dark */
+  --forge-orange:    #C44D1C;   /* PRIMARY accent — replaces Blood Red */
+  --blueprint-blue:  #2C5270;   /* SECONDARY accent — cool balance */
+  --copper:          #905B20;   /* metallic warmth */
+  --chalk:           #F0EDE8;   /* annotation / overlay text */
+  --sumi-ink:        #1A1714;   /* body text on light sections */
+  --muted-label:     #8A7F72;   /* captions, subtext */
+  --critical-red:    #D91111;   /* ONLY for the marquee notice bar */
+
+  /* V2 Font Family CSS Variables */
+  --font-big-shoulders: 'Big Shoulders Display', sans-serif;
+  --font-dm-serif:      'DM Serif Display', serif;
+  --font-dm-sans:       'DM Sans', sans-serif;
+  --font-jetbrains-mono:'JetBrains Mono', monospace;
 }
 
 @theme inline {
-  --font-serif: var(--font-cirka);
+  --font-serif: var(--font-dm-serif);
   --color-background: var(--bg-ink);
   --color-foreground: var(--text-bone);
-  --font-sans: var(--font-season);
+  --font-sans: var(--font-dm-sans);
   --font-cirka: var(--font-cirka);
   --font-season: var(--font-season);
-  --font-mono: var(--font-season);
-  --font-display: var(--font-cirka);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-big-shoulders);
   --font-hindi: var(--font-season);
   --font-luna: var(--font-luna);
   --font-victor: var(--font-victor);
+
+  --font-big-shoulders: var(--font-big-shoulders);
+  --font-dm-serif: var(--font-dm-serif);
+  --font-dm-sans: var(--font-dm-sans);
+  --font-jetbrains-mono: var(--font-jetbrains-mono);
+
+  --color-studio-warm: var(--studio-warm);
+  --color-aged-paper: var(--aged-paper);
+  --color-dark-walnut: var(--dark-walnut);
+  --color-studio-mid: var(--studio-mid);
+  --color-forge-orange: var(--forge-orange);
+  --color-blueprint-blue: var(--blueprint-blue);
+  --color-copper: var(--copper);
+  --color-chalk: var(--chalk);
+  --color-sumi-ink: var(--sumi-ink);
+  --color-muted-label: var(--muted-label);
+  --color-critical-red: var(--critical-red);
 }
 
 /* ─── BASE ─── */
@@ -116,6 +154,23 @@ body::before {
   z-index: 5;
   will-change: mask-image;
   transition: opacity 0.5s ease-out;
+}
+
+/* ─── BLUEPRINT GRID TEXTURES ─── */
+.blueprint-grid-warm {
+  background-color: var(--studio-warm);
+  background-image: 
+    linear-gradient(rgba(138, 127, 114, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(138, 127, 114, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.blueprint-grid-dark {
+  background-color: var(--dark-walnut);
+  background-image: 
+    linear-gradient(rgba(74, 127, 165, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 127, 165, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 /* GLOBAL SLEEP MODE - Zero-Lag Purge 💤 */
@@ -251,7 +306,7 @@ body::before {
 .animate-marquee {
   display: inline-flex;
   white-space: nowrap;
-  animation: marquee 30s linear infinite;
+  animation: marquee 36s linear infinite;
   padding-left: 2rem;
 }
 
@@ -492,3 +547,105 @@ img, svg, picture, .ink-slash, .manga-panel {
   transform: none !important;
   -webkit-font-smoothing: antialiased !important;
 }
+
+/* ═══════════════════════════════════════════
+   🎨 V2 WARM STUDIO COLOR OVERRIDES (THEME V2)
+   ═══════════════════════════════════════════ */
+.theme-v2 {
+  --bg-ink: var(--studio-warm);         /* #F5EDE0 */
+  --bg-darker: var(--aged-paper);       /* #EDE4D3 */
+  --text-bone: var(--sumi-ink);         /* #1A1714 */
+  --text-muted: var(--muted-label);     /* #8A7F72 */
+  --accent-blood: var(--forge-orange);  /* #E8703A */
+  --accent-cursed: var(--blueprint-blue); /* #4A7FA5 */
+  --accent-blood-rgb: 232, 112, 58;
+  --accent-blood-alpha: rgba(232, 112, 58, 0.04);
+  --panel-border: rgba(26, 23, 20, 0.12);
+}
+
+/* Base background/text colors for theme-v2 containers */
+.theme-v2,
+.theme-v2 main,
+.theme-v2 section {
+  background-color: var(--bg-ink) !important;
+  color: var(--text-bone) !important;
+}
+
+/* Remap hardcoded utility colors for clean design-agency light-mode aesthetic */
+.theme-v2 .bg-white {
+  background-color: var(--studio-warm) !important;
+}
+
+.theme-v2 .bg-black {
+  background-color: var(--sumi-ink) !important;
+}
+
+.theme-v2 .text-white {
+  color: var(--bg-ink) !important;
+}
+
+.theme-v2 .text-black {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-black {
+  border-color: var(--text-bone) !important;
+}
+
+.theme-v2 .border-white {
+  border-color: var(--bg-ink) !important;
+}
+
+/* Dynamic custom styling overrides for custom class definitions in V1 components */
+.theme-v2 [class*="text-[var(--bg-ink)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="text-[var(--text-bone)]"] {
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-ink)]"] {
+  background-color: var(--bg-ink) !important;
+}
+
+.theme-v2 [class*="bg-[var(--bg-darker)]"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 [class*="border-[var(--text-bone)]"] {
+  border-color: var(--text-bone) !important;
+}
+
+/* Exclude the version switcher buttons from being overridden */
+.theme-v2 button,
+.theme-v2 button * {
+  color: initial !important;
+  background-color: initial !important;
+  border-color: initial !important;
+}
+
+/* Feedback Card and Input overrides inside theme-v2 */
+.theme-v2 .group.bg-white,
+.theme-v2 div[class*="bg-white"] {
+  background-color: var(--bg-darker) !important;
+}
+
+.theme-v2 input,
+.theme-v2 textarea {
+  background-color: var(--bg-darker) !important;
+  color: var(--text-bone) !important;
+}
+
+.theme-v2 input::placeholder,
+.theme-v2 textarea::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.5;
+}
+
+/* Make sure randomize/CTA buttons inside feedback page preserve text color */
+.theme-v2 .bg-black.text-white {
+  background-color: var(--sumi-ink) !important;
+  color: var(--bg-ink) !important;
+}
+

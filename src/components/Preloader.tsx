@@ -1,60 +1,66 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
-import Image from "next/image";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { createTimeline, stagger } from "animejs";
 import { mappaQuotesList, characterRegistry } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
+import { Fraunces, Outfit } from "next/font/google";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400"],
+  variable: "--font-fraunces",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const [complete, setComplete] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-    setIsMobile(window.innerWidth < 768);
-  }, []);
-  
+  const [exiting, setExiting] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const quoteRef = useRef<HTMLHeadingElement>(null);
   const sourceRef = useRef<HTMLDivElement>(null);
-  const topBarRef = useRef<HTMLDivElement>(null);
-  const bottomBarRef = useRef<HTMLDivElement>(null);
-  const slashRef = useRef<HTMLDivElement>(null);
-  const subliminalRef = useRef<HTMLDivElement>(null);
-  const bgImageRef = useRef<HTMLDivElement>(null);
+  const sourceOutlineRef = useRef<HTMLDivElement>(null);
+
   const timelineRef = useRef<any>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const breathIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // WebAudio Drone Refs
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const osc1Ref = useRef<OscillatorNode | null>(null);
+  const osc2Ref = useRef<OscillatorNode | null>(null);
+  const droneGainRef = useRef<GainNode | null>(null);
 
   const { language } = useLanguage();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Pick a random quote ONCE - using lazy initialization
-  // We use state instead of ref to ensure it's reactive if needed, 
-  // but stable after the first mount.
-  // Enhanced Randomization: Avoid picking the same quote twice in a row
   const [selectedQuote] = useState(() => {
     const lastQuoteId = typeof window !== 'undefined' ? sessionStorage.getItem('last_quote_id') : null;
-    let filtered = mappaQuotesList.filter(q => q.charId !== 'ROCKY'); // Rocky only shows in Eridian mode
+    let filtered = mappaQuotesList.filter(q => q.charId !== 'ROCKY');
     
-    // If we have more than 1 quote, try to pick one that isn't the last one shown
     if (filtered.length > 1 && lastQuoteId) {
       const deduplicated = filtered.filter(q => `${q.charId}-${q.en.slice(0, 10)}` !== lastQuoteId);
       if (deduplicated.length > 0) filtered = deduplicated;
     }
     
     const picked = filtered[Math.floor(Math.random() * filtered.length)];
-    
-    // Store this one as the last seen
     if (typeof window !== 'undefined' && picked) {
       sessionStorage.setItem('last_quote_id', `${picked.charId}-${picked.en.slice(0, 10)}`);
     }
-    
     return picked;
   });
 
-  // In Eridian mode, always override with Rocky's quote
   const rockyQuote = mappaQuotesList.find(q => q.charId === 'ROCKY');
   const activeQuote = language === 'eridian' ? (rockyQuote ?? selectedQuote) : selectedQuote;
   
@@ -90,308 +96,515 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
               language === 'es' ? character.es.name :
               character.en.name,
       image: character.image,
-      overrideOpacity: character.opacity
     };
   }, [language, activeQuote]);
 
-  // Handle case where quoteData is null (safety)
-  if (!quoteData) return null;
+  const { text: quote = "", author: source = "", image: bgImage = "" } = quoteData || {};
 
-  const { text: quote, author: source, image: bgImage, overrideOpacity } = quoteData;
-  const author = source; 
+  // Timing Mapping: Match V1 dynamic readTime logic exactly
+  const wordCount = useMemo(() => {
+    return quote ? quote.split(/\s+/).filter(w => w.length > 0).length : 0;
+  }, [quote]);
 
-  const wordCount = quote.split(/\s+/).filter(w => w.length > 0).length;
-  const readTime = Math.max(5500, 4000 + wordCount * 320);
+  const readTime = useMemo(() => {
+    return Math.max(5500, 4000 + wordCount * 320);
+  }, [wordCount]);
 
-  const targetBgOpacity = overrideOpacity ?? Math.min(0.15, wordCount * 0.02);
+  const quoteLines = useMemo(() => {
+    if (!quote) return [];
+    
+    const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const totalChars = quote.length;
 
+    // CJK handling (strictly character based)
+    if (isCJK) {
+      let targetLines = 3;
+      if (isMobile) {
+        if (totalChars < 25) targetLines = 3;
+        else if (totalChars < 50) targetLines = 4;
+        else targetLines = 5;
+      } else {
+        if (totalChars < 40) targetLines = 2;
+        else targetLines = 3;
+      }
+      const charsPerLine = Math.ceil(totalChars / targetLines);
+      const lines: string[] = [];
+      for (let i = 0; i < totalChars; i += charsPerLine) {
+        lines.push(quote.slice(i, i + charsPerLine));
+      }
+      return lines;
+    }
+
+    // Latin / Hindi handling (word based)
+    const words = quote.split(/\s+/).filter(w => w.length > 0);
+    const wordCount = words.length;
+    
+    // Target 2-3 lines for PC, 3-5 lines for Mobile
+    let targetLines = 3;
+    if (isMobile) {
+      if (wordCount < 8) targetLines = 3;
+      else if (wordCount < 15) targetLines = 4;
+      else targetLines = 5;
+    } else {
+      if (wordCount < 10) targetLines = 2;
+      else targetLines = 3;
+    }
+
+    if (wordCount <= targetLines) {
+      return words;
+    }
+
+    const lines: string[] = [];
+    let currentLine = "";
+    let remainingChars = totalChars;
+    let remainingLines = targetLines;
+
+    words.forEach(word => {
+      if (!currentLine) {
+        currentLine = word;
+      } else {
+        const targetCharsPerLine = Math.ceil(remainingChars / remainingLines);
+        if (currentLine.length >= targetCharsPerLine && lines.length < targetLines - 1) {
+          lines.push(currentLine);
+          remainingChars -= currentLine.length;
+          remainingLines--;
+          currentLine = word;
+        } else {
+          currentLine += " " + word;
+        }
+      }
+    });
+    
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+    
+    return lines;
+  }, [quote, language]);
+
+  // Dynamic Font Size Class to prevent leaving the viewport on big strings
   const quoteFontSizeClass = useMemo(() => {
     const len = quote.length;
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
-    const fontClass = isHindi ? "font-hindi" : "font-display";
     
-    // CJK and Hindi characters need specific scaling (Increased by ~14%)
     if (isCJK || isHindi) {
-      const base = isHindi ? "text-3xl md:text-7xl lg:text-[7.22rem]" : "text-3xl md:text-7xl lg:text-[6.42rem]";
-      if (len > 80) return `text-xl md:text-2xl lg:text-[2.81rem] ${fontClass}`;
-      if (len > 60) return `text-xl md:text-3xl lg:text-[3.61rem] ${fontClass}`;
-      if (len > 40) return `text-2xl md:text-4xl lg:text-[4.42rem] ${fontClass}`;
-      if (len > 25) return `text-2xl md:text-5xl lg:text-[5.22rem] ${fontClass}`;
-      if (len > 15) return `text-3xl md:text-6xl lg:text-[6.02rem] ${fontClass}`;
-      return `${base} ${fontClass}`;
+      if (len > 80) return "text-lg sm:text-xl md:text-2xl lg:text-[2.6rem]";
+      if (len > 60) return "text-xl sm:text-2xl md:text-3xl lg:text-[3.2rem]";
+      if (len > 40) return "text-2xl sm:text-3xl md:text-4xl lg:text-[3.8rem]";
+      if (len > 25) return "text-3xl sm:text-4xl md:text-5xl lg:text-[4.4rem]";
+      return "text-4xl sm:text-5xl md:text-[3.8rem] lg:text-[5rem]";
     } else {
-      // Standard Latin scaling (Reduced by 20% on top of previous 12%)
-      if (len > 100) return "font-display text-lg md:text-2xl lg:text-[3.05rem]";
-      if (len > 80) return "font-display text-xl md:text-3xl lg:text-[3.61rem]";
-      if (len > 60) return "font-display text-2xl md:text-4xl lg:text-[4.42rem]";
-      if (len > 40) return "font-display text-2xl md:text-5xl lg:text-[5.22rem]";
-      return "font-display text-3xl md:text-7xl lg:text-[6.42rem]";
+      if (len > 120) return "text-lg sm:text-xl md:text-2xl lg:text-[2.6rem]";
+      if (len > 100) return "text-xl sm:text-2xl md:text-3xl lg:text-[3.2rem]";
+      if (len > 80) return "text-2xl sm:text-3xl md:text-4xl lg:text-[3.8rem]";
+      if (len > 65) return "text-3xl sm:text-4xl md:text-5xl lg:text-[4.5rem]";
+      if (len > 45) return "text-4xl sm:text-5xl md:text-[3.5rem] lg:text-[5.0rem]";
+      return "text-4xl sm:text-5xl md:text-[4.2rem] lg:text-[5.6rem]";
     }
   }, [quote, language]);
 
-  const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
-
-  // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
-  const wrappedChars = useMemo(() => {
+  const getWrappedLines = useCallback((charClass: string) => {
     const isCJK = language === 'ja' || language === 'ko' || language === 'zh-tw';
     const isHindi = language === 'hi';
-    const charStyle = isMobile ? { opacity: 1 } : { opacity: 0, transform: 'translateY(40px)', filter: 'blur(20px)' };
 
-    // MOBILE OPTIMIZATION: On mobile, split by words only, NEVER characters. 
-    // This reduces DOM nodes from 150+ to ~15, slashing 2s of render delay.
-    if (isMobile) {
-      return quote.split(" ").map((word, i) => (
-        <span key={i} className="p-char inline-block will-change-transform mr-[0.25em]" style={charStyle}>
-          {word}
-        </span>
-      ));
-    }
+    const charStyle = {
+      opacity: 0,
+      transform: 'translateY(40px)',
+      filter: 'blur(20px)',
+    };
 
-    if (isHindi) {
-      // For Hindi, we MUST NOT split by character because matras (vowels) will break 
-      // from their base consonants. We split by words instead.
-      return quote.split(" ").map((word, i) => (
-        <span key={i} className="p-char inline-block will-change-transform mr-[0.25em]" style={charStyle}>
-          {word}
-        </span>
-      ));
-    }
-
-    if (isCJK) {
-      return quote.split("").map((char, i) => (
-        <span key={i} className="p-char inline-block will-change-transform" style={charStyle}>
-          {char === ' ' || char === '　' ? '\u00A0' : char}
-        </span>
-      ));
-    } else {
-      const wordList = quote.split(" ");
-      const elements: React.ReactNode[] = [];
-      wordList.forEach((word, wi) => {
-        if (wi > 0) {
-          elements.push(
-            <span key={`sp-${wi}`} className="p-char inline-block will-change-transform" style={charStyle}>{'\u00A0'}</span>
-          );
-          elements.push(" ");
-        }
-        elements.push(
-          <span key={`w-${wi}`} className="inline-block whitespace-nowrap">
-            {word.split("").map((char, ci) => (
-              <span key={ci} className="p-char inline-block will-change-transform" style={charStyle}>{char}</span>
+    return quoteLines.map((line, lineIdx) => {
+      if (isHindi) {
+        return (
+          <span key={lineIdx} className="block leading-relaxed">
+            {line.split(" ").map((word, wi) => (
+              <span key={wi} className={`${charClass} inline-block will-change-transform mr-[0.25em]`} style={charStyle}>
+                {word}
+              </span>
             ))}
           </span>
         );
-      });
-      return elements;
-    }
-  }, [quote, language]);
+      }
+      
+      if (isCJK) {
+        return (
+          <span key={lineIdx} className="block leading-relaxed">
+            {line.split("").map((char, ci) => (
+              <span key={ci} className={`${charClass} inline-block will-change-transform`} style={charStyle}>
+                {char === ' ' || char === '　' ? '\u00A0' : char}
+              </span>
+            ))}
+          </span>
+        );
+      }
 
+      // Latin split
+      const wordList = line.split(" ");
+      return (
+        <span key={lineIdx} className="block leading-relaxed">
+          {wordList.map((word, wi) => {
+            const charElements = word.split("").map((char, ci) => (
+              <span key={ci} className={`${charClass} inline-block will-change-transform`} style={charStyle}>
+                {char}
+              </span>
+            ));
+            return (
+              <span key={wi} className="inline-block whitespace-nowrap mr-[0.25em]">
+                {charElements}
+              </span>
+            );
+          })}
+        </span>
+      );
+    });
+  }, [quoteLines, language]);
+
+  const wrappedLinesBase = useMemo(() => getWrappedLines('p-char'), [getWrappedLines]);
+  const wrappedLinesOutline = useMemo(() => getWrappedLines('p-char-outline'), [getWrappedLines]);
+
+  // Image load detector to fade in the multiply overlay and faint background
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!bgImage || !mounted) return;
+    const img = new window.Image();
+    img.onload = () => {
+      const overlay = document.getElementById("image-overlay");
+      const bgOverlay = document.getElementById("bg-image-overlay");
+      if (overlay) {
+        overlay.style.backgroundImage = `url("${bgImage}")`;
+        overlay.style.opacity = '1';
+      }
+      if (bgOverlay) {
+        bgOverlay.style.backgroundImage = `url("${bgImage}")`;
+        bgOverlay.style.opacity = '0.15';
+      }
+    };
+    img.src = bgImage;
+  }, [bgImage, mounted]);
+
+  const initAudio = () => {
+    if (audioCtxRef.current) return;
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const audioCtx = new AudioContextClass();
+      audioCtxRef.current = audioCtx;
+      
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gainNode = audioCtx.createGain();
+      
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
+      
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(55.4, audioCtx.currentTime);
+      
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.07, audioCtx.currentTime + 3.0);
+      
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc1.start();
+      osc2.start();
+
+      osc1Ref.current = osc1;
+      osc2Ref.current = osc2;
+      droneGainRef.current = gainNode;
+    } catch(e) {
+      console.warn("Audio Context failed to initialize:", e);
+    }
+  };
+
+  const fadeOutAudio = () => {
+    if (audioCtxRef.current && droneGainRef.current) {
+      try {
+        const currTime = audioCtxRef.current.currentTime;
+        droneGainRef.current.gain.setValueAtTime(droneGainRef.current.gain.value, currTime);
+        droneGainRef.current.gain.exponentialRampToValueAtTime(0.0001, currTime + 1.2);
+        
+        setTimeout(() => {
+          osc1Ref.current?.stop();
+          osc2Ref.current?.stop();
+          audioCtxRef.current?.close();
+        }, 1300);
+      } catch(e) {
+        console.warn("Audio Context clean up error:", e);
+      }
+    }
+  };
+
+  const dismiss = useCallback(() => {
+    if (exiting) return;
+    setExiting(true);
+    fadeOutAudio();
+    
+    const exitTl = createTimeline({
+      defaults: {
+        ease: 'easeInQuad'
+      },
+      onComplete: () => {
+        setComplete(true);
+        onComplete?.();
+        document.body.style.overflow = "";
+      }
+    });
+
+    const pChars = document.querySelectorAll('.p-char');
+    if (pChars.length > 0) {
+      exitTl.add('.p-char', {
+        opacity: 0,
+        translateY: -60,
+        filter: 'blur(30px)',
+        delay: stagger(10, { from: 'center' }),
+        duration: 1000
+      }, 0);
+      exitTl.add('.p-char-outline', {
+        opacity: 0,
+        translateY: -60,
+        filter: 'blur(30px)',
+        delay: stagger(10, { from: 'center' }),
+        duration: 1000
+      }, 0);
+    }
+
+    if (sourceRef.current) {
+      exitTl.add(sourceRef.current, {
+        opacity: 0,
+        duration: 800
+      }, 0);
+    }
+    if (sourceOutlineRef.current) {
+      exitTl.add(sourceOutlineRef.current, {
+        opacity: 0,
+        duration: 800
+      }, 0);
+    }
+
+    exitTl.add('.skip-btn', {
+      opacity: 0,
+      translateY: -20,
+      duration: 600,
+      ease: 'easeInCubic'
+    }, 0);
+  }, [exiting, onComplete]);
+
+  const dismissRef = useRef(dismiss);
+  useEffect(() => {
+    dismissRef.current = dismiss;
+  }, [dismiss]);
 
   useEffect(() => {
     if (complete || !mounted) return;
     document.body.style.overflow = "hidden";
 
-    // Small delay to ensure DOM is painted with p-char spans before anime targets them
-    const initTimeout = setTimeout(() => {
-      const tl = createTimeline({
-        defaults: {
-          ease: 'easeOutQuint'
-        }
-      });
-      timelineRef.current = tl;
-
-      // Step 1: The 'Cinematic Aperture' Opening
-      const apertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
-      if (apertureTargets.length > 0) {
-        tl.add(apertureTargets, {
-          translateY: (el: any) => (el as HTMLElement).dataset.dir === 'top' ? '-100%' : '100%',
-          duration: 1600,
-          ease: 'easeInOutQuint'
-        }, 200);
+    const handleUserInteraction = () => {
+      initAudio();
+      if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
+        audioCtxRef.current.resume();
       }
+    };
+    window.addEventListener("click", handleUserInteraction);
+    window.addEventListener("touchmove", handleUserInteraction);
 
-      // Step 2: The Red Sunder (Visual Pulse) + Subliminal Kanji
-      if (slashRef.current) {
-        tl.add(slashRef.current, {
-          scaleX: [0, 1.2],
-          opacity: [0, 1, 0],
-          duration: 1000,
-          ease: 'easeInOutSine'
-        }, 600);
+    // Stagger character reveal animations like V1
+    const tl = createTimeline({
+      defaults: {
+        ease: 'easeOutQuint'
       }
+    });
+    timelineRef.current = tl;
 
+    const pChars = document.querySelectorAll('.p-char');
+    if (pChars.length > 0) {
+      tl.add('.p-char', {
+        opacity: [0, 1],
+        translateY: [40, 0],
+        filter: ['blur(20px)', 'blur(0px)'],
+        duration: 800,
+        delay: stagger(15),
+        ease: 'easeOutQuart'
+      }, 400);
 
-      // Step 3: Precision character reveal
-      const pChars = document.querySelectorAll('.p-char');
-      if (pChars.length > 0) {
-        tl.add('.p-char', {
-          opacity: [0, 1],
-          translateY: [40, 0],
-          filter: ['blur(20px)', 'blur(0px)'],
-          duration: 800,
-          delay: stagger(15),
-          ease: 'easeOutQuart'
-        }, 1000);
+      tl.add('.p-char-outline', {
+        opacity: [0, 1],
+        translateY: [40, 0],
+        filter: ['blur(20px)', 'blur(0px)'],
+        duration: 800,
+        delay: stagger(15),
+        ease: 'easeOutQuart'
+      }, 400);
+    }
 
-        if (bgImageRef.current) {
-          tl.add(bgImageRef.current, {
-            opacity: [0, targetBgOpacity],
-            duration: (pChars.length * 15) + 800,
-            ease: 'linear'
-          }, 1000);
-        }
-      }
+    if (sourceRef.current) {
+      tl.add(sourceRef.current, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 1200,
+        ease: 'easeOutCubic'
+      }, 1000);
+    }
+    if (sourceOutlineRef.current) {
+      tl.add(sourceOutlineRef.current, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 1200,
+        ease: 'easeOutCubic'
+      }, 1000);
+    }
 
-      // Step 4: Elevated Source Presentation
-      if (sourceRef.current) {
-        tl.add(sourceRef.current, {
-          opacity: [0, 1],
-          translateY: [20, 0],
-          duration: 1200,
-          ease: 'easeOutCubic'
-        }, 1800);
-      }
-
-      exitTimeoutRef.current = setTimeout(() => {
-        const exitTl = createTimeline({
-          defaults: {
-            ease: 'easeInQuint'
-          },
-          onComplete: () => {
-            setComplete(true);
-            onComplete?.();
-            document.body.style.overflow = "";
-          }
-        });
-
-        if (pChars.length > 0) {
-          exitTl.add('.p-char', {
-            opacity: 0,
-            translateY: -60,
-            filter: 'blur(30px)',
-            delay: stagger(10, { from: 'center' }),
-            duration: 1000
-          });
-        }
-
-        if (sourceRef.current) {
-          exitTl.add(sourceRef.current, {
-            opacity: 0,
-            duration: 800
-          }, 200);
-        }
-
-        const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
-        if (exitApertureTargets.length > 0) {
-          exitTl.add(exitApertureTargets, {
-            translateY: 0,
-            duration: 1500,
-            ease: 'easeInExpo'
-          }, 600);
-        }
-
-        if (bgImageRef.current) {
-          exitTl.add(bgImageRef.current, {
-            opacity: 0,
-            duration: 800,
-            ease: 'easeOutSine'
-          }, 0);
-        }
-      }, readTime);
-
-    }, 50); // 50ms delay ensures React has painted the p-char spans
+    exitTimeoutRef.current = setTimeout(() => dismissRef.current(), readTime);
 
     return () => {
-      clearTimeout(initTimeout);
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("touchmove", handleUserInteraction);
       if (exitTimeoutRef.current) clearTimeout(exitTimeoutRef.current);
       if (timelineRef.current) timelineRef.current.pause();
-      document.body.style.overflow = "";
     };
-  }, [complete, onComplete, quote, readTime, language, mounted]);
+  }, [complete, mounted, readTime]);
 
-  if (complete) return null;
+  if (complete || !quoteData) return null;
 
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none cinematic-breath pointer-events-none"
+      onClick={() => dismiss()}
+      className={`fixed inset-0 z-[999999] bg-[#030305] flex flex-col items-center justify-center overflow-hidden px-8 md:px-24 cursor-pointer select-none ${fraunces.variable} ${outfit.variable}`}
     >
-      {/* Cinematic Shutter System */}
-      <div data-dir="top" ref={topBarRef} className="absolute top-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-b border-[#E8E8E6]/5 will-change-transform" />
-      <div data-dir="bottom" ref={bottomBarRef} className="absolute bottom-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-t border-[#E8E8E6]/5 will-change-transform" />
-
-      {/* Atmospheric Layers */}
-      <div className="absolute inset-0 bg-[#050505]" />
-      
-      {/* AUTHOR MAPPED BACKGROUND (Cinematic Materialization) */}
-      {bgImage && (
+      {/* Central Typographic Block */}
+      <div className="relative z-20 w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
+        
+        {/* Quote lines with background-clip: text (1.4x dynamic font scale, non-italic) */}
         <div 
-          ref={bgImageRef}
-          className="absolute inset-0 bg-black/90 backdrop-blur-lg z-0 opacity-0 pointer-events-none"
+          id="quote-wrapper"
+          className={`relative z-10 font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
+          style={{ color: '#FFFFFF' }}
         >
-          <Image 
-            src={bgImage} 
-            alt="Cinematic Background" 
-            fill 
-            sizes="100vw"
-            quality={80}
-            className="object-cover"
-            style={{ filter: 'grayscale(1) brightness(0.8)' }}
-            priority
-          />
+          {wrappedLinesBase}
         </div>
-      )}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--accent-blood-alpha)_0%,transparent_85%)] opacity-60" />
-      <div className="absolute inset-0 halftone-bg opacity-[0.05] mix-blend-overlay pointer-events-none" />
-      
-
-      {/* The Sunder Flash */}
-      <div 
-        ref={slashRef} 
-        className="absolute top-1/2 left-0 right-0 h-[2px] bg-[var(--accent-blood)] -translate-y-1/2 z-30 shadow-[0_0_50px_rgba(var(--accent-blood-rgb),0.9)] opacity-0 will-change-transform" 
-      />
-
-      <div className="relative z-20 flex flex-col items-center max-w-7xl w-full mx-auto">
-         <h1 
-          ref={quoteRef} 
-          className={`${quoteFontSizeClass} font-black text-[#E8E8E6] ${language === 'hi' ? '' : 'uppercase'} tracking-[-0.05em] ${quote.length > 50 ? 'leading-[0.95]' : 'leading-[0.85]'} text-center mb-28 will-change-transform drop-shadow-[0_0_15px_rgba(255,255,255,0.05)] mx-auto`}
-         >
-           {wrappedChars}
-         </h1>
-         
-         <div 
+        {/* Attribution & thin Forge-Orange separator line */}
+        <div 
           ref={sourceRef}
-          className="flex items-center justify-center gap-6 md:gap-24 opacity-0 will-change-transform mx-auto"
-         >
-            <div className="w-12 md:w-48 h-[1px] bg-[var(--accent-blood)]/40 shadow-[0_4px_30px_rgba(var(--accent-blood-rgb),0.5)]" />
-            <div className="relative group px-6 py-4 md:px-14 md:py-7 border border-[#E8E8E6]/10 backdrop-blur-sm">
-              <span className={`text-xs md:text-3xl text-[var(--accent-blood)] ${language === 'hi' ? 'tracking-normal' : 'tracking-[0.3em] md:tracking-[1.1em]'} ${language === 'hi' ? '' : 'uppercase'} font-black ${language === 'hi' ? 'font-hindi' : 'font-mono'}`}>
-                {source}
-              </span>
-              <div className="absolute top-0 left-0 w-[5px] h-full bg-[var(--accent-blood)] shadow-[0_0_20px_rgba(var(--accent-blood-rgb),0.8)]" />
-            </div>
-            <div className="w-12 md:w-48 h-[1px] bg-[var(--accent-blood)]/40 shadow-[0_4px_30px_rgba(var(--accent-blood-rgb),0.5)]" />
-         </div>
+          className="attribution flex flex-col items-center gap-3 opacity-0"
+        >
+          <div className="w-[60px] h-[2px] bg-[var(--forge-orange)]" />
+          <div className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em] text-[var(--muted-label)]">
+            {source}
+          </div>
+        </div>
+
       </div>
 
-      {/* Cinematic Texture Overlays */}
-      <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.08] grain-bg mix-blend-overlay" />
-      <div className="absolute inset-0 pointer-events-none z-50 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.7)_100%)] opacity-80" />
-      
-      <style>{`
-        .cinematic-breath {
-          animation: cinematic-breath 12s ease-in-out infinite;
-          will-change: transform;
-          transform-style: preserve-3d;
+      {/* Skip button corner indicator */}
+      <button 
+        onClick={(e) => { e.stopPropagation(); dismiss(); }}
+        className="skip-btn absolute bottom-8 right-8 z-30 pointer-events-auto font-mono text-[9px] font-bold tracking-[0.25em] uppercase text-[var(--muted-label)] hover:text-[#EDE4D3] transition-colors duration-300 bg-transparent border-none outline-none cursor-pointer"
+      >
+        skip ↗
+      </button>
+
+      {/* Progress bar line at the very bottom mapped dynamically to readTime */}
+      <div className="progress-container absolute bottom-0 left-0 w-full h-[2px] bg-white/5 z-20">
+        <div 
+          className="progress-fill h-full bg-[var(--forge-orange)]" 
+          style={{ animationDuration: `${readTime}ms` }}
+        />
+      </div>
+
+      {/* BACKGROUND IMAGE OVERLAY (Faint 15% opacity) */}
+      <div 
+        id="bg-image-overlay"
+        className="absolute inset-0 pointer-events-none z-[10]"
+        style={{
+          opacity: 0,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transition: 'opacity 1s ease-in-out'
+        }}
+      />
+
+      {/* FULL SCREEN IMAGE OVERLAY WITH MULTIPLY */}
+      <div 
+        id="image-overlay"
+        className="absolute inset-0 pointer-events-none mix-blend-multiply z-[40]"
+        style={{
+          opacity: 0,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          transition: 'opacity 1s ease-in-out'
+        }}
+      />
+
+      {/* STROKE OVERLAY FOR READABILITY (z-[50]) */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-[50] flex flex-col items-center justify-center px-8 md:px-24"
+        style={{ mixBlendMode: 'screen' }}
+      >
+        <div className="relative w-full max-w-6xl flex flex-col items-center justify-center text-center gap-12">
+          
+          <div 
+            className={`font-serif font-bold tracking-wide select-none w-full text-center ${quoteFontSizeClass}`}
+            style={{ 
+              color: '#000000',
+              textShadow: '0 0 0.3px rgba(255, 255, 255, 0.8)'
+            }}
+          >
+            {wrappedLinesOutline}
+          </div>
+
+          <div 
+            ref={sourceOutlineRef}
+            className="attribution flex flex-col items-center gap-3 opacity-0"
+          >
+            {/* Transparent line to match layout gap */}
+            <div className="w-[60px] h-[2px] bg-transparent" />
+            <div 
+              className="font-mono text-[13px] md:text-[15px] uppercase tracking-[0.4em]"
+              style={{ 
+                color: '#000000',
+                textShadow: '0 0 0.3px rgba(255, 255, 255, 0.8)'
+              }}
+            >
+              {source}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Texture Overlays */}
+      <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.08] grain-overlay mix-blend-overlay" />
+
+      <style jsx global>{`
+        .grain-overlay {
+          position: fixed;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 50;
+          pointer-events: none;
+          opacity: 0.015;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
 
-        @keyframes cinematic-breath {
-          0%, 100% { transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1); }
-          50% { transform: perspective(1200px) rotateX(0.4deg) rotateY(0.2deg) scale(1.01); }
+
+
+        .progress-fill {
+          width: 0%;
+          animation: progressFill linear forwards;
+        }
+
+        @keyframes progressFill {
+          to { width: 100%; }
         }
       `}</style>
     </div>

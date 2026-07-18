@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.2",
+    "@types/three": "^0.184.1",
     "animejs": "^4.3.6",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
@@ -21,7 +22,8 @@
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
