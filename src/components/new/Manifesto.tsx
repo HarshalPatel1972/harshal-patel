@@ -308,9 +308,13 @@ export function Manifesto() {
               <span className="hidden sm:inline">Active</span>
               <span>Present</span>
             </div>
-            <div className="relative h-6 border-t border-b border-[#8A7F72]/30 flex items-center justify-between">
+            <div className="relative h-6 border-t border-b border-[#8A7F72]/30 flex items-center justify-between w-full overflow-hidden">
+              {/* Colored Fill */}
+              <div className="absolute left-0 top-0 bottom-0 timeline-fill" />
+              
+              {/* Grid overlay */}
               <div
-                className="w-full h-full opacity-20"
+                className="absolute inset-0 w-full h-full opacity-20 pointer-events-none"
                 style={{
                   backgroundImage: `repeating-linear-gradient(90deg, #F0EDE8 0px, #F0EDE8 1px, transparent 1px, transparent 12px)`,
                 }}
@@ -336,6 +340,13 @@ export function Manifesto() {
         .circle-path {
           stroke-dasharray: 500;
           stroke-dashoffset: calc(500 * (1 - clamp(0, calc((var(--scroll-progress) - var(--svg-start)) / 0.3), 1)));
+        }
+        .timeline-fill {
+          /* Starts filling at 50% scroll, finishes at 90% scroll */
+          width: calc(clamp(0, calc((var(--scroll-progress) - 0.5) * 2.5), 1) * 100%);
+          background: linear-gradient(90deg, var(--blueprint-blue) 0%, var(--forge-orange) 100%);
+          opacity: 0.8;
+          box-shadow: 0 0 20px rgba(232, 97, 66, 0.4);
         }
       `}</style>
     </section>

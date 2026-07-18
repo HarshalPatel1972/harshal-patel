@@ -28,7 +28,7 @@ const CARD_ACCENTS = [
 const STATUS_LABELS = ["SHIPPED", "IN PROGRESS", "SHIPPED", "SHIPPED", "IN PROGRESS", "ARCHIVED"];
 
 // ─── Resonance canvas overlay ─────────────────────────────────────────────────
-function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: number; mouseY: number }) {
+function ResonanceCanvas({ active, mouseRef }: { active: boolean; mouseRef: React.MutableRefObject<{ x: number; y: number }> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
   const ringsRef = useRef<{ r: number; alpha: number }[]>([]);
@@ -43,6 +43,7 @@ function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: 
   }, [active]);
 
   useEffect(() => {
+    if (!active) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -58,8 +59,8 @@ function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: 
         ctx.strokeStyle = `rgba(74,127,165,${ring.alpha})`;
         ctx.lineWidth = 1;
         ctx.strokeRect(
-          mouseX - ring.r,
-          mouseY - ring.r,
+          mouseRef.current.x - ring.r,
+          mouseRef.current.y - ring.r,
           ring.r * 2,
           ring.r * 2
         );
@@ -71,7 +72,7 @@ function ResonanceCanvas({ active, mouseX, mouseY }: { active: boolean; mouseX: 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [mouseX, mouseY]);
+  }, [active, mouseRef]);
 
   return (
     <canvas
@@ -100,14 +101,14 @@ function DossierCard({
   onNavigate: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
-  const [mouse, setMouse] = useState({ x: 300, y: 285 });
+  const mouseRef = useRef({ x: 300, y: 285 });
   const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
   const statusLabel = STATUS_LABELS[index % STATUS_LABELS.length];
   const statusRotation = index % 2 === 0 ? "-rotate-[4deg]" : "rotate-[3deg]";
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }, []);
 
   const viewLabel =
@@ -141,7 +142,7 @@ function DossierCard({
           onClick={onNavigate}
         >
           {/* Resonance canvas */}
-          <ResonanceCanvas active={hovered} mouseX={mouse.x} mouseY={mouse.y} />
+          <ResonanceCanvas active={hovered} mouseRef={mouseRef} />
 
           {/* Accent colour top-strip */}
           <div className="h-2 w-full" style={{ background: accent }} />
@@ -231,23 +232,31 @@ function DossierCard({
             </div>
 
             {/* Specs + CTA */}
-            <div className="mt-8 flex flex-col gap-4">
-              {/* Specs block — JetBrains Mono style */}
+            <div className="mt-2 flex flex-col gap-4">
+              {/* Specs block — Clean formatted list */}
               <div
-                className={`flex flex-col items-end gap-1 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-40"}`}
+                className={`flex flex-col items-end gap-2 transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-80"}`}
               >
-                {project.specs.map((spec) => (
-                  <span
-                    key={spec}
-                    className="text-[10px] md:text-xs tracking-[0.2em]"
-                    style={{
-                      fontFamily: "var(--font-jetbrains-mono), monospace",
-                      color: "var(--sumi-ink)",
-                    }}
-                  >
-                    {spec}
-                  </span>
-                ))}
+                {project.specs.map((spec) => {
+                  // Clean up legacy V1 cyberpunk formatting
+                  const cleanSpec = spec.replace(/^\/\/\s*/, '').replace(/_$/, '');
+                  return (
+                    <div key={spec} className="flex items-center gap-2">
+                      <svg width="16" height="8" viewBox="0 0 16 8" fill="none" style={{ color: hovered ? accent : "var(--muted-label)", transition: "color 0.3s ease" }}>
+                        <path d="M0 4h14M11 1l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+                      </svg>
+                      <span
+                        className="text-[9px] md:text-[11px] tracking-[0.15em] uppercase font-bold transition-colors duration-300"
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                          color: "var(--sumi-ink)",
+                        }}
+                      >
+                        {cleanSpec}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Arrow CTA */}

@@ -8,7 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
 import { useSignals } from "@/context/SignalContext";
 import { useCounter } from "../AnimationKit";
-import { KnowledgeGraph } from "./KnowledgeGraph";
+import { SkillGlobe } from "./SkillGlobe";
 
 // ─── Animated stat counter ────────────────────────────────────────────────────
 function StudioStat({ value, label }: { value: number; label: string }) {
@@ -389,12 +389,12 @@ export function About() {
 
   const coreExpertiseLabel = (() => {
     switch (language) {
-      case "ja": return "主な専門分野"; case "ko": return "핵심 전문 분야";
-      case "zh-tw": return "核心專業領域"; case "fr": return "Expertise Fondamentale";
-      case "id": return "Keahlian Inti"; case "de": return "Kernkompetenz";
-      case "it": return "Competenza Core"; case "pt-br": return "Competência Principal";
-      case "es-419": case "es": return "Experiencia Principal"; case "hi": return "मुख्य विशेषज्ञता";
-      case "eridian": return "PRIMARY-SKILL"; default: return "Core Expertise";
+      case "ja": return "スキル・インパクト"; case "ko": return "스킬 임팩트";
+      case "zh-tw": return "技能影響"; case "fr": return "Impacts des Compétences";
+      case "id": return "Dampak Keahlian"; case "de": return "Skill Impacts";
+      case "it": return "Impatti delle Competenze"; case "pt-br": return "Impactos de Habilidades";
+      case "es-419": case "es": return "Impactos de Habilidades"; case "hi": return "कौशल प्रभाव";
+      case "eridian": return "SKILL-SPLAT"; default: return "Skill Impacts";
     }
   })();
 
@@ -434,7 +434,10 @@ export function About() {
         document.body
       )}
 
-      <div className="w-full max-w-7xl relative flex flex-col gap-16 mt-[50px]">
+      <div 
+        className="w-full max-w-7xl relative flex flex-col gap-16"
+        style={{ marginTop: "calc(clamp(8rem,20vw,20rem) * -0.2)" }}
+      >
 
         {/* ── MAIN PAPER CARD (vision board) ── */}
         <ScrollReveal duration={1200} className="w-full">
@@ -627,14 +630,8 @@ export function About() {
                   border: "1px dashed rgba(22, 29, 26, 0.2)",
                 }}
               >
-                <div
-                  className="text-[9px] uppercase tracking-[0.3em] mb-6 opacity-60"
-                  style={{ fontFamily: "var(--font-jetbrains-mono), monospace", color: "var(--sumi-ink)" }}
-                >
-                  Core Expertise
-                </div>
                 <div className="flex-1 w-full pt-2 h-full">
-                  {skillsVisible && <KnowledgeGraph skills={currentProfile.skills} />}
+                  {skillsVisible && <SkillGlobe skills={currentProfile.skills} />}
                 </div>
 
               </div>
