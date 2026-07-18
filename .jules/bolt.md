@@ -1,3 +1,7 @@
+## 2026-03-04 - Mobile Dashboard Background Grid React.memo Optimization
+**Learning:** High-frequency UI updates or state changes (like navigating views) cause large inline React subtrees (e.g., arrays of 100+ DOM nodes) to re-render needlessly if not memoized.
+**Action:** Extract large, static node arrays into components wrapped in `React.memo` to halt deep re-render cycles.
+
 ## 2024-05-24 - [Avoid `useState` in high-frequency scroll listeners]
 **Learning:** Storing rapidly changing scroll properties (`scrollY`, `progress`, `speed`) in `useState` triggers massive render thrashing (e.g., ~60 re-renders per second in the `Navbar` component).
 **Action:** When creating high-frequency scroll trackers or interactive UI elements that depend on scrolling/mouse movement, store the changing values in `useRef` and perform direct DOM style mutations inside `requestAnimationFrame` loops to entirely bypass the React render cycle.
