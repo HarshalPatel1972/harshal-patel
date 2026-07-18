@@ -1,3 +1,7 @@
 ## 2026-07-16 - Optimize state update for high-frequency mousemove events
 **Learning:** Found a performance bottleneck in `src/app/feedback/FeedbackContents.tsx` where a high-frequency `mousemove` event listener updates state (`mousePos`) synchronously. This can trigger excessive React re-renders and block the main thread.
 **Action:** Use a `useRef` for mutable coordinate values or batch state updates using `requestAnimationFrame` along with a ticking flag to prevent synchronous cascading re-renders on every `mousemove` event.
+
+## 2024-05-18 - Replacing continuous state updates with Mutable Refs in RequestAnimationFrame Loops
+**Learning:** In the `Projects.tsx` component, the `DossierCard` updated its local `mouse` React state continuously via `onMouseMove`. This passed a new `mouseX` and `mouseY` to `ResonanceCanvas`, which included them in the dependency array of a `useEffect` containing a `requestAnimationFrame` loop. This created a dual performance bottleneck: constant cascading React re-renders in the parent card on every mouse move, and the constant teardown/restart of the Canvas animation loop due to changing dependencies.
+**Action:** When connecting a high-frequency DOM event (like `mousemove`) to a Canvas `requestAnimationFrame` loop, store the changing coordinates in a `useRef` rather than `useState`. Pass the mutable ref object to the Canvas component and read directly from `.current` inside the `draw` function. Keep the ref out of the dependency arrays, preventing both React re-renders and loop resets.
