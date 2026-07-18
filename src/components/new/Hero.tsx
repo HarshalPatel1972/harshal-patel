@@ -16,8 +16,18 @@ export function Hero() {
   const trackRef = useRef<HTMLDivElement>(null);
   const heroContentRef = useRef<HTMLDivElement>(null);
 
-  const firstWord = currentProfile.name.split(" ")[0] || "Harshal";
-  const remainingWords = currentProfile.name.split(" ").slice(1).join(" ") || "Patel";
+
+  // Performance Optimization: Memoize string splits to prevent redundant
+  // array allocations and computations on every render cycle.
+  const { firstWord, remainingWords, taglineParts } = useMemo(() => {
+    const parts = currentProfile.name.split(" ");
+    return {
+      firstWord: parts[0] || "Harshal",
+      remainingWords: parts.slice(1).join(" ") || "Patel",
+      taglineParts: currentProfile.tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi)
+    };
+  }, [currentProfile.name, currentProfile.tagline]);
+
 
   // SCROLL ENGINE
   useEffect(() => {
@@ -199,9 +209,7 @@ export function Hero() {
             }}
           >
             {(() => {
-              const tagline = currentProfile.tagline;
-              const parts = tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi);
-              return parts.map((part, index) => {
+              return taglineParts.map((part, index) => {
                 const lower = part.toLowerCase();
                 if (lower === "go") {
                   return (

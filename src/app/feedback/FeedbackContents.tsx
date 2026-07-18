@@ -185,9 +185,26 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
   const isV2 = isMounted && designVersion === "new";
 
   useEffect(() => {
-    const handleMove = (e: MouseEvent) => setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
+    let ticking = false;
+    let rafId: number;
+
+    const handleMove = (e: MouseEvent) => {
+      // ⚡ Bolt: Batch high-frequency mousemove state updates with requestAnimationFrame
+      // to prevent synchronous cascading React re-renders and main thread blocking.
+      if (!ticking) {
+        rafId = requestAnimationFrame(() => {
+          setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (

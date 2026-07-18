@@ -22,11 +22,11 @@ export function DesignVersionSwitcher() {
 
   // Show notice on mount, then auto-hide after 3s
   useEffect(() => {
-    setNoticeVisible(true);
+    const timer1 = setTimeout(() => setNoticeVisible(true), 0);
     hideTimer.current = setTimeout(() => {
       setNoticeVisible(false);
     }, 3000);
-    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
+    return () => { clearTimeout(timer1); if (hideTimer.current) clearTimeout(hideTimer.current); };
   }, [designVersion]);
 
   if (!isMounted) return null;
@@ -119,7 +119,7 @@ export function DesignVersionSwitcher() {
         {/* Version notice — shows on load for 3s, then reappears on hover */}
         {isAtTop && (
           <div
-            className={`absolute left-full ml-2.5 z-20 flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border whitespace-nowrap transition-all duration-500 pointer-events-none ${
+            className={`absolute left-full ml-2.5 z-20 hidden sm:flex items-center gap-2 px-2.5 py-1 text-[9px] font-mono tracking-widest uppercase border whitespace-nowrap transition-all duration-500 pointer-events-none ${
               noticeVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"

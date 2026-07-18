@@ -71,7 +71,27 @@ export function Hero() {
   };
 
   const currentIntro = introStages[language as keyof typeof introStages] || introStages.en;
+
   const allWords = useMemo(() => currentIntro.join(" ").split(" "), [currentIntro]);
+
+  // Performance Optimization: Memoize complex string splits and character array generation
+  // to prevent unnecessary object allocations on every render cycle.
+  const { firstName, firstNameChars, lastName, lastNameChars } = useMemo(() => {
+    const parts = currentProfile.name.split(" ");
+    const first = parts[0] || "";
+    const last = parts.slice(1).join(" ") || "";
+    return {
+      firstName: first,
+      firstNameChars: first.split(""),
+      lastName: last,
+      lastNameChars: last.split("")
+    };
+  }, [currentProfile.name]);
+
+  const taglineParts = useMemo(() => {
+    return currentProfile.tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi);
+  }, [currentProfile.tagline]);
+
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
@@ -138,7 +158,7 @@ export function Hero() {
   return (
     <section
       ref={trackRef}
-      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate transform-gpu overflow-visible"
+      className="h-[300vh] relative bg-[var(--bg-ink)] z-0 isolate overflow-visible"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
       <div 
@@ -202,10 +222,10 @@ export function Hero() {
               <h1 id="hero-title" className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase text-[var(--text-bone)] select-none chromatic-aberration relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`} style={{ letterSpacing: "-0.04em" }}>
                 {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
-                    {currentProfile.name.split(" ")[0]}
+                    {firstName}
                   </span>
                 ) : (
-                  currentProfile.name.split(" ")[0].split("").map((char, i) => (
+                  firstNameChars.map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
@@ -215,10 +235,10 @@ export function Hero() {
               <h1 className={`cinematic-in text-[13.3vw] sm:text-[7.1rem] md:text-[9.8rem] lg:text-[12.5rem] leading-[0.8] font-black uppercase tracking-[-0.04em] text-transparent select-none md:ml-[15%] text-stroke-bone relative z-20 ${language === 'hi' ? 'font-hindi' : 'font-display'}`}>
                  {language === 'hi' ? (
                   <span className="inline-block transition-all duration-300">
-                    {currentProfile.name.split(" ").slice(1).join(" ")}
+                    {lastName}
                   </span>
                  ) : (
-                   currentProfile.name.split(" ").slice(1).join(" ").split("").map((char, i) => (
+                   lastNameChars.map((char, i) => (
                     <span key={i} className="inline-block transition-all duration-300">
                       {char}
                     </span>
@@ -229,9 +249,7 @@ export function Hero() {
 
             <p className="cinematic-in text-base md:text-xl text-[var(--text-muted)] max-w-xl font-mono leading-relaxed mb-12 mt-4 md:mt-4">
               {(() => {
-                const tagline = currentProfile.tagline;
-                const parts = tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi);
-                return parts.map((part, index) => {
+                return taglineParts.map((part, index) => {
                   const lower = part.toLowerCase();
                   if (lower === "go") {
                     return (
@@ -335,7 +353,7 @@ export function Hero() {
       </div>
       <style>{`
         .reveal-word {
-          --progress: clamp(0, (var(--scroll-progress) - var(--start)) / (var(--end) - var(--start)), 1);
+          --progress: clamp(0, calc((var(--scroll-progress) - var(--start)) / 0.2), 1);
           opacity: var(--progress);
           transform: translateY(calc((1 - var(--progress)) * 25px));
           filter: blur(calc((1 - var(--progress)) * 12px));
