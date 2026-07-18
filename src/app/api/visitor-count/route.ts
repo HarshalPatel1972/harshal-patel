@@ -13,6 +13,9 @@ const BOT_KEYWORDS = [
   'vercel', 'ping', 'health', 'checker', 'uptimerobot'
 ];
 
+// Pre-compile regex for O(1) matching performance instead of Array.some + toLowerCase per request
+const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
+
 export async function GET(req: NextRequest) {
     try {
         // RESET COMMAND (ONE-TIME RITUAL)
@@ -38,10 +41,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const userAgent = req.headers.get('user-agent')?.toLowerCase() || 'unknown';
+        const userAgent = req.headers.get('user-agent') || 'unknown';
         
         // 1. FILTER BOTS: If User-Agent contains bot keywords, we silently ignore the increment
-        const isBot = BOT_KEYWORDS.some(keyword => userAgent.includes(keyword));
+        // Using pre-compiled regex for better performance on high-frequency API route
+        const isBot = BOT_REGEX.test(userAgent);
         if (isBot) {
             return NextResponse.json({ success: true, status: 'SPECTRE_DETECTED_IGNORING' });
         }
