@@ -1,3 +1,7 @@
+## 2024-05-24 - [Avoid `useState` in high-frequency scroll listeners]
+**Learning:** Storing rapidly changing scroll properties (`scrollY`, `progress`, `speed`) in `useState` triggers massive render thrashing (e.g., ~60 re-renders per second in the `Navbar` component).
+**Action:** When creating high-frequency scroll trackers or interactive UI elements that depend on scrolling/mouse movement, store the changing values in `useRef` and perform direct DOM style mutations inside `requestAnimationFrame` loops to entirely bypass the React render cycle.
+
 ## 2024-05-18 - [Batching DOM reads and writes in high-frequency events]
 **Learning:** When batching high-frequency events (like `mousemove`) with `requestAnimationFrame`, you must store the latest event coordinates in a mutable outer variable (e.g., `useRef`) rather than closing over the event object directly. Otherwise, the asynchronous frame callback will capture stale data or the event object will be garbage-collected, leading to visual desyncs.
 **Action:** Always capture `e.clientX` / `e.clientY` in a `useRef` object synchronously in the event handler before queuing the `requestAnimationFrame` containing `getBoundingClientRect()` and style updates.
