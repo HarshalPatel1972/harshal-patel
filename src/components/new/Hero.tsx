@@ -68,7 +68,7 @@ function GridIlluminator() {
 
       const color = COLORS[Math.floor(Math.random() * COLORS.length)];
       const duration = 2500 + Math.random() * 2500; // 2.5s - 5s
-      const maxAlpha = 0.15 + Math.random() * 0.15; // 0.15 - 0.30 opacity
+      const maxAlpha = 0.10; // Exact 0.10 opacity to match bg-[#3178C6]/10 & bg-[#654FF0]/10
 
       activeSquares.push({ col, row, color, startTime: now, duration, maxAlpha });
     };
@@ -96,14 +96,9 @@ function GridIlluminator() {
         const x = sq.col * CELL_SIZE;
         const y = sq.row * CELL_SIZE;
 
-        // Fill background cell
+        // Pure flat background cell fill without any border/stroke
         ctx.fillStyle = `rgba(${sq.color.r}, ${sq.color.g}, ${sq.color.b}, ${alpha})`;
         ctx.fillRect(x + 1, y + 1, CELL_SIZE - 1, CELL_SIZE - 1);
-
-        // Subtle glowing border line
-        ctx.strokeStyle = `rgba(${sq.color.r}, ${sq.color.g}, ${sq.color.b}, ${alpha * 1.6})`;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x + 0.5, y + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
 
         return true;
       });
