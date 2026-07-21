@@ -20,10 +20,12 @@ function GridIlluminator() {
     let height = 0;
     const CELL_SIZE = 40;
 
-    // TypeScript Blue (#3178C6) & WebAssembly Purple (#654FF0)
+    // 4 Brand Colors: TS Blue (#3178C6), Wasm Purple (#654FF0), Emerald Green (#10B981), Critical Red (#D91111)
     const COLORS = [
-      { r: 49, g: 120, b: 198 },  // #3178C6
-      { r: 101, g: 79, b: 240 }, // #654FF0
+      { r: 49, g: 120, b: 198 },  // #3178C6 (Blue)
+      { r: 101, g: 79, b: 240 }, // #654FF0 (Purple)
+      { r: 16, g: 185, b: 129 },  // #10B981 (Green)
+      { r: 217, g: 17, b: 17 },   // #D91111 (Red)
     ];
 
     interface ActiveSquare {
@@ -78,9 +80,9 @@ function GridIlluminator() {
     const render = (now: number) => {
       ctx.clearRect(0, 0, width, height);
 
-      // Maintain ~8-14 active glowing squares
-      if (now - lastSpawn > 350 && activeSquares.length < 12) {
-        if (Math.random() < 0.7) {
+      // Maintain ~10-16 active glowing squares across the screen
+      if (now - lastSpawn > 280 && activeSquares.length < 16) {
+        if (Math.random() < 0.75) {
           spawnSquare(now);
           lastSpawn = now;
         }
