@@ -6,6 +6,128 @@ import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMagnetic } from "../AnimationKit";
 
+function GridIlluminator() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let width = 0;
+    let height = 0;
+    const CELL_SIZE = 40;
+
+    // TypeScript Blue (#3178C6) & WebAssembly Purple (#654FF0)
+    const COLORS = [
+      { r: 49, g: 120, b: 198 },  // #3178C6
+      { r: 101, g: 79, b: 240 }, // #654FF0
+    ];
+
+    interface ActiveSquare {
+      col: number;
+      row: number;
+      color: { r: number; g: number; b: number };
+      startTime: number;
+      duration: number;
+      maxAlpha: number;
+    }
+
+    let activeSquares: ActiveSquare[] = [];
+
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = parent.clientWidth;
+      height = parent.clientHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.scale(dpr, dpr);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const cols = () => Math.ceil(width / CELL_SIZE);
+    const rows = () => Math.ceil(height / CELL_SIZE);
+
+    const spawnSquare = (now: number) => {
+      const maxCols = cols();
+      const maxRows = rows();
+      if (maxCols <= 0 || maxRows <= 0) return;
+
+      const col = Math.floor(Math.random() * maxCols);
+      const row = Math.floor(Math.random() * maxRows);
+
+      if (activeSquares.some((s) => s.col === col && s.row === row)) return;
+
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      const duration = 2500 + Math.random() * 2500; // 2.5s - 5s
+      const maxAlpha = 0.15 + Math.random() * 0.15; // 0.15 - 0.30 opacity
+
+      activeSquares.push({ col, row, color, startTime: now, duration, maxAlpha });
+    };
+
+    let lastSpawn = 0;
+
+    const render = (now: number) => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Maintain ~8-14 active glowing squares
+      if (now - lastSpawn > 350 && activeSquares.length < 12) {
+        if (Math.random() < 0.7) {
+          spawnSquare(now);
+          lastSpawn = now;
+        }
+      }
+
+      activeSquares = activeSquares.filter((sq) => {
+        const elapsed = now - sq.startTime;
+        if (elapsed >= sq.duration) return false;
+
+        const progress = elapsed / sq.duration;
+        const alpha = sq.maxAlpha * Math.sin(progress * Math.PI);
+
+        const x = sq.col * CELL_SIZE;
+        const y = sq.row * CELL_SIZE;
+
+        // Fill background cell
+        ctx.fillStyle = `rgba(${sq.color.r}, ${sq.color.g}, ${sq.color.b}, ${alpha})`;
+        ctx.fillRect(x + 1, y + 1, CELL_SIZE - 1, CELL_SIZE - 1);
+
+        // Subtle glowing border line
+        ctx.strokeStyle = `rgba(${sq.color.r}, ${sq.color.g}, ${sq.color.b}, ${alpha * 1.6})`;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 0.5, y + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
+
+        return true;
+      });
+
+      animId = requestAnimationFrame(render);
+    };
+
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none z-0 opacity-80"
+      aria-hidden="true"
+    />
+  );
+}
+
 export function Hero() {
   const { language } = useLanguage();
   const currentProfile = profile[language as keyof typeof profile] || profile.en;
@@ -106,6 +228,7 @@ export function Hero() {
       className="h-screen relative z-0 isolate transform-gpu overflow-hidden blueprint-grid-warm text-[var(--sumi-ink)]"
       style={{ "--scroll-progress": "0" } as React.CSSProperties}
     >
+      <GridIlluminator />
       <div className="relative h-full flex items-center justify-center overflow-hidden px-6 md:px-16 lg:px-24 w-full">
         {/* Scroll Indicator Arrows */}
         <div 
