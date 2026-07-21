@@ -56,7 +56,7 @@ const getSeededRandom = (seed: number) => {
   return x - Math.floor(x);
 };
 
-function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: FeedbackEntry, idx: number, mousePos: { x: number, y: number }, isAdmin: boolean, onDelete: (id: string) => void }) {
+function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: FeedbackEntry, idx: number, mousePos: React.MutableRefObject<{ x: number, y: number }>, isAdmin: boolean, onDelete: (id: string) => void }) {
   const { designVersion, isMounted } = useDesignVersion();
   const isV2 = isMounted && designVersion === "new";
   const activePalette = isV2 ? PALETTE_V2 : PALETTE;
@@ -80,6 +80,8 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotate = useMotionValue(0);
+  const translateX = useMotionValue(0);
+  const translateY = useMotionValue(0);
   const repelX = useSpring(0, { stiffness: 100, damping: 20 });
   const repelY = useSpring(0, { stiffness: 100, damping: 20 });
   const cardRef = useRef<HTMLDivElement>(null);
@@ -108,6 +110,8 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
     };
   }, [idx]);
 
+  const parallaxIntensity = seeds.zDepth * 1.2;
+
   useAnimationFrame((time) => {
     x.set(Math.sin(time * seeds.xSpeed + seeds.xOffset) * seeds.amplitudeX);
     y.set(Math.cos(time * seeds.ySpeed + seeds.yOffset) * seeds.amplitudeY);
@@ -115,8 +119,8 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
 
     if (cardRef.current) {
       const rect = cardRef.current.getBoundingClientRect();
-      const dx = (rect.left + rect.width / 2) - ((mousePos.x / 20 + 0.5) * window.innerWidth);
-      const dy = (rect.top + rect.height / 2) - ((mousePos.y / 20 + 0.5) * window.innerHeight);
+      const dx = (rect.left + rect.width / 2) - ((mousePos.current.x / 20 + 0.5) * window.innerWidth);
+      const dy = (rect.top + rect.height / 2) - ((mousePos.current.y / 20 + 0.5) * window.innerHeight);
       const distance = Math.sqrt(dx * dx + dy * dy);
       const threshold = 250;
       if (distance < threshold) {
@@ -128,9 +132,10 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
         repelY.set(0);
       }
     }
-  });
 
-  const parallaxIntensity = seeds.zDepth * 1.2;
+    translateX.set((mousePos.current.x * parallaxIntensity * (idx % 2 === 0 ? 1 : -1)) + repelX.get());
+    translateY.set((mousePos.current.y * parallaxIntensity * (idx % 3 === 0 ? 1 : -1)) + repelY.get());
+  });
 
   return (
     <motion.div
@@ -140,8 +145,8 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
       whileHover={{ scale: seeds.zDepth * 1.05, rotateX: 10, rotateY: 10, zIndex: 1000 }}
       style={{ 
         x, y, rotate,
-        translateX: (mousePos.x * parallaxIntensity * (idx % 2 === 0 ? 1 : -1)) + repelX.get(),
-        translateY: (mousePos.y * parallaxIntensity * (idx % 3 === 0 ? 1 : -1)) + repelY.get(),
+        translateX,
+        translateY,
         borderLeftColor: cardColor,
         zIndex: Math.floor(seeds.zDepth * 100),
         perspective: "1000px",
@@ -180,30 +185,21 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
 }
 
 function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean, isAdmin: boolean, onDelete: (id: string) => void }) {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const mousePosRef = useRef({ x: 0, y: 0 });
   const { designVersion, isMounted } = useDesignVersion();
   const isV2 = isMounted && designVersion === "new";
 
   useEffect(() => {
-    let ticking = false;
-    let rafId: number;
-
     const handleMove = (e: MouseEvent) => {
-      // ⚡ Bolt: Batch high-frequency mousemove state updates with requestAnimationFrame
-      // to prevent synchronous cascading React re-renders and main thread blocking.
-      if (!ticking) {
-        rafId = requestAnimationFrame(() => {
-          setMousePos({ x: (e.clientX / window.innerWidth - 0.5) * 40, y: (e.clientY / window.innerHeight - 0.5) * 40 });
-          ticking = false;
-        });
-        ticking = true;
-      }
+      mousePosRef.current = {
+        x: (e.clientX / window.innerWidth - 0.5) * 40,
+        y: (e.clientY / window.innerHeight - 0.5) * 40
+      };
     };
 
     window.addEventListener("mousemove", handleMove);
     return () => {
       window.removeEventListener("mousemove", handleMove);
-      cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -240,7 +236,7 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
                   <p className="font-black text-[10px] uppercase tracking-[0.2em] opacity-40">Be the first to leave a mark.</p>
                 </motion.div>
               ) : (
-                entries.map((entry, idx) => <FloatingCard key={entry.id} entry={entry} idx={idx} mousePos={mousePos} isAdmin={isAdmin} onDelete={onDelete} />)
+                entries.map((entry, idx) => <FloatingCard key={entry.id} entry={entry} idx={idx} mousePos={mousePosRef} isAdmin={isAdmin} onDelete={onDelete} />)
               )}
             </AnimatePresence>
           </div>
