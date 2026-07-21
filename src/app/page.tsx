@@ -17,25 +17,25 @@ const SpaceWarpTransition = dynamic(() => import("@/components/ui/SpaceWarpTrans
 import { useFlipTransition } from "@/context/FlipContext";
 
 // LEGACY (OLD) PRESENTATION LAYER COMPONENTS
-const OldNavbar = dynamic(() => import("@/components/old/Navbar").then(mod => mod.Navbar), { ssr: false });
-const OldSystemBanner = dynamic(() => import("@/components/old/SystemBanner").then(mod => mod.SystemBanner), { ssr: false });
-const OldHero = dynamic(() => import("@/components/old/Hero").then(mod => mod.Hero), { ssr: false });
-const OldProjects = dynamic(() => import("@/components/old/Projects").then(mod => mod.Projects), { ssr: false });
-const OldAbout = dynamic(() => import("@/components/old/About").then(mod => mod.About), { ssr: false });
-const OldContact = dynamic(() => import("@/components/old/Contact").then(mod => mod.Contact), { ssr: false });
-const OldFooter = dynamic(() => import("@/components/old/Footer").then(mod => mod.Footer), { ssr: false });
-const VisitorCounter = dynamic(() => import("@/components/VisitorCounter").then(mod => mod.VisitorCounter), { ssr: false });
-const LanguageSelector = dynamic(() => import("@/components/LanguageSelector").then(mod => mod.LanguageSelector), { ssr: false });
+import { Navbar as OldNavbar } from "@/components/old/Navbar";
+import { SystemBanner as OldSystemBanner } from "@/components/old/SystemBanner";
+import { Hero as OldHero } from "@/components/old/Hero";
+import { Projects as OldProjects } from "@/components/old/Projects";
+import { About as OldAbout } from "@/components/old/About";
+import { Contact as OldContact } from "@/components/old/Contact";
+import { Footer as OldFooter } from "@/components/old/Footer";
+import { VisitorCounter } from "@/components/VisitorCounter";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 // FUTURISTIC (NEW) PRESENTATION LAYER COMPONENTS
-const NewNavbar = dynamic(() => import("@/components/new/Navbar").then(mod => mod.Navbar), { ssr: false });
-const NewSystemBanner = dynamic(() => import("@/components/new/SystemBanner").then(mod => mod.SystemBanner), { ssr: false });
-const NewHero = dynamic(() => import("@/components/new/Hero").then(mod => mod.Hero), { ssr: false });
-const NewManifesto = dynamic(() => import("@/components/new/Manifesto").then(mod => mod.Manifesto), { ssr: false });
-const NewProjects = dynamic(() => import("@/components/new/Projects").then(mod => mod.Projects), { ssr: false });
-const NewAbout = dynamic(() => import("@/components/new/About").then(mod => mod.About), { ssr: false });
-const NewContact = dynamic(() => import("@/components/new/Contact").then(mod => mod.Contact), { ssr: false });
-const NewFooter = dynamic(() => import("@/components/new/Footer").then(mod => mod.Footer), { ssr: false });
+import { Navbar as NewNavbar } from "@/components/new/Navbar";
+import { SystemBanner as NewSystemBanner } from "@/components/new/SystemBanner";
+import { Hero as NewHero } from "@/components/new/Hero";
+import { Manifesto as NewManifesto } from "@/components/new/Manifesto";
+import { Projects as NewProjects } from "@/components/new/Projects";
+import { About as NewAbout } from "@/components/new/About";
+import { Contact as NewContact } from "@/components/new/Contact";
+import { Footer as NewFooter } from "@/components/new/Footer";
 
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);

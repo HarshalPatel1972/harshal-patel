@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { createTimeline, stagger } from "animejs";
 import { mappaQuotesList, characterRegistry } from "@/data/quotes";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAudioDrone } from "@/hooks/useAudioDrone";
 import { Fraunces, Outfit } from "next/font/google";
 
 const fraunces = Fraunces({
@@ -32,11 +33,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const timelineRef = useRef<any>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // WebAudio Drone Refs
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const osc1Ref = useRef<OscillatorNode | null>(null);
-  const osc2Ref = useRef<OscillatorNode | null>(null);
-  const droneGainRef = useRef<GainNode | null>(null);
+  const { initAudio, fadeOutAudio, resumeAudio } = useAudioDrone();
 
   const { language } = useLanguage();
 
@@ -44,8 +41,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     setMounted(true);
   }, []);
 
-  // Pick a random quote ONCE - using lazy initialization
-  const [selectedQuote] = useState(() => {
+  // Pick a random quote ONCE - using lazy initialization inside useEffect to avoid hydration mismatch
+  const [selectedQuote, setSelectedQuote] = useState<any>(null);
+
+  useEffect(() => {
     const lastQuoteId = typeof window !== 'undefined' ? sessionStorage.getItem('last_quote_id') : null;
     let filtered = mappaQuotesList.filter(q => q.charId !== 'ROCKY');
     
@@ -58,8 +57,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     if (typeof window !== 'undefined' && picked) {
       sessionStorage.setItem('last_quote_id', `${picked.charId}-${picked.en.slice(0, 10)}`);
     }
-    return picked;
-  });
+    setSelectedQuote(picked);
+  }, []);
 
   const rockyQuote = mappaQuotesList.find(q => q.charId === 'ROCKY');
   const activeQuote = language === 'eridian' ? (rockyQuote ?? selectedQuote) : selectedQuote;
@@ -103,7 +102,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
   // Timing Mapping: Match V1 dynamic readTime logic exactly
   const wordCount = useMemo(() => {
-    return quote ? quote.split(/\s+/).filter(w => w.length > 0).length : 0;
+    return quote ? quote.split(/\s+/).filter((w: string) => w.length > 0).length : 0;
   }, [quote]);
 
   const readTime = useMemo(() => {
@@ -137,7 +136,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     }
 
     // Latin / Hindi handling (word based)
-    const words = quote.split(/\s+/).filter(w => w.length > 0);
+    const words = quote.split(/\s+/).filter((w: string) => w.length > 0);
     const wordCount = words.length;
     
     // Target 2-3 lines for PC, 3-5 lines for Mobile
@@ -160,7 +159,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     let remainingChars = totalChars;
     let remainingLines = targetLines;
 
-    words.forEach(word => {
+    words.forEach((word: string) => {
       if (!currentLine) {
         currentLine = word;
       } else {
@@ -215,11 +214,11 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       filter: 'blur(20px)',
     };
 
-    return quoteLines.map((line, lineIdx) => {
+    return quoteLines.map((line: string, lineIdx: number) => {
       if (isHindi) {
         return (
           <span key={lineIdx} className="block leading-relaxed">
-            {line.split(" ").map((word, wi) => (
+            {line.split(" ").map((word: string, wi: number) => (
               <span key={wi} className={`${charClass} inline-block will-change-transform mr-[0.25em]`} style={charStyle}>
                 {word}
               </span>
@@ -231,7 +230,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       if (isCJK) {
         return (
           <span key={lineIdx} className="block leading-relaxed">
-            {line.split("").map((char, ci) => (
+            {line.split("").map((char: string, ci: number) => (
               <span key={ci} className={`${charClass} inline-block will-change-transform`} style={charStyle}>
                 {char === ' ' || char === '　' ? '\u00A0' : char}
               </span>
@@ -244,8 +243,8 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       const wordList = line.split(" ");
       return (
         <span key={lineIdx} className="block leading-relaxed">
-          {wordList.map((word, wi) => {
-            const charElements = word.split("").map((char, ci) => (
+          {wordList.map((word: string, wi: number) => {
+            const charElements = word.split("").map((char: string, ci: number) => (
               <span key={ci} className={`${charClass} inline-block will-change-transform`} style={charStyle}>
                 {char}
               </span>
@@ -282,65 +281,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     };
     img.src = bgImage;
   }, [bgImage, mounted]);
-
-  const initAudio = () => {
-    if (audioCtxRef.current) return;
-    try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioContextClass) return;
-      const audioCtx = new AudioContextClass();
-      audioCtxRef.current = audioCtx;
-      
-      const osc1 = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      const filter = audioCtx.createBiquadFilter();
-      const gainNode = audioCtx.createGain();
-      
-      osc1.type = 'sawtooth';
-      osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
-      
-      osc2.type = 'square';
-      osc2.frequency.setValueAtTime(55.4, audioCtx.currentTime);
-      
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(140, audioCtx.currentTime);
-      
-      gainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.07, audioCtx.currentTime + 3.0);
-      
-      osc1.connect(filter);
-      osc2.connect(filter);
-      filter.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      
-      osc1.start();
-      osc2.start();
-
-      osc1Ref.current = osc1;
-      osc2Ref.current = osc2;
-      droneGainRef.current = gainNode;
-    } catch(e) {
-      console.warn("Audio Context failed to initialize:", e);
-    }
-  };
-
-  const fadeOutAudio = () => {
-    if (audioCtxRef.current && droneGainRef.current) {
-      try {
-        const currTime = audioCtxRef.current.currentTime;
-        droneGainRef.current.gain.setValueAtTime(droneGainRef.current.gain.value, currTime);
-        droneGainRef.current.gain.exponentialRampToValueAtTime(0.0001, currTime + 1.2);
-        
-        setTimeout(() => {
-          osc1Ref.current?.stop();
-          osc2Ref.current?.stop();
-          audioCtxRef.current?.close();
-        }, 1300);
-      } catch(e) {
-        console.warn("Audio Context clean up error:", e);
-      }
-    }
-  };
 
   const dismiss = useCallback(() => {
     if (exiting) return;
@@ -408,9 +348,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
 
     const handleUserInteraction = () => {
       initAudio();
-      if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
-        audioCtxRef.current.resume();
-      }
+      resumeAudio();
     };
     window.addEventListener("click", handleUserInteraction);
     window.addEventListener("touchmove", handleUserInteraction);

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Big_Shoulders, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 
 import "./globals.css";
 import Cursor from "@/components/ui/Cursor";
@@ -7,16 +8,17 @@ import ImageGuard from "@/components/ui/ImageGuard";
 import { VelocityWarp } from "@/components/ui/VelocityWarp";
 
 import { Providers } from "@/components/Providers";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 
 const cirka = localFont({
   src: [
     {
-      path: "./fonts/cirka-light.otf",
+      path: "./fonts/cirka-light.woff2",
       weight: "300",
       style: "normal",
     },
     {
-      path: "./fonts/cirka-bold.otf",
+      path: "./fonts/cirka-bold.woff2",
       weight: "700",
       style: "normal",
     },
@@ -28,23 +30,8 @@ const cirka = localFont({
 const season = localFont({
   src: [
     {
-      path: "./fonts/season-light.otf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "./fonts/season-regular.otf",
+      path: "./fonts/season-regular.woff2",
       weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./fonts/season-medium.otf",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "./fonts/season-bold.otf",
-      weight: "700",
       style: "normal",
     },
   ],
@@ -55,12 +42,7 @@ const season = localFont({
 const victor = localFont({
   src: [
     {
-      path: "./fonts/victor-regular.otf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "./fonts/victor-serif.otf",
+      path: "./fonts/victor-serif.woff2",
       weight: "700",
       style: "normal",
     },
@@ -69,21 +51,33 @@ const victor = localFont({
   display: 'swap',
 });
 
-const luna = localFont({
-  src: [
-    {
-      path: "./fonts/luna-heavy.otf",
-      weight: "900",
-      style: "normal",
-    },
-    {
-      path: "./fonts/luna-light.otf",
-      weight: "300",
-      style: "normal",
-    },
-  ],
-  variable: "--font-luna",
-  display: 'swap',
+const bigShoulders = Big_Shoulders({
+  subsets: ["latin"],
+  weight: ["800", "900"],
+  variable: "--font-big-shoulders",
+  display: "swap",
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-dm-serif",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
 });
 
 
@@ -178,7 +172,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${cirka.variable} ${season.variable} ${victor.variable} ${luna.variable} font-sans antialiased bg-background text-foreground select-none`}
+        className={`${cirka.variable} ${season.variable} ${victor.variable} ${bigShoulders.variable} ${dmSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground select-none`}
       >
         <Providers>
           <ImageGuard />
@@ -215,7 +209,9 @@ export default function RootLayout({
           />
           <div className="halftone-glow" />
           <VelocityWarp />
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </Providers>
       </body>
     </html>

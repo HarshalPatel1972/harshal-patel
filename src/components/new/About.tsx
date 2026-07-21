@@ -330,6 +330,7 @@ export function About() {
     setShowPressureVideo(true);
     triggerSignal("PRESSURE");
     if (videoRef.current) {
+      videoRef.current.load();
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {});
     }
@@ -421,8 +422,9 @@ export function About() {
             <video
               ref={videoRef}
               src={currentVideoSrc}
-              preload={skillsVisible ? "auto" : "metadata"}
+              preload="none"
               playsInline
+              muted
               onEnded={closePressure}
               className="w-full h-full object-cover"
             />

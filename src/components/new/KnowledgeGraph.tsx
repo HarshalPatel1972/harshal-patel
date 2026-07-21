@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function KnowledgeGraph({ skills }: { skills: any[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<any[]>([]);
   const draggedNodeRef = useRef<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const skillColors = [
     "#C44D1C", // C++ / Systems
@@ -149,6 +150,7 @@ export function KnowledgeGraph({ skills }: { skills: any[] }) {
   const handlePointerDown = (id: string, e: React.PointerEvent) => {
     (e.target as Element).setPointerCapture(e.pointerId);
     draggedNodeRef.current = id;
+    setIsDragging(true);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -169,6 +171,7 @@ export function KnowledgeGraph({ skills }: { skills: any[] }) {
     if (draggedNodeRef.current) {
       (e.target as Element).releasePointerCapture(e.pointerId);
       draggedNodeRef.current = null;
+      setIsDragging(false);
     }
   };
 
@@ -179,7 +182,7 @@ export function KnowledgeGraph({ skills }: { skills: any[] }) {
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      style={{ cursor: draggedNodeRef.current ? 'grabbing' : 'auto' }}
+      style={{ cursor: isDragging ? 'grabbing' : 'auto' }}
     >
       <svg className="absolute inset-0 w-full h-full overflow-visible">
         {/* Render Edges */}

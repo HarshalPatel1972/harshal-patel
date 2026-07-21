@@ -217,9 +217,16 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
         <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.85] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-[var(--text-bone)]">Feedback<br/>Gallery</h1>
         
         {isLoading ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-50">
-            <div className="w-12 h-12 border-4 border-black border-t-transparent animate-spin rounded-full" />
-            <span className="font-black text-[10px] uppercase tracking-[0.4em]">Retrieving Collective Voice...</span>
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-12 gap-y-16 pt-10 pb-40 px-4 md:px-20 max-w-[1400px] mx-auto opacity-50">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="relative w-full md:w-[calc(33.333%-3rem)] min-w-[320px] max-w-[400px] bg-white border-4 border-black p-8 shadow-[12px_12px_0px_#000] h-[250px] animate-pulse">
+                <div className="h-4 bg-black/20 w-1/3 mb-6" />
+                <div className="h-8 bg-black/20 w-3/4 mb-4" />
+                <div className="h-4 bg-black/10 w-full mb-2" />
+                <div className="h-4 bg-black/10 w-5/6 mb-2" />
+                <div className="h-4 bg-black/10 w-4/6" />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="relative z-10 flex flex-wrap items-center justify-center gap-x-12 gap-y-32 pt-10 pb-40 px-4 md:px-20 max-w-[1400px] mx-auto">
@@ -312,6 +319,7 @@ export function FeedbackContents() {
   const [submissions, setSubmissions] = useState<FeedbackEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => { if (searchParams.toString()) router.replace("/feedback"); }, [searchParams, router]);
 
@@ -393,7 +401,7 @@ export function FeedbackContents() {
       await fetchFeedbacks();
     } catch (e: any) {
       console.error("Save failed:", e);
-      alert(`SYNC ERROR: ${e.message}\n\nPlease verify your Supabase RLS policies and table structure.`);
+      setErrorMsg(`SYNC ERROR: ${e.message}`);
     }
   };
 
@@ -412,13 +420,28 @@ export function FeedbackContents() {
       setSubmissions(prev => prev.filter(s => s.id !== id));
     } catch (e: any) {
       console.error(e);
-      alert(`Cloud Erasure Failed: ${e.message}`);
+      setErrorMsg(`Cloud Erasure Failed: ${e.message}`);
     }
   };
 
   return (
-    <AnimatePresence mode="wait">
-      {view === "writing" ? (
+    <>
+      <AnimatePresence>
+        {errorMsg && (
+          <motion.div 
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[1000] bg-red-600 text-white px-6 py-4 border-4 border-black shadow-[8px_8px_0px_#000] flex items-center gap-4 max-w-[90vw]"
+          >
+            <span className="font-mono text-xs md:text-sm font-bold uppercase">{errorMsg}</span>
+            <button onClick={() => setErrorMsg(null)} className="opacity-70 hover:opacity-100 ml-4">✕</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        {view === "writing" ? (
          <motion.div key="writing" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }} transition={{ duration: 0.6, ease: [0.85, 0, 0.15, 1] }}>
            <FeedbackWritingRoom onSend={handleNewSend} onViewGallery={() => setView("gallery")} initialType={initialType} />
          </motion.div>
@@ -426,7 +449,8 @@ export function FeedbackContents() {
         <motion.div key="gallery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}>
            <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} isLoading={isLoading} isAdmin={isAdmin} onDelete={handleDeleteRequest} />
          </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

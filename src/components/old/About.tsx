@@ -206,8 +206,9 @@ export function About() {
   const triggerPressure = () => {
     setShowPressureVideo(true);
     if (videoRef.current) {
+        videoRef.current.load();
         videoRef.current.currentTime = 0;
-        videoRef.current.play().catch(e => console.log("Video Play Blocked:", e));
+        videoRef.current.play().catch(() => {});
     }
   };
 
@@ -233,8 +234,9 @@ export function About() {
           <video 
             ref={videoRef}
             src={currentVideoSrc} 
-            preload={skillsVisible ? "auto" : "metadata"}
+            preload="none"
             playsInline
+            muted
             onEnded={closePressure}
             className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}
           />
