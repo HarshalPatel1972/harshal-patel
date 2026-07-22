@@ -80,9 +80,9 @@ function GridIlluminator() {
     const render = (now: number) => {
       ctx.clearRect(0, 0, width, height);
 
-      // Maintain ~10-16 active glowing squares across the screen
-      if (now - lastSpawn > 280 && activeSquares.length < 16) {
-        if (Math.random() < 0.75) {
+      // Maintain up to 32 active glowing squares across the screen
+      if (now - lastSpawn > 140 && activeSquares.length < 32) {
+        if (Math.random() < 0.8) {
           spawnSquare(now);
           lastSpawn = now;
         }
