@@ -16,7 +16,7 @@ export function BackToTop() {
       if (window.scrollY > 400) {
         setIsVisible((prev) => {
           if (!prev) {
-            // Expand on initial appearance
+            // Auto expand when first appearing
             setIsExpanded(true);
             if (collapseTimerRef.current) clearTimeout(collapseTimerRef.current);
             collapseTimerRef.current = setTimeout(() => {
@@ -64,16 +64,16 @@ export function BackToTop() {
     }, 800);
   };
 
-  const { fullText, shortText } = (() => {
+  const { prefixText, coreText } = (() => {
     switch (language) {
       case "ja":
-        return { fullText: "ホームへ戻る ↑", shortText: "ホーム ↑" };
+        return { prefixText: "へ戻る", coreText: "ホーム ↑" };
       case "hi":
-        return { fullText: "मुझे घर ले चलो ↑", shortText: "घर ↑" };
+        return { prefixText: "मुझे घर ले चलो", coreText: "घर ↑" };
       case "eridian":
-        return { fullText: "RETURN TO BASE ↑", shortText: "BASE ↑" };
+        return { prefixText: "RETURN TO", coreText: "BASE ↑" };
       default:
-        return { fullText: "Bring me Home ↑", shortText: "Home ↑" };
+        return { prefixText: "Bring me", coreText: "Home ↑" };
     }
   })();
 
@@ -101,12 +101,20 @@ export function BackToTop() {
           <div className="relative z-10 flex items-center justify-center border-2 border-[var(--sumi-ink)] bg-[var(--forge-orange)] transition-all duration-300 group-hover:translate-x-[-2px] group-hover:translate-y-[-2px] group-hover:bg-[var(--sumi-ink)] group-active:translate-x-[2px] group-active:translate-y-[2px]">
             <div className="px-5 py-2.5 md:px-6 md:py-3 flex items-center justify-center overflow-hidden">
               <span
-                className="text-white font-bold text-xs uppercase tracking-[0.2em] transition-all duration-300 group-hover:text-[var(--forge-orange)] whitespace-nowrap flex items-center gap-1.5"
+                className="text-white font-bold text-xs uppercase tracking-[0.2em] transition-colors duration-300 group-hover:text-[var(--forge-orange)] whitespace-nowrap flex items-center"
                 style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
               >
-                <span className="transition-all duration-300 inline-block">
-                  {isExpanded ? fullText : shortText}
+                {/* Ultra-Smooth CSS Width/Opacity Sliding Transition */}
+                <span
+                  className={`inline-block overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+                    isExpanded
+                      ? "max-w-[160px] opacity-100 mr-2"
+                      : "max-w-0 opacity-0 mr-0"
+                  }`}
+                >
+                  {prefixText}
                 </span>
+                <span>{coreText}</span>
               </span>
             </div>
           </div>
@@ -120,9 +128,17 @@ export function BackToTop() {
           aria-label="Scroll back to top"
           className="cursor-pointer px-5 py-2.5 md:px-6 md:py-3 bg-[#050505] text-[#E8E8E6] font-mono text-xs font-bold uppercase tracking-[0.25em] border border-[#E8E8E6]/30 shadow-[4px_4px_0px_var(--accent-blood)] transition-all duration-300 hover:bg-[var(--accent-blood)] hover:text-white hover:border-[var(--accent-blood)] hover:shadow-[6px_6px_0px_#000] hover:translate-x-[-2px] hover:translate-y-[-2px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none whitespace-nowrap outline-none flex items-center justify-center overflow-hidden"
         >
-          <span className="transition-all duration-300 inline-block">
-            {isExpanded ? fullText : shortText}
+          {/* Ultra-Smooth CSS Width/Opacity Sliding Transition */}
+          <span
+            className={`inline-block overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap ${
+              isExpanded
+                ? "max-w-[160px] opacity-100 mr-2"
+                : "max-w-0 opacity-0 mr-0"
+            }`}
+          >
+            {prefixText}
           </span>
+          <span>{coreText}</span>
         </button>
       )}
     </div>

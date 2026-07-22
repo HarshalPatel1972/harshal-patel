@@ -1,56 +1,89 @@
 "use client";
 
+import React from "react";
+import Image from "next/image";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
-import { motion } from "framer-motion";
 
 export function Footer() {
   const { language } = useLanguage();
-  const currentProfile = profile[language];
+  const currentProfile = profile[language as keyof typeof profile] || profile.en;
 
-  // KINETIC LOOP TEXT ☕
   const initialText = language === 'hi' ? "काम पसंद आया?" : "Enjoy my designs?";
   const actionText = language === 'hi' ? "कॉफी पिलाएँ" : "Buy me a Coffee";
 
   return (
-    <footer className="relative bg-[#000000] border-t-4 border-[#FFFFFF] px-4 py-4 md:px-12 md:py-6 overflow-hidden">
-      {/* Halftone Texture (Pure White/Black) */}
+    <footer className="relative bg-[#050505] border-t-4 border-[#E8E8E6] text-[#E8E8E6] px-6 py-12 md:px-16 lg:px-24 overflow-hidden z-10">
+      
+      {/* Halftone Texture */}
       <div className="absolute inset-0 halftone-bg z-0 opacity-5 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-8 md:gap-12 relative z-10">
-        <div className="flex flex-col gap-2 text-center md:text-left">
-            <div className="text-[12px] md:text-[14px] font-black font-display uppercase tracking-[0.1em] text-[#FFFFFF] opacity-50">
-                {currentProfile.name} <span className="text-[#d91111] ml-4 italic">© {new Date().getFullYear()}</span>
-            </div>
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* LAYER 1 — Top of footer (matching V2 size & layout) */}
+        <div className="pt-[60px] flex flex-col md:flex-row items-start justify-between relative min-h-[140px] gap-8">
+          {/* Left: Large display text */}
+          <div className="flex flex-col select-none">
+            <span 
+              className="text-[48px] font-black uppercase tracking-tight leading-none text-[#E8E8E6]/40"
+              style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
+            >
+              BUILT WITH
+            </span>
+            <span 
+              className="text-[48px] font-black uppercase tracking-tight leading-none text-[#d91111]"
+              style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
+            >
+              OBSESSION.
+            </span>
+          </div>
+
+          {/* Right: Anime character artwork */}
+          <div className="absolute right-0 bottom-0 pointer-events-none z-0 hidden md:block">
+            <Image
+              src="/TOJI FUSHIGURO.png"
+              alt="Toji Fushiguro"
+              width={300}
+              height={200}
+              className="h-[200px] w-auto object-contain filter brightness-[0.85] grayscale transform translate-y-[24px]"
+            />
+          </div>
         </div>
 
-        {/* THE 4-COLOR KINETIC PORTAL (RED/CYAN/BLACK/WHITE) 🏮 */}
-        <div className="relative group flex items-center justify-center w-full md:w-auto">
+        {/* LAYER 2 — Middle (matching V2 grid and spacing) */}
+        <div className="mt-10 pt-6 border-t border-[#E8E8E6]/15 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-4 relative z-10">
+          
+          {/* Left Column: Author info */}
+          <div className="flex flex-col gap-1 items-start justify-start">
+            <span className="text-xs font-bold font-mono uppercase tracking-[0.3em] text-[#E8E8E6]">
+              {currentProfile.name.toUpperCase()}
+            </span>
+            <span className="text-[10px] font-mono text-[#E8E8E6]/50">
+              © {new Date().getFullYear()} — Varanasi, India
+            </span>
+          </div>
 
-          <a 
-            href="https://www.chai4.me/harshalpatel" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="relative flex items-center justify-center w-full md:w-[260px] h-[50px] md:h-[60px] bg-[#000000] border-2 border-[#FFFFFF] overflow-hidden transition-all duration-300 hover:border-[var(--accent-cursed)] shadow-[4px_4px_0px_rgba(255,255,255,1)] hover:shadow-[2px_2px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
-          >
-            {/* THE LOOPING CONTENT - FIXED HEIGHT ALIGNMENT */}
-            <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
-                {/* STATE 1: ENJOY MY DESIGNS? */}
-                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#FFFFFF] font-black font-display uppercase tracking-[0.2em] text-xs md:text-lg">
-                    {initialText}
+          {/* Right Column: V1 Kinetic Coffee Pill */}
+          <div className="flex flex-col gap-6 items-start md:items-end justify-start">
+            <a 
+              href="https://www.chai4.me/harshalpatel" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="relative flex items-center justify-center w-full md:w-[260px] h-[48px] bg-[#050505] border-2 border-[#E8E8E6] overflow-hidden transition-all duration-300 shadow-[4px_4px_0px_var(--accent-blood)] hover:shadow-[2px_2px_0px_var(--accent-blood)] hover:border-[var(--accent-blood)] hover:translate-x-[2px] hover:translate-y-[2px]"
+            >
+              <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
+                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#E8E8E6] font-black font-mono uppercase tracking-[0.2em] text-xs">
+                  {initialText}
                 </div>
-                {/* STATE 2: BUY ME A COFFEE */}
-                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[var(--accent-cursed)] font-black font-display uppercase tracking-[0.2em] text-xs md:text-lg italic">
-                    {actionText}
+                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[var(--accent-blood)] font-black font-mono uppercase tracking-[0.2em] text-xs italic">
+                  {actionText}
                 </div>
-            </div>
-          </a>
+              </div>
+            </a>
+          </div>
+
         </div>
-      </div>
 
-      {/* Decorative System Label */}
-      <div className="absolute -bottom-10 -left-10 text-[10rem] font-black text-white/5 uppercase select-none pointer-events-none mix-blend-overlay">
-         CREATOR
       </div>
 
       <style>{`
