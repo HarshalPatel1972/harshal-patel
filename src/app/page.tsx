@@ -88,15 +88,15 @@ function HomeContent() {
             
             {/* Zero-Lag Utility Container - Full height track */}
             <div 
-              className="absolute left-4 bottom-0 z-[100] flex flex-col items-start pointer-events-none"
+              className={`absolute left-4 bottom-0 z-[100] flex flex-col items-start ${showContent ? "pointer-events-none" : "!pointer-events-none"}`}
               style={{ top: containerTop }}
             >
-              <div className="pointer-events-auto">
+              <div className={showContent ? "pointer-events-auto" : "pointer-events-none"}>
                 <VisitorCounter />
               </div>
               <div className="h-[10px]" />
               <div 
-                className="sticky transition-all duration-700 pointer-events-auto flex items-center gap-2"
+                className={`sticky transition-all duration-700 flex items-center gap-2 ${showContent ? "pointer-events-auto" : "pointer-events-none"}`}
                 style={{ top: stickyTarget }}
               >
                 <LanguageSelector />
@@ -105,7 +105,7 @@ function HomeContent() {
             </div>
           </div>
 
-          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0 !pointer-events-none"}`}>
             <OldSystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
             <OldHero />
             <OldProjects />
@@ -123,15 +123,15 @@ function HomeContent() {
             
             {/* Zero-Lag Utility Container - Full height track */}
             <div 
-              className="absolute left-4 bottom-0 z-[100] flex flex-col items-start pointer-events-none"
+              className={`absolute left-4 bottom-0 z-[100] flex flex-col items-start ${showContent ? "pointer-events-none" : "!pointer-events-none"}`}
               style={{ top: containerTop }}
             >
-              <div className="pointer-events-auto">
+              <div className={showContent ? "pointer-events-auto" : "pointer-events-none"}>
                 <VisitorCounter />
               </div>
               <div className="h-[10px]" />
               <div 
-                className="sticky transition-all duration-700 pointer-events-auto flex items-center gap-2"
+                className={`sticky transition-all duration-700 flex items-center gap-2 ${showContent ? "pointer-events-auto" : "pointer-events-none"}`}
                 style={{ top: stickyTarget }}
               >
                 <LanguageSelector />
@@ -140,7 +140,7 @@ function HomeContent() {
             </div>
           </div>
 
-          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0"}`}>
+          <LanguageTransitionWrapper className={`transition-opacity duration-700 mr-12 md:mr-16 overflow-clip ${showContent ? "opacity-100" : "opacity-0 !pointer-events-none"}`}>
             <NewSystemBanner isVisible={isNoticeVisible} onDismiss={() => setIsNoticeVisible(false)} />
             
             <NewHero />

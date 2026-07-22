@@ -30,6 +30,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const timelineRef = useRef<any>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const breathIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [exiting, setExiting] = useState(false);
 
   const { language } = useLanguage();
 
@@ -252,7 +253,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         }, 1800);
       }
 
-      exitTimeoutRef.current = setTimeout(() => {
+      const runExit = () => {
+        if (exiting) return;
+        setExiting(true);
         const exitTl = createTimeline({
           defaults: {
             ease: 'easeInQuint'
@@ -270,34 +273,37 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
             translateY: -60,
             filter: 'blur(30px)',
             delay: stagger(10, { from: 'center' }),
-            duration: 1000
+            duration: 800
           });
         }
 
         if (sourceRef.current) {
           exitTl.add(sourceRef.current, {
             opacity: 0,
-            duration: 800
-          }, 200);
+            duration: 600
+          }, 100);
         }
 
         const exitApertureTargets = [topBarRef.current, bottomBarRef.current].filter(Boolean) as HTMLElement[];
         if (exitApertureTargets.length > 0) {
           exitTl.add(exitApertureTargets, {
             translateY: 0,
-            duration: 1500,
+            duration: 1000,
             ease: 'easeInExpo'
-          }, 600);
+          }, 300);
         }
 
         if (bgImageRef.current) {
           exitTl.add(bgImageRef.current, {
             opacity: 0,
-            duration: 800,
+            duration: 600,
             ease: 'easeOutSine'
           }, 0);
         }
-      }, readTime);
+      };
+
+      dismissRef.current = runExit;
+      exitTimeoutRef.current = setTimeout(runExit, readTime);
 
     }, 50); // 50ms delay ensures React has painted the p-char spans
 
@@ -309,12 +315,16 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     };
   }, [complete, onComplete, quote, readTime, language, mounted]);
 
+  const dismissRef = useRef<() => void>(() => {});
+  const dismiss = () => dismissRef.current();
+
   if (!quoteData || complete) return null;
 
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-none cinematic-breath pointer-events-none"
+      onClick={(e) => { e.stopPropagation(); dismiss(); }}
+      className="fixed inset-0 z-[999999] bg-[#050505] flex items-center justify-center overflow-hidden px-6 md:px-44 cursor-pointer cinematic-breath pointer-events-auto select-none"
     >
       {/* Cinematic Shutter System */}
       <div data-dir="top" ref={topBarRef} className="absolute top-0 left-0 right-0 h-1/2 bg-[#020202] z-40 border-b border-[#E8E8E6]/5 will-change-transform" />

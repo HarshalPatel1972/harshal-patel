@@ -414,7 +414,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   return (
     <div 
       ref={containerRef} 
-      onClick={() => dismiss()}
+      onClick={(e) => { e.stopPropagation(); dismiss(); }}
       className={`fixed inset-0 z-[999999] bg-[#030305] flex flex-col items-center justify-center overflow-hidden px-8 md:px-24 cursor-pointer select-none ${fraunces.variable} ${outfit.variable}`}
     >
       {/* Central Typographic Block */}
