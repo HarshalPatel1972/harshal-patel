@@ -12,7 +12,7 @@ const COLORS = [
 const CELL_SIZE = 40;
 
 type GameState = "AMBIENT" | "CHARGING" | "PLAY_BUTTON" | "TRANSITION_GAME" | "SNAKE_GAME" | "SHOW_SCORE";
-type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT" | "IDLE";
 
 interface Particle {
   x: number;
@@ -229,8 +229,8 @@ export function GridIlluminator() {
         { col: -1, row: 0 },
         { col: -2, row: 0 },
       ];
-      dirRef.current = "RIGHT";
-      nextDirRef.current = "RIGHT";
+      dirRef.current = "IDLE";
+      nextDirRef.current = "IDLE";
       scoreRef.current = 0;
       setScore(0);
       gameOverRef.current = false;
@@ -345,51 +345,53 @@ export function GridIlluminator() {
           lastStepTimeRef.current = now;
           dirRef.current = nextDirRef.current;
 
-          const head = { ...snakeRef.current[0] };
-          if (dirRef.current === "UP") head.row -= 1;
-          if (dirRef.current === "DOWN") head.row += 1;
-          if (dirRef.current === "LEFT") head.col -= 1;
-          if (dirRef.current === "RIGHT") head.col += 1;
+          if (dirRef.current !== "IDLE") {
+            const head = { ...snakeRef.current[0] };
+            if (dirRef.current === "UP") head.row -= 1;
+            if (dirRef.current === "DOWN") head.row += 1;
+            if (dirRef.current === "LEFT") head.col -= 1;
+            if (dirRef.current === "RIGHT") head.col += 1;
 
-          // Wrap-around logic
-          const maxCols = getCols();
-          const maxRows = getRows();
-          let absCol = midCol + head.col;
-          let absRow = midRow + head.row;
+            // Wrap-around logic
+            const maxCols = getCols();
+            const maxRows = getRows();
+            let absCol = midCol + head.col;
+            let absRow = midRow + head.row;
 
-          if (absCol < 0) absCol = maxCols - 1;
-          if (absCol >= maxCols) absCol = 0;
-          if (absRow < 0) absRow = maxRows - 1;
-          if (absRow >= maxRows) absRow = 0;
+            if (absCol < 0) absCol = maxCols - 1;
+            if (absCol >= maxCols) absCol = 0;
+            if (absRow < 0) absRow = maxRows - 1;
+            if (absRow >= maxRows) absRow = 0;
 
-          head.col = absCol - midCol;
-          head.row = absRow - midRow;
+            head.col = absCol - midCol;
+            head.row = absRow - midRow;
 
-          // Ambient square collision check
-          const absHeadX = absCol * CELL_SIZE;
-          const absHeadY = absRow * CELL_SIZE;
-          const hitAmbient = activeParticles.some(p => 
-            Math.abs(p.targetX - absHeadX) < 1 && Math.abs(p.targetY - absHeadY) < 1
-          );
+            // Ambient square collision check
+            const absHeadX = absCol * CELL_SIZE;
+            const absHeadY = absRow * CELL_SIZE;
+            const hitAmbient = activeParticles.some(p => 
+              Math.abs(p.targetX - absHeadX) < 1 && Math.abs(p.targetY - absHeadY) < 1
+            );
 
-          if (hitAmbient) {
-            triggerGameOver(now);
-          } else if (snakeRef.current.some((s) => s.col === head.col && s.row === head.row)) {
-            // Self collision check
-            triggerGameOver(now);
-          }
+            if (hitAmbient) {
+              triggerGameOver(now);
+            } else if (snakeRef.current.some((s) => s.col === head.col && s.row === head.row)) {
+              // Self collision check
+              triggerGameOver(now);
+            }
 
-          if (!gameOverRef.current) {
-            snakeRef.current.unshift(head);
+            if (!gameOverRef.current) {
+              snakeRef.current.unshift(head);
 
-            // Food collision check
-            if (head.col === foodRef.current.col && head.row === foodRef.current.row) {
-              scoreRef.current += 10;
-              setScore(scoreRef.current);
-              setHighScore((prev) => Math.max(prev, scoreRef.current + 10));
-              spawnFood();
-            } else {
-              snakeRef.current.pop();
+              // Food collision check
+              if (head.col === foodRef.current.col && head.row === foodRef.current.row) {
+                scoreRef.current += 10;
+                setScore(scoreRef.current);
+                setHighScore((prev) => Math.max(prev, scoreRef.current + 10));
+                spawnFood();
+              } else {
+                snakeRef.current.pop();
+              }
             }
           }
         }
