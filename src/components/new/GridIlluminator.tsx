@@ -204,17 +204,17 @@ export function GridIlluminator() {
       }
 
       const { midCol, midRow } = getCenterCell();
-      const redColor = COLORS[3]; 
       
       activeParticles = scoreCells.map((sc) => {
         const tx = (midCol + sc.col) * CELL_SIZE;
         const ty = (midRow + sc.row) * CELL_SIZE;
+        const randomColor = COLORS[Math.floor(Math.random() * COLORS.length)];
         return {
           x: tx,
           y: ty,
           targetX: tx,
           targetY: ty,
-          color: redColor,
+          color: randomColor,
           startTime: now,
           duration: 3000,
           maxAlpha: 0.8,
