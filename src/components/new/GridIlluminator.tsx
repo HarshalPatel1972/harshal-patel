@@ -7,13 +7,9 @@ const COLORS = [
   { r: 49, g: 120, b: 198 },  // #3178C6 (Blue)
   { r: 101, g: 79, b: 240 }, // #654FF0 (Purple)
   { r: 16, g: 185, b: 129 },  // #10B981 (Green)
-  { r: 217, g: 17, b: 17 },   // #D91111 (Red)
 ];
 
 const CELL_SIZE = 40;
-const ARENA_RADIUS = 6; // 13x13 arena (-6 to +6)
-const ARENA_OFFSET_C = 2;
-const ARENA_OFFSET_R = -2;
 
 type GameState = "AMBIENT" | "CHARGING" | "PLAY_BUTTON" | "TRANSITION_GAME" | "SNAKE_GAME" | "SHOW_SCORE";
 type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
@@ -112,19 +108,6 @@ export function GridIlluminator() {
       { dc: 2, dr: 0 },
     ].map(p => ({ dc: p.dc + 3, dr: p.dr - 2 }));
 
-    // Arena wall perimeter cells relative to center
-    const getWallPattern = (): GridCell[] => {
-      const walls: GridCell[] = [];
-      for (let dc = -ARENA_RADIUS; dc <= ARENA_RADIUS; dc++) {
-        for (let dr = -ARENA_RADIUS; dr <= ARENA_RADIUS; dr++) {
-          if (Math.abs(dc) === ARENA_RADIUS || Math.abs(dr) === ARENA_RADIUS) {
-            walls.push({ col: dc + ARENA_OFFSET_C, row: dr + ARENA_OFFSET_R });
-          }
-        }
-      }
-      return walls;
-    };
-
     const spawnAmbientParticle = (now: number) => {
       const maxCols = getCols();
       const maxRows = getRows();
@@ -132,6 +115,15 @@ export function GridIlluminator() {
 
       const col = Math.floor(Math.random() * maxCols);
       const row = Math.floor(Math.random() * maxRows);
+
+      // Don't spawn on snake if playing
+      if (gameStateRef.current === "SNAKE_GAME") {
+        const { midCol, midRow } = getCenterCell();
+        const isOnSnake = snakeRef.current.some(s => 
+          (midCol + s.col) === col && (midRow + s.row) === row
+        );
+        if (isOnSnake) return;
+      }
 
       const color = COLORS[Math.floor(Math.random() * COLORS.length)];
       const duration = 2500 + Math.random() * 2500;
@@ -153,14 +145,20 @@ export function GridIlluminator() {
 
     const spawnFood = () => {
       const snake = snakeRef.current;
+      const { midCol, midRow } = getCenterCell();
+      const maxCols = getCols();
+      const maxRows = getRows();
+      
       let newCol = 0;
       let newRow = 0;
       let valid = false;
       let attempts = 0;
 
       while (!valid && attempts < 100) {
-        newCol = Math.floor(Math.random() * (ARENA_RADIUS * 2 - 1)) - (ARENA_RADIUS - 1);
-        newRow = Math.floor(Math.random() * (ARENA_RADIUS * 2 - 1)) - (ARENA_RADIUS - 1);
+        const absCol = Math.floor(Math.random() * maxCols);
+        const absRow = Math.floor(Math.random() * maxRows);
+        newCol = absCol - midCol;
+        newRow = absRow - midRow;
         valid = !snake.some((s) => s.col === newCol && s.row === newRow);
         attempts++;
       }
@@ -209,8 +207,8 @@ export function GridIlluminator() {
       const redColor = COLORS[3]; 
       
       activeParticles = scoreCells.map((sc) => {
-        const tx = (midCol + sc.col + ARENA_OFFSET_C) * CELL_SIZE;
-        const ty = (midRow + sc.row + ARENA_OFFSET_R) * CELL_SIZE;
+        const tx = (midCol + sc.col) * CELL_SIZE;
+        const ty = (midRow + sc.row) * CELL_SIZE;
         return {
           x: tx,
           y: ty,
@@ -239,25 +237,8 @@ export function GridIlluminator() {
       setGameOver(false);
       spawnFood();
 
-      // Form arena wall particles
-      const { midCol, midRow } = getCenterCell();
-      const wallCells = getWallPattern();
-      activeParticles = wallCells.map((wc, i) => {
-        const x = (midCol + wc.col) * CELL_SIZE;
-        const y = (midRow + wc.row) * CELL_SIZE;
-        return {
-          x,
-          y,
-          targetX: x,
-          targetY: y,
-          color: COLORS[i % COLORS.length],
-          startTime: performance.now(),
-          duration: 99999999,
-          maxAlpha: 0.12,
-          pinned: true,
-        };
-      });
-
+      // Clear play button and transition to ambient blinking for game
+      activeParticles = [];
       setGameState("SNAKE_GAME");
     };
 
@@ -315,8 +296,8 @@ export function GridIlluminator() {
         }
       }
 
-      // --- AMBIENT MODE ---
-      if (state === "AMBIENT") {
+      // --- AMBIENT MODE OR SNAKE GAME (Blinking Squares) ---
+      if (state === "AMBIENT" || state === "SNAKE_GAME") {
         if (now - lastSpawnTime > 140 && activeParticles.length < 32) {
           if (Math.random() < 0.8) {
             spawnAmbientParticle(now);
@@ -370,8 +351,28 @@ export function GridIlluminator() {
           if (dirRef.current === "LEFT") head.col -= 1;
           if (dirRef.current === "RIGHT") head.col += 1;
 
-          // Wall collision check
-          if (Math.abs(head.col) >= ARENA_RADIUS || Math.abs(head.row) >= ARENA_RADIUS) {
+          // Wrap-around logic
+          const maxCols = getCols();
+          const maxRows = getRows();
+          let absCol = midCol + head.col;
+          let absRow = midRow + head.row;
+
+          if (absCol < 0) absCol = maxCols - 1;
+          if (absCol >= maxCols) absCol = 0;
+          if (absRow < 0) absRow = maxRows - 1;
+          if (absRow >= maxRows) absRow = 0;
+
+          head.col = absCol - midCol;
+          head.row = absRow - midRow;
+
+          // Ambient square collision check
+          const absHeadX = absCol * CELL_SIZE;
+          const absHeadY = absRow * CELL_SIZE;
+          const hitAmbient = activeParticles.some(p => 
+            Math.abs(p.targetX - absHeadX) < 1 && Math.abs(p.targetY - absHeadY) < 1
+          );
+
+          if (hitAmbient) {
             triggerGameOver(now);
           } else if (snakeRef.current.some((s) => s.col === head.col && s.row === head.row)) {
             // Self collision check
@@ -394,26 +395,24 @@ export function GridIlluminator() {
         }
 
         // --- DRAW FOOD ---
-        // Centered 50% area square (20px in 40px cell)
         const foodCell = foodRef.current;
-        const fx = (midCol + foodCell.col + ARENA_OFFSET_C) * CELL_SIZE + 10;
-        const fy = (midRow + foodCell.row + ARENA_OFFSET_R) * CELL_SIZE + 10;
+        const fx = (midCol + foodCell.col) * CELL_SIZE;
+        const fy = (midRow + foodCell.row) * CELL_SIZE;
 
         ctx.save();
         const pulse = Math.sin(now * 0.008) * 0.15 + 0.40;
         ctx.fillStyle = `rgba(217, 17, 17, ${pulse})`; // Red Food
-        ctx.fillRect(fx, fy, 20, 20);
+        ctx.fillRect(fx, fy, CELL_SIZE, CELL_SIZE);
         ctx.strokeStyle = `rgba(255, 255, 255, 0.6)`;
         ctx.lineWidth = 1;
-        ctx.strokeRect(fx, fy, 20, 20);
+        ctx.strokeRect(fx + 0.5, fy + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
         ctx.restore();
 
         // --- DRAW SNAKE ---
-        // 50% area taken out of total size of square (20px width in 40px cell, centered with 10px offset)
         const snake = snakeRef.current;
         snake.forEach((seg, i) => {
-          const sx = (midCol + seg.col + ARENA_OFFSET_C) * CELL_SIZE + 10;
-          const sy = (midRow + seg.row + ARENA_OFFSET_R) * CELL_SIZE + 10;
+          const sx = (midCol + seg.col) * CELL_SIZE;
+          const sy = (midRow + seg.row) * CELL_SIZE;
 
           ctx.save();
           // Head vs Body opacity and color
@@ -422,11 +421,11 @@ export function GridIlluminator() {
           } else {
             ctx.fillStyle = "rgba(16, 185, 129, 0.20)"; // Exact 20% opacity as requested
           }
-          ctx.fillRect(sx, sy, 20, 20);
+          ctx.fillRect(sx, sy, CELL_SIZE, CELL_SIZE);
 
           ctx.strokeStyle = "rgba(16, 185, 129, 0.40)";
           ctx.lineWidth = 1;
-          ctx.strokeRect(sx, sy, 20, 20);
+          ctx.strokeRect(sx + 0.5, sy + 0.5, CELL_SIZE - 1, CELL_SIZE - 1);
           ctx.restore();
         });
       }
