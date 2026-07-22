@@ -16,6 +16,17 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
     const el = ref.current;
     if (!el) return;
 
+    const reset = () => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+      anime(el, {
+        translateX: 0,
+        translateY: 0,
+        duration: 400,
+        easing: "outCubic",
+      });
+    };
+
     const handleMove = (e: MouseEvent) => {
       // ⚡ Bolt: Store latest coordinates in mutable outer ref to prevent stale closures
       // and desync when batching with requestAnimationFrame.
@@ -32,7 +43,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
         anime(el, {
           translateX: x * strength,
           translateY: y * strength,
-          duration: 600,
+          duration: 400,
           easing: "outQuart",
         });
         rafId.current = null;
@@ -40,21 +51,23 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
     };
 
     const handleLeave = () => {
-      if (rafId.current) cancelAnimationFrame(rafId.current);
-      rafId.current = null;
-      anime(el, {
-        translateX: 0,
-        translateY: 0,
-        duration: 800,
-        easing: "outElastic(1, 0.4)",
-      });
+      reset();
+    };
+
+    const handleClick = () => {
+      reset();
     };
 
     el.addEventListener("mousemove", handleMove);
     el.addEventListener("mouseleave", handleLeave);
+    el.addEventListener("click", handleClick);
+    el.addEventListener("pointerup", handleClick);
+
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
+      el.removeEventListener("click", handleClick);
+      el.removeEventListener("pointerup", handleClick);
       if (rafId.current) cancelAnimationFrame(rafId.current);
       remove(el);
     };

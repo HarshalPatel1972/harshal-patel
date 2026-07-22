@@ -92,6 +92,14 @@ export function Hero() {
     return currentProfile.tagline.split(/(Go|TypeScript|Typescipt|WebAssembly)/gi);
   }, [currentProfile.tagline]);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    const section = document.getElementById(targetId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
 
   // SCROLL ENGINE (NON-POLLING PASSIVE LISTENER)
   useEffect(() => {
@@ -304,6 +312,7 @@ export function Hero() {
               <a
                 ref={cta1Ref}
                 href="#projects"
+                onClick={(e) => handleNavClick(e, "projects")}
                 className="group relative block min-w-[200px] md:min-w-[240px] select-none cursor-pointer"
               >
                 {/* Backdrop Layer */}
@@ -326,6 +335,7 @@ export function Hero() {
               <a
                 ref={cta2Ref}
                 href="#contact"
+                onClick={(e) => handleNavClick(e, "contact")}
                 className="group relative block min-w-[200px] md:min-w-[240px] select-none cursor-pointer"
               >
                 {/* Backdrop Layer */}

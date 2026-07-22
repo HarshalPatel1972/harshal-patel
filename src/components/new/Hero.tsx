@@ -218,6 +218,14 @@ export function Hero() {
 
   const [isNameHovered, setIsNameHovered] = React.useState(false);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    const section = document.getElementById(targetId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section
       ref={trackRef}
@@ -387,6 +395,7 @@ export function Hero() {
             <a
               ref={cta1Ref}
               href="#projects"
+              onClick={(e) => handleNavClick(e, "projects")}
               className="group relative block min-w-[180px] md:min-w-[200px] select-none cursor-pointer"
             >
               {/* Outer shadow layer / backdrop */}
@@ -413,6 +422,7 @@ export function Hero() {
             <a
               ref={cta2Ref}
               href="#contact"
+              onClick={(e) => handleNavClick(e, "contact")}
               className="group relative block min-w-[180px] md:min-w-[200px] select-none cursor-pointer"
             >
               {/* Outer shadow layer / backdrop */}
