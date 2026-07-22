@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useDesignVersion } from "@/components/shared/DesignVersionContext";
 import { DesignVersionSwitcher } from "@/components/shared/DesignVersionSwitcher";
+import { BackToTop } from "@/components/shared/BackToTop";
 import { LanguageTransitionWrapper } from "@/context/LanguageContext";
 
 // SHARED DECOR & TRANSITIONS
@@ -77,6 +78,7 @@ function HomeContent() {
       )}
       
       {showContent && <Cursor />}
+      {showContent && <BackToTop />}
 
       {/* RENDER PRESENTATION LAYER */}
       {isOldDesign ? (
