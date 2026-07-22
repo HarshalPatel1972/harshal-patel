@@ -11,9 +11,11 @@ const COLORS = [
 ];
 
 const CELL_SIZE = 40;
-const ARENA_RADIUS = 7; // 15x15 arena (-7 to +7)
+const ARENA_RADIUS = 6; // 13x13 arena (-6 to +6)
+const ARENA_OFFSET_C = 2;
+const ARENA_OFFSET_R = -2;
 
-type GameState = "AMBIENT" | "CHARGING" | "PLAY_BUTTON" | "TRANSITION_GAME" | "SNAKE_GAME";
+type GameState = "AMBIENT" | "CHARGING" | "PLAY_BUTTON" | "TRANSITION_GAME" | "SNAKE_GAME" | "SHOW_SCORE";
 type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
 interface Particle {
@@ -57,6 +59,7 @@ export function GridIlluminator() {
   const scoreRef = useRef(0);
   const lastStepTimeRef = useRef(0);
   const gameOverRef = useRef(false);
+  const scoreTimerRef = useRef(0);
 
   // Mouse Hold Tracker
   const isMouseDownRef = useRef(false);
@@ -100,12 +103,14 @@ export function GridIlluminator() {
       midRow: Math.floor(getRows() / 2),
     });
 
-    // Play button cell pattern relative to center
+    // Play button cell pattern relative to center (2x size, shifted +3, -2)
     const PLAY_PATTERN = [
-      { dc: -1, dr: -2 }, { dc: -1, dr: -1 }, { dc: -1, dr: 0 }, { dc: -1, dr: 1 }, { dc: -1, dr: 2 },
-      { dc: 0, dr: -1 },  { dc: 0, dr: 0 },   { dc: 0, dr: 1 },
-      { dc: 1, dr: 0 },
-    ];
+      { dc: -2, dr: -4 }, { dc: -2, dr: -3 }, { dc: -2, dr: -2 }, { dc: -2, dr: -1 }, { dc: -2, dr: 0 }, { dc: -2, dr: 1 }, { dc: -2, dr: 2 }, { dc: -2, dr: 3 }, { dc: -2, dr: 4 },
+      { dc: -1, dr: -3 }, { dc: -1, dr: -2 }, { dc: -1, dr: -1 }, { dc: -1, dr: 0 }, { dc: -1, dr: 1 }, { dc: -1, dr: 2 }, { dc: -1, dr: 3 },
+      { dc: 0, dr: -2 }, { dc: 0, dr: -1 }, { dc: 0, dr: 0 }, { dc: 0, dr: 1 }, { dc: 0, dr: 2 },
+      { dc: 1, dr: -1 }, { dc: 1, dr: 0 }, { dc: 1, dr: 1 },
+      { dc: 2, dr: 0 },
+    ].map(p => ({ dc: p.dc + 3, dr: p.dr - 2 }));
 
     // Arena wall perimeter cells relative to center
     const getWallPattern = (): GridCell[] => {
@@ -113,7 +118,7 @@ export function GridIlluminator() {
       for (let dc = -ARENA_RADIUS; dc <= ARENA_RADIUS; dc++) {
         for (let dr = -ARENA_RADIUS; dr <= ARENA_RADIUS; dr++) {
           if (Math.abs(dc) === ARENA_RADIUS || Math.abs(dr) === ARENA_RADIUS) {
-            walls.push({ col: dc, row: dr });
+            walls.push({ col: dc + ARENA_OFFSET_C, row: dr + ARENA_OFFSET_R });
           }
         }
       }
@@ -160,6 +165,64 @@ export function GridIlluminator() {
         attempts++;
       }
       foodRef.current = { col: newCol, row: newRow };
+    };
+
+    const triggerGameOver = (now: number) => {
+      gameOverRef.current = true;
+      setGameOver(true);
+      setGameState("SHOW_SCORE");
+      scoreTimerRef.current = now;
+
+      const scoreStr = scoreRef.current.toString();
+      const numDigits = scoreStr.length;
+      
+      const DIGITS = [
+        [[1,1,1],[1,0,1],[1,0,1],[1,0,1],[1,1,1]], // 0
+        [[0,1,0],[1,1,0],[0,1,0],[0,1,0],[1,1,1]], // 1
+        [[1,1,1],[0,0,1],[1,1,1],[1,0,0],[1,1,1]], // 2
+        [[1,1,1],[0,0,1],[1,1,1],[0,0,1],[1,1,1]], // 3
+        [[1,0,1],[1,0,1],[1,1,1],[0,0,1],[0,0,1]], // 4
+        [[1,1,1],[1,0,0],[1,1,1],[0,0,1],[1,1,1]], // 5
+        [[1,1,1],[1,0,0],[1,1,1],[1,0,1],[1,1,1]], // 6
+        [[1,1,1],[0,0,1],[0,1,0],[1,0,0],[1,0,0]], // 7
+        [[1,1,1],[1,0,1],[1,1,1],[1,0,1],[1,1,1]], // 8
+        [[1,1,1],[1,0,1],[1,1,1],[0,0,1],[1,1,1]]  // 9
+      ];
+
+      const scoreCells: GridCell[] = [];
+      let currentC = -Math.floor((numDigits * 4 - 1) / 2);
+      
+      for (let i = 0; i < numDigits; i++) {
+        const digit = parseInt(scoreStr[i]);
+        const pattern = DIGITS[digit];
+        for (let r = 0; r < 5; r++) {
+          for (let c = 0; c < 3; c++) {
+            if (pattern[r][c]) {
+              scoreCells.push({ col: currentC + c, row: r - 2 });
+            }
+          }
+        }
+        currentC += 4;
+      }
+
+      const { midCol, midRow } = getCenterCell();
+      const redColor = COLORS[3]; 
+      
+      activeParticles = scoreCells.map((sc) => {
+        const tx = (midCol + sc.col + ARENA_OFFSET_C) * CELL_SIZE;
+        const ty = (midRow + sc.row + ARENA_OFFSET_R) * CELL_SIZE;
+        return {
+          x: tx,
+          y: ty,
+          targetX: tx,
+          targetY: ty,
+          color: redColor,
+          startTime: now,
+          duration: 3000,
+          maxAlpha: 0.8,
+          pinned: true,
+        };
+      });
     };
 
     const startSnakeGame = () => {
@@ -292,41 +355,12 @@ export function GridIlluminator() {
         return true;
       });
 
-      // --- DRAW CHARGING CURSOR INDICATOR ---
-      if (isMouseDownRef.current && chargeProgressRef.current > 0 && state === "AMBIENT") {
-        const { x: mx, y: my } = mousePosRef.current;
-        const colorIdx = Math.floor(now / 150) % COLORS.length;
-        const col = COLORS[colorIdx];
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(mx, my, 28, -Math.PI / 2, -Math.PI / 2 + chargeProgressRef.current * Math.PI * 2);
-        ctx.strokeStyle = `rgba(${col.r}, ${col.g}, ${col.b}, 0.8)`;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // --- PLAY BUTTON OVERLAY TEXT & HOVER ---
-      if (state === "PLAY_BUTTON") {
-        const { midCol, midRow } = getCenterCell();
-        const px = midCol * CELL_SIZE + CELL_SIZE / 2;
-        const py = (midRow + 3.5) * CELL_SIZE;
-
-        ctx.save();
-        ctx.font = "bold 11px var(--font-jetbrains-mono), monospace";
-        ctx.textAlign = "center";
-        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        ctx.fillText("▶ CLICK TO PLAY SNAKE [ESC TO EXIT]", px, py);
-        ctx.restore();
-      }
-
       // --- SNAKE GAME ENGINE & DRAWING ---
       if (state === "SNAKE_GAME") {
         const { midCol, midRow } = getCenterCell();
 
-        // Game Update Step (Every 130ms)
-        if (!gameOverRef.current && now - lastStepTimeRef.current > 130) {
+        // Game Update Step (Every ~173ms for 0.75x speed)
+        if (!gameOverRef.current && now - lastStepTimeRef.current > 173) {
           lastStepTimeRef.current = now;
           dirRef.current = nextDirRef.current;
 
@@ -338,14 +372,10 @@ export function GridIlluminator() {
 
           // Wall collision check
           if (Math.abs(head.col) >= ARENA_RADIUS || Math.abs(head.row) >= ARENA_RADIUS) {
-            gameOverRef.current = true;
-            setGameOver(true);
-          }
-
-          // Self collision check
-          if (snakeRef.current.some((s) => s.col === head.col && s.row === head.row)) {
-            gameOverRef.current = true;
-            setGameOver(true);
+            triggerGameOver(now);
+          } else if (snakeRef.current.some((s) => s.col === head.col && s.row === head.row)) {
+            // Self collision check
+            triggerGameOver(now);
           }
 
           if (!gameOverRef.current) {
@@ -366,8 +396,8 @@ export function GridIlluminator() {
         // --- DRAW FOOD ---
         // Centered 50% area square (20px in 40px cell)
         const foodCell = foodRef.current;
-        const fx = (midCol + foodCell.col) * CELL_SIZE + 10;
-        const fy = (midRow + foodCell.row) * CELL_SIZE + 10;
+        const fx = (midCol + foodCell.col + ARENA_OFFSET_C) * CELL_SIZE + 10;
+        const fy = (midRow + foodCell.row + ARENA_OFFSET_R) * CELL_SIZE + 10;
 
         ctx.save();
         const pulse = Math.sin(now * 0.008) * 0.15 + 0.40;
@@ -382,8 +412,8 @@ export function GridIlluminator() {
         // 50% area taken out of total size of square (20px width in 40px cell, centered with 10px offset)
         const snake = snakeRef.current;
         snake.forEach((seg, i) => {
-          const sx = (midCol + seg.col) * CELL_SIZE + 10;
-          const sy = (midRow + seg.row) * CELL_SIZE + 10;
+          const sx = (midCol + seg.col + ARENA_OFFSET_C) * CELL_SIZE + 10;
+          const sy = (midRow + seg.row + ARENA_OFFSET_R) * CELL_SIZE + 10;
 
           ctx.save();
           // Head vs Body opacity and color
@@ -399,20 +429,13 @@ export function GridIlluminator() {
           ctx.strokeRect(sx, sy, 20, 20);
           ctx.restore();
         });
+      }
 
-        // --- GAME OVER HUD ---
-        if (gameOverRef.current) {
-          const px = midCol * CELL_SIZE;
-          const py = midRow * CELL_SIZE;
-          ctx.save();
-          ctx.font = "bold 14px var(--font-jetbrains-mono), monospace";
-          ctx.textAlign = "center";
-          ctx.fillStyle = "rgba(217, 17, 17, 0.9)";
-          ctx.fillText("GAME OVER", px, py - 10);
-          ctx.font = "10px var(--font-jetbrains-mono), monospace";
-          ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-          ctx.fillText("CLICK TO RETRY | PRESS ESC TO EXIT", px, py + 14);
-          ctx.restore();
+      // --- SCORE DISPLAY LOGIC ---
+      if (state === "SHOW_SCORE") {
+        if (now - scoreTimerRef.current > 3000) {
+          setGameState("AMBIENT");
+          activeParticles = [];
         }
       }
 
@@ -507,21 +530,6 @@ export function GridIlluminator() {
         }`}
         aria-hidden="true"
       />
-
-      {/* SNAKE GAME HUD */}
-      {gameState === "SNAKE_GAME" && (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-6 px-4 py-2 bg-[var(--sumi-ink)]/90 border border-[var(--forge-orange)] text-white font-mono text-xs rounded-sm shadow-lg pointer-events-auto select-none">
-          <span className="font-bold text-[var(--forge-orange)]">SNAKE ARENA</span>
-          <span>SCORE: {score}</span>
-          <span className="opacity-60">HIGH: {highScore}</span>
-          <button
-            onClick={() => setGameState("AMBIENT")}
-            className="px-2 py-0.5 bg-red-600/80 hover:bg-red-600 text-white rounded text-[10px] uppercase font-bold tracking-wider cursor-pointer"
-          >
-            EXIT [ESC]
-          </button>
-        </div>
-      )}
     </>
   );
 }
