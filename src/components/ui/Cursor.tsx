@@ -152,6 +152,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     window.addEventListener("dragstart", onDragStart);
 
     let rafId: number;
+    let lastCssX = -1;
+    let lastCssY = -1;
     const loop = () => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
@@ -171,8 +173,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       }
 
       // Sync CSS properties for elements following the cursor
-      document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+      if (mouse.current.x !== lastCssX || mouse.current.y !== lastCssY) {
+        document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+        lastCssX = mouse.current.x;
+        lastCssY = mouse.current.y;
+      }
 
       // Snap lead particle directly to mouse — zero lag
       px.current[0] = mouse.current.x;
