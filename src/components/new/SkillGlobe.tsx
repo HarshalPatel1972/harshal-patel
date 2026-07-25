@@ -120,6 +120,10 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
 
+    // Cached container dimensions to prevent layout thrashing in the animation loop
+    let cachedHalfWidth = mountRef.current.clientWidth / 2;
+    let cachedHalfHeight = mountRef.current.clientHeight / 2;
+
     // Resize handling to keep globe aspect ratio correct
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
@@ -127,6 +131,9 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
         renderer.setSize(width, height);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+
+        cachedHalfWidth = width / 2;
+        cachedHalfHeight = height / 2;
       }
     });
     resizeObserver.observe(mountRef.current);
@@ -150,11 +157,8 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
          // Project 3D coordinate to 2D screen coordinate
          worldPos.project(camera);
          
-         const halfWidth = mountRef.current!.clientWidth / 2;
-         const halfHeight = mountRef.current!.clientHeight / 2;
-         
-         const x = (worldPos.x * halfWidth) + halfWidth;
-         const y = -(worldPos.y * halfHeight) + halfHeight;
+         const x = (worldPos.x * cachedHalfWidth) + cachedHalfWidth;
+         const y = -(worldPos.y * cachedHalfHeight) + cachedHalfHeight;
          
          // Directly mutate DOM for extreme performance without React re-renders
          const label = labelsRef.current[i];
