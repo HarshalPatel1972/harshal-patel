@@ -35,7 +35,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickingMouseRef = useRef(false);
-  const prevMouseRef = useRef({ x: 0, y: 0 });
 
   // Color Cycling State
   const PALETTE = useMemo(() => designVersion === "new"
@@ -61,7 +60,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   }, [pathname, searchParams]);
 
   useEffect(() => {
-    const touchDevice = ("ontouchstart" in window || navigator.maxTouchPoints > 0) && 
+    const touchDevice = ("ontouchstart" in window || navigator.maxTouchPoints > 0) &&
                        (window.matchMedia("(pointer: coarse)").matches && !window.matchMedia("(pointer: fine)").matches);
     setTimeout(() => {
       setIsTouch(touchDevice);
@@ -99,9 +98,9 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    const onMouseMove = (e: MouseEvent) => { 
+    const onMouseMove = (e: MouseEvent) => {
       if (isTouch) setIsTouch(false);
-      mouse.current = { x: e.clientX, y: e.clientY }; 
+      mouse.current = { x: e.clientX, y: e.clientY };
     };
     const onMouseOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement;
@@ -116,7 +115,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       // FORCE RESET ON CLICK: Kill stale link hover states immediately
       hoverType.current = "none";
       locked.current.fill(0);
-      
+
       holdStartTimeRef.current = Date.now();
       totalClicks.current++; clickIdleTimer.current = 0; burstFlash.current = 18;
       const force = 6 + totalClicks.current * 5;
@@ -126,8 +125,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       document.body.style.userSelect = "none";
       document.body.style.webkitUserSelect = "none";
     };
-    const onMouseUp = () => { 
-      holdStartTimeRef.current = null; 
+    const onMouseUp = () => {
+      holdStartTimeRef.current = null;
       // Restore text selection
       document.body.style.userSelect = "";
       document.body.style.webkitUserSelect = "";
@@ -172,11 +171,8 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       }
 
       // Sync CSS properties for elements following the cursor
-      if (prevMouseRef.current.x !== mouse.current.x || prevMouseRef.current.y !== mouse.current.y) {
-        document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
-        document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
-        prevMouseRef.current = { x: mouse.current.x, y: mouse.current.y };
-      }
+      document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
 
       // Snap lead particle directly to mouse — zero lag
       px.current[0] = mouse.current.x;
@@ -188,10 +184,10 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
       const isEridian = language === 'eridian';
       const activePalette = isEridian ? ERIDIAN_PALETTE : PALETTE;
-      
+
       const baseColor = activePalette[colorIndexRef.current];
-      const currentColor = burstFlash.current > 0 
-        ? (colorIndexRef.current === 1 ? activePalette[2] : activePalette[1]) 
+      const currentColor = burstFlash.current > 0
+        ? (colorIndexRef.current === 1 ? activePalette[2] : activePalette[1])
         : hoverType.current !== "none" ? activePalette[2] : baseColor;
 
       for (let i = 1; i < 20; i++) {
@@ -199,13 +195,13 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const slots = hoverType.current === "play" ? playSlots.current : arrowSlots.current;
           const slot = slots[i - 1];
           const tx = px.current[0] + slot.x, ty = py.current[0] + slot.y;
-          if (locked.current[i]) { 
-            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; 
+          if (locked.current[i]) {
+            px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0;
           } else {
             const ddx = tx - px.current[i], ddy = ty - py.current[i];
             const dist = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001;
-            if (dist < 2.5) { 
-              px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1; 
+            if (dist < 2.5) {
+              px.current[i] = tx; py.current[i] = ty; vx.current[i] = 0; vy.current[i] = 0; locked.current[i] = 1;
             } else {
               // Rapid, smooth snap to slot using Lerp
               px.current[i] += ddx * 0.28;
@@ -219,12 +215,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
           const tx = px.current[0] + Math.cos(pt.current[i]) * 20;
           const ty = py.current[0] + Math.sin(pt.current[i]) * 20;
           const ddx = tx - px.current[i], ddy = ty - py.current[i];
-          
+
           // Uniform smooth lerp to preserve the circle formation and create a natural, fluid flow
           const ease = 0.28;
           px.current[i] += ddx * ease;
           py.current[i] += ddy * ease;
-          
+
           // Smoothly decay click-burst velocities
           vx.current[i] *= 0.82; vy.current[i] *= 0.82;
           px.current[i] += vx.current[i]; py.current[i] += vy.current[i];
@@ -239,7 +235,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       if (hoverType.current === "none") {
         ctx.beginPath(); ctx.arc(px.current[0], py.current[0], 20, 0, Math.PI * 2);
         ctx.strokeStyle = baseColor; ctx.globalAlpha = isEridian ? (0.1 + Math.sin(Date.now() / 200) * 0.05) : 0.04; ctx.lineWidth = isEridian ? 2 : 0.5; ctx.stroke(); ctx.globalAlpha = 1;
-        
+
         // Eridian Sonar Pulse (Inspired by PHM)
         if (isEridian) {
           const sonarPulse = (Date.now() % 2000) / 2000;
@@ -256,23 +252,23 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       for (let i = 0; i < 20; i++) {
         if (i === 0 && hoverType.current === "play") continue;
         const x = px.current[i], y = py.current[i];
-        ctx.beginPath(); 
-        ctx.arc(x, y, PSIZE, 0, Math.PI * 2); 
-        ctx.fillStyle = currentColor; 
+        ctx.beginPath();
+        ctx.arc(x, y, PSIZE, 0, Math.PI * 2);
+        ctx.fillStyle = currentColor;
         ctx.fill();
         ctx.closePath();
 
         if (burstFlash.current === 0) {
-          ctx.beginPath(); 
+          ctx.beginPath();
           ctx.arc(x - PSIZE * 0.3, y - PSIZE * 0.3, PSIZE * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,255,255,0.70)"; 
+          ctx.fillStyle = "rgba(255,255,255,0.70)";
           ctx.fill();
           ctx.closePath();
 
-          ctx.beginPath(); 
+          ctx.beginPath();
           ctx.arc(x, y, PSIZE + 1.1, 0, Math.PI * 2);
-          ctx.lineWidth = 0.6; 
-          ctx.strokeStyle = hoverType.current !== "none" ? activePalette[2] : `${baseColor}15`; 
+          ctx.lineWidth = 0.6;
+          ctx.strokeStyle = hoverType.current !== "none" ? activePalette[2] : `${baseColor}15`;
           ctx.stroke();
           ctx.closePath();
         }

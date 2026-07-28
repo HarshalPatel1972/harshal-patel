@@ -46,3 +46,7 @@
 ## 2026-07-21 - Refactored mousePos state to ref in Feedback Gallery
 **Learning:** High-frequency events like `mousemove` should not trigger React state updates, even when batched with `requestAnimationFrame`, as this still causes cascading re-renders across all child components (e.g., all `FloatingCard` instances in a gallery).
 **Action:** Store the rapidly changing event coordinates in a `useRef`. Pass this ref to child components, which can read from it inside their own animation loops (e.g., Framer Motion's `useAnimationFrame`) and update native DOM styles using MotionValues, entirely bypassing the React render cycle.
+
+## 2026-07-22 - Preventing Layout Thrashing from Root CSS Variables in requestAnimationFrame
+**Learning:** Setting CSS properties (like custom variables) on the root element (`document.documentElement`) unconditionally within a high-frequency loop (e.g., `requestAnimationFrame`) causes massive global layout thrashing, even if the values haven't actually changed.
+**Action:** Always cache the values and apply style updates conditionally only when the values change to prevent unnecessary reflows/repaints.
