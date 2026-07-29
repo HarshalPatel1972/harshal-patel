@@ -35,6 +35,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickingMouseRef = useRef(false);
+  const lastSetMouse = useRef({ x: -1, y: -1 });
 
   // Color Cycling State
   const PALETTE = useMemo(() => designVersion === "new"
@@ -171,8 +172,14 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
       }
 
       // Sync CSS properties for elements following the cursor
-      document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+      if (lastSetMouse.current.x !== mouse.current.x) {
+        document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+        lastSetMouse.current.x = mouse.current.x;
+      }
+      if (lastSetMouse.current.y !== mouse.current.y) {
+        document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+        lastSetMouse.current.y = mouse.current.y;
+      }
 
       // Snap lead particle directly to mouse — zero lag
       px.current[0] = mouse.current.x;

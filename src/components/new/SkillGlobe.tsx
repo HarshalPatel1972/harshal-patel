@@ -121,12 +121,17 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
     window.addEventListener('pointerup', onPointerUp);
 
     // Resize handling to keep globe aspect ratio correct
+    let halfWidth = mountRef.current.clientWidth / 2;
+    let halfHeight = mountRef.current.clientHeight / 2;
+
     const resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         renderer.setSize(width, height);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
+        halfWidth = width / 2;
+        halfHeight = height / 2;
       }
     });
     resizeObserver.observe(mountRef.current);
@@ -149,9 +154,6 @@ export function SkillGlobe({ skills }: { skills: any[] }) {
          
          // Project 3D coordinate to 2D screen coordinate
          worldPos.project(camera);
-         
-         const halfWidth = mountRef.current!.clientWidth / 2;
-         const halfHeight = mountRef.current!.clientHeight / 2;
          
          const x = (worldPos.x * halfWidth) + halfWidth;
          const y = -(worldPos.y * halfHeight) + halfHeight;
