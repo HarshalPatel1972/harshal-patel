@@ -28,6 +28,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const pt = useRef(new Float32Array(20));
 
   const mouse = useRef({ x: 0, y: 0 });
+  const lastSetMouse = useRef({ x: -100, y: -100 }); // Cache to prevent layout thrashing
   const hoverType = useRef<"none" | "standard" | "play">("none");
   const totalClicks = useRef(0);
   const clickIdleTimer = useRef(0);
@@ -170,9 +171,13 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
         }
       }
 
-      // Sync CSS properties for elements following the cursor
-      document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+      // Sync CSS properties for elements following the cursor, conditional to prevent layout thrashing
+      if (lastSetMouse.current.x !== mouse.current.x || lastSetMouse.current.y !== mouse.current.y) {
+        document.documentElement.style.setProperty('--mouse-x', `${mouse.current.x}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${mouse.current.y}px`);
+        lastSetMouse.current.x = mouse.current.x;
+        lastSetMouse.current.y = mouse.current.y;
+      }
 
       // Snap lead particle directly to mouse — zero lag
       px.current[0] = mouse.current.x;
