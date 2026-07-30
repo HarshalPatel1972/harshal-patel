@@ -288,7 +288,7 @@ export function GridIlluminator() {
       // Handle Charging Hold State
       if (isMouseDownRef.current && state === "AMBIENT") {
         const elapsed = now - holdStartRef.current;
-        chargeProgressRef.current = Math.min(1, elapsed / 3000);
+        chargeProgressRef.current = Math.min(1, elapsed / 1500);
 
         if (chargeProgressRef.current >= 1) {
           setGameState("PLAY_BUTTON");

@@ -163,7 +163,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
       if (holdStartTimeRef.current) {
         const elapsed = Date.now() - holdStartTimeRef.current;
-        const progress = Math.min(1, elapsed / 3000);
+        const progress = Math.min(1, elapsed / 1500);
         if (progress >= 1) {
           colorIndexRef.current = (colorIndexRef.current + 1) % PALETTE.length;
           holdStartTimeRef.current = Date.now();
@@ -236,7 +236,7 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
 
       if (holdStartTimeRef.current) {
         ctx.beginPath();
-        ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 3000));
+        ctx.arc(px.current[0], py.current[0], 25, -Math.PI/2, (-Math.PI/2) + (Math.PI * 2 * (Date.now() - holdStartTimeRef.current) / 1500));
         ctx.strokeStyle = activePalette[(colorIndexRef.current + 1) % activePalette.length]; ctx.lineWidth = 2; ctx.stroke();
       }
       if (hoverType.current === "none") {
