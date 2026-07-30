@@ -64,27 +64,18 @@ export function Contact() {
 
   const t = titleData[language as keyof typeof titleData] || titleData.en;
 
-  // Localized contact options inside window panes
+  // Localized contact options
   const links = [
     {
       id: "email",
       label: (() => {
         switch (language) {
-          case "ja": return "01 · メール";
-          case "ko": return "01 · 이메일";
-          case "zh-tw": return "01 · 電子郵件";
-          case "hi": return "01 · ईमेल";
-          case "eridian": return "01 · SIGNAL-SEND";
-          default: return "01 · EMAIL";
-        }
-      })(),
-      value: currentProfile.email,
-      desc: (() => {
-        switch (language) {
-          case "ja": return copied ? "コピー完了" : "クリックしてアドレスをコピー";
-          case "hi": return copied ? "कॉपी हो गया!" : "क्लिक करके ईमेल कॉपी करें";
-          case "eridian": return copied ? "DATA-STORED-IN-BRAIN" : "TAP TO BROADCAST SIGNAL";
-          default: return copied ? "EMAIL COPIED" : "Click to Copy Address";
+          case "ja": return "メール";
+          case "ko": return "이메일";
+          case "zh-tw": return "電子郵件";
+          case "hi": return "ईमेल";
+          case "eridian": return "SIGNAL-SEND";
+          default: return "EMAIL";
         }
       })(),
       onClick: handleCopyEmail
@@ -93,21 +84,12 @@ export function Contact() {
       id: "github",
       label: (() => {
         switch (language) {
-          case "ja": return "02 · GITHUB";
-          case "ko": return "02 · GITHUB";
-          case "zh-tw": return "02 · GITHUB";
-          case "hi": return "02 · GITHUB";
-          case "eridian": return "02 · CODE-PLACE";
-          default: return "02 · GITHUB";
-        }
-      })(),
-      value: "github.com/HarshalPatel1972",
-      desc: (() => {
-        switch (language) {
-          case "ja": return "リポジトリを見る";
-          case "hi": return "कोड बेस देखें";
-          case "eridian": return "LOOK AT BUGS";
-          default: return "Explore Source Repositories";
+          case "ja": return "GITHUB";
+          case "ko": return "GITHUB";
+          case "zh-tw": return "GITHUB";
+          case "hi": return "GITHUB";
+          case "eridian": return "CODE-PLACE";
+          default: return "GITHUB";
         }
       })(),
       href: currentProfile.github
@@ -116,21 +98,12 @@ export function Contact() {
       id: "linkedin",
       label: (() => {
         switch (language) {
-          case "ja": return "03 · LINKEDIN";
-          case "ko": return "03 · LINKEDIN";
-          case "zh-tw": return "03 · LINKEDIN";
-          case "hi": return "03 · LINKEDIN";
-          case "eridian": return "03 · SUIT-PLACE";
-          default: return "03 · LINKEDIN";
-        }
-      })(),
-      value: "linkedin.com/in/harshal-patel",
-      desc: (() => {
-        switch (language) {
-          case "ja": return "プロフィールを見る";
-          case "hi": return "नेटवर्क से जुड़ें";
-          case "eridian": return "SEE HUMAN SUIT";
-          default: return "Connect Professionally";
+          case "ja": return "LINKEDIN";
+          case "ko": return "LINKEDIN";
+          case "zh-tw": return "LINKEDIN";
+          case "hi": return "LINKEDIN";
+          case "eridian": return "SUIT-PLACE";
+          default: return "LINKEDIN";
         }
       })(),
       href: currentProfile.linkedin
@@ -187,78 +160,22 @@ export function Contact() {
         </div>
 
         {/* Option A layout row container */}
-        <div className="relative w-full max-w-7xl mt-12 flex flex-col lg:flex-row gap-16 items-start">
+        <div className="relative w-full max-w-7xl mt-12 flex flex-col items-start">
           
-          {/* Left: Contact rows */}
           <div className="w-full z-10">
             <ScrollReveal duration={1000} direction="left">
-              <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-12 md:pr-20">
+              <div className="flex flex-row flex-wrap items-center gap-8 md:gap-16 w-full">
                 {links.map((link, idx) => {
-                  const separator = link.label.includes(" · ") ? " · " : " — ";
-                  const displayLabel = link.label.split(separator)[0];
-                  const labelSuffix = link.label.split(separator)[1];
-
                   const cellContent = (
                     <div
-                      className="relative py-7 flex flex-row items-center justify-between group cursor-pointer border-t border-[#8A7F72]/20 transition-all select-none text-left w-full gap-4"
+                      className="group cursor-pointer flex items-center transition-all select-none"
                     >
-                      {/* Left: Text Content Area */}
-                      <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center gap-2 md:gap-6 -translate-x-[20px]">
-                        {/* Index & Label */}
-                        <div className="flex items-center gap-2 shrink-0 md:w-44">
-                          <span 
-                            className="text-[11px] font-bold font-mono uppercase tracking-wider"
-                            style={{ color: "var(--blueprint-blue)", fontFamily: "var(--font-jetbrains-mono), monospace" }}
-                          >
-                            {displayLabel}
-                          </span>
-                          <span className="text-[#8A7F72]/40 font-mono text-[11px] font-bold">·</span>
-                          <span 
-                            className="text-[11px] font-bold font-mono uppercase tracking-wider text-[var(--muted-label)]"
-                            style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
-                          >
-                            {labelSuffix}
-                          </span>
-                        </div>
-
-                        {/* Main Address / Value */}
-                        <div className="flex-1 min-w-0">
-                          <h4 
-                            className="text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors whitespace-nowrap"
-                            style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
-                          >
-                            <span>{link.value}</span>
-                          </h4>
-                        </div>
-
-                        {/* Description */}
-                        <div className="md:px-4 shrink-0">
-                          <span 
-                            className="text-[13px] font-medium transition-colors text-[var(--muted-label)] group-hover:text-[var(--sumi-ink)]"
-                            style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-                          >
-                            {link.desc}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Right: Square Arrow Button */}
-                      <div className="shrink-0 flex items-center justify-center">
-                        <div
-                          className="w-10 h-10 bg-[var(--forge-orange)] text-white flex items-center justify-center transition-transform duration-300 group-hover:-rotate-45"
-                          style={{ borderRadius: "0px" }}
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
-                        </div>
-                      </div>
+                      <h4 
+                        className="text-4xl sm:text-5xl md:text-7xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors whitespace-nowrap"
+                        style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
+                      >
+                        {copied && link.id === 'email' ? 'COPIED!' : link.label}
+                      </h4>
                     </div>
                   );
 
@@ -269,7 +186,7 @@ export function Contact() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block w-full"
+                        className="inline-block"
                       >
                         {cellContent}
                       </a>
@@ -277,7 +194,7 @@ export function Contact() {
                   }
 
                   return (
-                    <div key={link.id} onClick={link.onClick} className="block w-full">
+                    <div key={link.id} onClick={link.onClick} className="inline-block">
                       {cellContent}
                     </div>
                   );
