@@ -406,9 +406,9 @@ export function About() {
       className="relative z-20 pt-8 md:pt-12 pb-16 md:pb-24 px-4 md:px-8 flex flex-col items-center overflow-hidden isolate transform-gpu blueprint-grid-warm"
     >
       {/* Background watermark */}
-      <div className="absolute top-[-2rem] left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 select-none" style={{ opacity: 0.06 }}>
+      <div className="absolute top-[-2rem] left-0 right-0 flex justify-center pointer-events-none overflow-hidden z-0 select-none" style={{ opacity: 0.12 }}>
         <h2
-          className="font-black uppercase whitespace-nowrap leading-none tracking-tighter text-[var(--copper)]"
+          className="font-black uppercase whitespace-nowrap leading-none tracking-tighter text-[var(--sumi-ink)]"
           style={{ fontSize: "clamp(8rem,20vw,20rem)", fontFamily: "var(--font-big-shoulders), sans-serif" }}
         >
           {originWatermark}
