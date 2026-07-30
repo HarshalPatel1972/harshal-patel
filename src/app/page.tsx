@@ -52,9 +52,10 @@ function HomeContent() {
   useEffect(() => {
     if (showContent && typeof window !== "undefined") {
       const hash = window.location.hash;
-      if (hash === "#contact") {
+      if (hash && hash.length > 1) {
+        const targetId = hash.substring(1);
         const timer = setTimeout(() => {
-          const section = document.getElementById("contact");
+          const section = document.getElementById(targetId);
           if (section) {
             section.scrollIntoView({ behavior: "auto" });
           }

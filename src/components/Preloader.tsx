@@ -285,6 +285,10 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const dismiss = useCallback(() => {
     if (exiting) return;
     setExiting(true);
+    if (exitTimeoutRef.current) {
+      clearTimeout(exitTimeoutRef.current);
+      exitTimeoutRef.current = null;
+    }
     fadeOutAudio();
     
     const exitTl = createTimeline({

@@ -316,7 +316,13 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   }, [complete, onComplete, quote, readTime, language, mounted]);
 
   const dismissRef = useRef<() => void>(() => {});
-  const dismiss = () => dismissRef.current();
+  const dismiss = () => {
+    if (exitTimeoutRef.current) {
+      clearTimeout(exitTimeoutRef.current);
+      exitTimeoutRef.current = null;
+    }
+    dismissRef.current();
+  };
 
   if (!quoteData || complete) return null;
 
