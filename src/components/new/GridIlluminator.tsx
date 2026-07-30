@@ -385,9 +385,9 @@ export function GridIlluminator() {
 
               // Food collision check
               if (head.col === foodRef.current.col && head.row === foodRef.current.row) {
-                scoreRef.current += 10;
+                scoreRef.current += 1;
                 setScore(scoreRef.current);
-                setHighScore((prev) => Math.max(prev, scoreRef.current + 10));
+                setHighScore((prev) => Math.max(prev, scoreRef.current + 1));
                 spawnFood();
               } else {
                 snakeRef.current.pop();
