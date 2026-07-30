@@ -217,7 +217,7 @@ export function GridIlluminator() {
           color: randomColor,
           startTime: now,
           duration: 3000,
-          maxAlpha: 0.8,
+          maxAlpha: 0.10,
           pinned: true,
         };
       });
