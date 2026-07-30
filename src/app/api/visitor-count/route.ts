@@ -18,12 +18,7 @@ const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
 
 export async function GET(req: NextRequest) {
     try {
-        // RESET COMMAND (ONE-TIME RITUAL)
-        if (req.nextUrl.searchParams.get('reset') === '1') {
-            await kv.del('portfolio_v3_unique_sessions');
-            await kv.del('portfolio_v3_total_hits');
-            return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
-        }
+
 
         const results = await redis.pipeline()
             .scard('portfolio_v3_unique_sessions')
@@ -84,8 +79,24 @@ export async function POST(req: NextRequest) {
             totalHits: Number(totalHits),
             status: 'SOUL_BOUND'
         });
+    } catch (error: any) {
+        console.error('[SOUL_REGISTRY] RITUAL_FAILED', { message: error?.message || "Unknown error" });
+        return NextResponse.json({ success: false }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const key = req.headers.get('Authorization')?.replace('Bearer ', '');
+        if (key !== process.env.ADMIN_SECRET_KEY) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        await kv.del('portfolio_v3_unique_sessions');
+        await kv.del('portfolio_v3_total_hits');
+        
+        return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
     } catch (error) {
-        console.error('[SOUL_REGISTRY] RITUAL_FAILED', error);
         return NextResponse.json({ success: false }, { status: 500 });
     }
 }

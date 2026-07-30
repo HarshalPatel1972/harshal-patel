@@ -184,7 +184,7 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
   );
 }
 
-function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean, isAdmin: boolean, onDelete: (id: string) => void }) {
+function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete, onLogout }: { entries: FeedbackEntry[], onAddMore: () => void, isLoading: boolean, isAdmin: boolean, onDelete: (id: string) => void, onLogout?: () => void }) {
   const mousePosRef = useRef({ x: 0, y: 0 });
   const { designVersion, isMounted } = useDesignVersion();
   const isV2 = isMounted && designVersion === "new";
@@ -207,7 +207,10 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
     <div className={`relative w-full min-h-screen overflow-y-auto overflow-x-hidden p-4 md:p-8 cursor-default custom-scrollbar transition-colors duration-500 ${isV2 ? "theme-v2 bg-[var(--bg-ink)]" : "bg-white"}`}>
       <div className="fixed inset-0 halftone-bg opacity-[0.05] pointer-events-none" />
       <div className="fixed top-6 left-8 z-[100] flex gap-8 items-center"><Link href="/#contact" className={`font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity ${isV2 ? "text-[var(--text-bone)]" : "text-black"}`}>← Back</Link></div>
-      <div className="fixed top-6 right-8 z-[100]"><button onClick={onAddMore} className="bg-black text-white px-6 py-3 font-black text-xs uppercase tracking-[0.2em] hover:shadow-[2px_2px_0px_var(--accent-blood)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none" style={{ boxShadow: "6px 6px 0px var(--accent-blood)" }}>Add More</button></div>
+      <div className="fixed top-6 right-8 z-[100] flex gap-4 items-center">
+        {isAdmin && onLogout && <button onClick={onLogout} className="text-black bg-white border-2 border-black px-6 py-3 font-black text-xs uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors brutal-shadow">Logout Admin</button>}
+        <button onClick={onAddMore} className="bg-black text-white px-6 py-3 font-black text-xs uppercase tracking-[0.2em] hover:shadow-[2px_2px_0px_var(--accent-blood)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all active:translate-x-0 active:translate-y-0 active:shadow-none" style={{ boxShadow: "6px 6px 0px var(--accent-blood)" }}>Add More</button>
+      </div>
       
       <div className="relative z-10 w-full min-h-screen pt-4">
         <h1 className="fixed bottom-12 left-8 md:bottom-20 md:left-20 text-[12vw] font-black uppercase leading-[0.85] tracking-tighter opacity-5 select-none pointer-events-none z-0 text-[var(--text-bone)]">Feedback<br/>Gallery</h1>
@@ -253,7 +256,7 @@ function FloatingGallery({ entries, onAddMore, isLoading, isAdmin, onDelete }: {
   );
 }
 
-function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (name: string, msg: string, cat: string) => void, onViewGallery: () => void, initialType: string }) {
+function FeedbackWritingRoom({ onSend, onViewGallery, initialType, onAdminModeTrigger }: { onSend: (name: string, msg: string, cat: string) => void, onViewGallery: () => void, initialType: string, onAdminModeTrigger: () => void }) {
   const [userName, setUserName] = useState("");
   const [type, setType] = useState(initialType);
   const [message, setMessage] = useState("");
@@ -287,9 +290,8 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
                 onChange={(e) => {
                   const val = e.target.value;
                   setUserName(val);
-                  // Stealth Trigger: Instantly detect admin if the name matches the secret key
-                  if (val === process.env.NEXT_PUBLIC_ADMIN_KEY && val.length > 0) {
-                    onSend("ADMIN_SESSION_INIT", "GHOST_MODE_ACTIVE", "ADMIN");
+                  if (val === "admin-mode-enable") {
+                    onAdminModeTrigger();
                   }
                 }} 
                 placeholder="Anonymous" 
@@ -307,14 +309,41 @@ function FeedbackWritingRoom({ onSend, onViewGallery, initialType }: { onSend: (
   );
 }
 
+function FeedbackAdminAuth({ onAuthenticate, onCancel }: { onAuthenticate: (key: string) => void, onCancel: () => void }) {
+  const [key, setKey] = useState("");
+  const { designVersion, isMounted } = useDesignVersion();
+  const isV2 = isMounted && designVersion === "new";
+
+  return (
+    <div className={`min-h-screen h-[100dvh] font-display p-4 md:p-10 flex items-center justify-center relative overflow-hidden transition-colors duration-500 ${isV2 ? "theme-v2 bg-[var(--bg-ink)]" : "bg-white text-black"}`}>
+      <div className="absolute top-6 left-8 z-10 flex gap-6 items-center">
+        <button onClick={onCancel} className={`font-black text-xs uppercase tracking-[0.3em] hover:opacity-50 transition-opacity ${isV2 ? "text-[var(--text-bone)]" : ""}`}>← Cancel</button>
+      </div>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md relative z-10 px-2 text-center">
+        <h1 className="text-3xl md:text-5xl font-black uppercase leading-[0.85] tracking-tighter mb-8">Admin Access</h1>
+        <input 
+          type="password" 
+          value={key} 
+          onChange={(e) => setKey(e.target.value)} 
+          onKeyDown={(e) => { if(e.key === 'Enter') onAuthenticate(key); }}
+          placeholder="Enter Secret Key" 
+          className="w-full p-4 border-2 border-black font-mono text-sm focus:outline-none focus:ring-0 bg-white transition-all focus:shadow-[8px_8px_0px_#000] mb-6 text-black" 
+        />
+        <button onClick={() => { onAuthenticate(key); setKey(""); }} className="w-full py-5 font-black tracking-[0.3em] text-lg transition-all border-2 border-black bg-black text-white hover:bg-white hover:text-black hover:shadow-[10px_10px_0px_#000]">AUTHENTICATE</button>
+      </motion.div>
+    </div>
+  );
+}
+
 export function FeedbackContents() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialType = searchParams.get("type") || "SUBMIT REVIEW";
-  const [view, setView] = useState<"writing" | "gallery">("writing");
+  const [view, setView] = useState<"writing" | "gallery" | "auth">("writing");
   const [submissions, setSubmissions] = useState<FeedbackEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminKey, setAdminKey] = useState<string | null>(null);
+  const isAdmin = !!adminKey;
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => { if (searchParams.toString()) router.replace("/feedback"); }, [searchParams, router]);
@@ -353,15 +382,32 @@ export function FeedbackContents() {
       localStorage.removeItem("view-gallery-once");
     }
     fetchFeedbacks();
+    
+    return () => {
+      // Aggressively clear sensitive memory on unmount
+      setAdminKey(null);
+    };
   }, []);
 
-  const handleNewSend = async (name: string, msg: string, cat: string) => {
-    // Admin Stealth Activation
-    if (name === "ADMIN_SESSION_INIT" && msg === "GHOST_MODE_ACTIVE") {
-      setIsAdmin(true);
-      setView("gallery");
-      return;
+  const apiWithAuth = async (url: string, options: RequestInit = {}) => {
+    const headers = new Headers(options.headers || {});
+    if (adminKey) {
+      headers.set("Authorization", `Bearer ${adminKey}`);
     }
+    return fetch(url, { ...options, headers });
+  };
+
+  const handleAuthenticate = (key: string) => {
+    setAdminKey(key);
+    setView("gallery");
+  };
+
+  const handleLogout = () => {
+    setAdminKey(null);
+    setView("gallery");
+  };
+
+  const handleNewSend = async (name: string, msg: string, cat: string) => {
 
     const newEntry: FeedbackEntry = { 
       id: Math.random().toString(36).substring(2, 9), 
@@ -402,21 +448,22 @@ export function FeedbackContents() {
   };
 
   const handleDeleteRequest = async (id: string) => {
+    if (!adminKey) return;
     try {
-      const res = await fetch(`/api/feedback?id=${id}&key=${process.env.NEXT_PUBLIC_ADMIN_KEY}`, {
+      const res = await apiWithAuth(`/api/feedback?id=${id}`, {
         method: "DELETE"
       });
       
       const result = await res.json();
       
       if (!res.ok) {
-        throw new Error(result.error || "Deletion failed");
+        throw new Error("Deletion failed");
       }
       
       setSubmissions(prev => prev.filter(s => s.id !== id));
     } catch (e: any) {
-      console.error(e);
-      setErrorMsg(`Cloud Erasure Failed: ${e.message}`);
+      console.error("Deletion failed safely");
+      setErrorMsg(`Deletion Failed: Authentication error or invalid request.`);
     }
   };
 
@@ -439,11 +486,15 @@ export function FeedbackContents() {
       <AnimatePresence mode="wait">
         {view === "writing" ? (
          <motion.div key="writing" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }} transition={{ duration: 0.6, ease: [0.85, 0, 0.15, 1] }}>
-           <FeedbackWritingRoom onSend={handleNewSend} onViewGallery={() => setView("gallery")} initialType={initialType} />
+           <FeedbackWritingRoom onSend={handleNewSend} onViewGallery={() => setView("gallery")} initialType={initialType} onAdminModeTrigger={() => setView("auth")} />
+         </motion.div>
+      ) : view === "auth" ? (
+         <motion.div key="auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+           <FeedbackAdminAuth onAuthenticate={handleAuthenticate} onCancel={() => setView("writing")} />
          </motion.div>
       ) : (
         <motion.div key="gallery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}>
-           <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} isLoading={isLoading} isAdmin={isAdmin} onDelete={handleDeleteRequest} />
+           <FloatingGallery entries={submissions} onAddMore={() => setView("writing")} isLoading={isLoading} isAdmin={isAdmin} onDelete={handleDeleteRequest} onLogout={handleLogout} />
          </motion.div>
         )}
       </AnimatePresence>

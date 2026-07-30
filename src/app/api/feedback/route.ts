@@ -11,7 +11,7 @@ export async function GET() {
       .order('timestamp', { ascending: false });
 
     if (error) {
-      console.error("Supabase Select Error:", error);
+      console.error("Supabase Select Error:", { code: error.code, message: error.message, hint: error.hint });
       throw error;
     }
     
@@ -22,8 +22,8 @@ export async function GET() {
     }));
 
     return NextResponse.json(formatted);
-  } catch (error) {
-    console.error("Feedback API GET Error:", error);
+  } catch (error: any) {
+    console.error("Feedback API GET Error:", { message: error?.message });
     return NextResponse.json({ error: "Failed to fetch feedback" }, { status: 500 });
   }
 }
@@ -49,14 +49,14 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      console.error("Supabase Insert Error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("Supabase Insert Error:", { code: error.code, message: error.message, hint: error.hint });
+      return NextResponse.json({ error: "Failed to save feedback" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, data: insertedData });
   } catch (error: any) {
-    console.error("Feedback API POST Error:", error);
-    return NextResponse.json({ error: error.message || "Failed to save feedback" }, { status: 500 });
+    console.error("Feedback API POST Error:", { message: error?.message });
+    return NextResponse.json({ error: "Failed to save feedback" }, { status: 500 });
   }
 }
 
@@ -64,10 +64,10 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
-    const key = searchParams.get("key");
+    const key = request.headers.get("Authorization")?.replace('Bearer ', '');
 
     // Security Gate: Only allow deletion if the key matches the secret environment variable
-    if (key !== process.env.NEXT_PUBLIC_ADMIN_KEY) {
+    if (key !== process.env.ADMIN_SECRET_KEY) {
       return NextResponse.json({ error: "Unauthorized: Invalid Security Key" }, { status: 401 });
     }
 
@@ -81,7 +81,7 @@ export async function DELETE(request: Request) {
       .eq('id', id);
 
     if (error) {
-      console.error("Supabase Delete Error:", error);
+      console.error("Supabase Delete Error:", { code: error.code, message: error.message, hint: error.hint });
       throw error;
     }
 
@@ -91,7 +91,7 @@ export async function DELETE(request: Request) {
     
     return NextResponse.json({ success: true, count });
   } catch (error: any) {
-    console.error("Feedback API DELETE Error:", error);
-    return NextResponse.json({ error: error.message || "Failed to erase feedback" }, { status: 500 });
+    console.error("Feedback API DELETE Error:", { message: error?.message });
+    return NextResponse.json({ error: "Failed to erase feedback" }, { status: 500 });
   }
 }
