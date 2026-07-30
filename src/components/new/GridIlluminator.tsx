@@ -56,6 +56,11 @@ export function GridIlluminator() {
   const lastStepTimeRef = useRef(0);
   const gameOverRef = useRef(false);
   const scoreTimerRef = useRef(0);
+  const snakePrevRef = useRef<GridCell[]>([
+    { col: 0, row: 0 },
+    { col: -1, row: 0 },
+    { col: -2, row: 0 },
+  ]);
 
   // Mouse Hold Tracker
   const isMouseDownRef = useRef(false);
@@ -224,11 +229,13 @@ export function GridIlluminator() {
     };
 
     const startSnakeGame = () => {
+      const { midCol, midRow } = getCenterCell();
       snakeRef.current = [
         { col: 0, row: 0 },
         { col: -1, row: 0 },
         { col: -2, row: 0 },
       ];
+      snakePrevRef.current = [...snakeRef.current];
       dirRef.current = "IDLE";
       nextDirRef.current = "IDLE";
       scoreRef.current = 0;
@@ -347,6 +354,7 @@ export function GridIlluminator() {
           dirRef.current = nextDirRef.current;
 
           if (dirRef.current !== "IDLE") {
+            snakePrevRef.current = [...snakeRef.current];
             const head = { ...snakeRef.current[0] };
             if (dirRef.current === "UP") head.row -= 1;
             if (dirRef.current === "DOWN") head.row += 1;
@@ -413,9 +421,24 @@ export function GridIlluminator() {
 
         // --- DRAW SNAKE ---
         const snake = snakeRef.current;
+        const snakePrev = snakePrevRef.current;
+        const progress = Math.min(1, (now - lastStepTimeRef.current) / 288);
+        
         snake.forEach((seg, i) => {
-          const sx = (midCol + seg.col) * CELL_SIZE;
-          const sy = (midRow + seg.row) * CELL_SIZE;
+          let sx = (midCol + seg.col) * CELL_SIZE;
+          let sy = (midRow + seg.row) * CELL_SIZE;
+          
+          const prevSeg = snakePrev[i] || snakePrev[snakePrev.length - 1];
+          if (prevSeg) {
+            const px = (midCol + prevSeg.col) * CELL_SIZE;
+            const py = (midRow + prevSeg.row) * CELL_SIZE;
+            
+            // Wrap around check for interpolation
+            if (Math.abs(sx - px) <= CELL_SIZE * 2 && Math.abs(sy - py) <= CELL_SIZE * 2) {
+              sx = px + (sx - px) * progress;
+              sy = py + (sy - py) * progress;
+            }
+          }
 
           ctx.save();
           // Head vs Body opacity and color
