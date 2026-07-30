@@ -256,13 +256,14 @@ export function GridIlluminator() {
           activeParticles[i].pinned = true;
           activeParticles[i].maxAlpha = 0.15;
           activeParticles[i].duration = 99999999;
+          activeParticles[i].color = COLORS[Math.floor(Math.random() * COLORS.length)];
         } else {
           activeParticles.push({
             x: tx,
             y: ty,
             targetX: tx,
             targetY: ty,
-            color: COLORS[i % COLORS.length],
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
             startTime: now,
             duration: 99999999,
             maxAlpha: 0.15,
