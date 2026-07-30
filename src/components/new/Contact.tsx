@@ -187,12 +187,12 @@ export function Contact() {
             const cellContent = (
               <span className="relative z-10 flex items-center justify-between w-full">
                 <span 
-                  className="text-[4.5rem] sm:text-[7rem] md:text-[5rem] lg:text-[7rem] font-black font-display uppercase tracking-tighter transition-all duration-500 ease-[cubic-bezier(0.2,0.9,0.3,1)] md:group-hover:-translate-y-2 pointer-events-auto leading-[0.9] text-left break-words overflow-visible text-transparent md:text-[var(--sumi-ink)] md:group-hover:text-transparent bg-clip-text [-webkit-background-clip:text] bg-cover bg-center"
+                  className="text-[4rem] sm:text-[5rem] md:text-[2.5rem] lg:text-[3.5rem] xl:text-[4.5rem] font-black font-display uppercase tracking-tighter transition-all duration-500 ease-[cubic-bezier(0.2,0.9,0.3,1)] md:group-hover:-translate-y-2 pointer-events-auto leading-[0.9] text-left break-words overflow-visible text-transparent md:text-[var(--sumi-ink)] md:group-hover:text-transparent bg-clip-text [-webkit-background-clip:text] bg-cover bg-center"
                   style={{ backgroundImage: getBgImage(link.id) }}
                 >
                   {copied && link.id === 'email' ? 'COPIED!' : link.label}
                 </span>
-                <svg className="w-10 h-10 md:w-16 md:h-16 hidden md:block shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-500 -translate-x-4 translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 text-[var(--forge-orange)] ml-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
+                <svg className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 hidden md:block shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-500 -translate-x-4 translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 text-[var(--forge-orange)] ml-2 lg:ml-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter">
                   <path d="M7 17l9.2-9.2M17 17V7H7"/>
                 </svg>
                 <svg className="w-8 h-8 md:hidden shrink-0 opacity-100 transition-all duration-500 text-[var(--sumi-ink)] ml-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" strokeLinejoin="miter">
@@ -201,7 +201,7 @@ export function Contact() {
               </span>
             );
 
-            const className = `relative flex-1 flex flex-col items-start justify-center p-6 md:p-10 lg:p-16 overflow-hidden cursor-pointer group outline-none ${isLast ? '' : 'border-b md:border-b-0 md:border-r border-[var(--sumi-ink)]/10'}`;
+            const className = `relative flex-1 flex flex-col items-start justify-center p-6 md:p-6 lg:p-8 xl:p-12 overflow-hidden cursor-pointer group outline-none ${isLast ? '' : 'border-b md:border-b-0 md:border-r border-[var(--sumi-ink)]/10'}`;
 
             if (link.href) {
               return (
