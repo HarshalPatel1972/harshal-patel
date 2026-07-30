@@ -10,83 +10,75 @@ import { useRouter } from "next/navigation";
 
 const LINKS = {
   en: [
-    { id: "email", label: "01 // EMAIL", value: "SEND MESSAGE", href: `mailto:${profile.en.email}` },
-    { id: "github", label: "02 // GITHUB", value: "VIEW REPOSITORY", href: profile.en.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "VISIT PROFILE", href: profile.en.linkedin },
-    { id: "feedback", label: "04 // FEEDBACK", values: ["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"], href: `mailto:${profile.en.email}?subject=Feedback` },
+    { id: "email", label: "EMAIL", href: `mailto:${profile.en.email}` },
+    { id: "github", label: "GITHUB", href: profile.en.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.en.linkedin },
   ],
   ja: [
-    { id: "email", label: "01 // メール", value: "メッセージを送信", href: `mailto:${profile.ja.email}` },
-    { id: "github", label: "02 // GITHUB", value: "リポジトリを見る", href: profile.ja.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "プロフィールを見る", href: profile.ja.linkedin },
-    { id: "feedback", label: "04 // フィードバック", values: ["感想を送る", "バグを報告", "機能リクエスト"], href: `mailto:${profile.ja.email}?subject=Feedback` },
+    { id: "email", label: "メール", href: `mailto:${profile.ja.email}` },
+    { id: "github", label: "GITHUB", href: profile.ja.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.ja.linkedin },
   ],
   ko: [
-    { id: "email", label: "01 // 이메일", value: "메시지 보내기", href: `mailto:${profile.ko.email}` },
-    { id: "github", label: "02 // GITHUB", value: "저장소 보기", href: profile.ko.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "프로필 보기", href: profile.ko.linkedin },
-    { id: "feedback", label: "04 // 피드백", values: ["의견 보내기", "버그 신고", "기능 요청"], href: `mailto:${profile.ko.email}?subject=Feedback` },
+    { id: "email", label: "이메일", href: `mailto:${profile.ko.email}` },
+    { id: "github", label: "GITHUB", href: profile.ko.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.ko.linkedin },
   ],
   "zh-tw": [
-    { id: "email", label: "01 // 電子郵件", value: "發送消息", href: `mailto:${profile["zh-tw"].email}` },
-    { id: "github", label: "02 // GITHUB", value: "查看存儲庫", href: profile["zh-tw"].github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "訪問個人資料", href: profile["zh-tw"].linkedin },
-    { id: "feedback", label: "04 // 反饋", values: ["提供意見", "報告錯誤", "功能請求"], href: `mailto:${profile["zh-tw"].email}?subject=Feedback` },
+    { id: "email", label: "電子郵件", href: `mailto:${profile["zh-tw"].email}` },
+    { id: "github", label: "GITHUB", href: profile["zh-tw"].github },
+    { id: "linkedin", label: "LINKEDIN", href: profile["zh-tw"].linkedin },
   ],
   hi: [
-    { id: "email", label: "01 // ईमेल", value: "संदेश भेजें", href: `mailto:${profile.hi.email}` },
-    { id: "github", label: "02 // GITHUB", value: "रिपॉजिटरी देखें", href: profile.hi.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "प्रोफ़ाइल देखें", href: profile.hi.linkedin },
-    { id: "feedback", label: "04 // फीडबैक", values: ["प्रतिक्रिया दें", "बग रिपोर्ट करें", "सुविधा का अनुरोध"], href: `mailto:${profile.hi.email}?subject=Feedback` },
+    { id: "email", label: "ईमेल", href: `mailto:${profile.hi.email}` },
+    { id: "github", label: "GITHUB", href: profile.hi.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.hi.linkedin },
   ],
   fr: [
-    { id: "email", label: "01 // E-MAIL", value: "ENVOYER UN MESSAGE", href: `mailto:${profile.fr.email}` },
-    { id: "github", label: "02 // GITHUB", value: "VOIR LE RÉPOSITORY", href: profile.fr.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITER LE PROFIL", href: profile.fr.linkedin },
+    { id: "email", label: "E-MAIL", href: `mailto:${profile.fr.email}` },
+    { id: "github", label: "GITHUB", href: profile.fr.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.fr.linkedin },
   ],
   id: [
-    { id: "email", label: "01 // EMAIL", value: "KIRIM PESAN", href: `mailto:${profile.id.email}` },
-    { id: "github", label: "02 // GITHUB", value: "LIHAT REPOSITORI", href: profile.id.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "KUNJUNGI PROFIL", href: profile.id.linkedin },
+    { id: "email", label: "EMAIL", href: `mailto:${profile.id.email}` },
+    { id: "github", label: "GITHUB", href: profile.id.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.id.linkedin },
   ],
   de: [
-    { id: "email", label: "01 // E-MAIL", value: "NACHRICHT SENDEN", href: `mailto:${profile.de.email}` },
-    { id: "github", label: "02 // GITHUB", value: "REPOSITORIUM ANSEHEN", href: profile.de.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "PROFIL BESUCHEN", href: profile.de.linkedin },
+    { id: "email", label: "E-MAIL", href: `mailto:${profile.de.email}` },
+    { id: "github", label: "GITHUB", href: profile.de.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.de.linkedin },
   ],
   it: [
-    { id: "email", label: "01 // E-MAIL", value: "INVIA MESSAGGIO", href: `mailto:${profile.it.email}` },
-    { id: "github", label: "02 // GITHUB", value: "VEDI REPOSITORY", href: profile.it.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITA PROFILO", href: profile.it.linkedin },
+    { id: "email", label: "E-MAIL", href: `mailto:${profile.it.email}` },
+    { id: "github", label: "GITHUB", href: profile.it.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.it.linkedin },
   ],
   "pt-br": [
-    { id: "email", label: "01 // E-MAIL", value: "ENVIAR MENSAGEM", href: `mailto:${profile["pt-br"].email}` },
-    { id: "github", label: "02 // GITHUB", value: "VER REPOSITÓRIO", href: profile["pt-br"].github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile["pt-br"].linkedin },
+    { id: "email", label: "E-MAIL", href: `mailto:${profile["pt-br"].email}` },
+    { id: "github", label: "GITHUB", href: profile["pt-br"].github },
+    { id: "linkedin", label: "LINKEDIN", href: profile["pt-br"].linkedin },
   ],
   "es-419": [
-    { id: "email", label: "01 // E-MAIL", value: "ENVIAR MENSAJE", href: `mailto:${profile["es-419"].email}` },
-    { id: "github", label: "02 // GITHUB", value: "VER REPOSITORIO", href: profile["es-419"].github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile["es-419"].linkedin },
+    { id: "email", label: "E-MAIL", href: `mailto:${profile["es-419"].email}` },
+    { id: "github", label: "GITHUB", href: profile["es-419"].github },
+    { id: "linkedin", label: "LINKEDIN", href: profile["es-419"].linkedin },
   ],
   es: [
-    { id: "email", label: "01 // E-MAIL", value: "ENVOJAR UN MENSAJE", href: `mailto:${profile.es.email}` },
-    { id: "github", label: "02 // GITHUB", value: "VER REPOSITORIO", href: profile.es.github },
-    { id: "linkedin", label: "03 // LINKEDIN", value: "VISITAR PERFIL", href: profile.es.linkedin },
+    { id: "email", label: "E-MAIL", href: `mailto:${profile.es.email}` },
+    { id: "github", label: "GITHUB", href: profile.es.github },
+    { id: "linkedin", label: "LINKEDIN", href: profile.es.linkedin },
   ],
   eridian: [
-    { id: "email", label: "01 // SIGNAL-SEND", value: "MAKE NOISE TO HARSHAL", href: `mailto:${profile.eridian.email}` },
-    { id: "github", label: "02 // CODE-PLACE", value: "LOOK AT BUGS", href: profile.eridian.github },
-    { id: "linkedin", label: "03 // SUIT-PLACE", value: "SEE HUMAN SUIT", href: profile.eridian.linkedin },
-    { id: "feedback", label: "04 // NOISE-REPORT", values: ["SEND VIBRATIONS", "FIX FREQUENCY", "WANT MORE NOISE"], href: `mailto:${profile.eridian.email}?subject=Feedback` },
+    { id: "email", label: "SIGNAL-SEND", href: `mailto:${profile.eridian.email}` },
+    { id: "github", label: "CODE-PLACE", href: profile.eridian.github },
+    { id: "linkedin", label: "SUIT-PLACE", href: profile.eridian.linkedin },
   ]
 };
 
 interface LinkItem {
   id: string;
   label: string;
-  value?: string;
-  values?: string[];
   href: string;
 }
 
@@ -95,25 +87,6 @@ export function Contact() {
   const currentLinks = LINKS[language as keyof typeof LINKS] || LINKS.en;
   const containerRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
-
-  const [loopIdx, setLoopIdx] = useState(0);
-  const [prevIdx, setPrevIdx] = useState(0);
-  const [isGlitching, setIsGlitching] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isPaused) return;
-      setPrevIdx(loopIdx);
-      setIsGlitching(true);
-      setTimeout(() => {
-        setLoopIdx((prev) => (prev + 1) % 3);
-        setIsGlitching(false);
-      }, 400); 
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [loopIdx, language, isPaused]);
 
   return (
     <section 
@@ -192,21 +165,14 @@ export function Contact() {
         </ScrollReveal>
 
         {/* Links Container */}
-        <div className="flex flex-col gap-0 md:gap-0 pl-0 md:pl-24 w-full pr-14 md:pr-20">
+        <div className="flex flex-row flex-wrap justify-center gap-8 md:gap-16 w-full mt-12 mb-10">
           {currentLinks.map((link: LinkItem, i: number) => (
-            <ScrollReveal key={link.id} duration={1000} delay={i * 150} direction="left">
+            <ScrollReveal key={link.id} duration={1000} delay={i * 150}>
                <ContactLinkItem 
                 link={link} 
                 language={language} 
                 copied={copied} 
                 setCopied={setCopied}
-                loopIdx={loopIdx}
-                prevIdx={prevIdx}
-                isGlitching={isGlitching}
-                router={router}
-                onHoverChange={(hovering: boolean) => {
-                  if (link.id === 'feedback') setIsPaused(hovering);
-                }}
                />
             </ScrollReveal>
           ))}
@@ -220,13 +186,12 @@ export function Contact() {
 /**
  * CONTACT LINK ITEM - Surgical Interaction Logic 🧬
  */
-function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, isGlitching, router, onHoverChange }: any) {
+function ContactLinkItem({ link, language, copied, setCopied }: any) {
   const [isHovered, setIsHovered] = useState(false);
   const isEmailCopied = copied && link.id === "email";
 
   const handleHover = (hovering: boolean) => {
     setIsHovered(hovering);
-    if (onHoverChange) onHoverChange(hovering);
   };
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -240,10 +205,6 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
         easing: 'easeInOutSine'
       });
       setTimeout(() => setCopied(false), 2000);
-    } else if (id === "feedback") {
-      e.preventDefault();
-      const currentCategory = (link.values?.[loopIdx]) || "SUBMIT REVIEW";
-      router.push(`/feedback?type=${encodeURIComponent(currentCategory)}`);
     }
   };
 
@@ -258,66 +219,34 @@ function ContactLinkItem({ link, language, copied, setCopied, loopIdx, prevIdx, 
       case 'it': return "E-MAIL COPIATA";
       case 'hi': return "ईमेल कॉपी किया गया";
       case 'eridian': return "DATA-STORED-IN-BRAIN";
-      default: return "EMAIL COPIED";
+      default: return "COPIED!";
     }
-  })() : link.value;
+  })() : link.label;
 
   return (
     <KineticLink
       href={link.href}
       target={link.id !== "email" ? "_blank" : undefined}
       onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleLinkClick(e, link.id)}
-      className="relative block w-full outline-none py-6 md:py-10 pointer-events-none group"
+      className="relative block outline-none pointer-events-none group px-6 py-4 transition-transform duration-300 hover:scale-105"
     >
       {/* Hover Slash Background - Only reacts to isHovered */}
       <div 
-        className="absolute top-0 bottom-0 left-[-20px] right-[-20px] bg-[var(--accent-blood)] origin-left transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" 
-        style={{ transform: isHovered ? 'scaleX(1)' : 'scaleX(0)' }}
+        className="absolute top-0 bottom-0 left-0 right-0 bg-[var(--accent-blood)] origin-center transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" 
+        style={{ transform: isHovered ? 'scaleY(1)' : 'scaleY(0)' }}
       />
 
-      <div className="relative z-10 flex flex-row items-center md:items-end justify-between border-b-4 border-black transition-colors" style={{ borderColor: isHovered ? 'transparent' : 'black' }}>
+      <div className="relative z-10 flex flex-row items-center justify-center transition-colors">
         
         {/* TEXT TRIGGER ZONE */}
         <div 
-          className="pointer-events-auto"
+          className="pointer-events-auto cursor-pointer"
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => handleHover(false)}
         >
-          <div className="text-xs sm:text-sm font-bold font-mono text-black/50 tracking-widest mb-[-4px] md:mb-[-8px] transition-colors" style={{ color: isHovered ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)' }}>
-            {link.label}
+          <div className="text-[2.5rem] sm:text-[3.5rem] md:text-[5rem] lg:text-[6rem] font-black font-display uppercase tracking-tighter leading-none transition-colors duration-300 whitespace-nowrap" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
+             {textValue}
           </div>
-
-          <div className="text-[1.6rem] sm:text-[3.2rem] md:text-[6.8rem] lg:text-[7.65rem] font-black font-display uppercase tracking-tighter leading-none transition-colors duration-300" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
-            {link.id === "feedback" && link.values ? (
-               <div className="relative flex items-center h-full whitespace-nowrap">
-                {isGlitching ? (
-                  <>
-                    <div className="absolute inset-y-0 left-0 slide-out-left">{link.values[prevIdx]}</div>
-                    <div className="relative slide-in-right">{link.values[(prevIdx + 1) % 3]}</div>
-                  </>
-                ) : (
-                  <div className="relative">{link.values[loopIdx]}</div>
-                )}
-               </div>
-            ) : (
-              textValue
-            )}
-          </div>
-        </div>
-
-        {/* ARROW TRIGGER ZONE */}
-        <div 
-          className="flex shrink-0 w-[30px] h-[30px] md:w-16 md:h-16 bg-black text-white items-center justify-center brutal-shadow transition-all duration-300 origin-center self-end mb-0 md:mb-4 pointer-events-auto cursor-pointer"
-          onMouseEnter={() => handleHover(true)}
-          onMouseLeave={() => handleHover(false)}
-          style={{ 
-            backgroundColor: isHovered ? 'var(--bg-ink)' : 'black',
-            transform: isHovered ? 'rotate(-45deg)' : 'none'
-          }}
-        >
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square">
-             <path d="M5 12h14M12 5l7 7-7 7"/>
-           </svg>
         </div>
 
       </div>
