@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -46,16 +45,7 @@ export function Footer() {
             </span>
           </div>
 
-          {/* Right: The anime character (dim, saturate filter, height 200px, bleeding upward) */}
-          <div className="absolute right-0 bottom-0 pointer-events-none z-0 hidden md:block">
-            <Image
-              src="/TOJI FUSHIGURO.png"
-              alt="Toji Fushiguro in the studio"
-              width={300}
-              height={200}
-              className="h-[200px] w-auto object-contain filter brightness-[0.85] transform translate-y-[24px]"
-            />
-          </div>
+
         </div>
 
         {/* LAYER 2 — Middle (margin-top: 40px, padding-top: 24px, border-top: 1px solid rgba(255,255,255,0.06)) */}
