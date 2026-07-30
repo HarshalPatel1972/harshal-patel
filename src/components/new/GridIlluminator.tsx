@@ -340,8 +340,8 @@ export function GridIlluminator() {
       if (state === "SNAKE_GAME") {
         const { midCol, midRow } = getCenterCell();
 
-        // Game Update Step (Every ~346ms for 0.375x speed)
-        if (!gameOverRef.current && now - lastStepTimeRef.current > 346) {
+        // Game Update Step (Every ~288ms for increased speed)
+        if (!gameOverRef.current && now - lastStepTimeRef.current > 288) {
           lastStepTimeRef.current = now;
           dirRef.current = nextDirRef.current;
 
