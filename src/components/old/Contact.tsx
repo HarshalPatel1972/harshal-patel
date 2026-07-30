@@ -165,47 +165,38 @@ export function Contact() {
         </ScrollReveal>
 
         {/* Links Container */}
-        <div className="flex flex-row flex-wrap justify-center gap-8 md:gap-16 w-full mt-12 mb-10">
+        <div className="flex flex-row flex-nowrap w-full mt-12 mb-10 border-t border-b border-[#e5e5e5]">
           {currentLinks.map((link: LinkItem, i: number) => (
-            <ScrollReveal key={link.id} duration={1000} delay={i * 150}>
-               <ContactLinkItem 
-                link={link} 
-                language={language} 
-                copied={copied} 
-                setCopied={setCopied}
-               />
-            </ScrollReveal>
+             <ContactLinkItem 
+              key={link.id}
+              link={link} 
+              language={language} 
+              copied={copied} 
+              setCopied={setCopied}
+              isLast={i === currentLinks.length - 1}
+             />
           ))}
         </div>
-
-      </div>
-    </section>
   );
 }
 
-/**
- * CONTACT LINK ITEM - Surgical Interaction Logic 🧬
- */
-function ContactLinkItem({ link, language, copied, setCopied }: any) {
-  const [isHovered, setIsHovered] = useState(false);
+function ContactLinkItem({ link, language, copied, setCopied, isLast }: any) {
   const isEmailCopied = copied && link.id === "email";
-
-  const handleHover = (hovering: boolean) => {
-    setIsHovered(hovering);
-  };
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     if (id === "email") {
       e.preventDefault();
       navigator.clipboard.writeText(profile[language as keyof typeof profile].email);
       setCopied(true);
-      const targetEl = e.currentTarget;
-      anime(targetEl, {
-        translateX: [{ value: 10, duration: 50 }, { value: -10, duration: 50 }, { value: 10, duration: 50 }, { value: 0, duration: 50 }],
-        easing: 'easeInOutSine'
-      });
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const getLogo = (id: string, color: string) => {
+    if (id === 'email') return <svg className="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" color={color}><path d="M4 7.00005L10.2 11.65C11.2667 12.45 12.7333 12.45 13.8 11.65L20 7" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg>;
+    if (id === 'github') return <svg className="w-full h-full" viewBox="0 0 24 24" fill="currentColor" color={color}><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>;
+    if (id === 'linkedin') return <svg className="w-full h-full" viewBox="0 0 24 24" fill="currentColor" color={color}><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
+    return null;
   };
 
   const textValue = isEmailCopied ? (() => {
@@ -224,32 +215,20 @@ function ContactLinkItem({ link, language, copied, setCopied }: any) {
   })() : link.label;
 
   return (
-    <KineticLink
+    <a
       href={link.href}
       target={link.id !== "email" ? "_blank" : undefined}
       onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleLinkClick(e, link.id)}
-      className="relative block outline-none pointer-events-none group px-6 py-4 transition-transform duration-300 hover:scale-105"
+      className={`relative flex-1 flex items-center justify-center py-10 md:py-16 overflow-hidden cursor-pointer group outline-none ${isLast ? '' : 'border-r border-[#e5e5e5]'}`}
     >
-      {/* Hover Slash Background - Only reacts to isHovered */}
-      <div 
-        className="absolute top-0 bottom-0 left-0 right-0 bg-[var(--accent-blood)] origin-center transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] z-0 brutal-shadow manga-cut-tr" 
-        style={{ transform: isHovered ? 'scaleY(1)' : 'scaleY(0)' }}
-      />
-
-      <div className="relative z-10 flex flex-row items-center justify-center transition-colors">
-        
-        {/* TEXT TRIGGER ZONE */}
-        <div 
-          className="pointer-events-auto cursor-pointer"
-          onMouseEnter={() => handleHover(true)}
-          onMouseLeave={() => handleHover(false)}
-        >
-          <div className="text-[2.5rem] sm:text-[3.5rem] md:text-[5rem] lg:text-[6rem] font-black font-display uppercase tracking-tighter leading-none transition-colors duration-300 whitespace-nowrap" style={{ color: isHovered ? 'var(--text-bone)' : 'var(--bg-ink)' }}>
-             {textValue}
-          </div>
+      <div className="absolute left-0 w-full h-full top-[100%] group-hover:top-0 transition-all duration-500 ease-[cubic-bezier(0.2,0.9,0.3,1)] z-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 flex items-center justify-center p-4 opacity-15 scale-125">
+           {getLogo(link.id, 'var(--accent-blood)')}
         </div>
-
       </div>
-    </KineticLink>
+      <span className="relative z-10 text-[2rem] md:text-[3rem] lg:text-[4rem] font-black font-display uppercase tracking-tighter text-[var(--bg-ink)] transition-all duration-500 ease-[cubic-bezier(0.2,0.9,0.3,1)] group-hover:text-[var(--accent-blood)] group-hover:-translate-y-2 pointer-events-auto">
+        {textValue}
+      </span>
+    </a>
   );
 }
