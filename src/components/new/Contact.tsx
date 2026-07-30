@@ -3,47 +3,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
-import { useRouter } from "next/navigation";
 import { ScrollReveal } from "../ScrollReveal";
 
 export function Contact() {
   const { language } = useLanguage();
   const currentProfile = profile[language as keyof typeof profile] || profile.en;
-  const router = useRouter();
-
   const [copied, setCopied] = useState(false);
-  const [loopIdx, setLoopIdx] = useState(0);
-  const [prevIdx, setPrevIdx] = useState(0);
-  const [isGlitching, setIsGlitching] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
 
   // Mouse tracking state for window-pane radial glows
   const [mouseCoords, setMouseCoords] = useState<{ x: number; y: number } | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isPaused) return;
-      setPrevIdx(loopIdx);
-      setIsGlitching(true);
-      setTimeout(() => {
-        setLoopIdx((prev) => (prev + 1) % 3);
-        setIsGlitching(false);
-      }, 300);
-    }, 3800);
-    return () => clearInterval(interval);
-  }, [loopIdx, isPaused]);
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();
     navigator.clipboard.writeText(currentProfile.email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
-  };
-
-  const handleFeedbackClick = (e: React.MouseEvent, activeOption: string) => {
-    e.preventDefault();
-    router.push(`/feedback?type=${encodeURIComponent(activeOption)}`);
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, idx: number) => {
@@ -159,50 +134,6 @@ export function Contact() {
         }
       })(),
       href: currentProfile.linkedin
-    },
-    {
-      id: "feedback",
-      label: (() => {
-        switch (language) {
-          case "ja": return "04 — フィードバック";
-          case "ko": return "04 — 피드백";
-          case "zh-tw": return "04 — 反饋";
-          case "hi": return "04 — फीडबैक";
-          case "eridian": return "04 — NOISE-REPORT";
-          default: return "04 — FEEDBACK";
-        }
-      })(),
-      values: (() => {
-        switch (language) {
-          case "ja": return ["感想を送る", "バグを報告", "機能リクエスト"];
-          case "ko": return ["의견 보내기", "버그 신고", "기능 요청"];
-          case "zh-tw": return ["提供意見", "報告錯誤", "功能請求"];
-          case "hi": return ["प्रतिक्रिया दें", "बग रिपोर्ट करें", "सुविधा का अनुरोध"];
-          case "eridian": return ["SEND VIBRATIONS", "FIX FREQUENCY", "WANT MORE NOISE"];
-          default: return ["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"];
-        }
-      })(),
-      desc: (() => {
-        switch (language) {
-          case "ja": return "レビュー・バグ報告ボードを開く";
-          case "hi": return "रिव्यु या सुझाव सबमिट करें";
-          case "eridian": return "OPEN CHANNEL FOR STATIC";
-          default: return "Open Review & Bug Board";
-        }
-      })(),
-      onClick: (e: React.MouseEvent) => {
-        const list = (() => {
-          switch (language) {
-            case "ja": return ["感想を送る", "バグを報告", "機能リクエスト"];
-            case "ko": return ["의견 보내기", "버그 신고", "기능 요청"];
-            case "zh-tw": return ["提供意見", "報告錯誤", "功能請求"];
-            case "hi": return ["प्रतिक्रिया दें", "बग रिपोर्ट करें", "सुविधा का अनुरोध"];
-            case "eridian": return ["SEND VIBRATIONS", "FIX FREQUENCY", "WANT MORE NOISE"];
-            default: return ["SUBMIT REVIEW", "REPORT A BUG", "REQUEST FEATURE"];
-          }
-        })();
-        handleFeedbackClick(e, list[loopIdx]);
-      }
     }
   ];
 
@@ -263,19 +194,12 @@ export function Contact() {
             <ScrollReveal duration={1000} direction="left">
               <div className="flex flex-col w-full border-b border-[#8A7F72]/20 pr-12 md:pr-20">
                 {links.map((link, idx) => {
-                  const isFeedback = link.id === "feedback";
                   const separator = link.label.includes(" · ") ? " · " : " — ";
                   const displayLabel = link.label.split(separator)[0];
                   const labelSuffix = link.label.split(separator)[1];
 
                   const cellContent = (
                     <div
-                      onMouseEnter={() => {
-                        if (isFeedback) setIsPaused(true);
-                      }}
-                      onMouseLeave={() => {
-                        if (isFeedback) setIsPaused(false);
-                      }}
                       className="relative py-7 flex flex-row items-center justify-between group cursor-pointer border-t border-[#8A7F72]/20 transition-all select-none text-left w-full gap-4"
                     >
                       {/* Left: Text Content Area */}
@@ -300,25 +224,10 @@ export function Contact() {
                         {/* Main Address / Value */}
                         <div className="flex-1 min-w-0">
                           <h4 
-                            className={`text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors whitespace-nowrap ${
-                              isFeedback && isGlitching ? "opacity-55" : ""
-                            }`}
+                            className="text-xl sm:text-2xl md:text-3xl font-black font-display uppercase tracking-tight text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors whitespace-nowrap"
                             style={{ fontFamily: "var(--font-big-shoulders), sans-serif" }}
                           >
-                            {isFeedback && link.values ? (
-                              <span className="relative block whitespace-nowrap">
-                                {isGlitching ? (
-                                  <>
-                                    <span className="absolute left-0 top-0 opacity-0">{link.values[prevIdx]}</span>
-                                    <span>{link.values[(prevIdx + 1) % 3]}</span>
-                                  </>
-                                ) : (
-                                  <span>{link.values[loopIdx]}</span>
-                                )}
-                              </span>
-                            ) : (
-                              <span>{link.value}</span>
-                            )}
+                            <span>{link.value}</span>
                           </h4>
                         </div>
 
