@@ -38,16 +38,6 @@ export function Footer() {
             </span>
           </div>
 
-          {/* Right: Anime character artwork */}
-          <div className="absolute right-0 bottom-0 pointer-events-none z-0 hidden md:block">
-            <Image
-              src="/TOJI FUSHIGURO.png"
-              alt="Toji Fushiguro"
-              width={300}
-              height={200}
-              className="h-[200px] w-auto object-contain filter brightness-[0.85] grayscale transform translate-y-[24px]"
-            />
-          </div>
         </div>
 
         {/* LAYER 2 — Middle (matching V2 grid and spacing) */}
