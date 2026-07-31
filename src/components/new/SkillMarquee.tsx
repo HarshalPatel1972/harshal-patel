@@ -78,11 +78,11 @@ function SkillCard({ skill }: { skill: any }) {
     >
       <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
         {skillPaths[brand.slug] ? (
-           <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-sm" style={{ fill: brand.hex }}>
+           <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-sm" style={{ fill: skill.color || brand.hex }}>
              <path d={skillPaths[brand.slug]} />
            </svg>
         ) : (
-           <div className="w-full h-full bg-[var(--sumi-ink)] opacity-20 rounded-full" />
+           <div className="w-full h-full opacity-20 rounded-full" style={{ backgroundColor: skill.color || "var(--sumi-ink)" }} />
         )}
       </div>
       <span 
