@@ -629,18 +629,12 @@ export function About() {
 
               {/* Instrument panel */}
               <div
-                className="p-[28px] relative flex-1 flex flex-col"
+                className="relative flex-1 flex flex-col"
                 ref={gaugesRef}
-                style={{
-                  background: "rgba(22, 29, 26, 0.015)",
-                  borderRadius: "8px",
-                  border: "1px dashed rgba(22, 29, 26, 0.2)",
-                }}
               >
-                <div className="flex-1 w-full pt-2 h-full flex flex-col justify-center">
+                <div className="flex-1 w-full pt-2 h-full flex flex-col justify-center min-h-[400px]">
                   {skillsVisible && <SkillMarquee skills={currentProfile.skills} />}
                 </div>
-
               </div>
             </div>
           </ScrollReveal>
