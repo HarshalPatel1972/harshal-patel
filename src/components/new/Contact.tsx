@@ -22,32 +22,32 @@ export function Contact() {
   // Localized Titles
   const titleData = {
     en: {
-      sub: "CHAPTER 03 · INITIATE TRANSMISSION",
+      sub: "CHAPTER 03",
       desc: "Reach out to discuss system architecture, Go/TypeScript optimizations, or collaborative opportunities.",
       watermark: "CONTACT"
     },
     ja: {
-      sub: "第三章 · 通信を開始する",
+      sub: "第三章",
       desc: "システムアーキテクチャ、Go/TypeScriptの最適化、またはコラボレーションの機会についてお気軽にご連絡ください。",
       watermark: "連絡先"
     },
     ko: {
-      sub: "제 3 장 · 통신을 시작하기",
+      sub: "제 3 장",
       desc: "시스템 아키텍첲, Go/TypeScript 최적화 또는 협업 기회에 대해 논의하려면 연락하십시오.",
       watermark: "연락처"
     },
     "zh-tw": {
-      sub: "第三章 · 發起通信",
+      sub: "第三章",
       desc: "隨時聯繫以討論系統架構、Go/TypeScript 優化或合作機會。",
       watermark: "聯繫方式"
     },
     hi: {
-      sub: "अध्याय 03 · संपर्क शुरू करें",
+      sub: "अध्याय 03",
       desc: "सिस्टम आर्किटेक्चर, Go/TypeScript अनुकूलन, या सहयोग के अवसरों पर चर्चा करने के लिए संपर्क करें।",
       watermark: "संपर्क"
     },
     eridian: {
-      sub: "PART-THREE-THING — MAKE NOISE TO HARSHAL NOW",
+      sub: "PART-THREE-THING",
       desc: "MAKE WAVES. DO NOT SILENCE.",
       watermark: "SEND-SIGNAL"
     }
