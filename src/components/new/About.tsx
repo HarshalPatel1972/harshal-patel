@@ -629,11 +629,13 @@ export function About() {
 
               {/* Instrument panel */}
               <div
-                className="relative flex-1 flex flex-col"
+                className="relative flex-1 flex flex-col lg:min-h-0 min-h-[400px]"
                 ref={gaugesRef}
               >
-                <div className="flex-1 w-full pt-2 h-full flex flex-col justify-center min-h-[400px]">
-                  {skillsVisible && <SkillMarquee skills={currentProfile.skills} />}
+                <div className="flex-1 w-full pt-2 h-full relative overflow-hidden">
+                  <div className="absolute inset-0 flex flex-col justify-center">
+                    {skillsVisible && <SkillMarquee skills={currentProfile.skills} />}
+                  </div>
                 </div>
               </div>
             </div>
