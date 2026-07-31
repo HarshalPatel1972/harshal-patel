@@ -51,22 +51,17 @@ export function SkillMarquee({ skills }: { skills: any[] }) {
           background-color: rgba(22, 29, 26, 0.04);
           border: 1px solid rgba(22, 29, 26, 0.1);
         }
-        .skill-card-v2:hover {
-          background-color: rgba(22, 29, 26, 0.08);
-          transform: translateY(-4px);
-          box-shadow: 0 10px 25px rgba(22, 29, 26, 0.08);
-        }
       `}</style>
       
       {/* Column 1: Up scrolling */}
-      <div className="flex flex-col h-max animate-scroll-up gap-4 hover:[animation-play-state:paused]">
+      <div className="flex flex-col h-max animate-scroll-up gap-4">
         {marquee1.map((skill, i) => (
           <SkillCard key={`c1-${i}`} skill={skill} />
         ))}
       </div>
 
       {/* Column 2: Down scrolling */}
-      <div className="flex flex-col h-max animate-scroll-down gap-4 hover:[animation-play-state:paused]">
+      <div className="flex flex-col h-max animate-scroll-down gap-4">
         {marquee2.map((skill, i) => (
           <SkillCard key={`c2-${i}`} skill={skill} />
         ))}
@@ -79,7 +74,7 @@ function SkillCard({ skill }: { skill: any }) {
   const brand = getSkillBrand(skill.name);
   return (
     <div 
-      className="skill-card-v2 w-[110px] h-[110px] md:w-[130px] md:h-[130px] rounded-lg flex flex-col items-center justify-center gap-3 transition-all duration-300"
+      className="skill-card-v2 w-[110px] h-[110px] md:w-[130px] md:h-[130px] rounded-lg flex flex-col items-center justify-center gap-3 transition-colors duration-300"
     >
       <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
         {skillPaths[brand.slug] ? (
