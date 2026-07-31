@@ -165,9 +165,7 @@ export function Contact() {
               })()}
             </h2>
 
-            <p className="text-[var(--muted-label)] text-sm md:text-base font-light leading-relaxed max-w-xl mt-4">
-              {t.desc}
-            </p>
+
           </ScrollReveal>
         </div>
 
