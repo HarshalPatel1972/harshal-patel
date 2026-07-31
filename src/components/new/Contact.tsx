@@ -204,9 +204,9 @@ export function Contact() {
 
             const cellContent = (
               <span className="relative z-10 flex items-center justify-between w-full">
-                <span className="flex items-center gap-3 lg:gap-4 transition-all duration-500 ease-[cubic-bezier(0.2,0.9,0.3,1)] md:group-hover:-translate-y-2 pointer-events-auto text-[3rem] sm:text-[4rem] md:text-[1.8rem] lg:text-[2.2rem] xl:text-[3rem]">
+                <span className="flex items-center gap-3 lg:gap-4 transition-all duration-500 ease-[cubic-bezier(0.2,0.9,0.3,1)] pointer-events-auto text-[3rem] sm:text-[4rem] md:text-[1.8rem] lg:text-[2.2rem] xl:text-[3rem]">
                   <ContactIcon id={link.id} className="w-[0.9em] h-[0.9em] shrink-0 text-[var(--sumi-ink)]" />
-                  <span className="font-black font-display uppercase tracking-tighter leading-[0.9] text-left break-words overflow-visible text-[var(--sumi-ink)] group-hover:opacity-80 transition-opacity">
+                  <span className="font-black font-display uppercase tracking-tighter leading-[0.9] text-left break-words overflow-visible text-[var(--sumi-ink)] group-hover:text-[var(--forge-orange)] transition-colors">
                     {copied && link.id === 'email' ? 'COPIED!' : link.label}
                   </span>
                 </span>
