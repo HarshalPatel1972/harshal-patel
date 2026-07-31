@@ -53,24 +53,7 @@ export function Footer() {
             </span>
           </div>
 
-          {/* Right Column: V1 Kinetic Coffee Pill */}
-          <div className="flex flex-col gap-6 items-start md:items-end justify-start">
-            <a 
-              href="https://www.chai4.me/harshalpatel" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="relative flex items-center justify-center w-full md:w-[260px] h-[48px] bg-[#050505] border-2 border-[#E8E8E6] overflow-hidden transition-all duration-300 shadow-[4px_4px_0px_var(--accent-blood)] hover:shadow-[2px_2px_0px_var(--accent-blood)] hover:border-[var(--accent-blood)] hover:translate-x-[2px] hover:translate-y-[2px]"
-            >
-              <div className="relative z-10 h-full w-full flex flex-col items-center animate-kinetic-loop">
-                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[#E8E8E6] font-black font-mono uppercase tracking-[0.2em] text-xs">
-                  {initialText}
-                </div>
-                <div className="h-full w-full flex-shrink-0 flex items-center justify-center text-[var(--accent-blood)] font-black font-mono uppercase tracking-[0.2em] text-xs italic">
-                  {actionText}
-                </div>
-              </div>
-            </a>
-          </div>
+
 
         </div>
 

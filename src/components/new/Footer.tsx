@@ -67,21 +67,7 @@ export function Footer() {
             </span>
           </div>
 
-          {/* Right Column: Coffee pill */}
-          <div className="flex flex-col gap-6 items-start md:items-end justify-start">
-            
-            {/* Coffee Pill Button */}
-            <a 
-              href="https://www.chai4.me/harshalpatel" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-block bg-[#E8703A] text-[#0F0D0A] font-semibold text-xs rounded-full px-6 py-2.5 hover:bg-white hover:text-[#0F0D0A] transition-all uppercase tracking-wider text-center"
-              style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
-            >
-              {enjoyText}
-            </a>
 
-          </div>
 
         </div>
 
