@@ -4,6 +4,7 @@ import { projects } from "@/data/projects";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useFlipTransition } from "@/context/FlipContext";
+import { skillPaths } from "./SkillIcons";
 
 interface Project {
   title: string;
@@ -187,20 +188,38 @@ function DossierCard({
             <div>
               {/* Label-maker tags */}
               <div className="flex flex-wrap gap-2 mb-5">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em]"
-                    style={{
-                      border: `1px dashed var(--muted-label)`,
-                      color: "var(--sumi-ink)",
-                      fontFamily: "var(--font-jetbrains-mono), monospace",
-                      background: "rgba(255,255,255,0.5)",
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
+                {project.tags.map((tag) => {
+                  const t = tag.toLowerCase();
+                  let iconPath = null;
+                  if (t.includes('go')) iconPath = skillPaths.go;
+                  else if (t.includes('react')) iconPath = skillPaths.react;
+                  else if (t.includes('wails')) iconPath = skillPaths.wails;
+                  else if (t.includes('crypto') || t.includes('web3') || t.includes('solidity')) iconPath = skillPaths.crypto;
+                  else if (t.includes('typescript') || t.includes('ts')) iconPath = skillPaths.typescript;
+                  else if (t.includes('python')) iconPath = skillPaths.python;
+                  else if (t.includes('rust')) iconPath = skillPaths.rust;
+                  else if (t.includes('c++') || t.includes('cpp')) iconPath = skillPaths.cplusplus;
+
+                  return (
+                    <span
+                      key={tag}
+                      className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] flex items-center gap-1.5"
+                      style={{
+                        border: `1px dashed var(--muted-label)`,
+                        color: "var(--sumi-ink)",
+                        fontFamily: "var(--font-jetbrains-mono), monospace",
+                        background: "rgba(255,255,255,0.5)",
+                      }}
+                    >
+                      {iconPath && (
+                        <svg viewBox="0 0 24 24" className="w-3 h-3" fill="currentColor">
+                          <path d={iconPath} />
+                        </svg>
+                      )}
+                      <span>{tag}</span>
+                    </span>
+                  );
+                })}
               </div>
 
               {/* Title */}
