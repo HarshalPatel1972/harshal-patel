@@ -14,38 +14,38 @@ const getSkillBrand = (name: string) => {
 
 export function SkillMarquee({ skills }: { skills: any[] }) {
   // We want to make a visually dense marquee.
-  // We'll split the skills into two rows, and pad them if necessary.
+  // We'll split the skills into two columns, and pad them if necessary.
   const mid = Math.ceil(skills.length / 2);
-  const row1 = skills.slice(0, mid);
-  const row2 = skills.slice(mid);
+  const col1 = skills.slice(0, mid);
+  const col2 = skills.slice(mid);
 
   // Duplicate elements multiple times to ensure the marquee can scroll infinitely 
-  // without whitespace, since it needs to be wider than the container.
-  const marquee1 = [...row1, ...row1, ...row1, ...row1, ...row1, ...row1];
-  const marquee2 = [...row2, ...row2, ...row2, ...row2, ...row2, ...row2];
+  // without whitespace, since it needs to be taller than the container.
+  const marquee1 = [...col1, ...col1, ...col1, ...col1, ...col1, ...col1];
+  const marquee2 = [...col2, ...col2, ...col2, ...col2, ...col2, ...col2];
 
   return (
     <div 
-      className="relative w-full overflow-hidden flex flex-col gap-4 py-8 select-none" 
+      className="relative w-full h-full min-h-[400px] overflow-hidden flex flex-row justify-center gap-4 py-8 select-none" 
       style={{ 
-        maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', 
-        WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' 
+        maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)', 
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)' 
       }}
     >
       <style>{`
-        @keyframes scrollLeft {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        @keyframes scrollUp {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-50%); }
         }
-        @keyframes scrollRight {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
+        @keyframes scrollDown {
+          0% { transform: translateY(-50%); }
+          100% { transform: translateY(0); }
         }
-        .animate-scroll-left {
-          animation: scrollLeft 30s linear infinite;
+        .animate-scroll-up {
+          animation: scrollUp 30s linear infinite;
         }
-        .animate-scroll-right {
-          animation: scrollRight 30s linear infinite;
+        .animate-scroll-down {
+          animation: scrollDown 30s linear infinite;
         }
         .skill-card-v2 {
           background-color: rgba(22, 29, 26, 0.04);
@@ -58,17 +58,17 @@ export function SkillMarquee({ skills }: { skills: any[] }) {
         }
       `}</style>
       
-      {/* Row 1: Left scrolling */}
-      <div className="flex w-max animate-scroll-left gap-4 hover:[animation-play-state:paused]">
+      {/* Column 1: Up scrolling */}
+      <div className="flex flex-col h-max animate-scroll-up gap-4 hover:[animation-play-state:paused]">
         {marquee1.map((skill, i) => (
-          <SkillCard key={`r1-${i}`} skill={skill} />
+          <SkillCard key={`c1-${i}`} skill={skill} />
         ))}
       </div>
 
-      {/* Row 2: Right scrolling */}
-      <div className="flex w-max animate-scroll-right gap-4 hover:[animation-play-state:paused]">
+      {/* Column 2: Down scrolling */}
+      <div className="flex flex-col h-max animate-scroll-down gap-4 hover:[animation-play-state:paused]">
         {marquee2.map((skill, i) => (
-          <SkillCard key={`r2-${i}`} skill={skill} />
+          <SkillCard key={`c2-${i}`} skill={skill} />
         ))}
       </div>
     </div>
