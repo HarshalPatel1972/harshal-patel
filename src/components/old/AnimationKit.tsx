@@ -254,12 +254,21 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
 
   useEffect(() => {
     let ticking = false;
+    let cachedTotalH = 0;
+
+    const updateDimensions = () => {
+      cachedTotalH = document.documentElement.scrollHeight - window.innerHeight;
+    };
+
+    const resizer = new ResizeObserver(() => {
+      requestAnimationFrame(updateDimensions);
+    });
+    resizer.observe(document.body);
 
     const updateScrollOptions = () => {
       if (!textRef.current) return;
       const scrollY = window.scrollY;
-      const totalH = document.documentElement.scrollHeight - window.innerHeight;
-      let p = Math.round((scrollY / totalH) * 100);
+      let p = Math.round((scrollY / cachedTotalH) * 100);
       if (isNaN(p)) p = 0;
       if (p < 0) p = 0;
       if (p > 100) p = 100;
@@ -275,9 +284,17 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
       }
     };
 
+    window.addEventListener("resize", updateDimensions);
     window.addEventListener("scroll", handleScroll, { passive: true });
+
+    updateDimensions(); // init
     updateScrollOptions(); // init
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      resizer.disconnect();
+      window.removeEventListener("resize", updateDimensions);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
