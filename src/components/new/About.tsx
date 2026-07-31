@@ -8,7 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
 import { useSignals } from "@/context/SignalContext";
 import { useCounter } from "../AnimationKit";
-import { SkillGlobe } from "./SkillGlobe";
+import { SkillMarquee } from "./SkillMarquee";
 
 // ─── Animated stat counter ────────────────────────────────────────────────────
 function StudioStat({ value, label }: { value: number; label: string }) {
@@ -390,12 +390,18 @@ export function About() {
 
   const coreExpertiseLabel = (() => {
     switch (language) {
-      case "ja": return "スキル・インパクト"; case "ko": return "스킬 임팩트";
-      case "zh-tw": return "技能影響"; case "fr": return "Impacts des Compétences";
-      case "id": return "Dampak Keahlian"; case "de": return "Skill Impacts";
-      case "it": return "Impatti delle Competenze"; case "pt-br": return "Impactos de Habilidades";
-      case "es-419": case "es": return "Impactos de Habilidades"; case "hi": return "कौशल प्रभाव";
-      case "eridian": return "SKILL-SPLAT"; default: return "Skill Impacts";
+      case "ja": return "構築ツール"; 
+      case "ko": return "사용하는 도구";
+      case "zh-tw": return "我用來構建的工具"; 
+      case "fr": return "CE QUE J'UTILISE";
+      case "id": return "ALAT YANG SAYA GUNAKAN"; 
+      case "de": return "MEINE WERKZEUGE";
+      case "it": return "COSA USO PER COSTRUIRE"; 
+      case "pt-br": return "O QUE EU USO PARA CONSTRUIR";
+      case "es-419": case "es": return "CON QUÉ CONSTRUYO"; 
+      case "hi": return "मैं किसके साथ निर्माण करता हूँ";
+      case "eridian": return "WHAT HARSHAL USE TO BUILD"; 
+      default: return "WHAT I BUILD WITH";
     }
   })();
 
@@ -631,8 +637,8 @@ export function About() {
                   border: "1px dashed rgba(22, 29, 26, 0.2)",
                 }}
               >
-                <div className="flex-1 w-full pt-2 h-full">
-                  {skillsVisible && <SkillGlobe skills={currentProfile.skills} />}
+                <div className="flex-1 w-full pt-2 h-full flex flex-col justify-center">
+                  {skillsVisible && <SkillMarquee skills={currentProfile.skills} />}
                 </div>
 
               </div>
