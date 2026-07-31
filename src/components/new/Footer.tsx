@@ -63,7 +63,7 @@ export function Footer() {
               className="text-[10px] text-[#8A7F72]"
               style={{ fontFamily: "var(--font-jetbrains-mono), monospace" }}
             >
-              © {new Date().getFullYear()} — Varanasi, India
+              © {new Date().getFullYear()} — India
             </span>
           </div>
 

@@ -49,7 +49,7 @@ export function Footer() {
               {currentProfile.name.toUpperCase()}
             </span>
             <span className="text-[10px] font-mono text-[#E8E8E6]/50">
-              © {new Date().getFullYear()} — Varanasi, India
+              © {new Date().getFullYear()} — India
             </span>
           </div>
 
