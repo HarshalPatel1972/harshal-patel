@@ -146,6 +146,37 @@ export function Navbar() {
     return () => document.documentElement.classList.remove('is-overlay-active');
   }, [showEasterEggs]);
 
+  const navigateTo = useCallback((id: string) => {
+    if (typeof window === 'undefined') return;
+    const currentScrollY = window.scrollY;
+    const targetEl = id === 'hero' ? null : document.getElementById(id);
+    const targetY = id === 'hero' ? 0 : (targetEl ? targetEl.getBoundingClientRect().top + window.scrollY : 0);
+    const direction = targetY > currentScrollY ? 1 : -1;
+    const distance = Math.abs(targetY - currentScrollY);
+    if (distance > 300) {
+      window.dispatchEvent(new CustomEvent('WARP_JUMP', { detail: { direction } }));
+    }
+    if (id === 'hero') {
+      window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    } else { 
+      const el = document.getElementById(id); 
+      if (el) el.scrollIntoView({ behavior: "smooth" }); 
+    }
+  }, []);
+
+  // Keyboard navigation binding (1, 2, 3, 4)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === '1' && currentNavItems[0]) navigateTo(currentNavItems[0].id);
+      if (e.key === '2' && currentNavItems[1]) navigateTo(currentNavItems[1].id);
+      if (e.key === '3' && currentNavItems[2]) navigateTo(currentNavItems[2].id);
+      if (e.key === '4' && currentNavItems[3]) navigateTo(currentNavItems[3].id);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentNavItems, navigateTo]);
+
   // Section Tracking using IntersectionObserver
   useEffect(() => {
     const sectionIds = currentNavItems.map(item => item.id);
@@ -475,22 +506,7 @@ export function Navbar() {
                   }}
                   onClick={(e) => { 
                     e.preventDefault(); 
-                    if (typeof window !== 'undefined') {
-                      const currentScrollY = window.scrollY;
-                      const targetEl = item.id === 'hero' ? null : document.getElementById(item.id);
-                      const targetY = item.id === 'hero' ? 0 : (targetEl ? targetEl.getBoundingClientRect().top + window.scrollY : 0);
-                      const direction = targetY > currentScrollY ? 1 : -1;
-                      const distance = Math.abs(targetY - currentScrollY);
-                      if (distance > 300) {
-                        window.dispatchEvent(new CustomEvent('WARP_JUMP', { detail: { direction } }));
-                      }
-                    }
-                    if (item.id === 'hero') {
-                      window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                    } else { 
-                      const el = document.getElementById(item.id); 
-                      if (el) el.scrollIntoView({ behavior: "smooth" }); 
-                    } 
+                    navigateTo(item.id);
                   }}
                 >
                   <span 
