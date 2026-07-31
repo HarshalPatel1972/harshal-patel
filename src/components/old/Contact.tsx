@@ -275,3 +275,4 @@ function ContactLinkItem({ link, language, copied, setCopied, isLast }: any) {
     </a>
   );
 }
+// Theme color hover logic
