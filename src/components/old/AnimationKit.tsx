@@ -264,7 +264,8 @@ export function ScrollLine({ isVisible = true }: { isVisible?: boolean }) {
       if (p < 0) p = 0;
       if (p > 100) p = 100;
       
-      textRef.current.innerText = String(p).padStart(3, '0');
+      // ⚡ Bolt: Used textContent instead of innerText to prevent layout thrashing (reflow) on scroll frames
+      textRef.current.textContent = String(p).padStart(3, '0');
       ticking = false;
     };
 
