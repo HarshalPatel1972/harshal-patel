@@ -46,3 +46,7 @@
 ## 2026-07-21 - Refactored mousePos state to ref in Feedback Gallery
 **Learning:** High-frequency events like `mousemove` should not trigger React state updates, even when batched with `requestAnimationFrame`, as this still causes cascading re-renders across all child components (e.g., all `FloatingCard` instances in a gallery).
 **Action:** Store the rapidly changing event coordinates in a `useRef`. Pass this ref to child components, which can read from it inside their own animation loops (e.g., Framer Motion's `useAnimationFrame`) and update native DOM styles using MotionValues, entirely bypassing the React render cycle.
+
+## 2024-05-18 - Caching dimensions to prevent layout thrashing in rAF
+**Learning:** In `src/components/new/KnowledgeGraph.tsx`, synchronous DOM properties like `clientWidth` and `clientHeight` were being read directly within the `simulate` loop running via `requestAnimationFrame`. Because the DOM structure can be modified asynchronously during animation (especially on viewport changes or layout shifts), these continuous measurements force synchronous reflow operations, blocking the thread and severely dropping frame rates.
+**Action:** Extract large synchronous DOM layout measurements out of animation loops. Instead, cache these values locally inside the component and connect a `ResizeObserver` to the container to update the cached dimensions asynchronously when the container actually resizes, letting the animation loop read from the fast local object instead of interrogating the live DOM.
