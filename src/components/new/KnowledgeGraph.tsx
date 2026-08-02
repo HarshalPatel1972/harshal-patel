@@ -49,10 +49,30 @@ export function KnowledgeGraph({ skills }: { skills: any[] }) {
     let animId: number;
     let isRunning = true;
     
+    // ⚡ Bolt: Cache dimensions outside the loop to prevent synchronous layout thrashing
+    const dims = { width: 500, height: 500 };
+
+    const updateDims = () => {
+      if (containerRef.current) {
+        dims.width = containerRef.current.clientWidth;
+        dims.height = containerRef.current.clientHeight;
+      }
+    };
+
+    updateDims();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateDims();
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
     const simulate = () => {
       if (!isRunning) return;
-      const width = containerRef.current?.clientWidth || 500;
-      const height = containerRef.current?.clientHeight || 500;
+      const width = dims.width;
+      const height = dims.height;
       const cx = width / 2;
       const cy = height / 2;
       const nodes = nodesRef.current;
@@ -144,7 +164,11 @@ export function KnowledgeGraph({ skills }: { skills: any[] }) {
     };
 
     animId = requestAnimationFrame(simulate);
-    return () => { isRunning = false; cancelAnimationFrame(animId); };
+    return () => {
+      isRunning = false;
+      cancelAnimationFrame(animId);
+      resizeObserver.disconnect();
+    };
   }, []);
 
   const handlePointerDown = (id: string, e: React.PointerEvent) => {
