@@ -84,7 +84,8 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
     }
     if (labelRef.current) {
         labelRef.current.style.color = cyan;
-        labelRef.current.innerText = `${rounded}%`;
+        // ⚡ Bolt: Use textContent instead of innerText for high-frequency updates to prevent layout thrashing
+        labelRef.current.textContent = `${rounded}%`;
     }
   };
 
@@ -127,7 +128,8 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
       onUpdate: () => {
         const v = proxy.val;
         if (fillRef.current) fillRef.current.style.width = `${v}%`;
-        if (labelRef.current) labelRef.current.innerText = `${Math.round(v)}%`;
+        // ⚡ Bolt: Use textContent instead of innerText for high-frequency updates to prevent layout thrashing
+        if (labelRef.current) labelRef.current.textContent = `${Math.round(v)}%`;
         setColliding(v >= 100 || v <= 0);
       },
       onComplete: () => {

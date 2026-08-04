@@ -304,7 +304,8 @@ export function ScrollLine({
       if (p < 0) p = 0;
       if (p > 100) p = 100;
       
-      textRef.current.innerText = String(p).padStart(3, '0');
+      // ⚡ Bolt: Use textContent instead of innerText for high-frequency updates to prevent layout thrashing
+      textRef.current.textContent = String(p).padStart(3, '0');
       ticking = false;
     };
 

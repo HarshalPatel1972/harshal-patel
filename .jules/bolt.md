@@ -46,3 +46,7 @@
 ## 2026-07-21 - Refactored mousePos state to ref in Feedback Gallery
 **Learning:** High-frequency events like `mousemove` should not trigger React state updates, even when batched with `requestAnimationFrame`, as this still causes cascading re-renders across all child components (e.g., all `FloatingCard` instances in a gallery).
 **Action:** Store the rapidly changing event coordinates in a `useRef`. Pass this ref to child components, which can read from it inside their own animation loops (e.g., Framer Motion's `useAnimationFrame`) and update native DOM styles using MotionValues, entirely bypassing the React render cycle.
+
+## 2026-07-22 - Replacing innerText with textContent in High-Frequency Loops
+**Learning:** Using `innerText` to update text values within high-frequency loops (like scroll listeners or Anime.js `onUpdate` callbacks) is an anti-pattern. `innerText` triggers expensive layout recalculations (reflows) because it is aware of CSS styling, whereas `textContent` directly modifies the text node without forcing a reflow. This was causing layout thrashing in `AnimationKit.tsx` and `About.tsx`.
+**Action:** When performing high-frequency DOM text updates directly via refs inside animation loops, always use `node.textContent` instead of `node.innerText`.
