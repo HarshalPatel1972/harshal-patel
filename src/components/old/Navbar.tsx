@@ -111,6 +111,7 @@ export function Navbar() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
+  const docHeightRef = useRef<number>(0);
   const [showEasterEggs, setShowEasterEggs] = useState(false);
 
   const chargingLogoRef = useRef<boolean>(false);
@@ -207,7 +208,8 @@ export function Navbar() {
     const handleScroll = () => {
       const p = dotPhysicsRef.current;
       const currentScrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      // Use cached docHeight to prevent layout thrashing on high-frequency scroll events
+      const maxScroll = (docHeightRef.current || document.documentElement.scrollHeight) - window.innerHeight;
       p.targetY = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
       p.speed = Math.min(Math.abs(currentScrollY - p.lastScrollY), 50);
       p.lastScrollY = currentScrollY;
@@ -225,7 +227,9 @@ export function Navbar() {
     let timer: NodeJS.Timeout;
     const updateHeight = () => {
       if (showEasterEggs) return;
-      setDocHeight(document.documentElement.scrollHeight);
+      const h = document.documentElement.scrollHeight;
+      docHeightRef.current = h;
+      setDocHeight(h);
     };
     const resizer = new ResizeObserver(() => {
       clearTimeout(timer);
