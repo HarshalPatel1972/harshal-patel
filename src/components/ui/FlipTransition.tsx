@@ -47,8 +47,8 @@ export function FlipTransition() {
       const flipAnim = anime(animationState, {
         flipProgress: totalSquares,
         duration: 2000,
-        easing: 'linear',
-        update: () => {
+        ease: 'linear',
+        onUpdate: () => {
           const count = Math.floor(animationState.flipProgress);
           let changed = false;
           for (let i = 0; i < count; i++) {
@@ -67,8 +67,8 @@ export function FlipTransition() {
         smokeProgress: totalSquares,
         duration: 1500,
         delay: 2400,
-        easing: 'linear',
-        update: () => {
+        ease: 'linear',
+        onUpdate: () => {
           const count = Math.floor(animationState.smokeProgress);
           let changed = false;
           for (let i = 0; i < count; i++) {
@@ -80,7 +80,7 @@ export function FlipTransition() {
           }
           if (changed) setSmokedIndices(new Set(smokedRef.current));
         },
-        complete: () => {
+        onComplete: () => {
           // Final Sync'd Redirect
           setTimeout(() => {
             window.location.href = redirectUrl;
