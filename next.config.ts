@@ -1,11 +1,14 @@
 import type { NextConfig } from "next";
 
+// Dev needs 'unsafe-eval' (React refresh / Turbopack); a production build doesn't.
+const isDev = process.env.NODE_ENV !== "production";
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  `script-src 'self' ${isDev ? "'unsafe-eval' " : ""}'unsafe-inline' https://vercel.live`,
+  "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://raw.githubusercontent.com https://raw.githack.com",
-  "font-src 'self' data: https://fonts.gstatic.com",
+  "font-src 'self' data:",
   "connect-src 'self' https://raw.githubusercontent.com https://raw.githack.com https://vercel.live",
   "worker-src 'self' blob:",
   "object-src 'none'",
