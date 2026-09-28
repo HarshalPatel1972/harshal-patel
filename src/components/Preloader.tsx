@@ -374,7 +374,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         duration: 800,
         delay: stagger(15),
         ease: 'outQuart'
-      }, 400);
+      }, 0);
 
       tl.add('.p-char-outline', {
         opacity: [0, 1],
@@ -392,7 +392,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         translateY: [20, 0],
         duration: 1200,
         ease: 'outCubic'
-      }, 1000);
+      }, 600);
     }
     if (sourceOutlineRef.current) {
       tl.add(sourceOutlineRef.current, {
@@ -400,7 +400,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         translateY: [20, 0],
         duration: 1200,
         ease: 'outCubic'
-      }, 1000);
+      }, 600);
     }
 
     exitTimeoutRef.current = setTimeout(() => dismissRef.current(), readTime);
