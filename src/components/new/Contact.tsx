@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
 import { ScrollReveal } from "../ScrollReveal";

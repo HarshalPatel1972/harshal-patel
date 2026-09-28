@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
 import { animate as anime } from "animejs";

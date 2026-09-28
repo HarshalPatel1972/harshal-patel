@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useLanguage, type Language } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 

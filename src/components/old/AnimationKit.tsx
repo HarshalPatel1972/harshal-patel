@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { animate as anime, utils, remove } from "animejs";
 
