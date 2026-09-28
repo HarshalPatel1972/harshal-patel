@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest",
+    "test": "vitest run",
     "test:jest": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "vitest",
     "test:bun": "bun test"
   },
   "dependencies": {
