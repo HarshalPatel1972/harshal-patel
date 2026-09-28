@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { isAdminRequest } from "@/lib/adminAuth";
+import { parseFeedback } from "@/lib/feedbackValidation";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -31,20 +32,32 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const entry = await request.json();
-    
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
+
+    const parsed = parseFeedback(body);
+    if (!parsed.ok) {
+      return NextResponse.json({ error: parsed.error }, { status: 400 });
+    }
+    const entry = parsed.value;
+
     // Map camelCase to snake_case for DB
     // Return the actual inserted data (including the ID Supabase used) in a single round-trip
     const { data: insertedData, error } = await supabase
       .from('feedbacks')
       .insert([{
         id: entry.id,
-        timestamp: entry.timestamp,
+        timestamp: Date.now(), // server clock, not whatever the client claims
         type: entry.type,
         message: entry.message,
         user_name: entry.userName,
-        color: entry.color,
-        status: entry.status
+        // leave these out when empty so the column defaults still apply
+        ...(entry.color ? { color: entry.color } : {}),
+        ...(entry.status ? { status: entry.status } : {}),
       }])
       .select('*')
       .single();
