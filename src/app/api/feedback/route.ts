@@ -9,8 +9,9 @@ export async function GET() {
   try {
     const { data, error } = await supabase
       .from('feedbacks')
-      .select('*')
-      .order('timestamp', { ascending: false });
+      .select('id, timestamp, type, message, user_name, color, status')
+      .order('timestamp', { ascending: false })
+      .limit(200);
 
     if (error) {
       console.error("Supabase Select Error:", { code: error.code, message: error.message, hint: error.hint });
