@@ -49,6 +49,7 @@ conflict_search.txt
 *.jpeg
 *.gif
 *.svg
+!docs/*.svg
 !public/**/*
 !src/app/fonts/**/*
 
