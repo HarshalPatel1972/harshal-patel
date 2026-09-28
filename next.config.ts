@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({ enabled: process.env.ANALYZE === "true" }); const nextConfig: NextConfig = {
+const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
   },
@@ -43,4 +43,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({ enabled: process.e
   },
 };
 
-export default withBundleAnalyzer(nextConfig);
+// Only pull in the analyzer (a devDependency) when ANALYZE=true, so production installs don't need it
+export default process.env.ANALYZE === "true"
+  ? require("@next/bundle-analyzer")({ enabled: true })(nextConfig)
+  : nextConfig;
