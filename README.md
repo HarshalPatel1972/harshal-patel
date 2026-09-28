@@ -20,16 +20,6 @@ My portfolio. Black background, film grain, big type, and a lot of motion I prob
 
 Next.js 16 · React 19 · TypeScript · Tailwind 4 · anime.js 4 · Framer Motion · Supabase (feedback) · Redis (rate limiting)
 
-## Layout
-
-```
-src/components/new/        current design
-src/components/old/        the first design, still bundled
-src/components/ui/         cursor, warp, page transitions
-src/components/Preloader   the quote intro
-src/app/api/               feedback, visitor count
-```
-
 ## License
 
 Look, learn, borrow ideas. Don't ship it as your own or use it commercially, and credit me if you build on it. Full terms in [LICENSE](LICENSE) (HPCL v1.0).
