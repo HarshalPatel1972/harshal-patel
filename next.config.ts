@@ -20,6 +20,10 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Inline the (small) CSS into the HTML instead of two render-blocking stylesheet requests
+    inlineCss: true,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
   },
