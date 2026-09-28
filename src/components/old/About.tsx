@@ -40,7 +40,7 @@ function InteractiveSkillBar({ skill, isVisible, index, onPressureTrigger }: { s
         opacity: [0, 1],
         duration: 1400,
         delay: index * 120,
-        easing: 'easeOutElastic(1, .6)'
+        ease: 'outElastic(1, .6)'
       });
     }
     return () => {
