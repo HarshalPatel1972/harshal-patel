@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
 

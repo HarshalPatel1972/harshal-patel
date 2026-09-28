@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { animate, stagger, utils } from "animejs";
+import { animate, stagger } from "animejs";
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();

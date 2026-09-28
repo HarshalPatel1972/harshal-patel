@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
-import { animate as anime, utils, createTimeline } from "animejs";
+import { utils, createTimeline } from "animejs";
 
 type SignalType = "PRESSURE" | "PRESSURE PRESSURE PRESSURE" | null;
 

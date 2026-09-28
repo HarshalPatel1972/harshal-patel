@@ -3,10 +3,7 @@
 import { useRef, useState } from "react";
 import { profile } from "@/data/profile";
 import { ScrollReveal } from "./ScrollReveal";
-import { animate as anime } from "animejs";
 import { useLanguage } from "@/context/LanguageContext";
-import { KineticLink } from "../ui/KineticLink";
-import { useRouter } from "next/navigation";
 
 const LINKS = {
   en: [

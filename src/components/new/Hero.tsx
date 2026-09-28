@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo, useEffect, useRef } from "react";
-import Image from "next/image";
 import { profile } from "@/data/profile";
 import { useLanguage } from "@/context/LanguageContext";
 import { useMagnetic } from "../AnimationKit";
