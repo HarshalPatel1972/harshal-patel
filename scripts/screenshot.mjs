@@ -5,7 +5,7 @@
  * Output lands in: public/screenshots/
  *
  * Usage:
- *   node screenshot.mjs
+ *   node scripts/screenshot.mjs
  *
  * Install deps first:
  *   npm install puppeteer sharp
