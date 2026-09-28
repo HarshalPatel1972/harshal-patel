@@ -16,18 +16,6 @@ My portfolio. Black background, film grain, big type, and a lot of motion I prob
 - **Tile-flip page transitions.** Leaving for a project flips the screen into the next page, tile by tile, then smokes away.
 - **12 languages,** CJK fonts included. There's also a hidden 13th. I'm not telling you how to find it.
 
-## Run it
-
-```bash
-git clone https://github.com/HarshalPatel1972/harshal-patel.git
-cd harshal-patel
-npm install
-npm run dev      # http://localhost:3000
-npm test         # vitest
-```
-
-Needs Node 20.9 or newer.
-
 ## Built with
 
 Next.js 16 · React 19 · TypeScript · Tailwind 4 · anime.js 4 · Framer Motion · Supabase (feedback) · Redis (rate limiting)
