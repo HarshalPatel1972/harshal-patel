@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="Harshal Patel portfolio: I find what's broken and build what's missing">
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.09 0"/>
+    </filter>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C44D1C" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#C44D1C" stop-opacity="1"/>
+      <stop offset="1" stop-color="#C44D1C" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="360" fill="#0a0a0a"/>
+  <!-- velocity-warp speed lines, like the site's page jumps -->
+  <g stroke="#C44D1C" stroke-linecap="round" opacity="0.55">
+    <line x1="40"  y1="60"  x2="330" y2="60"  stroke-width="1"/>
+    <line x1="700" y1="130" x2="900" y2="130" stroke-width="2"/>
+    <line x1="10"  y1="300" x2="420" y2="300" stroke-width="1"/>
+    <line x1="700" y1="318" x2="1150" y2="318" stroke-width="2"/>
+    <line x1="820" y1="44"  x2="1170" y2="44"  stroke-width="1"/>
+    <line x1="950" y1="80"  x2="1090" y2="80"  stroke-width="1"/>
+  </g>
+  <text x="60" y="165" fill="#EDE4D3" font-family="'Arial Black','Impact','Helvetica Neue',Arial,sans-serif" font-size="120" font-weight="900" letter-spacing="-4">HARSHAL</text>
+  <text x="60" y="272" fill="none" stroke="#EDE4D3" stroke-width="1.5" font-family="'Arial Black','Impact','Helvetica Neue',Arial,sans-serif" font-size="120" font-weight="900" letter-spacing="-4" opacity="0.6">PATEL</text>
+  <rect x="740" y="238" width="60" height="4" fill="#C44D1C"/>
+  <text x="740" y="272" fill="#8a8378" font-family="'Courier New',Courier,monospace" font-size="15" letter-spacing="4">FIND WHAT'S BROKEN.</text>
+  <text x="740" y="298" fill="#EDE4D3" font-family="'Courier New',Courier,monospace" font-size="15" letter-spacing="4">BUILD WHAT'S MISSING.</text>
+  <rect x="0" y="336" width="1200" height="2" fill="url(#fade)"/>
+  <rect width="1200" height="360" filter="url(#grain)"/>
+</svg>
