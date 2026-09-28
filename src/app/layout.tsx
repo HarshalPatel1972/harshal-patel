@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import { Big_Shoulders, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 
 import "./globals.css";
-import Cursor from "@/components/ui/Cursor";
 import ImageGuard from "@/components/ui/ImageGuard";
 import { VelocityWarp } from "@/components/ui/VelocityWarp";
 

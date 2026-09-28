@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, Suspense, useRef, useMemo } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue, useAnimationFrame } from "framer-motion";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { motion, AnimatePresence, useSpring, useMotionValue, useAnimationFrame } from "framer-motion";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useDesignVersion } from "@/components/shared/DesignVersionContext";
@@ -454,14 +454,14 @@ export function FeedbackContents() {
         method: "DELETE"
       });
       
-      const result = await res.json();
+      await res.json();
       
       if (!res.ok) {
         throw new Error("Deletion failed");
       }
       
       setSubmissions(prev => prev.filter(s => s.id !== id));
-    } catch (e: any) {
+    } catch {
       console.error("Deletion failed safely");
       setErrorMsg(`Deletion Failed: Authentication error or invalid request.`);
     }
