@@ -423,7 +423,7 @@ export function About() {
 
       {/* Pressure video portal */}
       {mounted && createPortal(
-        <div className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-700 ${showPressureVideo ? "bg-black/95 opacity-100 backdrop-blur-2xl pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div role="dialog" aria-modal="true" aria-label="Video" aria-hidden={!showPressureVideo} className={`fixed inset-0 z-[1000] flex items-center justify-center transition-all duration-700 ${showPressureVideo ? "bg-black/95 opacity-100 backdrop-blur-2xl pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
           <div className={`relative w-[280px] sm:w-[500px] md:w-[700px] lg:w-[900px] aspect-video bg-black border-4 border-white shadow-[0_0_100px_var(--forge-orange)] transition-transform duration-700 ${showPressureVideo ? "scale-100 translate-y-0" : "scale-50 translate-y-20"}`}>
             <video
               ref={videoRef}
@@ -434,7 +434,7 @@ export function About() {
               onEnded={closePressure}
               className="w-full h-full object-cover"
             />
-            <button onClick={closePressure} className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--forge-orange)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-95 transition-transform z-50">
+            <button type="button" aria-label="Close video" onClick={closePressure} className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--forge-orange)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-95 transition-transform z-50">
               ✕
             </button>
           </div>

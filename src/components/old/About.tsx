@@ -241,6 +241,8 @@ export function About() {
             className={`w-full h-full object-cover transition-opacity duration-300 ${skillsVisible ? 'opacity-100' : 'opacity-0'}`}
           />
           <button 
+            type="button"
+            aria-label="Close video"
             onClick={closePressure}
             className="absolute -top-6 -right-6 w-12 h-12 bg-[var(--accent-blood)] text-white font-black border-4 border-black flex items-center justify-center hover:scale-110 active:scale-95 transition-transform brutal-shadow z-50 group/close"
           >
