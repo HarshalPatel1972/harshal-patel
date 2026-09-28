@@ -521,6 +521,12 @@ img, svg, picture, .ink-slash, .manga-panel {
   -webkit-touch-callout: none !important;
 }
 
+/* Body is select-none; form fields still need to be typeable/selectable (Safari especially) */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 
 /* ─── LANGUAGE SPECIFIC FONTS ─── */
 /* Legacy fonts removed as per 'Only Cirka and Neue Montreal' requirement */
