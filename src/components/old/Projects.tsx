@@ -34,7 +34,7 @@ export function Projects() {
       translateX: [50, 0],
       duration: 1200,
       delay: utils.stagger(150),
-      easing: "outCubic",
+      ease: "outCubic",
     });
     return () => { anim.pause(); };
   }, []);

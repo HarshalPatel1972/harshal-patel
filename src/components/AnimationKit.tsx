@@ -23,7 +23,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
         translateX: 0,
         translateY: 0,
         duration: 400,
-        easing: "outCubic",
+        ease: "outCubic",
       });
     };
 
@@ -44,7 +44,7 @@ export function useMagnetic<T extends HTMLElement = HTMLElement>(strength: numbe
           translateX: x * strength,
           translateY: y * strength,
           duration: 400,
-          easing: "outQuart",
+          ease: "outQuart",
         });
         rafId.current = null;
       });
@@ -159,7 +159,7 @@ export function TextReveal({
             rotateX: [40, 0],
             duration: 800,
             delay: utils.stagger(stagger, { start: delay }),
-            easing: "outQuart",
+            ease: "outQuart",
           });
           observer.unobserve(el);
         }

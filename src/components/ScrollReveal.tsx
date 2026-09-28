@@ -53,7 +53,7 @@ export function ScrollReveal({
             opacity: [0, 1],
             duration,
             delay,
-            easing: "outQuart",
+            ease: "outQuart",
           };
 
           if (direction === "up" || direction === "down") {
