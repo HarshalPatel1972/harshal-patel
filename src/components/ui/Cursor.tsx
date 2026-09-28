@@ -63,10 +63,12 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   useEffect(() => {
     const touchDevice = ("ontouchstart" in window || navigator.maxTouchPoints > 0) && 
                        (window.matchMedia("(pointer: coarse)").matches && !window.matchMedia("(pointer: fine)").matches);
+    // isTouch doubles as "skip the custom cursor": touch devices and reduced-motion users get the system cursor
+    const skipCursor = touchDevice || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setTimeout(() => {
-      setIsTouch(touchDevice);
+      setIsTouch(skipCursor);
     }, 0);
-    if (touchDevice) return;
+    if (skipCursor) return;
 
     // Arrow slots (↗)
     const aSlots = [];
