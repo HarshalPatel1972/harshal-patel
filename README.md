@@ -82,12 +82,18 @@ If you'd like to clone this repository to explore the codebase, test the kinetic
 4. **Experience the build:**
    Open [http://localhost:3000](http://localhost:3000) with your browser.
 
+5. **Run the tests:**
+   ```bash
+   npm test          # single run (vitest)
+   npm run test:watch
+   ```
+
 ---
 
 ## 🔒 Security & Performance Constraints
 This repository uses `next/dynamic` to selectively disable Server-Side Rendering (`ssr: false`) on physics-heavy client-side components to eliminate content flashing. High-intensity interactive elements (such as `ImageGuard.tsx`) aggressively prevent outside ghosting, dragging, and unwanted context menus to enforce the application-like feel. 
 
-All CSS animations conform to user preference media queries (`@media (prefers-reduced-motion: reduce)`).
+CSS animations and transitions respect `@media (prefers-reduced-motion: reduce)`, and the custom cursor and velocity-warp canvas skip themselves entirely when it's set. The anime.js reveals don't check it yet.
 
 ---
 
