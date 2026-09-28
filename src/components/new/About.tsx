@@ -65,7 +65,7 @@ function WaveSkillBar({
       anime(proxy, {
         val: skill.level,
         duration: 1500,
-        easing: "easeOutCubic",
+        ease: "outCubic",
         onUpdate: () => {
           setDisplayed(Math.round(proxy.val));
         },
