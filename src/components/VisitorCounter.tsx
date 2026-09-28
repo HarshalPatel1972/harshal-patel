@@ -31,7 +31,7 @@ export function VisitorCounter() {
         const res = await fetch('/api/visitor-count');
         const json = await res.json();
         if (json.success) setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits });
-      } catch (e) {}
+      } catch {}
     };
 
     const incrementStats = async () => {
@@ -42,7 +42,7 @@ export function VisitorCounter() {
            body: JSON.stringify({ cid })
         });
         fetchStats();
-      } catch (e) {}
+      } catch {}
     };
 
     fetchStats();
