@@ -34,7 +34,7 @@ export function SignalProvider({ children }: { children: React.ReactNode }) {
         scale: [0.8, 1.3],
         rotate: [-5, 5],
         duration: 300,
-        ease: 'easeOutExpo'
+        ease: 'outExpo'
       });
 
       tl.add(el, {
@@ -42,7 +42,7 @@ export function SignalProvider({ children }: { children: React.ReactNode }) {
         translateY: () => utils.random(-20, 20),
         duration: 80,
         loop: 8,
-        direction: 'alternate',
+        alternate: true,
         ease: 'linear'
       });
 
@@ -50,7 +50,7 @@ export function SignalProvider({ children }: { children: React.ReactNode }) {
         opacity: 0,
         scale: 3,
         duration: 500,
-        ease: 'easeInExpo'
+        ease: 'inExpo'
       }, "+=800");
     }
   }, [signal]);
