@@ -1,4 +1,5 @@
 import { kv, redis } from '@/lib/kv';
+import { isAdminRequest } from '@/lib/adminAuth';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
@@ -87,8 +88,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
-        const key = req.headers.get('Authorization')?.replace('Bearer ', '');
-        if (key !== process.env.ADMIN_SECRET_KEY) {
+        if (!isAdminRequest(req)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 

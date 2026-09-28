@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { isAdminRequest } from "@/lib/adminAuth";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -64,10 +65,9 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
-    const key = request.headers.get("Authorization")?.replace('Bearer ', '');
 
     // Security Gate: Only allow deletion if the key matches the secret environment variable
-    if (key !== process.env.ADMIN_SECRET_KEY) {
+    if (!isAdminRequest(request)) {
       return NextResponse.json({ error: "Unauthorized: Invalid Security Key" }, { status: 401 });
     }
 
