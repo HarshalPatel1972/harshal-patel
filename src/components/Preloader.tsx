@@ -293,7 +293,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     
     const exitTl = createTimeline({
       defaults: {
-        ease: 'easeInQuad'
+        ease: 'inQuad'
       },
       onComplete: () => {
         setComplete(true);
@@ -337,7 +337,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       opacity: 0,
       translateY: -20,
       duration: 600,
-      ease: 'easeInCubic'
+      ease: 'inCubic'
     }, 0);
   }, [exiting, onComplete]);
 
@@ -360,7 +360,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
     // Stagger character reveal animations like V1
     const tl = createTimeline({
       defaults: {
-        ease: 'easeOutQuint'
+        ease: 'outQuint'
       }
     });
     timelineRef.current = tl;
@@ -373,7 +373,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         filter: ['blur(20px)', 'blur(0px)'],
         duration: 800,
         delay: stagger(15),
-        ease: 'easeOutQuart'
+        ease: 'outQuart'
       }, 400);
 
       tl.add('.p-char-outline', {
@@ -382,7 +382,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         filter: ['blur(20px)', 'blur(0px)'],
         duration: 800,
         delay: stagger(15),
-        ease: 'easeOutQuart'
+        ease: 'outQuart'
       }, 400);
     }
 
@@ -391,7 +391,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         opacity: [0, 1],
         translateY: [20, 0],
         duration: 1200,
-        ease: 'easeOutCubic'
+        ease: 'outCubic'
       }, 1000);
     }
     if (sourceOutlineRef.current) {
@@ -399,7 +399,7 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
         opacity: [0, 1],
         translateY: [20, 0],
         duration: 1200,
-        ease: 'easeOutCubic'
+        ease: 'outCubic'
       }, 1000);
     }
 
