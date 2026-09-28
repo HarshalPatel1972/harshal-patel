@@ -25,6 +25,9 @@ export function VelocityWarp() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Full-screen speed lines are what reduced-motion users opt out of
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     // Use state-bound lines so they can be regenerated dynamically or use normalized horizontal placement
     let lines: { xNorm: number; y: number; length: number; speed: number; color: string }[] = [];
     const isEridian = language === 'eridian';
