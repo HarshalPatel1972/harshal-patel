@@ -114,8 +114,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/harshal-0.png",
-        width: 1200,
-        height: 630,
+        width: 1536,
+        height: 1024,
         alt: "Harshal Patel Portfolio Preview",
       },
     ],
