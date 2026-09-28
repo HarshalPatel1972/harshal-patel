@@ -163,6 +163,8 @@ export function Navbar() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      // Leave Ctrl/Cmd/Alt+number alone, browsers use those to switch tabs
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (e.key === '1' && currentNavItems[0]) navigateTo(currentNavItems[0].id);
       if (e.key === '2' && currentNavItems[1]) navigateTo(currentNavItems[1].id);
       if (e.key === '3' && currentNavItems[2]) navigateTo(currentNavItems[2].id);
