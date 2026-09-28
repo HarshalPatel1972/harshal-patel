@@ -25,11 +25,9 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   const topBarRef = useRef<HTMLDivElement>(null);
   const bottomBarRef = useRef<HTMLDivElement>(null);
   const slashRef = useRef<HTMLDivElement>(null);
-  const subliminalRef = useRef<HTMLDivElement>(null);
   const bgImageRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<any>(null);
   const exitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const breathIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [exiting, setExiting] = useState(false);
 
   const { language } = useLanguage();
@@ -99,7 +97,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
   }, [language, activeQuote]);
 
   const { text: quote, author: source, image: bgImage, overrideOpacity } = quoteData || { text: "", author: "", image: "", overrideOpacity: undefined };
-  const author = source; 
 
   const wordCount = quote ? quote.split(/\s+/).filter(w => w.length > 0).length : 0;
   const readTime = Math.max(5500, 4000 + wordCount * 320);
@@ -130,8 +127,6 @@ export default function Preloader({ onComplete }: { onComplete?: () => void }) {
       return "font-display text-3xl md:text-7xl lg:text-[6.42rem]";
     }
   }, [quote, language]);
-
-  const kanjiList = ["呪", "死", "力", "勝", "運", "命", "覚", "醒"];
 
   // Pre-compute wrapped characters as React elements (no innerHTML mutation needed)
   const wrappedChars = useMemo(() => {

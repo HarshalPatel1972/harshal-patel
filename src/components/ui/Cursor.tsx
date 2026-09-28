@@ -34,7 +34,6 @@ const Cursor = forwardRef<CursorHandle>((_, ref) => {
   const burstFlash = useRef(0);
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const tickingMouseRef = useRef(false);
   const lastSetMouse = useRef({ x: -1, y: -1 });
 
   // Color Cycling State

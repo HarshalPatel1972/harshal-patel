@@ -8,9 +8,6 @@ export function Footer() {
   const { language } = useLanguage();
   const currentProfile = profile[language as keyof typeof profile] || profile.en;
 
-  const initialText = language === 'hi' ? "काम पसंद आया?" : "Enjoy my designs?";
-  const actionText = language === 'hi' ? "कॉफी पिलाएँ" : "Buy me a Coffee";
-
   return (
     <footer className="relative bg-[#050505] border-t-4 border-[#E8E8E6] text-[#E8E8E6] px-6 py-12 md:px-16 lg:px-24 overflow-hidden z-10">
       
