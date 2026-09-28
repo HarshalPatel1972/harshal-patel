@@ -1,111 +1,47 @@
-# Harshal Patel — Software Engineer Portfolio
-> **Cinematic Brutalism & High-Performance Web Engineering.**
-
-![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=for-the-badge&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
-![Anime.js](https://img.shields.io/badge/Anime.js-4.3-black?style=for-the-badge)
-![License](https://img.shields.io/badge/License-HPCL_v1.0-red?style=for-the-badge)
-
-## 🌐 Overview
-Welcome to the source code of my digital portfolio. This project isn't just a static resume—it is a deeply engineered **Kinetic System** built to demonstrate advanced proficiency in performance optimization, WebGL/Canvas rendering, and complex state management within the React ecosystem.
-
-The aesthetic direction follows a strict philosophy of **Cinematic Brutalism**. By discarding traditional soft UI patterns (glassmorphism, subtle drop-shadows) in favor of stark contrast, heavy-weight typography, raw film grain, and 60fps physics-driven interactions, the portfolio acts as an immersive, tactile experience. 
-
-It also highlights my core engineering proficiencies: **Go (Golang)**, **TypeScript**, and **WebAssembly**.
-
----
-
-## ⚡ Core Features
-
-### 1. The Kinetic Engine (Zero-Lag Canvas Renderers)
-Standard DOM manipulation is notoriously slow for continuous physics interactions. To maintain a strict 60fps experience, this project uses bare-metal HTML5 `<canvas>` layers for high-frequency animations:
-* **Molecular Cursor (`Cursor.tsx`)**: A custom 20-node physics trail algorithm that physically replaces the native cursor. It calculates velocity, friction, and boundary collisions natively via `requestAnimationFrame`.
-* **Velocity Warp (`VelocityWarp.tsx`)**: An event-driven directional speed-line system. It dynamically intercepts massive navigation jumps across the DOM and strictly masks the viewport, executing a high-speed travel simulation before a flawless 1.5-second deceleration reveal.
-
-### 2. Deep Localization (Global Context Provider)
-The portfolio dynamically translates the localized interfaces into over 10 distinct regions (`en`, `ja`, `ko`, `zh-tw`, `hi`, `fr`, `de`, `it`, `es`, etc.). The structure seamlessly handles character slicing, font-weight shifting (supporting CJK languages seamlessly), and layout restructuring without triggering hydration errors.
-
-### 3. Cinematic Transition Orchestration (`FlipContext.tsx`)
-A completely custom global transition router:
-* Built a state machine capable of hijacking hard navigation events.
-* Smoothly transitions the application state to trigger pre-loading mechanisms, execute WebGL-like 3D card flips (`FlipTransition.tsx`), or spatial warps before firing a sanitized redirect.
-
-### 4. Performance Engineering (Heap Memory Management)
-This portfolio has been rigorously optimized to maintain a low memory footprint (Targeting <100MB Heap usage in Chrome):
-* **Lifecycle-Aware Animators**: Canvas loops in `Cursor.tsx` and `VelocityWarp.tsx` only run while they're needed and are torn down in effect cleanups, so listeners and frames don't leak. Scroll reveals (`ScrollReveal.tsx`, `About.tsx`) are gated by `IntersectionObserver`.
-* **Client-only loading**: `next/dynamic` with `ssr: false` loads the preloader, cursor, scroll line and page transitions on the client only, off the initial server render.
-* **Resource Throttling**: Video and high-res asset preloading is state-managed (e.g., `preload="metadata"`) to prevent unneeded multi-megabyte downloads during initial hydration.
-
-### 5. Unified Kinetic Motion (`LanguageSelector.tsx`)
-A custom-built "Shutter Unroll" materialization system that replaces standard CSS transforms with a synchronized, physics-driven staggered reveal. By orchestrating individual item materialization with the container's clip-path unroll, the UI feels alive and responsive to user intent.
-
----
-
-## 🛠️ Technology Stack
-
-* **Framework**: [Next.js 16](https://nextjs.org/) (Turbopack Powered)
-* **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
-* **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
-* **Animation**: [Anime.js 4](https://animejs.com/) & [Framer Motion](https://www.framer.com/motion/)
-* **Rendering**: Native Canvas API / IntersectionObserver
-* **Typography**: Local-hosted custom fonts (Cirka, Season, Victor, Luna) to enforce absolute zero-latency layout shifts.
-
----
-
-## 🚀 Getting Started
-
-If you'd like to clone this repository to explore the codebase, test the kinetic cursor, or experiment with the cinematic transitions locally:
-
-### Prerequisites
-* Node.js 20.9 or higher (Next.js 16's minimum)
-* npm, yarn, or pnpm
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/HarshalPatel1972/harshal-patel.git
-   cd harshal-patel
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
-
-4. **Experience the build:**
-   Open [http://localhost:3000](http://localhost:3000) with your browser.
-
-5. **Run the tests:**
-   ```bash
-   npm test          # single run (vitest)
-   npm run test:watch
-   ```
-
----
-
-## 🔒 Security & Performance Constraints
-This repository uses `next/dynamic` to selectively disable Server-Side Rendering (`ssr: false`) on physics-heavy client-side components to eliminate content flashing. High-intensity interactive elements (such as `ImageGuard.tsx`) aggressively prevent outside ghosting, dragging, and unwanted context menus to enforce the application-like feel. 
-
-CSS animations and transitions respect `@media (prefers-reduced-motion: reduce)`, and the custom cursor and velocity-warp canvas skip themselves entirely when it's set. The anime.js reveals don't check it yet.
-
----
-
-## 📝 License
-This project is proprietary and governed by the [HARSHAL PATEL CREATIVE LICENSE (HPCL v1.0)](LICENSE). 
-
-By accessing this repository, you agree to the terms:
-* **Personal/Educational Use Only**: You may copy and study the Work for learning.
-* **Non-Commercial**: You may NOT use the design, code, or kinetic systems for commercial projects or revenue generation.
-* **Attribution Required**: Clear, prominent credit to Harshal Patel must be provided on any use or study of the Work.
+<p align="center">
+  <img src="docs/banner.svg" alt="Harshal Patel: find what's broken, build what's missing" width="100%">
+</p>
 
 <p align="center">
-  <b>Architected by Harshal Patel.</b><br>
-  <i>Building High-Performance Systems.</i>
+  <a href="https://harshal-patel-chi.vercel.app"><b>harshal-patel-chi.vercel.app</b></a>
 </p>
+
+My portfolio. Black background, film grain, big type, and a lot of motion I probably shouldn't have spent this many weekends on.
+
+## What's in it
+
+- **A quote before the site.** Every visit opens on a random anime quote that fades in letter by letter. Skip it or wait it out.
+- **A cursor that trails.** 20 nodes on a canvas, with speed and friction. Turns itself off for `prefers-reduced-motion`.
+- **Speed lines between sections.** Jumping across the page fires a warp instead of a plain scroll.
+- **Tile-flip page transitions.** Leaving for a project flips the screen into the next page, tile by tile, then smokes away.
+- **12 languages,** CJK fonts included. There's also a hidden 13th. I'm not telling you how to find it.
+
+## Run it
+
+```bash
+git clone https://github.com/HarshalPatel1972/harshal-patel.git
+cd harshal-patel
+npm install
+npm run dev      # http://localhost:3000
+npm test         # vitest
+```
+
+Needs Node 20.9 or newer.
+
+## Built with
+
+Next.js 16 · React 19 · TypeScript · Tailwind 4 · anime.js 4 · Framer Motion · Supabase (feedback) · Redis (rate limiting)
+
+## Layout
+
+```
+src/components/new/        current design
+src/components/old/        the first design, still bundled
+src/components/ui/         cursor, warp, page transitions
+src/components/Preloader   the quote intro
+src/app/api/               feedback, visitor count
+```
+
+## License
+
+Look, learn, borrow ideas. Don't ship it as your own or use it commercially, and credit me if you build on it. Full terms in [LICENSE](LICENSE) (HPCL v1.0).
