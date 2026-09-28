@@ -58,7 +58,7 @@ A custom-built "Shutter Unroll" materialization system that replaces standard CS
 If you'd like to clone this repository to explore the codebase, test the kinetic cursor, or experiment with the cinematic transitions locally:
 
 ### Prerequisites
-* Node.js (v18 or higher)
+* Node.js 20.9 or higher (Next.js 16's minimum)
 * npm, yarn, or pnpm
 
 ### Installation
