@@ -12,9 +12,20 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Value for <html lang>. Eridian is a fictional language, so it stays "en".
+const HTML_LANG: Record<Language, string> = {
+  en: "en", ja: "ja", ko: "ko", "zh-tw": "zh-TW", hi: "hi", fr: "fr", id: "id",
+  de: "de", it: "it", "pt-br": "pt-BR", "es-419": "es-419", es: "es", eridian: "en",
+};
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Keep <html lang> in step with the UI language (screen readers, translation prompts)
+  useEffect(() => {
+    document.documentElement.lang = HTML_LANG[language];
+  }, [language]);
 
   useEffect(() => {
     const saved = localStorage.getItem("mappa-lang") as Language;
