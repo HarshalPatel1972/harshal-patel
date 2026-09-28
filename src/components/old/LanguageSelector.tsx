@@ -52,7 +52,7 @@ export function LanguageSelector() {
         translateY: [20, 0],
         duration: 450,
         delay: stagger(40),
-        easing: 'easeOutCubic'
+        ease: 'outCubic'
       });
 
       return () => { itemsAnim.pause(); };
@@ -63,7 +63,7 @@ export function LanguageSelector() {
         translateY: [0, 20],
         duration: 350,
         delay: stagger(30, { from: 'last' }), // Bottom-to-top exit
-        easing: 'easeInCubic'
+        ease: 'inCubic'
       });
     }
   }, [isOpen]);
@@ -76,7 +76,7 @@ export function LanguageSelector() {
       pulse = animate(globeRef.current, {
         borderColor: ['#FFB300', '#FF8C00', '#FFB300'],
         duration: 1400,
-        easing: 'easeInOutSine',
+        ease: 'inOutSine',
         loop: true
       });
     }
