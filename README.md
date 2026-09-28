@@ -33,8 +33,8 @@ A completely custom global transition router:
 
 ### 4. Performance Engineering (Heap Memory Management)
 This portfolio has been rigorously optimized to maintain a low memory footprint (Targeting <100MB Heap usage in Chrome):
-* **Lifecycle-Aware Animators**: All `animejs` and Canvas loops in components like `VelocityWarp.tsx` and `BinaryVeil.tsx` are bound to `IntersectionObserver` logic and explicit cleanup handlers (`anime.remove`). They cease all processing when out of view, preventing memory leaks and CPU spikes.
-* **Aggressive Code Splitting**: Utilizing `next/dynamic` for heavy sections (`About`, `Projects`, `Contact`) to minimize initial JS payload and prevent unnecessary script execution on entry.
+* **Lifecycle-Aware Animators**: Canvas loops in `Cursor.tsx` and `VelocityWarp.tsx` only run while they're needed and are torn down in effect cleanups, so listeners and frames don't leak. Scroll reveals (`ScrollReveal.tsx`, `About.tsx`) are gated by `IntersectionObserver`.
+* **Client-only loading**: `next/dynamic` with `ssr: false` loads the preloader, cursor, scroll line and page transitions on the client only, off the initial server render.
 * **Resource Throttling**: Video and high-res asset preloading is state-managed (e.g., `preload="metadata"`) to prevent unneeded multi-megabyte downloads during initial hydration.
 
 ### 5. Unified Kinetic Motion (`LanguageSelector.tsx`)
