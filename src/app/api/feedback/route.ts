@@ -1,6 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { isAdminRequest } from "@/lib/adminAuth";
 import { parseFeedback } from "@/lib/feedbackValidation";
+import { isRateLimited } from "@/lib/rateLimit";
+import crypto from "crypto";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +35,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    // 5 posts an hour per visitor; IP is hashed so it isn't stored raw in Redis
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "anonymous";
+    const ipHash = crypto.createHash("sha256").update(ip + (process.env.APP_SECRET || "v1_resonance")).digest("hex");
+    if (await isRateLimited(`rl:feedback:${ipHash}`, 5, 3600)) {
+      return NextResponse.json({ error: "Too many submissions, try again later" }, { status: 429 });
+    }
+
     let body: unknown;
     try {
       body = await request.json();
