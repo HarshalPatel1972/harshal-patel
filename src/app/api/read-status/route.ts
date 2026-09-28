@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         const readIds = readIdsArr.map(id => parseInt(id, 10));
 
         return NextResponse.json({ success: true, readIds });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ success: false, readIds: [] }, { status: 500 });
     }
 }

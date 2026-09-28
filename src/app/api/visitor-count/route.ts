@@ -17,7 +17,7 @@ const BOT_KEYWORDS = [
 // Pre-compile regex for O(1) matching performance instead of Array.some + toLowerCase per request
 const BOT_REGEX = new RegExp(BOT_KEYWORDS.join('|'), 'i');
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
 
 
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
             totalHits: Number(totalHits),
             status: 'DOMAIN_OBSERVED'
         });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ success: false, uniqueCount: 0, totalHits: 0 }, { status: 500 });
     }
 }
@@ -96,7 +96,7 @@ export async function DELETE(req: NextRequest) {
         await kv.del('portfolio_v3_total_hits');
         
         return NextResponse.json({ success: true, status: 'VOID_INVOKED_STATS_PURGED' });
-    } catch (error) {
+    } catch {
         return NextResponse.json({ success: false }, { status: 500 });
     }
 }
