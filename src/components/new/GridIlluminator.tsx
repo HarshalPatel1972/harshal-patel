@@ -486,8 +486,9 @@ export function GridIlluminator() {
         const dCol = col - midCol;
         const dRow = row - midRow;
 
-        // Play button area click check
-        if (Math.abs(dCol) <= 2 && Math.abs(dRow) <= 3) {
+        // Play button area click check. The button is drawn shifted +3 cols / -2 rows
+        // from centre (see PLAY_PATTERN), so the hit area has to follow it.
+        if (dCol >= 1 && dCol <= 5 && dRow >= -6 && dRow <= 2) {
           startSnakeGame();
         }
       } else if (state === "SNAKE_GAME" && gameOverRef.current) {
