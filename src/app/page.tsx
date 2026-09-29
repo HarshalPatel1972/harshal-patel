@@ -20,13 +20,9 @@ const NewDesign = dynamic(() => import("@/components/designs/NewDesign"), { ssr:
 
 function HomeContent() {
   const [showContent, setShowContent] = useState(false);
-  const [isNoticeVisible, setIsNoticeVisible] = useState(true);
   const { type } = useFlipTransition();
   const { designVersion, isMounted } = useDesignVersion();
 
-  // Top offsets based on notice visibility (Legacy only)
-  const containerTop = isNoticeVisible ? '50px' : '20px';
-  const stickyTarget = isNoticeVisible ? '50px' : '20px';
 
   // Safe Landing Bridge: Precision navigation after preloader
   useEffect(() => {
@@ -46,13 +42,7 @@ function HomeContent() {
   }, [showContent]);
 
   const isOldDesign = designVersion === "old";
-  const layerProps = {
-    showContent,
-    isNoticeVisible,
-    onDismissNotice: () => setIsNoticeVisible(false),
-    containerTop,
-    stickyTarget,
-  };
+  const layerProps = { showContent };
 
   return (
     <main className="relative bg-neutral-950 min-h-screen">
