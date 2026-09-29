@@ -38,7 +38,7 @@ export function DesignVersionSwitcher() {
   };
 
   const noticeText = isV2
-    ? (language === "hi" ? "V2 — विकास में है" : "V2 — In Development")
+    ? (language === "hi" ? "V2 — लाइव" : "V2 — Live")
     : (language === "hi" ? "V1 — क्लासिक संस्करण" : "V1 — Classic");
 
   return (
