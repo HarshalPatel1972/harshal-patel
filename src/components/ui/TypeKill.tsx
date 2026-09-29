@@ -137,7 +137,7 @@ export default function TypeKill() {
         const from = particles[i];
         return {
           x: from ? from.x : tx, y: from ? from.y : ty, targetX: tx, targetY: ty,
-          color: i % 3 === 0 ? BONE : RED, startTime: now, duration: 1e9, maxAlpha: 0.2, pinned: true,
+          color: RED, startTime: now, duration: 1e9, maxAlpha: 0.38, pinned: true,
         };
       });
       playButtonSince = now;
@@ -185,6 +185,8 @@ export default function TypeKill() {
         newBest = game.score > 0;
         writeBest(best);
       }
+      game.words = []; // clear the board so the result reads cleanly
+      game.lockedId = null;
       input.blur();
       setPhase("GAME_OVER");
     };
@@ -221,8 +223,8 @@ export default function TypeKill() {
         ctx.fillStyle = rgba(p.color, alpha);
         ctx.fillRect(p.x + 1, p.y + 1, CELL - 1, CELL - 1);
         if (state === "PLAY_BUTTON") {
-          const pulse = Math.sin(now * 0.003 + p.x) * 0.06 + 0.16;
-          ctx.strokeStyle = rgba(p.color, pulse);
+          const pulse = Math.sin(now * 0.004 + p.x) * 0.15 + 0.55;
+          ctx.strokeStyle = rgba(BONE, pulse);
           ctx.lineWidth = 1;
           ctx.strokeRect(p.x + 0.5, p.y + 0.5, CELL - 1, CELL - 1);
         }
@@ -273,13 +275,14 @@ export default function TypeKill() {
     const drawHud = (fs: number) => {
       ctx.textBaseline = "top";
       ctx.font = `700 ${fs}px ${MONO}`;
-      ctx.textAlign = "left";
+      ctx.textAlign = "center";
       ctx.fillStyle = rgba(BONE, 0.9);
-      ctx.fillText(`SCORE ${String(game.score).padStart(4, "0")}`, 20, 20);
+      ctx.fillText(`SCORE ${String(game.score).padStart(4, "0")}`, width / 2, 20);
       const level = levelFor(game.killed);
       ctx.fillStyle = rgba(BONE, 0.45);
       ctx.font = `700 ${Math.round(fs * 0.7)}px ${MONO}`;
-      ctx.fillText(`LV ${level}${game.combo >= 3 ? `   COMBO ${game.combo}` : ""}`, 20, 20 + fs * 1.5);
+      ctx.fillText(`LV ${level}${game.combo >= 3 ? `   COMBO ${game.combo}` : ""}`, width / 2, 20 + fs * 1.5);
+      ctx.textAlign = "left";
 
       // lives, drawn as blocks at the top right
       const size = Math.round(fs * 0.8);
@@ -452,7 +455,10 @@ export default function TypeKill() {
       if (e.pointerType === "mouse" && e.button !== 0) return;
 
       if (state === "PLAY_BUTTON") {
-        if (insidePlayButton(e.clientX, e.clientY)) startGame();
+        if (insidePlayButton(e.clientX, e.clientY)) {
+          e.preventDefault(); // otherwise the mousedown that follows steals focus from the input
+          startGame();
+        }
         return;
       }
       if (!nearTop(0.4) || isInteractive(e.target)) return;
@@ -481,7 +487,13 @@ export default function TypeKill() {
     };
 
     const onWindowKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && phaseRef.current !== "AMBIENT") exitGame();
+      const state = phaseRef.current;
+      if (e.key === "Escape" && state !== "AMBIENT") { exitGame(); return; }
+      // Focus can slip away (a click elsewhere); keep the game playable from the keyboard
+      if (state === "PLAYING" && document.activeElement !== input && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        if (e.key === "Backspace") { e.preventDefault(); releaseLock(game); }
+        else if (e.key.length === 1) { e.preventDefault(); e.stopPropagation(); type(e.key); }
+      }
     };
 
     const onScroll = () => {
@@ -494,7 +506,7 @@ export default function TypeKill() {
     window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
-    window.addEventListener("keydown", onWindowKey);
+    window.addEventListener("keydown", onWindowKey, true);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     canvas.addEventListener("pointerdown", onCanvasDown);
@@ -508,7 +520,7 @@ export default function TypeKill() {
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
-      window.removeEventListener("keydown", onWindowKey);
+      window.removeEventListener("keydown", onWindowKey, true);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       canvas.removeEventListener("pointerdown", onCanvasDown);
@@ -518,13 +530,19 @@ export default function TypeKill() {
   }, []);
 
   const playing = phase === "PLAYING" || phase === "GAME_OVER";
+  // The play button sits above the hero text so it isn't hidden behind the big title
+  const canvasClass = playing
+    ? "absolute inset-0 z-[60] cursor-crosshair touch-none"
+    : phase === "PLAY_BUTTON"
+      ? "absolute inset-0 z-[45] pointer-events-none"
+      : "absolute inset-0 z-0 pointer-events-none";
 
   return (
     <>
       <canvas
         ref={canvasRef}
         aria-hidden="true"
-        className={playing ? "absolute inset-0 z-[60] cursor-crosshair touch-none" : "absolute inset-0 z-0 pointer-events-none"}
+        className={canvasClass}
       />
       {/* Real text field so phones show a keyboard; kept invisible */}
       <input
