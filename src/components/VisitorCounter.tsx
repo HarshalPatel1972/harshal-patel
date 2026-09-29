@@ -4,20 +4,61 @@ import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useDesignVersion } from '@/components/shared/DesignVersionContext';
 
-const TRANSLATIONS = {
-  en: { visitors: 'Visitors', views: 'Views' },
-  ja: { visitors: '訪問者', views: 'ビュー' },
-  hi: { visitors: 'आगंतुक', views: 'दृश्य' },
-  eridian: { visitors: 'VISIT-HUMANS', views: 'LOOK-THINGS' }
+const TRANSLATIONS: Record<string, { visitors: string; views: string; since: string }> = {
+  en: { visitors: 'Visitors', views: 'Views', since: 'since your last visit' },
+  ja: { visitors: '訪問者', views: 'ビュー', since: '前回の訪問から' },
+  ko: { visitors: '방문자', views: '조회수', since: '지난 방문 이후' },
+  'zh-tw': { visitors: '訪客', views: '瀏覽', since: '自上次造訪' },
+  hi: { visitors: 'आगंतुक', views: 'दृश्य', since: 'आपकी पिछली यात्रा के बाद' },
+  fr: { visitors: 'Visiteurs', views: 'Vues', since: 'depuis votre dernière visite' },
+  id: { visitors: 'Pengunjung', views: 'Tayangan', since: 'sejak kunjungan terakhir' },
+  de: { visitors: 'Besucher', views: 'Aufrufe', since: 'seit Ihrem letzten Besuch' },
+  it: { visitors: 'Visitatori', views: 'Visualizzazioni', since: 'dalla tua ultima visita' },
+  'pt-br': { visitors: 'Visitantes', views: 'Visualizações', since: 'desde sua última visita' },
+  'es-419': { visitors: 'Visitantes', views: 'Vistas', since: 'desde tu última visita' },
+  es: { visitors: 'Visitantes', views: 'Vistas', since: 'desde tu última visita' },
+  eridian: { visitors: 'VISIT-HUMANS', views: 'LOOK-THINGS', since: 'SINCE-YOU-LAST-COME' },
 };
+
+const LAST_COUNT_KEY = 'visitor_last_count';
+const DIGIT_HEIGHT = 1.15; // em
+
+/** A row of rolling digits, like a mechanical odometer. Rolls from its previous value whenever `value` changes. */
+function Odometer({ value, pad = 4 }: { value: number; pad?: number }) {
+  const digits = String(Math.max(0, Math.floor(value))).padStart(pad, '0').split('');
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex font-mono font-black tabular-nums"
+      style={{ height: `${DIGIT_HEIGHT}em`, lineHeight: `${DIGIT_HEIGHT}em` }}
+    >
+      {digits.map((d, i) => (
+        <span key={digits.length - i} className="relative block overflow-hidden" style={{ width: '0.62em', height: `${DIGIT_HEIGHT}em` }}>
+          <span
+            className="absolute left-0 top-0 flex w-full flex-col items-center odometer-reel"
+            style={{
+              transform: `translateY(-${Number(d) * DIGIT_HEIGHT}em)`,
+              transitionDelay: `${(digits.length - 1 - i) * 90}ms`,
+            }}
+          >
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+              <span key={n} className="block" style={{ height: `${DIGIT_HEIGHT}em` }}>{n}</span>
+            ))}
+          </span>
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export function VisitorCounter() {
   const { language } = useLanguage();
   const { designVersion } = useDesignVersion();
   const isV2 = designVersion === 'new';
   const [data, setData] = useState<{ uniqueCount: number; totalHits: number } | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS.en;
+  const [newSince, setNewSince] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const t = TRANSLATIONS[language] || TRANSLATIONS.en;
 
   useEffect(() => {
     let cid = typeof window !== 'undefined' ? localStorage.getItem('visitor_soul_id') : null;
@@ -26,11 +67,23 @@ export function VisitorCounter() {
        localStorage.setItem('visitor_soul_id', cid);
     }
 
+    let firstFetch = true;
     const fetchStats = async () => {
       try {
         const res = await fetch('/api/visitor-count');
         const json = await res.json();
-        if (json.success) setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits });
+        if (json.success) {
+          setData({ uniqueCount: json.uniqueCount, totalHits: json.totalHits });
+          if (firstFetch) {
+            firstFetch = false;
+            // How many new visitors since this browser last looked (first visit shows nothing)
+            try {
+              const last = Number(localStorage.getItem(LAST_COUNT_KEY));
+              if (last > 0 && json.uniqueCount > last) setNewSince(json.uniqueCount - last);
+              localStorage.setItem(LAST_COUNT_KEY, String(json.uniqueCount));
+            } catch {}
+          }
+        }
       } catch {}
     };
 
@@ -54,53 +107,72 @@ export function VisitorCounter() {
     };
   }, []);
 
+  const ink = isV2 ? "text-[var(--sumi-ink)]" : "text-white";
+  const accent = isV2 ? "text-[var(--forge-orange)]" : "text-[var(--accent-blood)]";
+  const accentBg = isV2 ? "bg-[var(--forge-orange)]" : "bg-[var(--accent-blood)]";
+  const label = isV2 ? "text-[var(--muted-label)]" : "text-white/40";
+  const divider = isV2 ? "border-[var(--sumi-ink)]/15" : "border-white/10";
+
+  const unique = data?.uniqueCount ?? 0;
+  const views = data?.totalHits ?? 0;
+
   return (
-    <div className="relative flex items-center pointer-events-auto select-none group/counter h-9">
-      {/* THE MINIMAL PILL BUTTON - REMOVED FRAMER MOTION ENTRANCE FOR INSTANT VISIBILITY */}
-      <div 
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        className={`flex items-center h-9 transition-all duration-500 overflow-hidden ${
-          isV2 
-            ? "bg-[var(--aged-paper)] border border-[var(--sumi-ink)]/15 hover:border-[var(--forge-orange)]"
+    <div className="relative flex items-center pointer-events-auto select-none h-10">
+      {/* Rolling digits transition; skipped for reduced motion */}
+      <style>{`
+        .odometer-reel { transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1); }
+        @media (prefers-reduced-motion: reduce) { .odometer-reel { transition: none !important; } }
+      `}</style>
+
+      <button
+        type="button"
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        onClick={() => setIsOpen((o) => !o)}
+        aria-expanded={isOpen}
+        aria-label={data ? `${unique.toLocaleString()} ${t.visitors}, ${views.toLocaleString()} ${t.views}` : t.visitors}
+        className={`group/counter relative flex items-stretch h-10 overflow-hidden transition-colors duration-500 cursor-pointer ${
+          isV2
+            ? "bg-[var(--aged-paper)] border border-[var(--sumi-ink)]/20 hover:border-[var(--forge-orange)]"
             : "bg-black border-2 border-white hover:border-[var(--accent-blood)]"
         }`}
       >
-        {/* ICON & VISITORS (ALWAYS VISIBLE) */}
-        <div className={`flex items-center px-4 h-full gap-3 whitespace-nowrap ${
-          isV2 ? "border-r border-[var(--sumi-ink)]/15" : "border-r border-white/5"
-        }`}>
-           <svg viewBox="0 0 24 24" className={`w-4 h-4 ${isV2 ? "fill-[var(--forge-orange)]" : "fill-[var(--accent-blood)]"}`} xmlns="http://www.w3.org/2000/svg">
-             <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-           </svg>
-           <div className="flex flex-col justify-center">
-             <span className={`text-[10px] font-black font-mono leading-none ${isV2 ? "text-[var(--sumi-ink)]" : "text-white"}`}>
-               {data?.uniqueCount?.toString().padStart(4, '0') || '0000'}
-             </span>
-             <span className={`text-[8px] font-black uppercase tracking-widest leading-none mt-0.5 ${isV2 ? "text-[var(--muted-label)]" : "text-white/30"}`}>
-               {t.visitors}
-             </span>
-           </div>
-        </div>
+        {/* Live pulse: a thin accent rail on the left edge */}
+        <span className={`w-[3px] shrink-0 ${accentBg}`} />
 
-        {/* REVEAL VIEWS ON HOVER */}
-        <div 
-           className={`flex items-center h-full overflow-hidden whitespace-nowrap transition-all duration-300 ${
-             isV2 ? "bg-[var(--forge-orange)]/5" : "bg-white/5"
-           } ${isHovered ? "w-auto px-5 opacity-100" : "w-0 opacity-0"}`}
+        {/* Eye + unique visitors (always visible) */}
+        <span className={`flex items-center gap-3 px-3.5 ${ink}`}>
+          <span className="relative flex h-4 w-4 items-center justify-center">
+            <span className={`absolute inline-flex h-full w-full rounded-full opacity-40 motion-safe:animate-ping ${accentBg}`} />
+            <svg viewBox="0 0 24 24" className={`relative h-4 w-4 ${accent}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" />
+              <circle cx="12" cy="12" r="3" fill="currentColor" />
+            </svg>
+          </span>
+          <span className="flex flex-col items-start justify-center gap-[3px]">
+            <span className="text-[13px] leading-none"><Odometer value={unique} pad={4} /></span>
+            <span className={`text-[8px] font-black uppercase tracking-[0.25em] leading-none ${label}`}>{t.visitors}</span>
+          </span>
+        </span>
+
+        {/* Views + what's new since you were last here, revealed on hover or tap */}
+        <span
+          className={`flex items-center overflow-hidden whitespace-nowrap border-l transition-all duration-500 ease-out ${divider} ${
+            isV2 ? "bg-[var(--forge-orange)]/5" : "bg-white/5"
+          } ${isOpen ? "max-w-[260px] px-4 opacity-100" : "max-w-0 px-0 opacity-0 border-l-0"}`}
         >
-           <div className="flex flex-col justify-center">
-             <span className={`text-[10px] font-black font-mono leading-none ${
-               isV2 ? "text-[var(--forge-orange)]" : "text-[var(--accent-blood)]"
-             }`}>
-                {data?.totalHits?.toLocaleString() || '---'}
-             </span>
-             <span className={`text-[8px] font-black uppercase tracking-widest leading-none mt-0.5 ${isV2 ? "text-[var(--muted-label)]" : "text-white/30"}`}>
-                {t.views}
-             </span>
-           </div>
-        </div>
-      </div>
+          <span className="flex flex-col items-start justify-center gap-[3px]">
+            <span className={`text-[13px] leading-none ${accent}`}><Odometer value={views} pad={1} /></span>
+            <span className={`text-[8px] font-black uppercase tracking-[0.25em] leading-none ${label}`}>{t.views}</span>
+          </span>
+          {newSince > 0 && (
+            <span className={`ml-4 flex flex-col items-start justify-center gap-[3px] border-l pl-4 ${divider}`}>
+              <span className={`font-mono text-[11px] font-black leading-none ${ink}`}>+{newSince.toLocaleString()}</span>
+              <span className={`text-[8px] font-black uppercase tracking-[0.15em] leading-none ${label}`}>{t.since}</span>
+            </span>
+          )}
+        </span>
+      </button>
     </div>
   );
 }
