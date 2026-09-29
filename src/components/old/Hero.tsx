@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useMemo, memo } from "react";
 import { profile } from "@/data/profile";
 import { useMagnetic } from "./AnimationKit";
+import dynamic from "next/dynamic";
 import ExorcistsScroll from '../ui/ExorcistsScroll';
 import { useLanguage } from "@/context/LanguageContext";
+
+// Hidden mini-game, loaded on demand so it adds nothing to the initial hero
+const TypeKill = dynamic(() => import("../ui/TypeKill"), { ssr: false });
 
 /**
  * Priority 11: Memoizing individual words to prevent re-renders
@@ -173,6 +177,7 @@ export function Hero() {
         id="hero" 
         className="sticky top-0 h-screen flex items-center justify-center overflow-hidden px-4 md:px-6"
       >
+        <TypeKill />
         <div className="absolute inset-x-4 md:inset-x-24 inset-y-0 z-50 pointer-events-none flex items-center justify-center">
           <div className="relative w-full max-w-7xl flex items-start gap-6 md:gap-12">
             <div id="hero-intro-text" className="text-justify leading-[1.05] md:leading-[1.15]">
