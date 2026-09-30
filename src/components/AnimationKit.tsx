@@ -291,15 +291,30 @@ export function ScrollLine({
   theme?: "old" | "new";
 }) {
   const textRef = useRef<HTMLDivElement>(null);
+  const totalHRef = useRef<number>(0);
 
   useEffect(() => {
     let ticking = false;
 
+    let timer: NodeJS.Timeout;
+    const updateHeight = () => {
+      totalHRef.current = document.documentElement.scrollHeight - window.innerHeight;
+    };
+
+    const resizer = new ResizeObserver(() => {
+      clearTimeout(timer);
+      timer = setTimeout(updateHeight, 200);
+    });
+    resizer.observe(document.body);
+
+    // Initial calculation
+    updateHeight();
+
     const updateScrollOptions = () => {
       if (!textRef.current) return;
       const scrollY = window.scrollY;
-      const totalH = document.documentElement.scrollHeight - window.innerHeight;
-      let p = Math.round((scrollY / totalH) * 100);
+      const totalH = totalHRef.current;
+      let p = totalH > 0 ? Math.round((scrollY / totalH) * 100) : 0;
       if (isNaN(p)) p = 0;
       if (p < 0) p = 0;
       if (p > 100) p = 100;
@@ -316,8 +331,14 @@ export function ScrollLine({
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+
     updateScrollOptions(); // init
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      resizer.disconnect();
+      clearTimeout(timer);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const isNew = theme === "new";
