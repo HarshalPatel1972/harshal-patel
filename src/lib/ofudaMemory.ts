@@ -12,8 +12,13 @@ interface SeenEntry {
 export function getNextFact(allFacts: string[]): { fact: string; index: number } {
   if (typeof window === 'undefined') return { fact: allFacts[0], index: 0 };
   
-  const raw = localStorage.getItem(STORAGE_KEY);
-  const seen: SeenEntry[] = raw ? JSON.parse(raw) : [];
+  // Private mode or a corrupted value shouldn't break the click that asked for a fact
+  let seen: SeenEntry[] = [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(parsed)) seen = parsed;
+  } catch { /* start fresh */ }
   const now = Date.now();
   
   // Clear entries older than 48 hours
@@ -32,7 +37,7 @@ export function getNextFact(allFacts: string[]): { fact: string; index: number }
   
   // Save to localStorage
   recent.push({ index: chosenIndex, seenAt: now });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(recent));
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(recent)); } catch { /* not fatal */ }
   
   return { fact: allFacts[chosenIndex], index: chosenIndex };
 }
