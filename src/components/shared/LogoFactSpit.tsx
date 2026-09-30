@@ -6,8 +6,6 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 export interface FactSpit {
   id: number; // changes on every click so a new fact replaces the old one
   fact: string;
-  n: number;
-  total: number;
   from: { x: number; y: number }; // centre of the logo, in viewport coordinates
 }
 
@@ -73,7 +71,7 @@ export function LogoFactSpit({ spit, variant, language, onClose }: Props) {
             onClick={onClose}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
-            className={`fixed z-[110] top-[72px] right-[60px] md:right-[80px] w-[min(300px,calc(100vw-84px))] cursor-pointer select-none px-5 pb-5 pt-4 ${
+            className={`fixed z-[110] top-[72px] right-[60px] md:right-[80px] w-[min(300px,calc(100vw-84px))] cursor-pointer select-none px-5 py-5 pr-7 ${
               isNew
                 ? "bg-[var(--aged-paper)] border-[3px] border-[var(--sumi-ink)] text-[var(--sumi-ink)] shadow-[6px_6px_0_var(--forge-orange)]"
                 : "bg-black border-2 border-[var(--accent-blood)] text-[#F5F5F0] shadow-[0_0_32px_rgba(var(--accent-blood-rgb),0.35)]"
@@ -98,12 +96,9 @@ export function LogoFactSpit({ spit, variant, language, onClose }: Props) {
               </>
             )}
 
-            <div className={`mb-3 flex items-center justify-between font-mono text-[10px] font-black uppercase tracking-[0.25em] ${
+            <span aria-hidden="true" className={`absolute right-2.5 top-1.5 font-mono text-[11px] font-black opacity-50 ${
               isNew ? "text-[var(--forge-orange)]" : "text-[var(--accent-blood)]"
-            }`}>
-              <span>{isNew ? "Fact" : "0xFACT"} {String(spit.n).padStart(2, "0")}/{spit.total}</span>
-              <span aria-hidden="true" className="opacity-60">✕</span>
-            </div>
+            }`}>✕</span>
 
             <p className={`text-[15px] font-bold leading-snug ${language === "hi" ? "font-hindi" : ""}`}>
               {units.map((u, i) => (

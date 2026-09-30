@@ -303,12 +303,10 @@ export function Navbar() {
     const rect = e.currentTarget.getBoundingClientRect();
     const { OFUDA_FACTS } = await import("@/lib/ofudaFacts");
     const facts = OFUDA_FACTS[language] || OFUDA_FACTS.en;
-    const { fact, index } = getNextFact(facts);
+    const { fact } = getNextFact(facts);
     setFactSpit({
       id: Date.now(),
       fact,
-      n: index + 1,
-      total: facts.length,
       from: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
     });
   };
