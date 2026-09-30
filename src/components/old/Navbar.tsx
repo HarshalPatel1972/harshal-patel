@@ -3,7 +3,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLanguage, type Language } from "@/context/LanguageContext";
-import { motion, AnimatePresence } from "framer-motion";
+import { LogoFactSpit, type FactSpit } from "@/components/shared/LogoFactSpit";
+import { getNextFact } from "@/lib/ofudaMemory";
 
 type NavItem = {
   id: string;
@@ -110,7 +111,7 @@ export function Navbar() {
   const [showSplash, setShowSplash] = useState(false);
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
-  const [showEasterEggs, setShowEasterEggs] = useState(false);
+  const [factSpit, setFactSpit] = useState<FactSpit | null>(null);
 
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
@@ -129,16 +130,6 @@ export function Navbar() {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     if (chargeTimerRef.current) clearTimeout(chargeTimerRef.current);
   }, []);
-
-  // GLOBAL SLEEP MODE SIGNALING 💤
-  useEffect(() => {
-    if (showEasterEggs) {
-      document.documentElement.classList.add('is-overlay-active');
-    } else {
-      document.documentElement.classList.remove('is-overlay-active');
-    }
-    return () => document.documentElement.classList.remove('is-overlay-active');
-  }, [showEasterEggs]);
 
   const navigateTo = useCallback((id: string) => {
     if (typeof window === 'undefined') return;
@@ -193,10 +184,6 @@ export function Navbar() {
     let loopRaf: number;
     let speedTimeout: NodeJS.Timeout;
     const smoothLoop = () => {
-      if (showEasterEggs) {
-        loopRaf = requestAnimationFrame(smoothLoop);
-        return;
-      }
       const p = dotPhysicsRef.current;
       p.currentY += (p.targetY - p.currentY) * p.lerp;
       if (navbarRef.current) {
@@ -225,7 +212,6 @@ export function Navbar() {
     if (typeof window === 'undefined') return;
     let timer: NodeJS.Timeout;
     const updateHeight = () => {
-      if (showEasterEggs) return;
       setDocHeight(document.documentElement.scrollHeight);
     };
     const resizer = new ResizeObserver(() => {
@@ -235,7 +221,7 @@ export function Navbar() {
     resizer.observe(document.body);
     updateHeight();
     return () => { resizer.disconnect(); clearTimeout(timer); };
-  }, [showEasterEggs]);
+  }, []);
 
   const runPhysicsRef = useRef<() => void>(() => {});
 
@@ -308,13 +294,23 @@ export function Navbar() {
     if (dotMode === 'CHARGING') { setDotScale(1); setDotMode('LOCKED'); }
   };
 
-  const handleLogoClick = () => {
-    // ONLY toggle if this wasn't a long-press session
-    if (!longPressActiveRef.current) {
-      setShowEasterEggs(prev => !prev);
-    }
-    // Reset for next interaction
+  // A short click on the logo spits out a fact about me (same pool as the ofuda cards)
+  const handleLogoClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const wasLongPress = longPressActiveRef.current;
     longPressActiveRef.current = false;
+    if (wasLongPress) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const { OFUDA_FACTS } = await import("@/lib/ofudaFacts");
+    const facts = OFUDA_FACTS[language] || OFUDA_FACTS.en;
+    const { fact, index } = getNextFact(facts);
+    setFactSpit({
+      id: Date.now(),
+      fact,
+      n: index + 1,
+      total: facts.length,
+      from: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+    });
   };
 
   const handleDotTouchStart = (e: React.TouchEvent) => {
@@ -414,6 +410,7 @@ export function Navbar() {
         <div className="flex flex-col items-center gap-4 z-20">
           <div className="w-11 h-11 flex items-center justify-center mr-[4px] group">
             <button 
+              onMouseEnter={() => { void import("@/lib/ofudaFacts"); }}
               onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} 
               onMouseUp={handleLogoTouchEnd} 
               onMouseLeave={handleLogoTouchEnd} 
@@ -465,56 +462,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* EASTER EGG OVERLAY 🎁 */}
-      <AnimatePresence>
-        {showEasterEggs && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-6 md:p-12 pointer-events-auto" style={{ isolation: 'isolate', willChange: 'transform' }}>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowEasterEggs(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 30 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 30 }}
-              className="relative w-full max-w-2xl bg-white border-8 border-black p-8 md:p-12 brutal-shadow-lg manga-cut-tr z-10"
-            >
-              <h2 className="text-4xl md:text-6xl font-black font-display uppercase tracking-tighter mb-8 border-b-8 border-black pb-4 text-black">
-                Easter Eggs
-              </h2>
-              
-              <ul className="flex flex-col gap-6">
-                {[
-                  { name: "Eridian Language Mode", desc: "A musical, complete thematic shift." },
-                  { name: "Terminal Pressure Protocol", desc: "Triggered by extreme UI interaction." },
-                  { name: "Warp Space Pathway", desc: "A cinematic high-distance navigation jump." },
-                  { name: "詛咒 / Ofuda Archive", desc: "Paper charms and hidden exorcist themes." },
-                  { name: "Kinetic Dot Interaction", desc: "Physics-based dot dragging and flinging." }
-                ].map((egg, idx) => (
-                  <li key={idx} className="flex flex-col gap-1 border-l-4 border-[var(--accent-blood)] pl-4">
-                    <span className="text-xl md:text-2xl font-black font-display uppercase tracking-widest text-black">
-                      {egg.name}
-                    </span>
-                    <span className="text-[10px] md:text-xs font-mono font-bold text-black/50 uppercase tracking-widest">
-                      {egg.desc}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <button 
-                onClick={() => setShowEasterEggs(false)}
-                className="mt-12 w-full py-4 bg-black text-white font-black font-display text-xl uppercase tracking-widest hover:bg-[var(--accent-blood)] transition-colors manga-cut-bl"
-              >
-                Close
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <LogoFactSpit spit={factSpit} variant="old" language={language} onClose={() => setFactSpit(null)} />
     </>
   );
 }
