@@ -46,3 +46,6 @@
 ## 2026-07-21 - Refactored mousePos state to ref in Feedback Gallery
 **Learning:** High-frequency events like `mousemove` should not trigger React state updates, even when batched with `requestAnimationFrame`, as this still causes cascading re-renders across all child components (e.g., all `FloatingCard` instances in a gallery).
 **Action:** Store the rapidly changing event coordinates in a `useRef`. Pass this ref to child components, which can read from it inside their own animation loops (e.g., Framer Motion's `useAnimationFrame`) and update native DOM styles using MotionValues, entirely bypassing the React render cycle.
+## 2024-11-20 - Preventing Layout Thrashing in Scroll Listeners (Refined)
+**Learning:** Even when reading `document.documentElement.scrollHeight` is isolated inside a `requestAnimationFrame` loop, it can still cause layout thrashing if the value is read on *every frame* during a scroll event.
+**Action:** Extract the synchronous DOM read entirely outside the scroll loop. Cache `scrollHeight` and `innerHeight` in a `useRef` and update it strictly via a `ResizeObserver` on `document.body` to capture all dynamic height changes without forcing continuous reflows during high-frequency scrolling.

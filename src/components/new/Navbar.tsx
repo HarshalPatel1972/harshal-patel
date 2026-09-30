@@ -126,6 +126,7 @@ export function Navbar() {
   const rafRef = useRef<number | null>(null);
   const navbarRef = useRef<HTMLElement>(null);
   const dotPhysicsRef = useRef({ currentY: 0, targetY: 0, speed: 0, lastScrollY: 0, lerp: 0.12 });
+  const maxScrollRef = useRef<number>(0);
 
   const returnToNav = useCallback(() => {
     setDotMode('LOCKED');
@@ -227,7 +228,7 @@ export function Navbar() {
     const handleScroll = () => {
       const p = dotPhysicsRef.current;
       const currentScrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const maxScroll = maxScrollRef.current;
       p.targetY = maxScroll > 0 ? (currentScrollY / maxScroll) * 100 : 0;
       p.speed = Math.min(Math.abs(currentScrollY - p.lastScrollY), 50);
       p.lastScrollY = currentScrollY;
@@ -245,7 +246,9 @@ export function Navbar() {
     let timer: NodeJS.Timeout;
     const updateHeight = () => {
       if (showEasterEggs) return;
-      setDocHeight(document.documentElement.scrollHeight);
+      const height = document.documentElement.scrollHeight;
+      setDocHeight(height);
+      maxScrollRef.current = height - window.innerHeight;
     };
     const resizer = new ResizeObserver(() => {
       clearTimeout(timer);
