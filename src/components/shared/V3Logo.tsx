@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { LOOKS, Sparks, drawOrbit, drawTesseract } from "./v3Canvas";
-import { EXIT_MS, INTRO_MS, V3_URL, nextPhase, phaseDuration, type LogoPhase } from "@/lib/v3";
+import { EXIT_MS, INTRO_MS, V3_URL, nextPhase, phaseDuration, spinAngle, type LogoPhase } from "@/lib/v3";
 
 export type V3Variant = "old" | "new";
 type Fx = "intro" | "exit" | null;
@@ -150,8 +150,8 @@ export function V3Effects({
       ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = "source-over";
 
-      // spin starts fast and settles
-      const rot = e / 1000 * 0.7 + 5 * (1 - Math.exp(-e / 520));
+      // spin starts fast, then settles into a slow drift
+      const rot = spinAngle(e);
 
       if (mode === "intro") {
         const T = skipAt !== null && e >= skipAt ? fly + hold + (e - skipAt) : e;

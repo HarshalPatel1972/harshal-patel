@@ -19,3 +19,8 @@ export const nextPhase = (phase: "logo" | "v3"): "logo" | "v3" => (phase === "v3
 // `hold` is how long the info card stays readable, on purpose generous
 export const INTRO_MS = { fly: 1100, hold: 6000, back: 900 } as const;
 export const EXIT_MS = 750;
+
+// Spin of the tesseract: a quick burst at launch that dies away, then a very slow drift so the
+// info card can be read without the cube pulling the eye. Angle is in radians of the base rotation.
+export const SPIN = { idle: 0.2, burst: 4, tauMs: 330 } as const;
+export const spinAngle = (ms: number) => (ms / 1000) * SPIN.idle + SPIN.burst * (1 - Math.exp(-ms / SPIN.tauMs));

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EDGES, FACES, VERTS, project, rotate4 } from "./tesseract";
-import { INTRO_MS, LOGO_PHASE_MS, V3_PHASE_MS, nextPhase, phaseDuration } from "./v3";
+import { INTRO_MS, LOGO_PHASE_MS, V3_PHASE_MS, nextPhase, phaseDuration, spinAngle } from "./v3";
 
 describe("tesseract", () => {
   it("has 16 vertices and 32 edges, each joining vertices one step apart", () => {
@@ -55,6 +55,14 @@ describe("logo phases", () => {
   it("leaves the intro card up for 5-7 seconds", () => {
     expect(INTRO_MS.hold).toBeGreaterThanOrEqual(5000);
     expect(INTRO_MS.hold).toBeLessThanOrEqual(7000);
+  });
+
+  it("barely rotates while the card is being read", () => {
+    // from 2s in (card is open and the launch spin has died) the rate stays gentle
+    for (let t = 2000; t < INTRO_MS.fly + INTRO_MS.hold; t += 250) {
+      const perSecond = (spinAngle(t + 100) - spinAngle(t)) / 0.1;
+      expect(perSecond).toBeLessThan(0.3);
+    }
   });
 
   it("shows V3 for longer than the plain logo", () => {
