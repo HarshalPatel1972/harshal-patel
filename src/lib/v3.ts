@@ -16,5 +16,6 @@ export function phaseDuration(phase: "logo" | "v3", rand: () => number = Math.ra
 export const nextPhase = (phase: "logo" | "v3"): "logo" | "v3" => (phase === "v3" ? "logo" : "v3");
 
 // Intro timeline for the tesseract that flies out of the logo
-export const INTRO_MS = { fly: 950, hold: 1900, back: 800 } as const;
+// `hold` is how long the info card stays readable, on purpose generous
+export const INTRO_MS = { fly: 1100, hold: 6000, back: 900 } as const;
 export const EXIT_MS = 750;

@@ -22,6 +22,21 @@ export const EDGES: [number, number][] = (() => {
   return out;
 })();
 
+// The 24 square faces: pick two axes to span the square, fix the other two coordinates (4 ways), 6 pairs of axes.
+// Vertices are listed around the square so they can be filled as a polygon.
+export const FACES: [number, number, number, number][] = (() => {
+  const out: [number, number, number, number][] = [];
+  for (let a = 0; a < 4; a++) {
+    for (let b = a + 1; b < 4; b++) {
+      for (let base = 0; base < 16; base++) {
+        if (base & (1 << a) || base & (1 << b)) continue; // base has both spanning bits cleared
+        out.push([base, base | (1 << a), base | (1 << a) | (1 << b), base | (1 << b)]);
+      }
+    }
+  }
+  return out;
+})();
+
 export interface Projected {
   x: number; // roughly -1..1, multiply by the on-screen size
   y: number;
