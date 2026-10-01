@@ -24,7 +24,7 @@ export default function NewDesign({ showContent }: DesignLayerProps) {
   return (
     <>
       <div className={`${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-        <Navbar />
+        <Navbar ready={showContent} />
         <ScrollLine isVisible={showContent} theme="new" />
 
         {/* Zero-Lag Utility Container - Full height track */}

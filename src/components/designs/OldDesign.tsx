@@ -23,7 +23,7 @@ export default function OldDesign({ showContent }: DesignLayerProps) {
   return (
     <>
       <div className={`${showContent ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-        <Navbar />
+        <Navbar ready={showContent} />
         <ScrollLine isVisible={showContent} />
 
         {/* Zero-Lag Utility Container - Full height track */}

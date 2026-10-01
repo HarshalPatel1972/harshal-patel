@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useLanguage, type Language } from "@/context/LanguageContext";
 import { LogoFactSpit, type FactSpit } from "@/components/shared/LogoFactSpit";
 import { getNextFact } from "@/lib/ofudaMemory";
+import { useV3Logo, V3Effects, V3Face, V3Aura } from "@/components/shared/V3Logo";
 
 type NavItem = {
   id: string;
@@ -97,7 +98,7 @@ const NAV_ITEMS: NavItems = {
 
 type DotMode = 'LOCKED' | 'CHARGING' | 'RELEASED';
 
-export function Navbar() {
+export function Navbar({ ready = true }: { ready?: boolean }) {
   const { language } = useLanguage();
   const currentNavItems = NAV_ITEMS[language as keyof typeof NAV_ITEMS] || NAV_ITEMS.en;
   const [active, setActive] = useState("hero");
@@ -112,6 +113,9 @@ export function Navbar() {
   const [splashPos, setSplashPos] = useState({ x: 0, y: 0 });
   const [docHeight, setDocHeight] = useState(0);
   const [factSpit, setFactSpit] = useState<FactSpit | null>(null);
+  const logoBtnRef = useRef<HTMLButtonElement>(null);
+  const v3 = useV3Logo(ready);
+  const v3Active = v3.phase === "v3";
 
   const chargingLogoRef = useRef<boolean>(false);
   const longPressActiveRef = useRef<boolean>(false);
@@ -406,18 +410,22 @@ export function Navbar() {
 
       <nav ref={navbarRef} className="fixed right-0 top-0 h-[100dvh] z-[100] w-12 md:w-16 bg-white border-l border-[var(--bg-ink)]/10 flex flex-col justify-between items-center py-4 md:py-8 touch-none shrink-0" style={{ userSelect: 'none' }}>
         <div className="flex flex-col items-center gap-4 z-20">
-          <div className="w-11 h-11 flex items-center justify-center mr-[4px] group">
+          <div className="relative w-11 h-11 flex items-center justify-center mr-[4px] group">
+            <V3Aura active={v3Active} variant="old" />
             <button 
+              ref={logoBtnRef}
+              aria-label={v3Active ? "Open version 3 of this portfolio (new)" : undefined}
               onMouseEnter={() => { void import("@/lib/ofudaFacts"); }}
-              onMouseDown={(e) => { if (e.button === 0) handleLogoTouchStart(); }} 
+              onMouseDown={(e) => { if (e.button === 0 && !v3Active) handleLogoTouchStart(); }} 
               onMouseUp={handleLogoTouchEnd} 
               onMouseLeave={handleLogoTouchEnd} 
-              onTouchStart={handleLogoTouchStart} 
+              onTouchStart={() => { if (!v3Active) handleLogoTouchStart(); }} 
               onTouchEnd={handleLogoTouchEnd} 
-              onClick={handleLogoClick}
-              className="w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 overflow-hidden touch-manipulation"
+              onClick={(e) => { if (v3Active) { setFactSpit(null); v3.openV3(); } else if (v3.fx !== "exit") void handleLogoClick(e); }}
+              className="relative w-9 h-9 md:w-11 md:h-11 bg-black flex items-center justify-center shrink-0 cursor-pointer brutal-shadow-sm border border-white/5 overflow-hidden touch-manipulation"
             >
-                <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority={true} sizes="44px" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" />
+                <Image src="/icon.png" alt="HP Logo" width={44} height={44} priority={true} sizes="44px" className={`w-full h-full object-contain transition-[transform,opacity] duration-500 group-hover:scale-110 ${v3Active ? "opacity-0 scale-50" : ""}`} />
+                <V3Face active={v3Active} variant="old" />
             </button>
           </div>
         </div>
@@ -460,6 +468,7 @@ export function Navbar() {
         </div>
       </nav>
 
+      <V3Effects mode={v3.fx} anchorRef={logoBtnRef} variant="old" onDone={v3.onFxDone} />
       <LogoFactSpit spit={factSpit} variant="old" language={language} onClose={() => setFactSpit(null)} />
     </>
   );
