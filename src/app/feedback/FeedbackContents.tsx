@@ -85,6 +85,32 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
   const repelX = useSpring(0, { stiffness: 100, damping: 20 });
   const repelY = useSpring(0, { stiffness: 100, damping: 20 });
   const cardRef = useRef<HTMLDivElement>(null);
+  const rectCache = useRef({ left: 0, top: 0, width: 0, height: 0 });
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+
+    const updateRect = () => {
+      if (cardRef.current) {
+        const rect = cardRef.current.getBoundingClientRect();
+        rectCache.current = { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+      }
+    };
+
+    updateRect();
+
+    const ro = new ResizeObserver(() => updateRect());
+    ro.observe(cardRef.current);
+
+    window.addEventListener('scroll', updateRect, { passive: true });
+    window.addEventListener('resize', updateRect, { passive: true });
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('scroll', updateRect);
+      window.removeEventListener('resize', updateRect);
+    };
+  }, []);
 
   const seeds = useMemo(() => {
     const r1 = getSeededRandom(idx * 7 + 1);
@@ -117,8 +143,8 @@ function FloatingCard({ entry, idx, mousePos, isAdmin, onDelete }: { entry: Feed
     y.set(Math.cos(time * seeds.ySpeed + seeds.yOffset) * seeds.amplitudeY);
     rotate.set(Math.sin(time * seeds.rotateSpeed + seeds.rotateOffset) * 2);
 
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
+    if (cardRef.current && rectCache.current.width > 0) {
+      const rect = rectCache.current;
       const dx = (rect.left + rect.width / 2) - ((mousePos.current.x / 20 + 0.5) * window.innerWidth);
       const dy = (rect.top + rect.height / 2) - ((mousePos.current.y / 20 + 0.5) * window.innerHeight);
       const distance = Math.sqrt(dx * dx + dy * dy);
