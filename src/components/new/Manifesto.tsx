@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 
 const MANIFESTO_PARTS: Record<string, {
@@ -152,11 +152,18 @@ export function Manifesto() {
     };
   }, []);
 
-  const prefixWords = parts.prefix.split(" ").filter(w => w !== "");
-  const midWords = parts.mid.split(" ").filter(w => w !== "");
-  const suffixWords = parts.suffix.split(" ").filter(w => w !== "");
+  const { prefixWords, midWords, suffixWords, totalWords } = useMemo(() => {
+    const pWords = parts.prefix.split(" ").filter(w => w !== "");
+    const mWords = parts.mid.split(" ").filter(w => w !== "");
+    const sWords = parts.suffix.split(" ").filter(w => w !== "");
 
-  const totalWords = prefixWords.length + 1 + midWords.length + 1 + suffixWords.length;
+    return {
+      prefixWords: pWords,
+      midWords: mWords,
+      suffixWords: sWords,
+      totalWords: pWords.length + 1 + mWords.length + 1 + sWords.length
+    };
+  }, [parts]);
 
   return (
     <section
